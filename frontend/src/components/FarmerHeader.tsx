@@ -42,7 +42,7 @@ export default function FarmerHeader() {
               title="Profile"
               className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-700 hover:bg-gray-200"
             >
-              {user?.photo ? (
+              {(user as any)?.photo ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img src={(user as any).photo} alt="avatar" className="w-9 h-9 rounded-full object-cover" />
               ) : (
