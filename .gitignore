@@ -1,4 +1,4 @@
 **/node_modules/
 **/.next/
 **/build_output.txt
-*.log
+*.logbackend/.env
