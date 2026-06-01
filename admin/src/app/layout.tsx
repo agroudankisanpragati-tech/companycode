@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next';
-import '@/styles/globals.css';
+// @ts-ignore: allow side-effect CSS import without module declarations
+import '../styles/globals.css';
 import { AdminProvider } from '@/components/admin/AdminProvider';
 
 export const viewport: Viewport = {
@@ -9,8 +10,8 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: 'Kisan Unnati Admin',
-  description: 'Admin dashboard for Kisan Unnati',
+  title: 'Agroudan Kisan Pragati Admin',
+  description: 'Admin dashboard for Agroudan Kisan Pragati',
 };
 
 export default function RootLayout({

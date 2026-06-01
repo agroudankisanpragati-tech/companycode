@@ -1,4 +1,4 @@
-'use client';
+ 'use client';
 
 import Image from 'next/image';
 import { FaUserPlus, FaRobot, FaLeaf, FaStore } from 'react-icons/fa';

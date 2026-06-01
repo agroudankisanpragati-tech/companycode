@@ -58,7 +58,20 @@ export const loadAdminWorkspace = async (authToken: string) => {
 };
 
 export const restoreSessionFromToken = async (authToken: string) => {
-  return requestJson<{ success: boolean; data: SessionUser }>('/auth/me', authToken);
+  const resp = await requestJson<{ success: boolean; data: any }>('/auth/me', authToken);
+
+  const u = resp.data || {};
+
+  // Normalize backend user shape to SessionUser expected by admin UI
+  const sessionUser: SessionUser = {
+    id: u.id || u._id || '',
+    name: u.name || '',
+    email: u.email || '',
+    role: u.role || 'farmer',
+    verified: Boolean(u.verified),
+  };
+
+  return { success: true, data: sessionUser };
 };
 
 export const formatDate = (value?: string) => {
@@ -82,6 +95,14 @@ export const deleteBlogPost = async (token: string, postId: string) => {
   return requestJson<{ success: boolean; message: string }>(`/blogs/admin/${postId}`, token, {
     method: 'DELETE',
   });
+};
+
+export const fetchAdminBlogs = async (token: string) => {
+  return requestJson<{ success: boolean; data: any[] }>('/blogs/admin/all', token);
+};
+
+export const fetchAdminBlogById = async (token: string, id: string) => {
+  return requestJson<{ success: boolean; data: any }>(`/blogs/admin/${id}`, token);
 };
 
 export const updateGovtScheme = async (token: string, schemeId: string, data: Partial<GovtScheme>) => {

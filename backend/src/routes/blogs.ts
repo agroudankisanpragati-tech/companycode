@@ -2,13 +2,24 @@ import express, { Response } from 'express';
 import fs from 'fs';
 import multer from 'multer';
 import path from 'path';
+// require to avoid missing type declarations in this project setup
+const cloudinary: any = require('cloudinary').v2;
+const streamifier: any = require('streamifier');
 import { BlogPost, BlogPostStatus } from '../models/BlogPost';
 import { AuthenticatedRequest, authenticate, requireAdmin } from '../middleware/auth';
 
 const router = express.Router();
 const uploadsDir = path.join(process.cwd(), 'uploads');
 
-const storage = multer.diskStorage({
+const useCloud = !!process.env.CLOUDINARY_URL;
+
+if (useCloud) {
+    cloudinary.config({
+        secure: true,
+    });
+}
+
+const diskStorage = multer.diskStorage({
     destination: (_req, _file, callback) => {
         callback(null, uploadsDir);
     },
@@ -23,8 +34,10 @@ const storage = multer.diskStorage({
     },
 });
 
+const memoryStorage = multer.memoryStorage();
+
 const upload = multer({
-    storage,
+    storage: useCloud ? memoryStorage : diskStorage,
     limits: {
         fileSize: 20 * 1024 * 1024,
     },
@@ -38,7 +51,11 @@ const upload = multer({
     },
 });
 
-const buildMediaUrl = (fileName: string) => `/uploads/${fileName}`;
+const buildMediaUrl = (fileNameOrUrl: string) => {
+    if (!fileNameOrUrl) return '';
+    if (useCloud) return fileNameOrUrl; // already a full URL from Cloudinary
+    return `/uploads/${fileNameOrUrl}`;
+};
 
 const buildSlug = (rawTitle: string) =>
     rawTitle
@@ -74,6 +91,43 @@ const sanitizeTags = (tags: unknown): string[] => {
         .map((tag) => tag.trim().toLowerCase())
         .filter(Boolean)
         .slice(0, 8);
+};
+
+const convertEditorJsToHtml = (data: any) => {
+    if (!data || !Array.isArray(data.blocks)) return '';
+
+    const escapeHtml = (str: string) => String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+    return data.blocks
+        .map((block: any) => {
+            const t = block.type;
+            const d = block.data || {};
+
+            switch (t) {
+                case 'paragraph':
+                    return `<p>${d.text ? d.text : ''}</p>`;
+                case 'header':
+                    const level = d.level && [1,2,3,4].includes(d.level) ? d.level : 2;
+                    return `<h${level}>${d.text ? d.text : ''}</h${level}>`;
+                case 'list':
+                    if (Array.isArray(d.items)) {
+                        if (d.style === 'ordered') {
+                            return `<ol>${d.items.map((it: string) => `<li>${it}</li>`).join('')}</ol>`;
+                        }
+                        return `<ul>${d.items.map((it: string) => `<li>${it}</li>`).join('')}</ul>`;
+                    }
+                    return '';
+                case 'quote':
+                    return `<blockquote><p>${d.text || ''}</p><footer>${d.caption || ''}</footer></blockquote>`;
+                case 'image':
+                    return `<figure><img src="${d.file?.url || d.url || ''}" alt="${escapeHtml(d.caption || '')}" /><figcaption>${escapeHtml(d.caption || '')}</figcaption></figure>`;
+                case 'embed':
+                    return d.embed ? d.embed : (d.html ? d.html : '');
+                default:
+                    return '';
+            }
+        })
+        .join('\n');
 };
 
 router.get('/', async (req, res: Response) => {
@@ -120,25 +174,73 @@ router.get('/admin/all', authenticate, requireAdmin, async (_req: AuthenticatedR
     }
 });
 
+router.get('/admin/:id', authenticate, requireAdmin, async (req: AuthenticatedRequest, res: Response) => {
+    try {
+        const post = await BlogPost.findById(req.params.id).populate('authorId', 'name').lean();
+
+        if (!post) {
+            return res.status(404).json({ error: 'Blog post not found' });
+        }
+
+        return res.json({
+            success: true,
+            data: {
+                ...post,
+                authorName: (post.authorId as { name?: string } | null)?.name || 'Admin',
+            },
+        });
+    } catch (error) {
+        return res.status(500).json({ error: 'Failed to fetch blog post' });
+    }
+});
+
 router.post('/admin/upload-cover', authenticate, requireAdmin, upload.single('file'), async (req: AuthenticatedRequest, res: Response) => {
     try {
-        const file = req.file;
+        const file = req.file as Express.Multer.File | undefined;
 
         if (!file) {
             return res.status(400).json({ error: 'Cover image file is required' });
         }
 
+        if (useCloud && file.buffer) {
+            const result = await new Promise<{ secure_url: string; format?: string }>((resolve, reject) => {
+                const uploadStream = cloudinary.uploader.upload_stream({ folder: 'kisan-unnati/blogs' }, (err: any, resCloud: any) => {
+                    if (err) return reject(err);
+                    resolve(resCloud as any);
+                });
+
+                streamifier.createReadStream(file.buffer).pipe(uploadStream);
+            });
+
+            return res.status(201).json({
+                success: true,
+                data: {
+                    coverImage: result.secure_url,
+                    fileName: path.basename(result.secure_url),
+                    mimeType: file.mimetype,
+                },
+            });
+        }
+
+        // Fallback to disk storage handling
+        if (!fs.existsSync(uploadsDir)) {
+            fs.mkdirSync(uploadsDir, { recursive: true });
+        }
+
+        // multer with diskStorage will have saved the file to disk and provided filename
+        const filename = (file as any).filename || file.originalname;
+
         return res.status(201).json({
             success: true,
             data: {
-                coverImage: buildMediaUrl(file.filename),
-                fileName: file.filename,
+                coverImage: buildMediaUrl(filename),
+                fileName: filename,
                 mimeType: file.mimetype,
             },
         });
     } catch (error) {
-        if (req.file) {
-            const filePath = path.join(uploadsDir, req.file.filename);
+        if (req.file && !useCloud) {
+            const filePath = path.join(uploadsDir, (req.file as any).filename || req.file.originalname);
             if (fs.existsSync(filePath)) {
                 fs.unlinkSync(filePath);
             }
@@ -170,10 +272,25 @@ router.post('/admin', authenticate, requireAdmin, async (req: AuthenticatedReque
         const slug = await generateUniqueSlug(title);
         const now = new Date();
 
+        let contentHtml = '';
+        let contentJson: string | undefined = undefined;
+
+        if (content) {
+            const trimmed = content.trim();
+            try {
+                const parsed = JSON.parse(trimmed);
+                contentJson = JSON.stringify(parsed);
+                contentHtml = convertEditorJsToHtml(parsed) || '';
+            } catch (e) {
+                contentHtml = trimmed;
+            }
+        }
+
         const created = await BlogPost.create({
             title: title.trim(),
             excerpt: excerpt.trim(),
-            content: content.trim(),
+            content: contentHtml,
+            contentJson: contentJson,
             coverImage: coverImage?.trim(),
             tags: sanitizeTags(tags),
             status: status || 'draft',
@@ -210,7 +327,16 @@ router.patch('/admin/:id', authenticate, requireAdmin, async (req: Authenticated
         }
 
         if (excerpt?.trim()) existing.excerpt = excerpt.trim();
-        if (content?.trim()) existing.content = content.trim();
+        if (content?.trim()) {
+            const trimmed = content.trim();
+            try {
+                const parsed = JSON.parse(trimmed);
+                existing.contentJson = JSON.stringify(parsed);
+                existing.content = convertEditorJsToHtml(parsed) || '';
+            } catch (e) {
+                existing.content = trimmed;
+            }
+        }
         if (typeof coverImage === 'string') existing.coverImage = coverImage.trim() || undefined;
         if (Array.isArray(tags)) existing.tags = sanitizeTags(tags);
 

@@ -76,7 +76,9 @@ export default function AdminDashboardPage() {
           </Link>
         ))}
       </section>
-      
+      <div className="flex justify-end">
+        <Link href="/blogs" className="admin-button-primary">View All Blogs</Link>
+      </div>
     </div>
   );
 }

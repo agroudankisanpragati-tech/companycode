@@ -154,4 +154,114 @@ html {
         border-top: 1px solid rgba(148, 163, 184, 0.35);
         margin: 1.25rem 0;
     }
+
+    /* Make ReactQuill editor fill parent and scroll content */
+    .create-blog-form .blog-editor {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+    }
+
+    .create-blog-form .blog-editor .ql-container {
+        flex: 1 1 auto;
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+    }
+
+    .create-blog-form .blog-editor .ql-editor {
+        flex: 1 1 auto;
+        min-height: 0;
+        overflow: auto;
+        padding: 1rem 1.25rem;
+    }
+    
+    /* Force readable text color inside the editor and ensure elements inherit it */
+    .create-blog-form .blog-editor .ql-editor,
+    .create-blog-form .blog-editor .ql-editor p,
+    .create-blog-form .blog-editor .ql-editor h1,
+    .create-blog-form .blog-editor .ql-editor h2,
+    .create-blog-form .blog-editor .ql-editor h3,
+    .create-blog-form .blog-editor .ql-editor li,
+    .create-blog-form .blog-editor .ql-editor blockquote,
+    .create-blog-form .blog-editor .ql-editor pre,
+    .create-blog-form .blog-editor .ql-editor a {
+        color: #0f172a !important;
+    }
+
+    /* Ensure editor background is white for contrast */
+    .create-blog-form .blog-editor .ql-toolbar,
+    .create-blog-form .blog-editor .ql-container {
+        background: #ffffff !important;
+    }
+
+    .create-blog-form .blog-editor .ql-editor ::placeholder {
+        color: rgba(15,23,42,0.45) !important;
+    }
+
+    /* Let the form's main grid expand to available height so editor can grow */
+    .create-blog-form > .grid {
+        flex: 1 1 auto;
+        min-height: 0;
+    }
+
+    /* Ensure the form container itself can scroll when content overflows */
+    .create-blog-form {
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+        overflow: auto;
+    }
+
+    /* Ensure the form fills viewport and add bottom padding so fixed action bar doesn't overlap content */
+    .create-blog-form {
+        display: flex;
+        flex-direction: column;
+        min-height: calc(100vh - 8rem);
+        overflow: auto;
+        padding-bottom: 6.5rem;
+    }
+
+    /* Provide scroll offset so content isn't flush to the top when focused/scrolled */
+    .create-blog-form,
+    .create-blog-form .blog-editor .ql-container,
+    .create-blog-form .blog-editor .ql-editor {
+        scroll-padding-top: 2.5rem;
+    }
+
+    .create-blog-form .blog-editor .ql-editor {
+        padding-top: 1.25rem; /* small top gap inside editor */
+    }
+
+    .create-blog-form > .grid {
+        flex: 1 1 auto;
+        min-height: 0;
+    }
+
+    .create-blog-actions {
+        display: flex;
+        gap: 0.75rem;
+        align-items: center;
+        justify-content: center;
+        margin-top: 1rem;
+        padding-top: 0.75rem;
+        padding-bottom: 0.75rem;
+        border-top: 1px solid rgba(255,255,255,0.03);
+        background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.02));
+        border-radius: 0.75rem;
+        position: static;
+        width: auto;
+    }
+
+    .create-blog-actions .admin-button-secondary,
+    .create-blog-actions .admin-button-primary {
+        min-width: 10rem;
+    }
+
+    /* Quill editor: ensure vertical scroll and visible caret */
+    .create-blog-form .blog-editor .ql-editor {
+        -webkit-overflow-scrolling: touch;
+        caret-color: #0f172a;
+    }
 }

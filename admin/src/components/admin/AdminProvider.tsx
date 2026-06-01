@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import {
   FaChartLine,
+  FaBlog,
   FaCheckCircle,
   FaCog,
   FaDatabase,
@@ -55,6 +56,7 @@ type AdminContextValue = {
 const AdminContext = createContext<AdminContextValue | null>(null);
 
 const navItems = [
+  { href: '/blogs', label: 'Blogs', icon: FaBlog },
   { href: '/dashboard', label: 'Dashboard', icon: FaChartLine },
   { href: '/create-blog', label: 'Create Blog', icon: FaPlusSquare },
   { href: '/create-scheme', label: 'Govt Schemes', icon: FaLeaf },
@@ -233,7 +235,15 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
       setListings(workspace.listings);
       setSuccess('Admin data refreshed');
     } catch (requestError) {
-      setError(requestError instanceof Error ? requestError.message : 'Unable to refresh data');
+      const msg = requestError instanceof Error ? requestError.message : 'Unable to refresh data';
+      setError(msg);
+
+      // If token is invalid or expired, clear session and token so admin is prompted to login again
+      if (/unauthorized|invalid|expired/i.test(msg)) {
+        window.localStorage.removeItem(TOKEN_KEY);
+        setToken(null);
+        setSession(null);
+      }
     }
   };
 

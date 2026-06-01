@@ -1,8 +1,6 @@
-'use client';
-
 import Link from 'next/link';
 import Image from 'next/image';
-import { FaFacebook, FaYoutube, FaInstagram, FaPhone, FaEnvelope, FaMapMarkerAlt } from 'react-icons/fa';
+import { FaFacebook, FaYoutube, FaInstagram, FaPhone, FaEnvelope, FaArrowUp } from 'react-icons/fa';
 import { FaXTwitter } from 'react-icons/fa6';
 
 export default function Footer() {
@@ -15,6 +13,7 @@ export default function Footer() {
         { label: 'Gallery', href: '/gallery' },
         { label: 'Blog', href: '/blog' },
         { label: 'Schemes', href: '/schemes' },
+        { label: 'Weather', href: '/weather' },
       ]
     },
     {
@@ -23,108 +22,79 @@ export default function Footer() {
         { label: 'About', href: '/about' },
         { label: 'Careers', href: '/careers' },
         { label: 'Contact', href: '/contact' },
-      ]
-    },
-    {
-      title: 'Legal',
-      links: [
-        { label: 'Privacy', href: '#' },
-        { label: 'Terms', href: '#' },
-        { label: 'Cookies', href: '#' },
+        { label: 'Shop', href: '/shop' },
       ]
     },
   ];
 
   return (
-    <footer className="relative overflow-hidden border-t border-emerald-900/10 bg-[linear-gradient(180deg,_#0f172a_0%,_#0f2e24_100%)] text-white">
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute -left-24 top-0 h-56 w-56 rounded-full bg-emerald-500/15 blur-3xl" />
-        <div className="absolute right-0 bottom-0 h-72 w-72 rounded-full bg-lime-400/10 blur-3xl" />
-      </div>
-
-      <div className="relative z-10 mx-auto w-full max-w-screen-2xl px-4 py-8 sm:px-6 lg:px-8 lg:py-10">
-        <div className="grid gap-6 rounded-[2rem] border border-white/10 bg-white/5 p-5 shadow-[0_24px_70px_rgba(15,23,42,0.28)] backdrop-blur-xl lg:grid-cols-[1.2fr_1fr] lg:p-6">
-          <div className="space-y-4">
-            <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/8 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.24em] text-emerald-200">
-              Agroudan Kisan Pragati
+    <footer className="border-t border-emerald-100 bg-[radial-gradient(circle_at_top,_rgba(16,185,129,0.08),_transparent_32%),linear-gradient(180deg,_#ffffff_0%,_#f0fdf4_100%)] text-slate-800">
+      <div className="section-container py-10 sm:py-12 lg:py-14">
+        <div className="mb-8 rounded-[2rem] border border-emerald-100 bg-white/90 p-5 shadow-[0_16px_50px_rgba(16,185,129,0.08)] backdrop-blur sm:p-6">
+          <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+            <div className="max-w-2xl">
+              <p className="text-xs font-semibold uppercase tracking-[0.25em] text-emerald-700">Need help fast?</p>
+              <h3 className="mt-2 text-xl font-bold tracking-tight text-emerald-900 sm:text-2xl">
+                Quick support for farming and market updates.
+              </h3>
             </div>
 
-            <div className="flex items-start gap-4">
-              <div className="shrink-0 rounded-2xl border border-white/10 bg-white/10 p-2 shadow-sm">
-                <Image
-                  src="/logo.png"
-                  alt="Agroudan Kisan Pragati Logo"
-                  width={56}
-                  height={56}
-                  className="rounded-xl bg-white p-0.5"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <h3 className="text-2xl font-black tracking-tight text-white">
-                  Agroudan Kisan Pragati
-                </h3>
-                <p className="max-w-xl text-sm leading-6 text-slate-300">
-                  Simple tools for farmers, shops, weather, and market access.
-                </p>
-              </div>
-            </div>
-
-            <div className="grid gap-2 text-sm text-slate-200 sm:grid-cols-2">
-              <div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-3 py-3">
-                <span className="grid h-9 w-9 place-items-center rounded-full bg-emerald-500/15 text-emerald-200">
-                  <FaPhone size={14} />
-                </span>
-                <span>+91 6378095181</span>
-              </div>
-              <div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-3 py-3">
-                <span className="grid h-9 w-9 place-items-center rounded-full bg-emerald-500/15 text-emerald-200">
-                  <FaEnvelope size={14} />
-                </span>
-                <span className="truncate">agroudankisanpragati@gmail.com</span>
-              </div>
-              <div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-3 py-3 sm:col-span-2">
-                <span className="grid h-9 w-9 place-items-center rounded-full bg-emerald-500/15 text-emerald-200">
-                  <FaMapMarkerAlt size={14} />
-                </span>
-                <span>Main Market Barna, Jalsu, Jaipur, Rajasthan</span>
-              </div>
+            <div className="flex flex-wrap gap-3">
+              <Link
+                href="/auth/role-select"
+                className="inline-flex items-center justify-center gap-2 rounded-full bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white transition-colors duration-200 hover:bg-emerald-700"
+              >
+                Get Started
+              </Link>
+              <Link
+                href="/contact"
+                className="inline-flex items-center justify-center gap-2 rounded-full border border-emerald-200 bg-white px-4 py-2.5 text-sm font-semibold text-emerald-700 transition-colors duration-200 hover:bg-emerald-50"
+              >
+                Contact Us
+              </Link>
+              <Link
+                href="#top"
+                className="inline-flex items-center justify-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-4 py-2.5 text-sm font-semibold text-emerald-700 transition-colors duration-200 hover:bg-emerald-100"
+              >
+                <FaArrowUp size={12} />
+                Back to Top
+              </Link>
             </div>
           </div>
+        </div>
 
-          <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-              {sections.map((section) => (
-                <div
-                  key={section.title}
-                  className="rounded-2xl border border-white/10 bg-white/5 p-4 shadow-sm transition-colors duration-300 hover:bg-white/8"
-                >
-                  <h4 className="mb-3 flex items-center gap-2 text-sm font-semibold tracking-wide text-white">
-                    <span className="h-2 w-2 rounded-full bg-emerald-400" />
-                    {section.title}
-                  </h4>
-                  <ul className="space-y-1 text-sm">
-                    {section.links.map((link) => (
-                      <li key={link.label}>
-                        <Link
-                          href={link.href}
-                          className="group/link flex items-center justify-between rounded-xl px-2.5 py-1.5 text-slate-300 transition-colors duration-200 hover:bg-white/8 hover:text-white"
-                        >
-                          <span>{link.label}</span>
-                          <span className="ml-3 inline-block h-1.5 w-1.5 rounded-full bg-emerald-400/70 transition-transform duration-200 group-hover/link:scale-110 group-hover/link:bg-emerald-300" />
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
+        <div className="grid gap-8 lg:grid-cols-[1.15fr_1fr_0.95fr]">
+          <div className="space-y-4">
+            <div className="flex items-center gap-3">
+              <Image
+                src="/logo.png"
+                alt="Agroudan Kisan Pragati Logo"
+                width={48}
+                height={48}
+                className="rounded-2xl bg-white p-1 shadow-sm ring-1 ring-emerald-100"
+              />
+              <div>
+                <h3 className="text-lg font-bold text-emerald-900">Agroudan Kisan Pragati</h3>
+                <p className="text-sm text-slate-600">Simple tools for farmers and shops.</p>
+              </div>
             </div>
 
-          <div className="flex flex-col gap-4 border-t border-white/10 pt-4 md:flex-row md:items-center md:justify-between">
-            <p className="text-center text-xs font-medium text-slate-300 md:text-left">
-              © {currentYear} Agroudan Kisan Pragati LLP.
+            <p className="max-w-md text-sm leading-6 text-slate-600">
+              Crop advice, weather, mandi prices, schemes, and marketplace support.
             </p>
 
-            <div className="flex justify-center gap-2 md:justify-end">
+            <div className="flex flex-wrap gap-3 text-sm text-slate-700">
+              <a href="tel:+916378095181" className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 shadow-sm ring-1 ring-emerald-100 transition hover:bg-emerald-50">
+                <FaPhone size={13} className="text-emerald-600" />
+                +91 6378095181
+              </a>
+              <a href="mailto:agroudankisanpragati@gmail.com" className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 shadow-sm ring-1 ring-emerald-100 transition hover:bg-emerald-50">
+                <FaEnvelope size={13} className="text-emerald-600" />
+                Email Us
+              </a>
+            </div>
+
+            <div className="flex gap-3">
               {[
                 { icon: FaFacebook, href: 'https://www.facebook.com/profile.php?id=61589122658245', label: 'Facebook' },
                 { icon: FaXTwitter, href: 'https://x.com/agroudankisan', label: 'X' },
@@ -137,13 +107,49 @@ export default function Footer() {
                     key={social.label}
                     href={social.href}
                     aria-label={social.label}
-                    className="relative grid h-10 w-10 place-items-center rounded-full border border-white/10 bg-white/5 text-slate-200 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-emerald-300/50 hover:bg-emerald-500 hover:text-white"
+                    className="grid h-10 w-10 place-items-center rounded-full border border-emerald-200 bg-white text-emerald-700 transition-all duration-200 hover:-translate-y-0.5 hover:bg-emerald-600 hover:text-white"
                   >
-                    <Icon size={18} />
+                    <Icon size={16} />
                   </Link>
                 );
               })}
             </div>
+          </div>
+
+          <div>
+            <h4 className="mb-4 text-sm font-semibold uppercase tracking-[0.18em] text-emerald-700">Quick Links</h4>
+            <ul className="grid gap-3 text-sm sm:grid-cols-2">
+              {sections.flatMap((section) => section.links).map((link) => (
+                <li key={link.label}>
+                  <Link
+                    href={link.href}
+                    className="flex items-center justify-between rounded-2xl border border-emerald-100 bg-white px-4 py-3 text-slate-700 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-emerald-200 hover:bg-emerald-50 hover:text-emerald-700"
+                  >
+                    <span>{link.label}</span>
+                    <span className="h-2 w-2 rounded-full bg-emerald-400" />
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="mb-4 text-sm font-semibold uppercase tracking-[0.18em] text-emerald-700">About</h4>
+            <div className="rounded-[1.5rem] border border-emerald-100 bg-white p-5 shadow-sm">
+              <div className="space-y-2 text-sm text-slate-700">
+                <p><span className="font-semibold text-emerald-700">Location:</span> Jaipur, Rajasthan</p>
+                <p><span className="font-semibold text-emerald-700">Focus:</span> Farmers, shops, weather, schemes</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-8 flex flex-col gap-3 border-t border-emerald-100 pt-4 text-center text-xs text-slate-500 md:flex-row md:items-center md:justify-between md:text-left">
+          <p>© {currentYear} Agroudan Kisan Pragati LLP.</p>
+          <div className="flex flex-wrap justify-center gap-4 md:justify-end">
+            <Link href="#" className="transition-colors hover:text-emerald-700">Privacy</Link>
+            <Link href="#" className="transition-colors hover:text-emerald-700">Terms</Link>
+            <Link href="#" className="transition-colors hover:text-emerald-700">Cookies</Link>
           </div>
         </div>
       </div>
