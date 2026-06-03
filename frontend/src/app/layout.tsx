@@ -41,8 +41,8 @@ export default function RootLayout({
         <meta name="twitter:image" content="/images/logo-og.svg" />
 
         {/* Icons */}
-        <link rel="icon" href="/images/logo-192x192.png" sizes="192x192" />
-        <link rel="apple-touch-icon" href="/images/logo-192x192.png" />
+        <link rel="icon" href="/images/logo.svg" />
+        <link rel="apple-touch-icon" href="/images/logo.svg" />
 
         {/* JSON-LD structured data */}
         <script
@@ -56,7 +56,7 @@ export default function RootLayout({
       "@id": "https://agroudankisanpragati.com/#org",
       "name": "Agroudan Kisan pragati LLP",
       "url": "https://agroudankisanpragati.com/",
-      "logo": "https://agroudankisanpragati.com/images/logo-192x192.png",
+      "logo": "https://agroudankisanpragati.com/images/logo.svg",
       "sameAs": [
         "https://www.facebook.com/yourpage",
         "https://twitter.com/yourhandle",
