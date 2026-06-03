@@ -2,29 +2,20 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { FaBars, FaTimes, FaLeaf, FaChevronDown } from 'react-icons/fa';
+import { FaBars, FaTimes, FaLeaf } from 'react-icons/fa';
 import { useState } from 'react';
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
-  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
-
   const navLinks = [
-    {
-      href: '/about',
-      label: 'About',
-      dropdown: 'about',
-      items: [
-        { label: 'About Us – Company', href: '/about#company' },
-        { label: 'Our Services', href: '/about#services' },
-        { label: 'Our Vision, Mission and Values', href: '/about#vision-mission-values' }
-      ]
-    },
-    { href: '/weather', label: 'Weather' },
-    { href: '/mandi-prices', label: 'Mandi Prices' },
-    { href: '/shops', label: 'Shops' },
-    { href: '/schemes', label: 'Govt Schemes' },
-    { href: '/careers', label: 'Careers' },
+    { href: '/', label: 'Home' },
+    { href: '/crop-advisory', label: 'Crop Advisory' },
+    { href: '/weather', label: 'Weather Forecast' },
+    { href: '/mandi-prices', label: 'Market Prices' },
+    { href: '/disease-detection', label: 'Disease Detection' },
+    { href: '/dashboard/farmer', label: 'Farmer Dashboard' },
+    { href: '/contact', label: 'Contact Us' },
+    { href: '/about', label: 'About' },
   ];
 
   return (
@@ -47,48 +38,18 @@ export default function Navbar() {
             </Link>
 
             {/* Desktop Menu */}
-            <div className="hidden lg:flex gap-1 items-center">
+            <div className="hidden xl:flex gap-1 items-center flex-wrap justify-center">
               {navLinks.map((link) => (
                 <div key={link.href} className="relative group">
-                  {link.dropdown ? (
-                    <button
-                      onMouseEnter={() => setOpenDropdown(link.dropdown!)}
-                      onMouseLeave={() => setOpenDropdown(null)}
-                      className="relative px-4 py-2 text-green-700 font-semibold text-sm group overflow-hidden rounded-lg hover:bg-green-50 transition-all duration-300 flex items-center gap-2"
-                    >
-                      <span className="relative z-10 transition-colors duration-300">
-                        {link.label}
-                      </span>
-                      <FaChevronDown size={12} className={`transition-transform duration-300 ${openDropdown === link.dropdown ? 'rotate-180' : ''}`} />
-                      <div className="absolute bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-green-500 to-yellow-400 group-hover:w-full transition-all duration-300" />
-                    </button>
-                  ) : (
-                    <Link
-                      href={link.href}
-                      className="relative px-4 py-2 text-green-700 font-semibold text-sm group overflow-hidden rounded-lg hover:bg-green-50 transition-all duration-300"
-                    >
-                      <span className="relative z-10 transition-colors duration-300">
-                        {link.label}
-                      </span>
-                      <div className="absolute bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-green-500 to-yellow-400 group-hover:w-full transition-all duration-300" />
-                    </Link>
-                  )}
-                  
-                  {/* Dropdown Menu */}
-                  {link.dropdown && link.items && (
-                    <div className="absolute left-0 mt-0 w-48 bg-white rounded-lg shadow-xl border border-green-100 overflow-hidden opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
-                      {link.items.map((item, idx) => (
-                        <Link
-                          key={idx}
-                          href={typeof item === 'string' ? link.href : item.href}
-                          onClick={() => setOpenDropdown(null)}
-                          className="block px-4 py-3 text-green-700 hover:bg-green-50 transition-colors duration-200 text-sm font-medium first:pt-3 last:pb-3 hover:text-green-900"
-                        >
-                          {typeof item === 'string' ? item : item.label}
-                        </Link>
-                      ))}
-                    </div>
-                  )}
+                  <Link
+                    href={link.href}
+                    className="relative px-3 py-2 text-green-700 font-semibold text-xs 2xl:text-sm group overflow-hidden rounded-lg hover:bg-green-50 transition-all duration-300"
+                  >
+                    <span className="relative z-10 transition-colors duration-300">
+                      {link.label}
+                    </span>
+                    <div className="absolute bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-green-500 to-yellow-400 group-hover:w-full transition-all duration-300" />
+                  </Link>
                 </div>
               ))}
             </div>
@@ -126,34 +87,6 @@ export default function Navbar() {
             <div className="lg:hidden bg-white border-t border-green-100 pb-4 space-y-1 animate-slideDown max-h-[calc(100vh-80px)] overflow-y-auto">
               {navLinks.map((link) => (
                 <div key={link.href}>
-                  {link.dropdown ? (
-                    <div>
-                      <button
-                        onClick={() => setOpenDropdown(openDropdown === link.dropdown ? null : link.dropdown!)}
-                        className="w-full text-left px-4 py-3 text-green-700 hover:bg-green-50 rounded-lg transition-all duration-300 font-semibold text-sm active:scale-95 min-h-12 flex items-center justify-between"
-                      >
-                        {link.label}
-                        <FaChevronDown size={14} className={`transition-transform duration-300 ${openDropdown === link.dropdown ? 'rotate-180' : ''}`} />
-                      </button>
-                      {openDropdown === link.dropdown && link.items && (
-                        <div className="bg-green-50 space-y-1 px-4 py-2">
-                          {link.items.map((item, idx) => (
-                            <Link
-                              key={idx}
-                              href={typeof item === 'string' ? link.href : item.href}
-                              onClick={() => {
-                                setOpenDropdown(null);
-                                setIsOpen(false);
-                              }}
-                              className="block px-3 py-2 text-green-600 hover:bg-green-100 rounded transition-colors duration-200 text-sm font-medium"
-                            >
-                              {typeof item === 'string' ? item : item.label}
-                            </Link>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  ) : (
                     <Link
                       href={link.href}
                       className="block px-4 py-3 text-green-700 hover:bg-green-50 rounded-lg transition-all duration-300 font-semibold text-sm active:scale-95 min-h-12 flex items-center"
@@ -161,7 +94,6 @@ export default function Navbar() {
                     >
                       {link.label}
                     </Link>
-                  )}
                 </div>
               ))}
               <div className="border-t border-green-200 pt-3 mt-3 space-y-2 px-4">

@@ -15,6 +15,10 @@
     <changefreq>weekly</changefreq>
   </url>
   <url>
+    <loc>https://agroudankisanpragati.com/ai-assistant/</loc>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
     <loc>https://agroudankisanpragati.com/weather/</loc>
     <changefreq>daily</changefreq>
   </url>
@@ -27,7 +31,11 @@
     <changefreq>weekly</changefreq>
   </url>
   <url>
-    <loc>https://agroudankisanpragati.com/dashboard/</loc>
+    <loc>https://agroudankisanpragati.com/dashboard/farmer/</loc>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://agroudankisanpragati.com/dashboard/shopkeeper/</loc>
     <changefreq>weekly</changefreq>
   </url>
   <url>
