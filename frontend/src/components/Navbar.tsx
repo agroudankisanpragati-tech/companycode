@@ -28,8 +28,8 @@ export default function Navbar() {
   return (
     <nav className="sticky top-0 z-50 border-b border-emerald-100 bg-white/90 backdrop-blur-xl shadow-[0_10px_30px_rgba(16,185,129,0.08)] w-full">
       <div className="section-container">
-        <div className="flex items-center justify-between gap-4 py-3 md:py-4">
-          <Link href="/" className="group flex items-center gap-3 flex-shrink-0">
+        <div className="flex items-center justify-between gap-3 py-3 md:py-4">
+          <Link href="/" aria-label="Agroudan Kisan Pragati home" className="group flex items-center flex-shrink-0">
             <div className="relative overflow-hidden rounded-2xl ring-1 ring-emerald-100 bg-gradient-to-br from-emerald-50 to-white p-1.5 shadow-sm transition-transform duration-300 group-hover:-translate-y-0.5">
               <Image
                 src="/logo.png"
@@ -39,14 +39,10 @@ export default function Navbar() {
                 className="rounded-xl"
               />
             </div>
-            <div className="hidden sm:block leading-tight">
-              <div className="text-sm font-extrabold tracking-tight text-slate-900">Agroudan Kisan Pragati</div>
-              <div className="text-xs font-medium text-emerald-700">AI farming & crop advisory</div>
-            </div>
           </Link>
 
           <div className="hidden xl:flex flex-1 items-center justify-center">
-            <div className="inline-flex flex-wrap items-center justify-center gap-1.5 rounded-full border border-emerald-100 bg-gradient-to-b from-white to-emerald-50/70 p-1.5 shadow-sm">
+            <div className="inline-flex max-w-full flex-nowrap items-center justify-center gap-1 rounded-full border border-emerald-100 bg-gradient-to-b from-white to-emerald-50/70 p-1.5 shadow-sm overflow-x-auto">
               {navLinks.map((link) => {
                 const active = isActive(link.href);
                 return (
@@ -54,7 +50,7 @@ export default function Navbar() {
                     key={link.href}
                     href={link.href}
                     aria-current={active ? 'page' : undefined}
-                    className={`rounded-full px-4 py-2 text-sm font-semibold transition-all duration-200 ${
+                    className={`whitespace-nowrap rounded-full px-3.5 py-2 text-sm font-semibold transition-all duration-200 ${
                       active
                         ? 'bg-emerald-600 text-white shadow-md shadow-emerald-200'
                         : 'text-slate-700 hover:bg-white hover:text-emerald-700'
