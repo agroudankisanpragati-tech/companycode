@@ -21,7 +21,7 @@ const schemes_1 = __importDefault(require("./routes/schemes"));
 const shops_1 = __importDefault(require("./routes/shops"));
 const rewards_1 = __importDefault(require("./routes/rewards"));
 const bootstrapAdmin_1 = require("./utils/bootstrapAdmin");
-dotenv_1.default.config();
+dotenv_1.default.config({ override: true });
 const app = (0, express_1.default)();
 const PORT = process.env.PORT || 5000;
 const uploadsDir = path_1.default.join(process.cwd(), 'uploads');

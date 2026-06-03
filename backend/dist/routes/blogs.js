@@ -7,11 +7,20 @@ const express_1 = __importDefault(require("express"));
 const fs_1 = __importDefault(require("fs"));
 const multer_1 = __importDefault(require("multer"));
 const path_1 = __importDefault(require("path"));
+// require to avoid missing type declarations in this project setup
+const cloudinary = require('cloudinary').v2;
+const streamifier = require('streamifier');
 const BlogPost_1 = require("../models/BlogPost");
 const auth_1 = require("../middleware/auth");
 const router = express_1.default.Router();
 const uploadsDir = path_1.default.join(process.cwd(), 'uploads');
-const storage = multer_1.default.diskStorage({
+const useCloud = !!process.env.CLOUDINARY_URL;
+if (useCloud) {
+    cloudinary.config({
+        secure: true,
+    });
+}
+const diskStorage = multer_1.default.diskStorage({
     destination: (_req, _file, callback) => {
         callback(null, uploadsDir);
     },
@@ -24,8 +33,9 @@ const storage = multer_1.default.diskStorage({
         callback(null, `${Date.now()}-${safeName}`);
     },
 });
+const memoryStorage = multer_1.default.memoryStorage();
 const upload = (0, multer_1.default)({
-    storage,
+    storage: useCloud ? memoryStorage : diskStorage,
     limits: {
         fileSize: 20 * 1024 * 1024,
     },
@@ -37,7 +47,13 @@ const upload = (0, multer_1.default)({
         callback(new Error('Only image files are allowed'));
     },
 });
-const buildMediaUrl = (fileName) => `/uploads/${fileName}`;
+const buildMediaUrl = (fileNameOrUrl) => {
+    if (!fileNameOrUrl)
+        return '';
+    if (useCloud)
+        return fileNameOrUrl; // already a full URL from Cloudinary
+    return `/uploads/${fileNameOrUrl}`;
+};
 const buildSlug = (rawTitle) => rawTitle
     .toLowerCase()
     .trim()
@@ -66,6 +82,40 @@ const sanitizeTags = (tags) => {
         .map((tag) => tag.trim().toLowerCase())
         .filter(Boolean)
         .slice(0, 8);
+};
+const convertEditorJsToHtml = (data) => {
+    if (!data || !Array.isArray(data.blocks))
+        return '';
+    const escapeHtml = (str) => String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    return data.blocks
+        .map((block) => {
+        const t = block.type;
+        const d = block.data || {};
+        switch (t) {
+            case 'paragraph':
+                return `<p>${d.text ? d.text : ''}</p>`;
+            case 'header':
+                const level = d.level && [1, 2, 3, 4].includes(d.level) ? d.level : 2;
+                return `<h${level}>${d.text ? d.text : ''}</h${level}>`;
+            case 'list':
+                if (Array.isArray(d.items)) {
+                    if (d.style === 'ordered') {
+                        return `<ol>${d.items.map((it) => `<li>${it}</li>`).join('')}</ol>`;
+                    }
+                    return `<ul>${d.items.map((it) => `<li>${it}</li>`).join('')}</ul>`;
+                }
+                return '';
+            case 'quote':
+                return `<blockquote><p>${d.text || ''}</p><footer>${d.caption || ''}</footer></blockquote>`;
+            case 'image':
+                return `<figure><img src="${d.file?.url || d.url || ''}" alt="${escapeHtml(d.caption || '')}" /><figcaption>${escapeHtml(d.caption || '')}</figcaption></figure>`;
+            case 'embed':
+                return d.embed ? d.embed : (d.html ? d.html : '');
+            default:
+                return '';
+        }
+    })
+        .join('\n');
 };
 router.get('/', async (req, res) => {
     try {
@@ -107,24 +157,66 @@ router.get('/admin/all', auth_1.authenticate, auth_1.requireAdmin, async (_req, 
         return res.status(500).json({ error: 'Failed to fetch admin blog posts' });
     }
 });
+router.get('/admin/:id', auth_1.authenticate, auth_1.requireAdmin, async (req, res) => {
+    try {
+        const post = await BlogPost_1.BlogPost.findById(req.params.id).populate('authorId', 'name').lean();
+        if (!post) {
+            return res.status(404).json({ error: 'Blog post not found' });
+        }
+        return res.json({
+            success: true,
+            data: {
+                ...post,
+                authorName: post.authorId?.name || 'Admin',
+            },
+        });
+    }
+    catch (error) {
+        return res.status(500).json({ error: 'Failed to fetch blog post' });
+    }
+});
 router.post('/admin/upload-cover', auth_1.authenticate, auth_1.requireAdmin, upload.single('file'), async (req, res) => {
     try {
         const file = req.file;
         if (!file) {
             return res.status(400).json({ error: 'Cover image file is required' });
         }
+        if (useCloud && file.buffer) {
+            const result = await new Promise((resolve, reject) => {
+                const uploadStream = cloudinary.uploader.upload_stream({ folder: 'kisan-unnati/blogs' }, (err, resCloud) => {
+                    if (err)
+                        return reject(err);
+                    resolve(resCloud);
+                });
+                streamifier.createReadStream(file.buffer).pipe(uploadStream);
+            });
+            return res.status(201).json({
+                success: true,
+                data: {
+                    coverImage: result.secure_url,
+                    fileName: path_1.default.basename(result.secure_url),
+                    mimeType: file.mimetype,
+                },
+            });
+        }
+        // Fallback to disk storage handling
+        if (!fs_1.default.existsSync(uploadsDir)) {
+            fs_1.default.mkdirSync(uploadsDir, { recursive: true });
+        }
+        // multer with diskStorage will have saved the file to disk and provided filename
+        const filename = file.filename || file.originalname;
         return res.status(201).json({
             success: true,
             data: {
-                coverImage: buildMediaUrl(file.filename),
-                fileName: file.filename,
+                coverImage: buildMediaUrl(filename),
+                fileName: filename,
                 mimeType: file.mimetype,
             },
         });
     }
     catch (error) {
-        if (req.file) {
-            const filePath = path_1.default.join(uploadsDir, req.file.filename);
+        if (req.file && !useCloud) {
+            const filePath = path_1.default.join(uploadsDir, req.file.filename || req.file.originalname);
             if (fs_1.default.existsSync(filePath)) {
                 fs_1.default.unlinkSync(filePath);
             }
@@ -143,10 +235,24 @@ router.post('/admin', auth_1.authenticate, auth_1.requireAdmin, async (req, res)
         }
         const slug = await generateUniqueSlug(title);
         const now = new Date();
+        let contentHtml = '';
+        let contentJson = undefined;
+        if (content) {
+            const trimmed = content.trim();
+            try {
+                const parsed = JSON.parse(trimmed);
+                contentJson = JSON.stringify(parsed);
+                contentHtml = convertEditorJsToHtml(parsed) || '';
+            }
+            catch (e) {
+                contentHtml = trimmed;
+            }
+        }
         const created = await BlogPost_1.BlogPost.create({
             title: title.trim(),
             excerpt: excerpt.trim(),
-            content: content.trim(),
+            content: contentHtml,
+            contentJson: contentJson,
             coverImage: coverImage?.trim(),
             tags: sanitizeTags(tags),
             status: status || 'draft',
@@ -173,8 +279,17 @@ router.patch('/admin/:id', auth_1.authenticate, auth_1.requireAdmin, async (req,
         }
         if (excerpt?.trim())
             existing.excerpt = excerpt.trim();
-        if (content?.trim())
-            existing.content = content.trim();
+        if (content?.trim()) {
+            const trimmed = content.trim();
+            try {
+                const parsed = JSON.parse(trimmed);
+                existing.contentJson = JSON.stringify(parsed);
+                existing.content = convertEditorJsToHtml(parsed) || '';
+            }
+            catch (e) {
+                existing.content = trimmed;
+            }
+        }
         if (typeof coverImage === 'string')
             existing.coverImage = coverImage.trim() || undefined;
         if (Array.isArray(tags))

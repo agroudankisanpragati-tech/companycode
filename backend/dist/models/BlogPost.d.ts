@@ -5,6 +5,7 @@ export interface IBlogPost extends Document {
     slug: string;
     excerpt: string;
     content: string;
+    contentJson?: string;
     coverImage?: string;
     tags: string[];
     status: BlogPostStatus;

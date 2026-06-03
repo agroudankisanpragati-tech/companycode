@@ -40,6 +40,7 @@ const blogPostSchema = new mongoose_1.Schema({
     slug: { type: String, required: true, unique: true, trim: true, lowercase: true },
     excerpt: { type: String, required: true, trim: true, maxlength: 320 },
     content: { type: String, required: true, trim: true },
+    contentJson: { type: String },
     coverImage: { type: String, trim: true },
     tags: [{ type: String, trim: true, lowercase: true }],
     status: { type: String, enum: ['draft', 'published'], default: 'draft' },
