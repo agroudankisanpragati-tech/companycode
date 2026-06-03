@@ -2,20 +2,20 @@ SEO & Search Console — quick steps
 
 1) Verify your site in Google Search Console
 - Preferred: Add a *Domain* property (covers all subdomains) and verify via DNS TXT record.
-- Or: Add a *URL prefix* property `https://www.agroudan.in/` and verify via one of: HTML file upload, meta tag, Google Analytics, or Google Tag Manager.
+- Or: Add a *URL prefix* property `https://agroudankisanpragati.com/` and verify via one of: HTML file upload, meta tag, Google Analytics, or Google Tag Manager.
 - Example meta tag (paste inside the `<head>` of your layout):
 
   <meta name="google-site-verification" content="YOUR_VERIFICATION_TOKEN" />
 
 2) Submit your sitemap
-- Ensure `https://www.agroudan.in/sitemap.xml` is publicly reachable (we added `/sitemap.xml`).
+- Ensure `https://agroudankisanpragati.com/sitemap.xml` is publicly reachable (we added `/sitemap.xml`).
 - In GSC: Select property → Sitemaps → enter `sitemap.xml` → Submit.
 - You can ping Google after uploading a sitemap:
 
-  curl "https://www.google.com/ping?sitemap=https://www.agroudan.in/sitemap.xml"
+  curl "https://www.google.com/ping?sitemap=https://agroudankisanpragati.com/sitemap.xml"
 
 3) Verify `robots.txt`
-- Confirm `https://www.agroudan.in/robots.txt` is accessible and not blocking important pages.
+- Confirm `https://agroudankisanpragati.com/robots.txt` is accessible and not blocking important pages.
 - We added `robots.txt` pointing to the sitemap.
 
 4) Request indexing for important pages

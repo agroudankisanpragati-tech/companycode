@@ -24,13 +24,13 @@ export default function RootLayout({
     <html lang="en">
       <head>
         <meta name="description" content="Get expert crop guidance, weather insights, market prices, and smart farming solutions with Agroudan Kisan pragati. Empowering farmers with AI." />
-        <link rel="canonical" href="https://www.agroudan.in/" />
+        <link rel="canonical" href="https://agroudankisanpragati.com/" />
 
         {/* Open Graph */}
         <meta property="og:site_name" content="Agroudan Kisan pragati LLP" />
         <meta property="og:title" content="Agroudan Kisan pragati LLP | AI-Powered Smart Farming & Crop Advisory" />
         <meta property="og:description" content="Get expert crop guidance, weather insights, market prices, and smart farming solutions with Agroudan Kisan pragati. Empowering farmers with AI." />
-        <meta property="og:url" content="https://www.agroudan.in/" />
+        <meta property="og:url" content="https://agroudankisanpragati.com/" />
         <meta property="og:type" content="website" />
         <meta property="og:image" content="/images/logo-og.svg" />
 
@@ -53,10 +53,10 @@ export default function RootLayout({
   "@graph": [
     {
       "@type": "Organization",
-      "@id": "https://www.agroudan.in/#org",
+      "@id": "https://agroudankisanpragati.com/#org",
       "name": "Agroudan Kisan pragati LLP",
-      "url": "https://www.agroudan.in/",
-      "logo": "https://www.agroudan.in/images/logo-192x192.png",
+      "url": "https://agroudankisanpragati.com/",
+      "logo": "https://agroudankisanpragati.com/images/logo-192x192.png",
       "sameAs": [
         "https://www.facebook.com/yourpage",
         "https://twitter.com/yourhandle",
@@ -72,24 +72,24 @@ export default function RootLayout({
     },
     {
       "@type": "WebSite",
-      "@id": "https://www.agroudan.in/#website",
-      "url": "https://www.agroudan.in/",
+      "@id": "https://agroudankisanpragati.com/#website",
+      "url": "https://agroudankisanpragati.com/",
       "name": "Agroudan Kisan pragati LLP | AI-Powered Smart Farming & Crop Advisory",
       "description": "Get expert crop guidance, weather insights, market prices, and smart farming solutions with Agroudan Kisan pragati. Empowering farmers with AI.",
-      "publisher": {"@id": "https://www.agroudan.in/#org"},
+      "publisher": {"@id": "https://agroudankisanpragati.com/#org"},
       "potentialAction": {
         "@type": "SearchAction",
-        "target": "https://www.agroudan.in/search?q={search_term_string}",
+        "target": "https://agroudankisanpragati.com/search?q={search_term_string}",
         "query-input": "required name=search_term_string"
       }
     },
     {
       "@type": "BreadcrumbList",
       "itemListElement": [
-        {"@type":"ListItem","position":1,"name":"Home","item":"https://www.agroudan.in/"},
-        {"@type":"ListItem","position":2,"name":"Crop Advisory","item":"https://www.agroudan.in/crop-advisory/"},
-        {"@type":"ListItem","position":3,"name":"Weather Forecast","item":"https://www.agroudan.in/weather/"},
-        {"@type":"ListItem","position":4,"name":"Market Prices","item":"https://www.agroudan.in/market-prices/"}
+        {"@type":"ListItem","position":1,"name":"Home","item":"https://agroudankisanpragati.com/"},
+        {"@type":"ListItem","position":2,"name":"Crop Advisory","item":"https://agroudankisanpragati.com/crop-advisory/"},
+        {"@type":"ListItem","position":3,"name":"Weather Forecast","item":"https://agroudankisanpragati.com/weather/"},
+        {"@type":"ListItem","position":4,"name":"Market Prices","item":"https://agroudankisanpragati.com/market-prices/"}
       ]
     }
   ]
