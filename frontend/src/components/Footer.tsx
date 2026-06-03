@@ -8,12 +8,14 @@ export default function Footer() {
 
   const sections = [
     {
-      title: 'Explore',
+      title: 'Popular',
       links: [
-        { label: 'Gallery', href: '/gallery' },
-        { label: 'Blog', href: '/blog' },
-        { label: 'Schemes', href: '/schemes' },
-        { label: 'Weather', href: '/weather' },
+        { label: 'Crop Advisory', href: '/crop-advisory' },
+        { label: 'Weather Forecast', href: '/weather' },
+        { label: 'Market Prices', href: '/mandi-prices' },
+        { label: 'Disease Detection', href: '/disease-detection' },
+        { label: 'Farmer Dashboard', href: '/dashboard/farmer' },
+        { label: 'Contact Us', href: '/contact' },
       ]
     },
     {
@@ -21,8 +23,10 @@ export default function Footer() {
       links: [
         { label: 'About', href: '/about' },
         { label: 'Careers', href: '/careers' },
-        { label: 'Contact', href: '/contact' },
-        { label: 'Shop', href: '/shop' },
+        { label: 'Gallery', href: '/gallery' },
+        { label: 'Blog', href: '/blog' },
+        { label: 'Schemes', href: '/schemes' },
+        { label: 'Shops', href: '/shops' },
       ]
     },
   ];
