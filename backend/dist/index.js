@@ -20,6 +20,14 @@ const gallery_1 = __importDefault(require("./routes/gallery"));
 const schemes_1 = __importDefault(require("./routes/schemes"));
 const shops_1 = __importDefault(require("./routes/shops"));
 const rewards_1 = __importDefault(require("./routes/rewards"));
+const cropRecommendation_1 = __importDefault(require("./routes/cropRecommendation"));
+const myCrops_1 = __importDefault(require("./routes/myCrops"));
+const soil_1 = __importDefault(require("./routes/soil"));
+const soilMoisture_1 = __importDefault(require("./routes/soilMoisture"));
+const aiFos_1 = __importDefault(require("./routes/aiFos"));
+const aiAssistant_1 = __importDefault(require("./routes/aiAssistant"));
+const settings_1 = __importDefault(require("./routes/settings"));
+const farmerProfile_1 = __importDefault(require("./routes/farmerProfile"));
 const bootstrapAdmin_1 = require("./utils/bootstrapAdmin");
 dotenv_1.default.config({ override: true });
 const app = (0, express_1.default)();
@@ -72,6 +80,14 @@ app.use('/api/gallery', gallery_1.default);
 app.use('/api/schemes', schemes_1.default);
 app.use('/api/shops', shops_1.default);
 app.use('/api/rewards', rewards_1.default);
+app.use('/api/crop-recommendation', cropRecommendation_1.default);
+app.use('/api/my-crops', myCrops_1.default);
+app.use('/api/soil', soil_1.default);
+app.use('/api/soil-moisture', soilMoisture_1.default);
+app.use('/api/ai-fos', aiFos_1.default);
+app.use('/api/ai-assistant', aiAssistant_1.default);
+app.use('/api/settings', settings_1.default);
+app.use('/api/farmer-profile', farmerProfile_1.default);
 // Health Check
 app.get('/api/health', (req, res) => {
     res.json({ status: 'OK', message: 'Kisan Unnati Backend is running' });
@@ -86,8 +102,17 @@ app.use((err, req, res, next) => {
 const startServer = async () => {
     await (0, database_1.connectDB)();
     await (0, bootstrapAdmin_1.ensureBootstrapAdmin)();
-    app.listen(PORT, () => {
+    const server = app.listen(PORT, () => {
         console.log(`🌾 Kisan Unnati Backend running on port ${PORT}`);
+    });
+    server.on('error', (err) => {
+        if (err.code === 'EADDRINUSE') {
+            console.error(`❌ Port ${PORT} is already in use. Stop the existing process and restart.`);
+            process.exit(1);
+        }
+        else {
+            throw err;
+        }
     });
 };
 startServer();

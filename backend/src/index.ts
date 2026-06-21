@@ -15,6 +15,14 @@ import galleryRoutes from './routes/gallery';
 import schemeRoutes from './routes/schemes';
 import shopRoutes from './routes/shops';
 import rewardsRoutes from './routes/rewards';
+import cropRecommendationRoutes from './routes/cropRecommendation';
+import myCropsRoutes from './routes/myCrops';
+import soilRoutes from './routes/soil';
+import soilMoistureRoutes from './routes/soilMoisture';
+import aiFosRoutes from './routes/aiFos';
+import aiAssistantRoutes from './routes/aiAssistant';
+import settingsRoutes from './routes/settings';
+import farmerProfileRoutes from './routes/farmerProfile';
 import { ensureBootstrapAdmin } from './utils/bootstrapAdmin';
 
 dotenv.config({ override: true });
@@ -78,6 +86,14 @@ app.use('/api/gallery', galleryRoutes);
 app.use('/api/schemes', schemeRoutes);
 app.use('/api/shops', shopRoutes);
 app.use('/api/rewards', rewardsRoutes);
+app.use('/api/crop-recommendation', cropRecommendationRoutes);
+app.use('/api/my-crops', myCropsRoutes);
+app.use('/api/soil', soilRoutes);
+app.use('/api/soil-moisture', soilMoistureRoutes);
+app.use('/api/ai-fos', aiFosRoutes);
+app.use('/api/ai-assistant', aiAssistantRoutes);
+app.use('/api/settings', settingsRoutes);
+app.use('/api/farmer-profile', farmerProfileRoutes);
 
 // Health Check
 app.get('/api/health', (req, res) => {
@@ -96,8 +112,17 @@ const startServer = async () => {
   await connectDB();
   await ensureBootstrapAdmin();
 
-  app.listen(PORT, () => {
+  const server = app.listen(PORT, () => {
     console.log(`🌾 Kisan Unnati Backend running on port ${PORT}`);
+  });
+
+  server.on('error', (err: NodeJS.ErrnoException) => {
+    if (err.code === 'EADDRINUSE') {
+      console.error(`❌ Port ${PORT} is already in use. Stop the existing process and restart.`);
+      process.exit(1);
+    } else {
+      throw err;
+    }
   });
 };
 

@@ -35,7 +35,7 @@ export default function FarmerEditProfile() {
         photo: '',
     });
 
-    const apiBase = process.env.NEXT_PUBLIC_API_URL || 'https://api.agroudankisanpragati.com/api';
+    const apiBase = '/api';
 
     useEffect(() => {
         // load local fallback profile if any

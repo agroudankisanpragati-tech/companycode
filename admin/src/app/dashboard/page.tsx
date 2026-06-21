@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { FaBlog, FaDatabase, FaLeaf, FaNewspaper, FaSyncAlt, FaUsers, FaWarehouse, FaPhotoVideo } from 'react-icons/fa';
+import { FaBlog, FaDatabase, FaLeaf, FaNewspaper, FaRobot, FaSyncAlt, FaUsers, FaWarehouse, FaPhotoVideo } from 'react-icons/fa';
 import { useAdmin } from '@/components/admin/AdminProvider';
 import { StatCard, TableShell } from '@/components/admin/AdminUi';
 
@@ -24,11 +24,11 @@ export default function AdminDashboardPage() {
       accent: 'from-emerald-500 to-teal-500',
     },
     {
-      href: '/recommendations',
-      title: 'Recommendations',
-      value: 0,
-      icon: FaLeaf,
-      accent: 'from-amber-400 to-orange-500',
+      href: '/ai-analytics',
+      title: 'AI Analytics',
+      value: overview?.totals?.cropRecommendations ?? 0,
+      icon: FaRobot,
+      accent: 'from-purple-500 to-violet-500',
     },
     {
       href: '/listings',

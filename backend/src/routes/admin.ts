@@ -4,6 +4,9 @@ import { GovtScheme } from '../models/GovtScheme';
 import { User } from '../models/User';
 import { CropRecommendation } from '../models/CropRecommendation';
 import { MarketplaceListing } from '../models/Marketplace';
+import { AIRecommendation } from '../models/AIRecommendation';
+import { FarmerCropRequest } from '../models/FarmerCropRequest';
+import { CropKnowledgeBase } from '../models/CropKnowledgeBase';
 import { AuthenticatedRequest, authenticate, requireAdmin } from '../middleware/auth';
 
 const router = express.Router();
@@ -211,17 +214,76 @@ router.patch('/listings/:id/status', async (req: AuthenticatedRequest, res: Resp
 router.delete('/listings/:id', async (req: AuthenticatedRequest, res: Response) => {
   try {
     const deletedListing = await MarketplaceListing.findByIdAndDelete(req.params.id);
+    if (!deletedListing) return res.status(404).json({ error: 'Listing not found' });
+    res.json({ success: true, message: 'Listing deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to delete listing' });
+  }
+});
 
-    if (!deletedListing) {
-      return res.status(404).json({ error: 'Listing not found' });
-    }
+// ─── AI Crop Recommendation Admin Routes ─────────────────────────────────────
+
+router.get('/ai-analytics', async (_req: AuthenticatedRequest, res: Response) => {
+  try {
+    const [totalRequests, totalAICalls, totalCached, feedbackHelpful, feedbackNotHelpful] = await Promise.all([
+      FarmerCropRequest.countDocuments(),
+      AIRecommendation.countDocuments({ source: 'openai' }),
+      AIRecommendation.countDocuments({ source: 'database' }),
+      AIRecommendation.countDocuments({ feedback: 'helpful' }),
+      AIRecommendation.countDocuments({ feedback: 'not_helpful' }),
+    ]);
+
+    // Most recommended crops
+    const cropStats = await AIRecommendation.aggregate([
+      { $unwind: '$recommendations' },
+      { $group: { _id: '$recommendations.cropName', count: { $sum: 1 }, category: { $first: '$recommendations.cropCategory' } } },
+      { $sort: { count: -1 } },
+      { $limit: 10 },
+    ]);
+
+    // Category breakdown
+    const categoryStats = await AIRecommendation.aggregate([
+      { $unwind: '$recommendations' },
+      { $group: { _id: '$recommendations.cropCategory', count: { $sum: 1 } } },
+      { $sort: { count: -1 } },
+    ]);
+
+    // Cost savings: each cached result saved ~1 API call at avg $0.01
+    const estimatedSavings = totalCached * 0.01;
 
     res.json({
       success: true,
-      message: 'Listing deleted successfully',
+      data: {
+        totalFarmerRequests: totalRequests,
+        totalAICalls,
+        totalCachedRecommendations: totalCached,
+        estimatedApiCostSavings: `$${estimatedSavings.toFixed(2)}`,
+        feedback: { helpful: feedbackHelpful, notHelpful: feedbackNotHelpful },
+        mostRecommendedCrops: cropStats.map((c) => ({ cropName: c._id, count: c.count, category: c.category })),
+        categoryAnalytics: categoryStats.map((c) => ({ category: c._id, count: c.count })),
+      },
     });
   } catch (error) {
-    res.status(500).json({ error: 'Failed to delete listing' });
+    res.status(500).json({ error: 'Failed to load AI analytics' });
+  }
+});
+
+router.get('/ai-recommendations', async (_req: AuthenticatedRequest, res: Response) => {
+  try {
+    const recommendations = await AIRecommendation.find().sort({ createdAt: -1 }).limit(100);
+    res.json({ success: true, data: recommendations });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch AI recommendations' });
+  }
+});
+
+router.delete('/ai-recommendations/:id', async (req: AuthenticatedRequest, res: Response) => {
+  try {
+    const deleted = await AIRecommendation.findByIdAndDelete(req.params.id);
+    if (!deleted) return res.status(404).json({ error: 'Not found' });
+    res.json({ success: true, message: 'Deleted' });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to delete' });
   }
 });
 

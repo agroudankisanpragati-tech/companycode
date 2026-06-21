@@ -9,6 +9,8 @@ const GovtScheme_1 = require("../models/GovtScheme");
 const User_1 = require("../models/User");
 const CropRecommendation_1 = require("../models/CropRecommendation");
 const Marketplace_1 = require("../models/Marketplace");
+const AIRecommendation_1 = require("../models/AIRecommendation");
+const FarmerCropRequest_1 = require("../models/FarmerCropRequest");
 const auth_1 = require("../middleware/auth");
 const router = express_1.default.Router();
 router.use(auth_1.authenticate, auth_1.requireAdmin);
@@ -170,16 +172,74 @@ router.patch('/listings/:id/status', async (req, res) => {
 router.delete('/listings/:id', async (req, res) => {
     try {
         const deletedListing = await Marketplace_1.MarketplaceListing.findByIdAndDelete(req.params.id);
-        if (!deletedListing) {
+        if (!deletedListing)
             return res.status(404).json({ error: 'Listing not found' });
-        }
-        res.json({
-            success: true,
-            message: 'Listing deleted successfully',
-        });
+        res.json({ success: true, message: 'Listing deleted successfully' });
     }
     catch (error) {
         res.status(500).json({ error: 'Failed to delete listing' });
+    }
+});
+// ─── AI Crop Recommendation Admin Routes ─────────────────────────────────────
+router.get('/ai-analytics', async (_req, res) => {
+    try {
+        const [totalRequests, totalAICalls, totalCached, feedbackHelpful, feedbackNotHelpful] = await Promise.all([
+            FarmerCropRequest_1.FarmerCropRequest.countDocuments(),
+            AIRecommendation_1.AIRecommendation.countDocuments({ source: 'openai' }),
+            AIRecommendation_1.AIRecommendation.countDocuments({ source: 'database' }),
+            AIRecommendation_1.AIRecommendation.countDocuments({ feedback: 'helpful' }),
+            AIRecommendation_1.AIRecommendation.countDocuments({ feedback: 'not_helpful' }),
+        ]);
+        // Most recommended crops
+        const cropStats = await AIRecommendation_1.AIRecommendation.aggregate([
+            { $unwind: '$recommendations' },
+            { $group: { _id: '$recommendations.cropName', count: { $sum: 1 }, category: { $first: '$recommendations.cropCategory' } } },
+            { $sort: { count: -1 } },
+            { $limit: 10 },
+        ]);
+        // Category breakdown
+        const categoryStats = await AIRecommendation_1.AIRecommendation.aggregate([
+            { $unwind: '$recommendations' },
+            { $group: { _id: '$recommendations.cropCategory', count: { $sum: 1 } } },
+            { $sort: { count: -1 } },
+        ]);
+        // Cost savings: each cached result saved ~1 API call at avg $0.01
+        const estimatedSavings = totalCached * 0.01;
+        res.json({
+            success: true,
+            data: {
+                totalFarmerRequests: totalRequests,
+                totalAICalls,
+                totalCachedRecommendations: totalCached,
+                estimatedApiCostSavings: `$${estimatedSavings.toFixed(2)}`,
+                feedback: { helpful: feedbackHelpful, notHelpful: feedbackNotHelpful },
+                mostRecommendedCrops: cropStats.map((c) => ({ cropName: c._id, count: c.count, category: c.category })),
+                categoryAnalytics: categoryStats.map((c) => ({ category: c._id, count: c.count })),
+            },
+        });
+    }
+    catch (error) {
+        res.status(500).json({ error: 'Failed to load AI analytics' });
+    }
+});
+router.get('/ai-recommendations', async (_req, res) => {
+    try {
+        const recommendations = await AIRecommendation_1.AIRecommendation.find().sort({ createdAt: -1 }).limit(100);
+        res.json({ success: true, data: recommendations });
+    }
+    catch (error) {
+        res.status(500).json({ error: 'Failed to fetch AI recommendations' });
+    }
+});
+router.delete('/ai-recommendations/:id', async (req, res) => {
+    try {
+        const deleted = await AIRecommendation_1.AIRecommendation.findByIdAndDelete(req.params.id);
+        if (!deleted)
+            return res.status(404).json({ error: 'Not found' });
+        res.json({ success: true, message: 'Deleted' });
+    }
+    catch (error) {
+        res.status(500).json({ error: 'Failed to delete' });
     }
 });
 exports.default = router;

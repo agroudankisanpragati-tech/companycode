@@ -11,7 +11,7 @@ export default function Navbar() {
   const pathname = usePathname();
   const navLinks = [
     { href: '/', label: 'Home' },
-    { href: '/crop-advisory', label: 'Crop Advisory' },
+    { href: '/crop-recommendation', label: '🌾 AI Crop Advisor' },
     { href: '/weather', label: 'Weather Forecast' },
     { href: '/mandi-prices', label: 'Market Prices' },
     { href: '/disease-detection', label: 'Disease Detection' },

@@ -5,7 +5,45 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const User_1 = require("../models/User");
+const auth_1 = require("../middleware/auth");
+const FarmerMarketPreference_1 = require("../models/FarmerMarketPreference");
+const SoilMoisture_1 = require("../models/SoilMoisture");
 const router = express_1.default.Router();
+// PUT /api/users/location — Global Location System: single endpoint for all modules
+// Updates User profile + syncs FarmerMarketPreference + invalidates soil moisture cache
+router.put('/location', auth_1.authenticate, async (req, res) => {
+    try {
+        const farmerId = req.user.userId;
+        const { country, state, district, village, latitude, longitude } = req.body;
+        if (!state?.trim() || !district?.trim()) {
+            return res.status(400).json({ success: false, error: 'state and district are required' });
+        }
+        // 1. Save to user profile
+        const locationUpdate = {
+            'location.state': state.trim(),
+            'location.district': district.trim(),
+        };
+        if (country !== undefined)
+            locationUpdate['location.country'] = country.trim();
+        if (village !== undefined)
+            locationUpdate['location.village'] = village.trim();
+        if (latitude !== undefined)
+            locationUpdate['location.coordinates.latitude'] = Number(latitude);
+        if (longitude !== undefined)
+            locationUpdate['location.coordinates.longitude'] = Number(longitude);
+        const updatedUser = await User_1.User.findByIdAndUpdate(farmerId, { $set: locationUpdate }, { new: true }).select('-password');
+        // 2. Sync mandi preference location
+        await FarmerMarketPreference_1.FarmerMarketPreference.findOneAndUpdate({ farmerId }, { $set: { selectedState: state.trim(), selectedDistrict: district.trim() } }, { upsert: true });
+        // 3. Invalidate soil moisture cache so next fetch uses new location
+        await SoilMoisture_1.SoilMoisture.findOneAndUpdate({ farmerId }, { $set: { lastUpdated: new Date(0) } });
+        console.log(`[Location] Updated for farmer ${farmerId}: ${district}, ${state}`);
+        res.json({ success: true, data: updatedUser?.location });
+    }
+    catch (err) {
+        console.error('[Location] update error:', err.message);
+        res.status(500).json({ success: false, error: err.message });
+    }
+});
 // Get user profile
 router.get('/:id', async (req, res) => {
     try {

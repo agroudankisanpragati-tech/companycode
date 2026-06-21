@@ -2,9 +2,11 @@
 import Link from 'next/link';
 import { FaLeaf, FaCloudSun, FaShoppingCart, FaChartLine, FaUser, FaTachometerAlt, FaRobot, FaSeedling, FaMicroscope, FaTags, FaGavel, FaUsers, FaBookOpen, FaGift, FaWallet, FaBell, FaCog, FaMapMarkerAlt } from 'react-icons/fa';
 import { useAuth } from '@/context/AuthContext';
+import { useAIAssistant } from '@/context/AIAssistantContext';
 
 export default function FarmerSidebar({ open, onClose }: { open?: boolean; onClose?: () => void }) {
   const { user } = useAuth();
+  const { toggleAssistant } = useAIAssistant();
 
   return (
     <aside className="w-80 flex-shrink-0">
@@ -43,30 +45,43 @@ export default function FarmerSidebar({ open, onClose }: { open?: boolean; onClo
             <div className="mb-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-emerald-100/75">Features</div>
             <div className="space-y-2">
               {[
-                { title: 'Dashboard', href: '/dashboard/farmer', icon: <FaTachometerAlt /> },
-                { title: 'AI Assistant', href: '/ai-assistant', icon: <FaRobot /> },
-                { title: 'My Crop', href: '/dashboard/farmer/my-crop', icon: <FaSeedling /> },
-                { title: 'Disease Scan', href: '/disease-scan', icon: <FaMicroscope /> },
-                { title: 'Weather', href: '/weather', icon: <FaCloudSun /> },
-                { title: 'Market Price', href: '/market-price', icon: <FaTags /> },
-                { title: 'Marketplace', href: '/shops', icon: <FaShoppingCart /> },
-                { title: 'Soil Health', href: '/soil-health', icon: <FaLeaf /> },
-                { title: 'Government Scheme', href: '/schemes', icon: <FaGavel /> },
-                { title: 'Community', href: '/community', icon: <FaUsers /> },
-                { title: 'Learning Center', href: '/learning', icon: <FaBookOpen /> },
-                { title: 'Notifications', href: '/notifications', icon: <FaBell /> },
-                { title: 'Profile', href: '/dashboard/farmer/profile', icon: <FaUser /> },
-                { title: 'Settings', href: '/settings', icon: <FaCog /> },
+                { title: 'Dashboard', href: '/dashboard/farmer', icon: <FaTachometerAlt />, action: null },
+                { title: 'AI Assistant', href: null, icon: <FaRobot />, action: toggleAssistant },
+                { title: 'AI Crop Advisor', href: '/crop-recommendation', icon: <FaLeaf />, action: null },
+                { title: 'My Crops', href: '/dashboard/farmer/my-crops', icon: <FaSeedling />, action: null },
+                { title: 'Disease Scan', href: '/disease-detection', icon: <FaMicroscope />, action: null },
+                { title: 'Weather', href: '/weather', icon: <FaCloudSun />, action: null },
+                { title: 'Market Price', href: '/dashboard/farmer/market', icon: <FaTags />, action: null },
+                { title: 'Marketplace', href: '/marketplace', icon: <FaShoppingCart />, action: null },
+                { title: 'Soil Health', href: '/dashboard/farmer/soil-health', icon: <FaLeaf />, action: null },
+                { title: 'Government Scheme', href: '/schemes', icon: <FaGavel />, action: null },
+                { title: 'Community', href: '/schemes', icon: <FaUsers />, action: null },
+                { title: 'Learning Center', href: '/blog', icon: <FaBookOpen />, action: null },
+                { title: 'Notifications', href: '/dashboard/farmer/activities', icon: <FaBell />, action: null },
+                { title: 'Profile', href: '/dashboard/farmer/profile', icon: <FaUser />, action: null },
+                { title: 'Settings', href: '/settings', icon: <FaCog />, action: null },
               ].map((f) => (
-                <Link
-                  key={f.title}
-                  href={f.href}
-                  className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm text-emerald-50/95 hover:bg-white/12 transition-colors"
-                >
-                  <span className="text-2xl text-lime-100">{f.icon}</span>
-                  <span className="flex-1">{f.title}</span>
-                  <span className="text-xs text-white/60">›</span>
-                </Link>
+                f.action ? (
+                  <button
+                    key={f.title}
+                    onClick={f.action}
+                    className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm text-emerald-50/95 hover:bg-white/12 transition-colors text-left"
+                  >
+                    <span className="text-2xl text-lime-100">{f.icon}</span>
+                    <span className="flex-1">{f.title}</span>
+                    <span className="text-xs text-white/60">›</span>
+                  </button>
+                ) : (
+                  <Link
+                    key={f.title}
+                    href={f.href!}
+                    className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm text-emerald-50/95 hover:bg-white/12 transition-colors"
+                  >
+                    <span className="text-2xl text-lime-100">{f.icon}</span>
+                    <span className="flex-1">{f.title}</span>
+                    <span className="text-xs text-white/60">›</span>
+                  </Link>
+                )
               ))}
             </div>
           </div>

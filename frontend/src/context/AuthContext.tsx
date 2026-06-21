@@ -55,41 +55,85 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const [role, setRole] = useState<UserRole | null>(null);
     const [isLoading, setIsLoading] = useState(true);
 
-    const syncFromStorage = () => {
+    const restoreSession = async () => {
         const savedUser = localStorage.getItem('user');
         const savedToken = localStorage.getItem('authToken');
 
-        if (savedUser && savedToken) {
-            const parsedUser = JSON.parse(savedUser);
-            const normalizedRole = normalizeRole(parsedUser.role);
-            const normalizedUser = { ...parsedUser, role: normalizedRole };
-            setUser(normalizedUser);
-            setRole(normalizedRole);
-
-            if (normalizedRole !== parsedUser.role) {
-                localStorage.setItem('user', JSON.stringify(normalizedUser));
-            }
-
+        if (!savedUser || !savedToken) {
+            setUser(null);
+            setRole(null);
+            setIsLoading(false);
             return;
         }
 
-        setUser(null);
-        setRole(null);
+        // Restore from storage immediately so UI doesn't flash logout
+        const parsedUser = JSON.parse(savedUser);
+        const normalizedRole = normalizeRole(parsedUser.role);
+        const restoredUser = { ...parsedUser, role: normalizedRole };
+        setUser(restoredUser);
+        setRole(normalizedRole);
+        if (normalizedRole !== parsedUser.role) {
+            localStorage.setItem('user', JSON.stringify(restoredUser));
+        }
+
+        // Validate token in background — only clear if explicitly invalid (401)
+        try {
+            const res = await fetch('/api/auth/me', {
+                headers: { Authorization: `Bearer ${savedToken}` },
+            });
+            if (res.status === 401) {
+                // Token is truly invalid — force logout
+                localStorage.removeItem('user');
+                localStorage.removeItem('authToken');
+                setUser(null);
+                setRole(null);
+            } else if (res.ok) {
+                const data = await res.json();
+                if (data?.data) {
+                    const freshRole = normalizeRole(data.data.role);
+                    const freshUser: User = {
+                        id: data.data._id || data.data.id,
+                        email: data.data.email,
+                        name: data.data.name,
+                        role: freshRole,
+                        phone: data.data.phone,
+                        avatar: data.data.avatar,
+                    };
+                    localStorage.setItem('user', JSON.stringify(freshUser));
+                    setUser(freshUser);
+                    setRole(freshRole);
+                }
+            }
+            // Any other error (network, 5xx) — keep existing session, don't logout
+        } catch {
+            // Network error — keep existing session intact
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     useEffect(() => {
-        syncFromStorage();
-        setIsLoading(false);
+        restoreSession();
 
         const handleAuthSessionChange = () => {
-            syncFromStorage();
+            const savedUser = localStorage.getItem('user');
+            const savedToken = localStorage.getItem('authToken');
+            if (savedUser && savedToken) {
+                const parsedUser = JSON.parse(savedUser);
+                const normalizedRole = normalizeRole(parsedUser.role);
+                setUser({ ...parsedUser, role: normalizedRole });
+                setRole(normalizedRole);
+            } else {
+                setUser(null);
+                setRole(null);
+            }
         };
 
         window.addEventListener('auth-session-changed', handleAuthSessionChange);
         return () => window.removeEventListener('auth-session-changed', handleAuthSessionChange);
     }, []);
 
-    const apiBase = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+    const apiBase = '/api';
 
     const requestEmailOtp = async (email: string) => {
         setIsLoading(true);
@@ -243,6 +287,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         localStorage.removeItem('authToken');
         setUser(null);
         setRole(null);
+        // Market preferences are stored server-side; no local cleanup needed
     };
 
     return (

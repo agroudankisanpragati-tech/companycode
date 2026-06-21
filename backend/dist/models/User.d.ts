@@ -8,8 +8,10 @@ export interface IUser extends Document {
     companyName?: string;
     businessType?: string;
     location: {
+        country: string;
         state: string;
         district: string;
+        village: string;
         coordinates: {
             latitude: number;
             longitude: number;

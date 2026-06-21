@@ -44,11 +44,13 @@ const userSchema = new mongoose_1.Schema({
     companyName: { type: String },
     businessType: { type: String },
     location: {
-        state: { type: String, required: true },
-        district: { type: String, required: true },
+        country: { type: String, default: '' },
+        state: { type: String, default: '' },
+        district: { type: String, default: '' },
+        village: { type: String, default: '' },
         coordinates: {
-            latitude: { type: Number, required: true },
-            longitude: { type: Number, required: true },
+            latitude: { type: Number, default: 0 },
+            longitude: { type: Number, default: 0 },
         },
     },
     soilType: { type: String },

@@ -15,10 +15,7 @@ export type GalleryItem = {
     updatedAt?: string;
 };
 
-const API_ROOT = process.env.NEXT_PUBLIC_API_URL || 'https://api.agroudankisanpragati.com/api';
-// Some uploads are served from the server root `/uploads` (not under `/api`).
-// Derive the API origin by stripping a trailing `/api` segment when present.
-const API_ORIGIN = API_ROOT.replace(/\/api\/?$/i, '');
+const API_ROOT = '/api';
 
 async function parseJsonSafe(response: Response) {
     try {
@@ -28,21 +25,21 @@ async function parseJsonSafe(response: Response) {
     }
 }
 
+// Uploads are served from backend root — resolve absolute URL at runtime
 const resolveMediaUrl = (value: string) => {
     if (value.startsWith('http')) return value;
-    // If the media path already starts with /uploads, serve from the origin (no /api prefix).
-    if (value.startsWith('/uploads')) return `${API_ORIGIN}${value}`;
-    return `${API_ROOT}${value}`;
+    // /uploads/* served from backend port 5000 directly
+    const backendOrigin = process.env.NEXT_PUBLIC_API_URL
+        ? process.env.NEXT_PUBLIC_API_URL.replace(/\/api\/?$/i, '')
+        : 'http://localhost:5000';
+    if (value.startsWith('/uploads')) return `${backendOrigin}${value}`;
+    return `${backendOrigin}/api${value}`;
 };
 
 export async function fetchPublishedGallery() {
     const response = await fetch(`${API_ROOT}/gallery`, { next: { revalidate: 60 } });
     const payload = await parseJsonSafe(response);
-
-    if (!response.ok) {
-        throw new Error(payload?.error || 'Failed to fetch gallery items');
-    }
-
+    if (!response.ok) throw new Error(payload?.error || 'Failed to fetch gallery items');
     return ((payload?.data || []) as GalleryItem[]).map((item) => ({
         ...item,
         mediaUrl: resolveMediaUrl(item.mediaUrl),
