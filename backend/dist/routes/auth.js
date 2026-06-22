@@ -226,6 +226,8 @@ router.post('/login', async (req, res) => {
         if (!isPasswordValid) {
             return res.status(401).json({ error: 'Invalid credentials' });
         }
+        user.lastLogin = new Date();
+        await user.save();
         const token = jsonwebtoken_1.default.sign({ userId: user._id }, process.env.JWT_SECRET || 'secret', {
             expiresIn: '30d',
         });
@@ -317,6 +319,7 @@ router.get('/google/callback', async (req, res) => {
             user.verified = true;
             user.authProvider = 'google';
             user.role = role === 'shopkeeper' ? 'vendor' : 'farmer';
+            user.lastLogin = new Date();
             await user.save();
         }
         const token = jsonwebtoken_1.default.sign({ userId: user._id }, process.env.JWT_SECRET || 'secret', {

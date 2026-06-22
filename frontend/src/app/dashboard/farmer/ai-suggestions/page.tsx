@@ -2,8 +2,9 @@
 
 import Link from 'next/link';
 import { FaRobot } from 'react-icons/fa';
+import ProtectedRoute from '@/components/ProtectedRoute';
 
-export default function AiSuggestionsPage() {
+function AiSuggestionsContent() {
   const suggestions = [
     'Apply nitrogen fertilizer to Block A next week.',
     'Sow short-duration millet variety for upcoming season.',
@@ -34,4 +35,8 @@ export default function AiSuggestionsPage() {
       </div>
     </div>
   );
+}
+
+export default function AiSuggestionsPage() {
+  return <ProtectedRoute><AiSuggestionsContent /></ProtectedRoute>;
 }

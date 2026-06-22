@@ -5,6 +5,10 @@ function authHeaders(): Record<string, string> {
     : { 'Content-Type': 'application/json' };
 }
 
+function authToken(): string {
+  return typeof window !== 'undefined' ? localStorage.getItem('authToken') || '' : '';
+}
+
 export interface LandParcel {
   _id?: string;
   name: string;
@@ -15,18 +19,35 @@ export interface LandParcel {
   latitude: number;
   longitude: number;
   ownershipType: 'owned' | 'leased' | 'shared';
+  khasraNumber?: string;
+  soilHealthStatus?: string;
 }
 
 export interface CropRecord {
   _id?: string;
   cropName: string;
   season: string;
+  year?: number;
   sowingDate: string;
   harvestDate: string;
   yieldKg: number;
   marketPrice: number;
   profit: number;
+  production?: number;
+  remarks?: string;
   notes?: string;
+}
+
+export interface FarmDetail {
+  _id?: string;
+  farmName: string;
+  farmSize: number;
+  farmSizeUnit: 'acres' | 'hectares' | 'bigha';
+  irrigationType: string;
+  soilType: string;
+  farmingCategory: string;
+  organicCertified: boolean;
+  waterSource?: string;
 }
 
 export interface ExtProfile {
@@ -34,7 +55,13 @@ export interface ExtProfile {
   pincode: string;
   dateOfBirth: string;
   gender: string;
+  age?: number;
+  education?: string;
   experience: number;
+  address?: string;
+  district?: string;
+  state?: string;
+  languagePreference?: string;
   farmName: string;
   totalArea: number;
   farmingType: string;
@@ -42,8 +69,13 @@ export interface ExtProfile {
   irrigationType: string;
   waterAvailability: string;
   soilType: string;
+  organicCertified?: boolean;
+  farmDetails: FarmDetail[];
   landParcels: LandParcel[];
   cropHistory: CropRecord[];
+  appLanguage?: string;
+  voiceEnabled?: boolean;
+  notificationLanguage?: string;
 }
 
 export interface FullProfile {
@@ -52,13 +84,19 @@ export interface FullProfile {
     name: string;
     email: string;
     phone?: string;
+    profileImage?: string;
     farmSize?: number;
     soilType?: string;
     waterSource?: string;
-    location?: { state: string; district: string; village?: string; country?: string; coordinates?: { latitude: number; longitude: number } };
+    location?: {
+      state: string;
+      district: string;
+      village?: string;
+      country?: string;
+      coordinates?: { latitude: number; longitude: number };
+    };
     points?: number;
     crops?: string[];
-    avatar?: string;
   };
   ext: ExtProfile;
 }
@@ -80,6 +118,59 @@ export async function saveFullProfile(payload: Record<string, any>): Promise<Ful
   if (!res.ok) throw new Error(json.error || 'Failed to save profile');
   return json.data;
 }
+
+export async function uploadAvatar(file: File): Promise<{ profileImage: string }> {
+  const form = new FormData();
+  form.append('avatar', file);
+  const res = await fetch('/api/farmer-profile/avatar', {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${authToken()}` },
+    body: form,
+  });
+  const json = await res.json();
+  if (!res.ok) throw new Error(json.error || 'Failed to upload avatar');
+  return json.data;
+}
+
+export async function removeAvatar(): Promise<void> {
+  const res = await fetch('/api/farmer-profile/avatar', {
+    method: 'DELETE',
+    headers: authHeaders(),
+  });
+  const json = await res.json();
+  if (!res.ok) throw new Error(json.error || 'Failed to remove avatar');
+}
+
+// ── Farm Details ──────────────────────────────────────────────────────────
+
+export async function addFarm(farm: Omit<FarmDetail, '_id'>): Promise<FarmDetail[]> {
+  const res = await fetch('/api/farmer-profile/farm', {
+    method: 'POST', headers: authHeaders(), body: JSON.stringify(farm),
+  });
+  const json = await res.json();
+  if (!res.ok) throw new Error(json.error || 'Failed to add farm');
+  return json.data;
+}
+
+export async function updateFarm(id: string, farm: Partial<FarmDetail>): Promise<FarmDetail[]> {
+  const res = await fetch(`/api/farmer-profile/farm/${id}`, {
+    method: 'PUT', headers: authHeaders(), body: JSON.stringify(farm),
+  });
+  const json = await res.json();
+  if (!res.ok) throw new Error(json.error || 'Failed to update farm');
+  return json.data;
+}
+
+export async function deleteFarm(id: string): Promise<FarmDetail[]> {
+  const res = await fetch(`/api/farmer-profile/farm/${id}`, {
+    method: 'DELETE', headers: authHeaders(),
+  });
+  const json = await res.json();
+  if (!res.ok) throw new Error(json.error || 'Failed to delete farm');
+  return json.data;
+}
+
+// ── Land Parcels ──────────────────────────────────────────────────────────
 
 export async function addLand(parcel: Omit<LandParcel, '_id'>): Promise<LandParcel[]> {
   const res = await fetch('/api/farmer-profile/land', {
@@ -108,6 +199,8 @@ export async function deleteLand(id: string): Promise<LandParcel[]> {
   return json.data;
 }
 
+// ── Crop History ──────────────────────────────────────────────────────────
+
 export async function addCropRecord(record: Omit<CropRecord, '_id'>): Promise<CropRecord[]> {
   const res = await fetch('/api/farmer-profile/crop', {
     method: 'POST', headers: authHeaders(), body: JSON.stringify(record),
@@ -132,5 +225,45 @@ export async function deleteCropRecord(id: string): Promise<CropRecord[]> {
   });
   const json = await res.json();
   if (!res.ok) throw new Error(json.error || 'Failed to delete crop record');
+  return json.data;
+}
+
+// ── Account ───────────────────────────────────────────────────────────────
+
+export async function deleteAccount(password: string): Promise<void> {
+  const res = await fetch('/api/farmer-profile/account', {
+    method: 'DELETE',
+    headers: authHeaders(),
+    body: JSON.stringify({ password }),
+  });
+  const json = await res.json();
+  if (!res.ok) throw new Error(json.error || 'Failed to delete account');
+}
+
+export async function changePassword(currentPassword: string, newPassword: string): Promise<void> {
+  const res = await fetch('/api/settings/change-password', {
+    method: 'POST',
+    headers: authHeaders(),
+    body: JSON.stringify({ currentPassword, newPassword }),
+  });
+  const json = await res.json();
+  if (!res.ok) throw new Error(json.error || 'Failed to change password');
+}
+
+export async function getSettings(): Promise<any> {
+  const res = await fetch('/api/settings', { headers: authHeaders() });
+  const json = await res.json();
+  if (!res.ok) throw new Error(json.error || 'Failed to load settings');
+  return json.data;
+}
+
+export async function saveSettings(settings: Record<string, any>): Promise<any> {
+  const res = await fetch('/api/settings', {
+    method: 'PUT',
+    headers: authHeaders(),
+    body: JSON.stringify(settings),
+  });
+  const json = await res.json();
+  if (!res.ok) throw new Error(json.error || 'Failed to save settings');
   return json.data;
 }

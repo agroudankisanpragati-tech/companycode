@@ -10,6 +10,12 @@ export const connectDB = async () => {
 
     await mongoose.connect(mongoURI);
     console.log('✅ MongoDB Connected Successfully');
+
+    process.on('SIGINT', async () => {
+      await mongoose.disconnect();
+      console.log('MongoDB disconnected on app termination');
+      process.exit(0);
+    });
   } catch (error) {
     console.error('❌ MongoDB Connection Error:', error);
     process.exit(1);

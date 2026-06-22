@@ -28,6 +28,8 @@ const aiFos_1 = __importDefault(require("./routes/aiFos"));
 const aiAssistant_1 = __importDefault(require("./routes/aiAssistant"));
 const settings_1 = __importDefault(require("./routes/settings"));
 const farmerProfile_1 = __importDefault(require("./routes/farmerProfile"));
+const disease_1 = __importDefault(require("./routes/disease"));
+const farmerStories_1 = __importDefault(require("./routes/farmerStories"));
 const bootstrapAdmin_1 = require("./utils/bootstrapAdmin");
 dotenv_1.default.config({ override: true });
 const app = (0, express_1.default)();
@@ -88,6 +90,8 @@ app.use('/api/ai-fos', aiFos_1.default);
 app.use('/api/ai-assistant', aiAssistant_1.default);
 app.use('/api/settings', settings_1.default);
 app.use('/api/farmer-profile', farmerProfile_1.default);
+app.use('/api/disease', disease_1.default);
+app.use('/api/farmer-stories', farmerStories_1.default);
 // Health Check
 app.get('/api/health', (req, res) => {
     res.json({ status: 'OK', message: 'Kisan Unnati Backend is running' });

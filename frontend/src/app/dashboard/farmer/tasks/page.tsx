@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback } from 'react';
 import Link from 'next/link';
 import FarmerSidebar from '@/components/FarmerSidebar';
 import FarmerFooter from '@/components/FarmerFooter';
+import ProtectedRoute from '@/components/ProtectedRoute';
 import { aiFosService, FosDashboard, CropTask, CropDashboardEntry } from '@/services/aiFos';
 import {
   FaRobot, FaSeedling, FaCheckCircle, FaClock, FaExclamationTriangle,
@@ -31,6 +32,10 @@ const stageColors: Record<string, string> = {
 };
 
 export default function TasksPage() {
+  return <ProtectedRoute><TasksContent /></ProtectedRoute>;
+}
+
+function TasksContent() {
   const [data, setData] = useState<FosDashboard | null>(null);
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState<string | null>(null);

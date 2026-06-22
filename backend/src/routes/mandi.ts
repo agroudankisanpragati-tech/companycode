@@ -312,8 +312,8 @@ router.get('/prices', async (req, res) => {
     }
 
     const extraFilters: Record<string, string> = {};
-    if (state) extraFilters.state = state;
-    if (district) extraFilters.district = district;
+    if (state) extraFilters.State = state;
+    if (district) extraFilters.District = district;
 
     const records = await fetchMandiData(commodity, extraFilters);
     res.json({

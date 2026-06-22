@@ -40,6 +40,7 @@ const userSchema = new mongoose_1.Schema({
     email: { type: String, required: true, unique: true, lowercase: true, trim: true },
     phone: { type: String, default: '' },
     password: { type: String, required: true },
+    profileImage: { type: String, default: '' },
     farmSize: { type: Number, required: true },
     companyName: { type: String },
     businessType: { type: String },
@@ -61,6 +62,8 @@ const userSchema = new mongoose_1.Schema({
     crops: [String],
     points: { type: Number, default: 0 },
     verified: { type: Boolean, default: false },
+    isActive: { type: Boolean, default: true },
+    lastLogin: { type: Date },
 }, { timestamps: true });
 exports.User = mongoose_1.default.model('User', userSchema);
 //# sourceMappingURL=User.js.map

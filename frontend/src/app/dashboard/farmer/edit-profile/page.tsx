@@ -6,6 +6,7 @@ import { FaArrowLeft, FaSave, FaCamera } from 'react-icons/fa';
 import { useAuth } from '@/context/AuthContext';
 import FarmerHeader from '@/components/FarmerHeader';
 import FarmerFooter from '@/components/FarmerFooter';
+import ProtectedRoute from '@/components/ProtectedRoute';
 
 interface FarmerProfile {
     id?: string;
@@ -19,6 +20,10 @@ interface FarmerProfile {
 }
 
 export default function FarmerEditProfile() {
+  return <ProtectedRoute><FarmerEditProfileContent /></ProtectedRoute>;
+}
+
+function FarmerEditProfileContent() {
     const { user } = useAuth();
     const router = useRouter();
     const [loading, setLoading] = useState(true);

@@ -5,8 +5,9 @@ import { SUPPORTED_CROPS } from '@/services/marketPrice';
 import { useState } from 'react';
 import Link from 'next/link';
 import { FaSpinner, FaArrowUp, FaArrowDown, FaSync } from 'react-icons/fa';
+import ProtectedRoute from '@/components/ProtectedRoute';
 
-export default function MarketPage() {
+function MarketContent() {
   const { preference, price, history, locationMissing, loading, error, selectCrop, saveLocation, refresh } = useMarketPrice();
   const [locForm, setLocForm] = useState({ state: '', district: '' });
   const [saving, setSaving] = useState(false);
@@ -237,4 +238,8 @@ export default function MarketPage() {
       </div>
     </div>
   );
+}
+
+export default function MarketPage() {
+  return <ProtectedRoute><MarketContent /></ProtectedRoute>;
 }

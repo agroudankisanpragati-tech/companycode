@@ -8,6 +8,7 @@ import { useEffect, useState, useCallback } from 'react';
 import FarmerFooter from '@/components/FarmerFooter';
 import FarmerSidebar from '@/components/FarmerSidebar';
 import AiFarmSection from '@/components/AiFarmSection';
+import SuccessStoriesSection from '@/components/SuccessStoriesSection';
 import MarketSnapshotCard from '@/components/dashboard/MarketSnapshotCard';
 import LocationModal from '@/components/LocationModal';
 import {
@@ -37,8 +38,10 @@ export default function FarmerDashboard() {
 
     // ── Auth guard ───────────────────────────────────────────────────────────
     useEffect(() => {
-        if (!isLoading && (!isAuthenticated || user?.role !== 'farmer')) {
-            router.push('/auth/role-select');
+        if (!isLoading && !isAuthenticated) {
+            router.replace('/auth/login');
+        } else if (!isLoading && user?.role !== 'farmer') {
+            router.replace('/auth/role-select');
         }
     }, [isAuthenticated, isLoading, user, router]);
 
@@ -122,7 +125,7 @@ export default function FarmerDashboard() {
         setModalOpen(true);
     }
 
-    if (!isAuthenticated && process.env.NODE_ENV !== 'development') return null;
+    if (isLoading || !isAuthenticated) return null;
 
     const hasLocation = !!(location.state && location.district);
 
@@ -385,6 +388,8 @@ export default function FarmerDashboard() {
                         </section>
 
                         <AiFarmSection />
+
+                        <SuccessStoriesSection />
 
                         {/* Generic modal */}
                         {modalOpen && modalContent && (

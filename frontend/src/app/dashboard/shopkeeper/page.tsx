@@ -21,8 +21,10 @@ export default function ShopkeeperDashboard() {
     const router = useRouter();
 
     useEffect(() => {
-        if (!isAuthenticated || user?.role !== 'shopkeeper') {
-            router.push('/auth/role-select');
+        if (!isAuthenticated) {
+            router.replace('/auth/login');
+        } else if (user?.role !== 'shopkeeper') {
+            router.replace('/auth/role-select');
         }
     }, [isAuthenticated, user, router]);
 
@@ -263,7 +265,7 @@ export default function ShopkeeperDashboard() {
         }
     };
 
-    if (!isAuthenticated) return null;
+    if (!isAuthenticated || user?.role !== 'shopkeeper') return null;
 
     return (
         <main className="min-h-screen bg-gray-50">

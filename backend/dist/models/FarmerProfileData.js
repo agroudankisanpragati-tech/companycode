@@ -44,16 +44,31 @@ const LandParcelSchema = new mongoose_1.Schema({
     latitude: { type: Number, default: 0 },
     longitude: { type: Number, default: 0 },
     ownershipType: { type: String, enum: ['owned', 'leased', 'shared'], default: 'owned' },
+    khasraNumber: { type: String, default: '' },
+    soilHealthStatus: { type: String, default: '' },
 });
 const CropRecordSchema = new mongoose_1.Schema({
     cropName: { type: String, required: true },
     season: { type: String, default: '' },
+    year: { type: Number, default: 0 },
     sowingDate: { type: String, default: '' },
     harvestDate: { type: String, default: '' },
     yieldKg: { type: Number, default: 0 },
     marketPrice: { type: Number, default: 0 },
     profit: { type: Number, default: 0 },
+    production: { type: Number, default: 0 },
+    remarks: { type: String, default: '' },
     notes: { type: String, default: '' },
+});
+const FarmDetailSchema = new mongoose_1.Schema({
+    farmName: { type: String, default: '' },
+    farmSize: { type: Number, default: 0 },
+    farmSizeUnit: { type: String, enum: ['acres', 'hectares', 'bigha'], default: 'acres' },
+    irrigationType: { type: String, default: '' },
+    soilType: { type: String, default: '' },
+    farmingCategory: { type: String, default: 'Crop Farming' },
+    organicCertified: { type: Boolean, default: false },
+    waterSource: { type: String, default: '' },
 });
 const schema = new mongoose_1.Schema({
     userId: { type: String, required: true, unique: true, index: true },
@@ -61,7 +76,13 @@ const schema = new mongoose_1.Schema({
     pincode: { type: String, default: '' },
     dateOfBirth: { type: String, default: '' },
     gender: { type: String, default: '' },
+    age: { type: Number, default: 0 },
+    education: { type: String, default: '' },
     experience: { type: Number, default: 0 },
+    address: { type: String, default: '' },
+    district: { type: String, default: '' },
+    state: { type: String, default: '' },
+    languagePreference: { type: String, default: 'English' },
     farmName: { type: String, default: '' },
     totalArea: { type: Number, default: 0 },
     farmingType: { type: String, default: 'Crop Farming' },
@@ -69,8 +90,13 @@ const schema = new mongoose_1.Schema({
     irrigationType: { type: String, default: '' },
     waterAvailability: { type: String, default: 'Medium' },
     soilType: { type: String, default: '' },
+    organicCertified: { type: Boolean, default: false },
+    farmDetails: { type: [FarmDetailSchema], default: [] },
     landParcels: { type: [LandParcelSchema], default: [] },
     cropHistory: { type: [CropRecordSchema], default: [] },
+    appLanguage: { type: String, default: 'English' },
+    voiceEnabled: { type: Boolean, default: false },
+    notificationLanguage: { type: String, default: 'English' },
 }, { timestamps: true });
 exports.FarmerProfileData = mongoose_1.default.model('FarmerProfileData', schema);
 //# sourceMappingURL=FarmerProfileData.js.map

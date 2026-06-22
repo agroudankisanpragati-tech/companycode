@@ -1,4 +1,4 @@
- 'use client';
+'use client';
 
 import { FormEvent, useEffect, useState } from 'react';
 import { ASSET_BASE, deleteGalleryItem, loadGalleryItems, uploadGalleryItem, setGalleryItemFeatured } from '@/components/admin/admin-api';

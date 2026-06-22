@@ -11,6 +11,7 @@ export interface User {
     role: UserRole;
     phone?: string;
     avatar?: string;
+    profileImage?: string;
 }
 
 interface AuthContextType {
@@ -98,6 +99,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                         role: freshRole,
                         phone: data.data.phone,
                         avatar: data.data.avatar,
+                        profileImage: data.data.profileImage,
                     };
                     localStorage.setItem('user', JSON.stringify(freshUser));
                     setUser(freshUser);
@@ -269,6 +271,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                 name: data.user?.name,
                 role: normalizedRole,
                 phone: data.user?.phone,
+                profileImage: data.user?.profileImage,
             };
 
             localStorage.setItem('authToken', data.token);

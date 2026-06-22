@@ -31,7 +31,7 @@ export const authenticate = async (req: AuthenticatedRequest, res: Response, nex
   }
 
   try {
-    const payload = jwt.verify(token, process.env.JWT_SECRET || 'secret') as { userId: string };
+    const payload = jwt.verify(token, process.env.JWT_SECRET!) as { userId: string };
     const user = await User.findById(payload.userId).select('-password');
 
     if (!user) {

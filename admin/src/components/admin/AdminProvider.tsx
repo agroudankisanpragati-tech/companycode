@@ -5,13 +5,9 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import {
   FaChartLine,
-  FaBlog,
-  FaCheckCircle,
   FaCog,
-  FaDatabase,
   FaLeaf,
   FaLock,
-  FaPlusSquare,
   FaPhotoVideo,
   FaSignOutAlt,
   FaSyncAlt,
@@ -20,15 +16,19 @@ import {
   FaUsers,
   FaWarehouse,
   FaRobot,
+  FaDatabase,
+  FaMicroscope,
+  FaFilm,
 } from 'react-icons/fa';
 import {
   API_BASE,
   loadAdminWorkspace,
   restoreSessionFromToken,
   requestJson,
+  fetchWithTimeout,
   TOKEN_KEY,
 } from './admin-api';
-import type { AdminUser, Listing, Overview, Recommendation, SessionUser } from './admin-types';
+import type { AdminUser, Listing, Overview, Recommendation, SessionUser, UserSummary } from './admin-types';
 
 type AdminContextValue = {
   session: SessionUser | null;
@@ -40,6 +40,7 @@ type AdminContextValue = {
   pendingAction: string;
   overview: Overview | null;
   users: AdminUser[];
+  userSummary: UserSummary | null;
   recommendations: Recommendation[];
   listings: Listing[];
   login: (email: string, password: string) => Promise<void>;
@@ -47,6 +48,7 @@ type AdminContextValue = {
   refreshAll: () => Promise<void>;
   updateUserRole: (userId: string, role: AdminUser['role']) => Promise<void>;
   toggleVerification: (userId: string, verified: boolean) => Promise<void>;
+  disableUser: (userId: string, isActive: boolean) => Promise<void>;
   deleteUser: (userId: string) => Promise<void>;
   deleteRecommendation: (recommendationId: string) => Promise<void>;
   updateListingStatus: (listingId: string, status: Listing['status']) => Promise<void>;
@@ -57,13 +59,14 @@ type AdminContextValue = {
 const AdminContext = createContext<AdminContextValue | null>(null);
 
 const navItems = [
-  { href: '/blogs', label: 'Blogs', icon: FaBlog },
   { href: '/dashboard', label: 'Dashboard', icon: FaChartLine },
-  { href: '/create-blog', label: 'Create Blog', icon: FaPlusSquare },
+  { href: '/crop-knowledge-base', label: 'Crop Knowledge Base', icon: FaDatabase },
+  { href: '/disease-knowledge-base', label: 'Disease Knowledge Base', icon: FaMicroscope },
   { href: '/create-scheme', label: 'Govt Schemes', icon: FaLeaf },
   { href: '/create-gallery', label: 'Gallery', icon: FaPhotoVideo },
   { href: '/users', label: 'Users', icon: FaUsers },
   { href: '/ai-analytics', label: 'AI Analytics', icon: FaRobot },
+  { href: '/farmer-stories', label: 'Farmer Stories', icon: FaFilm },
   { href: '/settings', label: 'Settings', icon: FaCog },
 ];
 
@@ -231,6 +234,7 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
   const [success, setSuccess] = useState('');
   const [overview, setOverview] = useState<Overview | null>(null);
   const [users, setUsers] = useState<AdminUser[]>([]);
+  const [userSummary, setUserSummary] = useState<UserSummary | null>(null);
   const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
   const [listings, setListings] = useState<Listing[]>([]);
   const [pendingAction, setPendingAction] = useState('');
@@ -249,6 +253,7 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
       const workspace = await loadAdminWorkspace(token);
       setOverview(workspace.overview);
       setUsers(workspace.users);
+      setUserSummary(workspace.userSummary ?? null);
       setRecommendations(workspace.recommendations);
       setListings(workspace.listings);
       setSuccess('Admin data refreshed');
@@ -278,6 +283,7 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
     const workspace = await loadAdminWorkspace(authToken);
     setOverview(workspace.overview);
     setUsers(workspace.users);
+    setUserSummary(workspace.userSummary ?? null);
     setRecommendations(workspace.recommendations);
     setListings(workspace.listings);
   };
@@ -290,15 +296,28 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
       return;
     }
 
+    // Safety net: if everything hangs for >15 seconds, stop loading and show login
+    const safetyTimer = setTimeout(() => {
+      console.warn('[AdminProvider] Safety timeout hit — clearing loading state');
+      window.localStorage.removeItem(TOKEN_KEY);
+      setToken(null);
+      setSession(null);
+      setError('Session load timed out. Please log in again.');
+      setLoading(false);
+    }, 15000);
+
     void (async () => {
       try {
         await authenticate(savedToken);
       } catch (requestError) {
+        const msg = requestError instanceof Error ? requestError.message : 'Session expired';
+        console.error('[AdminProvider] Session restore failed:', msg);
         window.localStorage.removeItem(TOKEN_KEY);
         setToken(null);
         setSession(null);
-        setError(requestError instanceof Error ? requestError.message : 'Session expired');
+        setError(msg);
       } finally {
+        clearTimeout(safetyTimer);
         setLoading(false);
       }
     })();
@@ -309,27 +328,62 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
     setLoading(true);
 
     try {
-      const response = await fetch(`${API_BASE}/auth/login`, {
+      const response = await fetchWithTimeout(`${API_BASE}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
+      }, 10000).catch((networkErr: Error) => {
+        console.error('[Admin Login] Network error:', networkErr);
+        throw new Error(
+          networkErr.name === 'AbortError'
+            ? 'Login request timed out. Check if the backend is running on port 4000.'
+            : 'Cannot reach the backend server. Make sure it is running on port 4000.'
+        );
       });
 
-      const payload = await response.json().catch(() => ({}));
+      let payload: any = {};
+      try {
+        payload = await response.json();
+      } catch {
+        console.error('[Admin Login] Response is not JSON — status:', response.status);
+        throw new Error(`Unexpected server response (HTTP ${response.status}). Check the backend logs.`);
+      }
 
       if (!response.ok) {
-        throw new Error(payload.error || 'Login failed');
+        console.error('[Admin Login] HTTP error:', response.status, payload);
+        throw new Error(payload.error || `Login failed (HTTP ${response.status})`);
       }
 
       if (payload.user?.role !== 'admin') {
         throw new Error('Only admin accounts can access this panel');
       }
 
-      window.localStorage.setItem(TOKEN_KEY, payload.token);
-      await authenticate(payload.token);
-      setSuccess('Welcome back to the admin panel');
+      // Store token immediately so UI can proceed even if workspace load is slow
+      const authToken: string = payload.token;
+      window.localStorage.setItem(TOKEN_KEY, authToken);
+
+      // Verify token and load workspace — errors here should NOT block the login
+      try {
+        await authenticate(authToken);
+        setSuccess('Welcome back to the admin panel');
+        console.log('[Admin Login] Success — workspace loaded');
+      } catch (workspaceErr) {
+        // Token is valid but workspace data failed — set session manually from login payload
+        console.warn('[Admin Login] Workspace load failed, using login payload:', workspaceErr);
+        setSession({
+          id: payload.user?.id || payload.user?._id || '',
+          name: payload.user?.name || '',
+          email: payload.user?.email || '',
+          role: payload.user?.role || 'admin',
+          verified: payload.user?.verified ?? true,
+        });
+        setToken(authToken);
+        setError('Dashboard data could not be loaded. Click Refresh to retry.');
+      }
     } catch (requestError) {
-      setAuthError(requestError instanceof Error ? requestError.message : 'Unable to login');
+      const msg = requestError instanceof Error ? requestError.message : 'Unable to login';
+      console.error('[Admin Login] Final error:', msg);
+      setAuthError(msg);
       throw requestError;
     } finally {
       setLoading(false);
@@ -342,6 +396,7 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
     setSession(null);
     setOverview(null);
     setUsers([]);
+    setUserSummary(null);
     setRecommendations([]);
     setListings([]);
     clearMessages();
@@ -378,6 +433,23 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
       setSuccess(verified ? 'User verified' : 'User unverified');
     } catch (requestError) {
       setError(requestError instanceof Error ? requestError.message : 'Unable to update verification');
+    } finally {
+      setPendingAction('');
+    }
+  };
+
+  const disableUser = async (userId: string, isActive: boolean) => {
+    if (!token) return;
+    setPendingAction(`disable-${userId}`);
+    try {
+      await requestJson('/admin/users/' + userId + '/disable', token, {
+        method: 'PATCH',
+        body: JSON.stringify({ isActive }),
+      });
+      await refreshAll();
+      setSuccess(isActive ? 'User enabled' : 'User disabled');
+    } catch (requestError) {
+      setError(requestError instanceof Error ? requestError.message : 'Unable to update user status');
     } finally {
       setPendingAction('');
     }
@@ -456,6 +528,7 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
     pendingAction,
     overview,
     users,
+    userSummary,
     recommendations,
     listings,
     login,
@@ -463,6 +536,7 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
     refreshAll,
     updateUserRole,
     toggleVerification,
+    disableUser,
     deleteUser,
     deleteRecommendation,
     updateListingStatus,

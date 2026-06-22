@@ -3,6 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import fs from 'fs';
 import path from 'path';
+import rateLimit from 'express-rate-limit';
 import { connectDB } from './config/database';
 import authRoutes from './routes/auth';
 import cropRoutes from './routes/crops';
@@ -23,6 +24,8 @@ import aiFosRoutes from './routes/aiFos';
 import aiAssistantRoutes from './routes/aiAssistant';
 import settingsRoutes from './routes/settings';
 import farmerProfileRoutes from './routes/farmerProfile';
+import diseaseRoutes from './routes/disease';
+import farmerStoriesRoutes from './routes/farmerStories';
 import { ensureBootstrapAdmin } from './utils/bootstrapAdmin';
 
 dotenv.config({ override: true });
@@ -73,7 +76,29 @@ app.use(express.json());
 app.use(express.urlencoded({ limit: '10mb', extended: true }));
 app.use('/uploads', express.static(uploadsDir));
 
+// Rate limiters
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 20,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Too many requests, please try again later.' },
+  skip: () => process.env.NODE_ENV === 'development',
+});
+
+const otpLimiter = rateLimit({
+  windowMs: 10 * 60 * 1000, // 10 minutes
+  max: 5,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Too many OTP requests, please try again in 10 minutes.' },
+  skip: () => process.env.NODE_ENV === 'development',
+});
+
 // Routes
+app.use('/api/auth/login', authLimiter);
+app.use('/api/auth/register/request-otp', otpLimiter);
+app.use('/api/auth/register/verify-otp', otpLimiter);
 app.use('/api/auth', authRoutes);
 app.use('/api/crops', cropRoutes);
 // marketplace routes removed per request (UI replaced with mandi-bhav integration)
@@ -94,6 +119,8 @@ app.use('/api/ai-fos', aiFosRoutes);
 app.use('/api/ai-assistant', aiAssistantRoutes);
 app.use('/api/settings', settingsRoutes);
 app.use('/api/farmer-profile', farmerProfileRoutes);
+app.use('/api/disease', diseaseRoutes);
+app.use('/api/farmer-stories', farmerStoriesRoutes);
 
 // Health Check
 app.get('/api/health', (req, res) => {

@@ -406,7 +406,7 @@ export default function SoilHealthPage() {
   }, [isAuthenticated]);
 
   const processFile = useCallback(async (file: File) => {
-    if (!isAuthenticated) { router.push('/auth'); return; }
+    if (!isAuthenticated) { router.replace('/auth/login'); return; }
     setError('');
     setUploading(true);
     setView('analyzing');

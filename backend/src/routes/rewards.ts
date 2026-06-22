@@ -1,21 +1,44 @@
-import express from 'express';
+import express, { Response } from 'express';
+import { authenticate, AuthenticatedRequest } from '../middleware/auth';
+import { User } from '../models/User';
 
 const router = express.Router();
 
-// Mocked redeem endpoint. In a real app this should verify the user, check DB balance and persist.
-router.post('/redeem', async (req, res) => {
+// Points to INR conversion rate: 2 points = ₹1
+const POINTS_TO_INR = 0.5;
+
+// GET /api/rewards — get current user's points balance
+router.get('/', authenticate, async (req: AuthenticatedRequest, res: Response) => {
   try {
-    const { userId, amount } = req.body;
-    if (!userId) return res.status(400).json({ error: 'Missing userId' });
-    const redeemAmount = Number(amount) || 0;
+    const user = await User.findById(req.user!.userId).select('points name');
+    if (!user) return res.status(404).json({ error: 'User not found' });
+    res.json({ success: true, points: user.points });
+  } catch (err) {
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// POST /api/rewards/redeem — redeem points for INR value
+router.post('/redeem', authenticate, async (req: AuthenticatedRequest, res: Response) => {
+  try {
+    const userId = req.user!.userId;
+    const redeemAmount = Number(req.body.amount) || 0;
+
     if (redeemAmount <= 0) return res.status(400).json({ error: 'Invalid amount' });
 
-    // For demo return new balances assuming starting points 1240 and value ₹620
-    const startingPoints = 1240;
-    const newPoints = Math.max(0, startingPoints - redeemAmount);
-    const redeemValue = Math.round((redeemAmount / startingPoints) * 620);
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ error: 'User not found' });
 
-    return res.json({ success: true, points: newPoints, redeemedValue: redeemValue });
+    if (user.points < redeemAmount) {
+      return res.status(400).json({ error: 'Insufficient points' });
+    }
+
+    user.points -= redeemAmount;
+    await user.save();
+
+    const redeemedValue = Math.round(redeemAmount * POINTS_TO_INR);
+
+    return res.json({ success: true, points: user.points, redeemedValue });
   } catch (err) {
     console.error(err);
     return res.status(500).json({ error: 'Server error' });

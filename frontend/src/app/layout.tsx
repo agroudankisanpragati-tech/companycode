@@ -3,7 +3,9 @@ import "@/styles/globals.css";
 import { AuthProvider } from "@/context/AuthContext";
 import { LocationProvider } from "@/context/LocationContext";
 import { AIAssistantProvider } from "@/context/AIAssistantContext";
+import { LanguageProvider } from "@/context/LanguageContext";
 import AIAssistantWidget from "@/components/AIAssistantWidget";
+import LanguagePopupMount from "@/components/LanguagePopupMount";
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -101,14 +103,17 @@ export default function RootLayout({
       </head>
       <body className="bg-white text-gray-900">
         <AuthProvider>
-          <LocationProvider>
-            <AIAssistantProvider>
-              <main id="top" className="min-h-screen">
-                {children}
-              </main>
-              <AIAssistantWidget />
-            </AIAssistantProvider>
-          </LocationProvider>
+          <LanguageProvider>
+            <LocationProvider>
+              <AIAssistantProvider>
+                <main id="top" className="min-h-screen">
+                  {children}
+                </main>
+                <AIAssistantWidget />
+                <LanguagePopupMount />
+              </AIAssistantProvider>
+            </LocationProvider>
+          </LanguageProvider>
         </AuthProvider>
       </body>
     </html>

@@ -4,6 +4,7 @@ export interface IUser extends Document {
     email: string;
     phone?: string;
     password: string;
+    profileImage?: string;
     farmSize: number;
     companyName?: string;
     businessType?: string;
@@ -25,6 +26,8 @@ export interface IUser extends Document {
     crops: string[];
     points: number;
     verified: boolean;
+    isActive: boolean;
+    lastLogin?: Date;
     createdAt: Date;
     updatedAt: Date;
 }

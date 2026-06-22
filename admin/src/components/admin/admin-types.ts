@@ -26,11 +26,34 @@ export type AdminUser = {
   email: string;
   phone?: string;
   farmSize?: number;
+  location?: {
+    state?: string;
+    district?: string;
+    village?: string;
+  };
   role: 'farmer' | 'vendor' | 'admin';
   verified: boolean;
+  isActive: boolean;
   points?: number;
+  crops?: string[];
+  lastLogin?: string;
   createdAt?: string;
   updatedAt?: string;
+};
+
+export type UserSummary = {
+  total: number;
+  farmers: number;
+  admins: number;
+  verified: number;
+  active: number;
+};
+
+export type UserPagination = {
+  total: number;
+  page: number;
+  limit: number;
+  pages: number;
 };
 
 export type Recommendation = {
@@ -60,21 +83,6 @@ export type Listing = {
   createdAt?: string;
 };
 
-export type AdminBlogPost = {
-  _id: string;
-  title: string;
-  slug: string;
-  excerpt: string;
-  content: string;
-  coverImage?: string;
-  tags: string[];
-  status: 'draft' | 'published';
-  authorName?: string;
-  publishedAt?: string;
-  createdAt?: string;
-  updatedAt?: string;
-};
-
 export type GovtScheme = {
   _id: string;
   title: string;
@@ -91,6 +99,124 @@ export type GovtScheme = {
   publishedAt?: string;
   createdAt?: string;
   updatedAt?: string;
+};
+
+export type CropCategory = 'Traditional' | 'Medicinal' | 'Fruit' | 'Vegetable';
+export type LevelType = 'low' | 'medium' | 'high';
+
+export type CropKnowledge = {
+  _id: string;
+  cropName: string;
+  cropCategory: CropCategory;
+  suitableSoilTypes: string[];
+  minPH: number;
+  maxPH: number;
+  minRainfall: number;
+  maxRainfall: number;
+  minTemperature: number;
+  maxTemperature: number;
+  waterRequirement: LevelType;
+  suitableSeasons: string[];
+  suitableIrrigationTypes: string[];
+  growingDuration: number;
+  averageYield: number;
+  averageMarketPrice: number;
+  estimatedProfit: number;
+  cultivationCost: number;
+  riskLevel: LevelType;
+  description: string;
+  cultivationProcess: string;
+  marketDemand: LevelType;
+  farmingTypes: string[];
+  fertilizerRequirement?: string;
+  fertilizerCost?: number;
+  seedRequirement?: string;
+  recommendedSeedVariety?: string;
+  createdAt?: string;
+  updatedAt?: string;
+};
+
+export type CropKnowledgeSummary = {
+  total: number;
+  traditional: number;
+  medicinal: number;
+  fruit: number;
+  vegetable: number;
+};
+
+// ─── Disease Knowledge Base Types ───────────────────────────────────────────
+
+export type DiseaseSeverity = 'low' | 'medium' | 'high' | 'critical';
+
+export type DiseaseRecord = {
+  _id: string;
+  cropName: string;
+  scientificName?: string;
+  cropCategory: string;
+  diseaseName: string;
+  diseaseType: string;
+  severityLevel: DiseaseSeverity;
+  description: string;
+  leafSymptoms?: string;
+  stemSymptoms?: string;
+  rootSymptoms?: string;
+  fruitSymptoms?: string;
+  symptomsDescription?: string;
+  organicTreatment?: string;
+  chemicalTreatment?: string;
+  recommendedProducts?: string;
+  treatmentDescription?: string;
+  preventionMethods?: string;
+  preventionDescription?: string;
+  diseaseImages: string[];
+  healthyImages: string[];
+  createdAt?: string;
+  updatedAt?: string;
+};
+
+export type DiseaseKnowledgeSummary = {
+  totalRecords: number;
+  totalCrops: number;
+  totalDiseaseImages: number;
+  totalHealthyImages: number;
+  totalRecommendations: number;
+};
+
+// ─── Farmer Stories Types ──────────────────────────────────────────────────────
+
+export type StoryStatus = 'pending' | 'approved' | 'rejected';
+export type StoryCategory =
+  | 'Success Story' | 'Organic Farming' | 'Medicinal Farming'
+  | 'High Profit Farming' | 'Innovation' | 'Water Saving' | 'Technology Adoption';
+
+export type FarmerStory = {
+  _id: string;
+  farmerName: string;
+  village?: string;
+  district?: string;
+  state?: string;
+  cropName?: string;
+  title: string;
+  caption?: string;
+  successDescription?: string;
+  category: StoryCategory;
+  videoUrl: string;
+  thumbnailUrl?: string;
+  status: StoryStatus;
+  featured: boolean;
+  uploadedBy?: string;
+  uploadedByAdmin: boolean;
+  likes: number;
+  views: number;
+  createdAt?: string;
+  updatedAt?: string;
+};
+
+export type FarmerStorySummary = {
+  total: number;
+  pending: number;
+  approved: number;
+  rejected: number;
 };
 
 export type GalleryMediaType = 'photo' | 'video';

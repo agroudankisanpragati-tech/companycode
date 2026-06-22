@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { FaArrowLeft, FaSave, FaCamera, FaPlus } from 'react-icons/fa';
 import { useAuth } from '@/context/AuthContext';
+import ProtectedRoute from '@/components/ProtectedRoute';
 
 interface ShopProfile {
     _id: string;
@@ -31,6 +32,10 @@ interface ProductItem {
 }
 
 export default function EditProfilePage() {
+  return <ProtectedRoute><EditProfileContent /></ProtectedRoute>;
+}
+
+function EditProfileContent() {
     const { user } = useAuth();
     const router = useRouter();
     const [shop, setShop] = useState<ShopProfile | null>(null);

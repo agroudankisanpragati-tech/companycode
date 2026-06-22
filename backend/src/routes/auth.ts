@@ -258,7 +258,7 @@ router.post('/register', async (req: Request, res: Response) => {
     await user.save();
     emailOtpStore.delete(email);
 
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET || 'secret', {
+    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET!, {
       expiresIn: '30d',
     });
 
@@ -292,7 +292,10 @@ router.post('/login', async (req: Request, res: Response) => {
       return res.status(401).json({ error: 'Invalid credentials' });
     }
 
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET || 'secret', {
+    user.lastLogin = new Date();
+    await user.save();
+
+    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET!, {
       expiresIn: '30d',
     });
 
@@ -325,7 +328,7 @@ router.get('/me', authenticate, async (req: AuthenticatedRequest, res: Response)
 
 router.get('/google', (req: Request, res: Response) => {
   const clientId = process.env.GOOGLE_CLIENT_ID;
-  const redirectUri = process.env.GOOGLE_REDIRECT_URI || `${process.env.BACKEND_URL || 'http://localhost:5000'}/api/auth/google/callback`;
+  const redirectUri = process.env.GOOGLE_REDIRECT_URI || `${process.env.BACKEND_URL || 'http://localhost:4000'}/api/auth/google/callback`;
   const role = req.query.role || 'farmer';
 
   const state = Buffer.from(JSON.stringify({ role })).toString('base64');
@@ -356,7 +359,7 @@ router.get('/google/callback', async (req: Request, res: Response) => {
         code: code as string,
         client_id: process.env.GOOGLE_CLIENT_ID || '',
         client_secret: process.env.GOOGLE_CLIENT_SECRET || '',
-        redirect_uri: process.env.GOOGLE_REDIRECT_URI || `${process.env.BACKEND_URL || 'http://localhost:5000'}/api/auth/google/callback`,
+        redirect_uri: process.env.GOOGLE_REDIRECT_URI || `${process.env.BACKEND_URL || 'http://localhost:4000'}/api/auth/google/callback`,
         grant_type: 'authorization_code',
       }).toString(),
       {
@@ -397,10 +400,11 @@ router.get('/google/callback', async (req: Request, res: Response) => {
       user.verified = true;
       user.authProvider = 'google';
       user.role = role === 'shopkeeper' ? 'vendor' : 'farmer';
+      user.lastLogin = new Date();
       await user.save();
     }
 
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET || 'secret', {
+    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET!, {
       expiresIn: '30d',
     });
 

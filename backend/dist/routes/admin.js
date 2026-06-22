@@ -11,10 +11,11 @@ const CropRecommendation_1 = require("../models/CropRecommendation");
 const Marketplace_1 = require("../models/Marketplace");
 const AIRecommendation_1 = require("../models/AIRecommendation");
 const FarmerCropRequest_1 = require("../models/FarmerCropRequest");
+const CropKnowledgeBase_1 = require("../models/CropKnowledgeBase");
 const auth_1 = require("../middleware/auth");
 const router = express_1.default.Router();
 router.use(auth_1.authenticate, auth_1.requireAdmin);
-const publicUserFields = 'name email phone farmSize location soilType waterSource role crops points verified createdAt updatedAt';
+const publicUserFields = 'name email phone farmSize location soilType waterSource role crops points verified isActive lastLogin createdAt updatedAt';
 router.get('/overview', async (_req, res) => {
     try {
         const [totalUsers, totalAdmins, totalRecommendations, totalListings, totalBlogPosts, totalSchemes, recentUsers, recentRecommendations, recentListings,] = await Promise.all([
@@ -49,12 +50,36 @@ router.get('/overview', async (_req, res) => {
         res.status(500).json({ error: 'Failed to load admin overview' });
     }
 });
-router.get('/users', async (_req, res) => {
+router.get('/users', async (req, res) => {
     try {
-        const users = await User_1.User.find().select(publicUserFields).sort({ createdAt: -1 });
+        const page = Math.max(1, parseInt(req.query.page) || 1);
+        const limit = Math.min(100, Math.max(1, parseInt(req.query.limit) || 20));
+        const skip = (page - 1) * limit;
+        const { search, role, verified } = req.query;
+        const filter = {};
+        if (search) {
+            const regex = new RegExp(search, 'i');
+            filter.$or = [{ name: regex }, { email: regex }, { phone: regex }];
+        }
+        if (role && ['farmer', 'vendor', 'admin'].includes(role))
+            filter.role = role;
+        if (verified === 'true')
+            filter.verified = true;
+        if (verified === 'false')
+            filter.verified = false;
+        const [users, total, totalFarmers, totalAdmins, totalVerified, totalActive] = await Promise.all([
+            User_1.User.find(filter).select(publicUserFields).sort({ createdAt: -1 }).skip(skip).limit(limit),
+            User_1.User.countDocuments(filter),
+            User_1.User.countDocuments({ role: 'farmer' }),
+            User_1.User.countDocuments({ role: 'admin' }),
+            User_1.User.countDocuments({ verified: true }),
+            User_1.User.countDocuments({ isActive: true }),
+        ]);
         res.json({
             success: true,
             data: users,
+            pagination: { total, page, limit, pages: Math.ceil(total / limit) },
+            summary: { total: await User_1.User.countDocuments(), farmers: totalFarmers, admins: totalAdmins, verified: totalVerified, active: totalActive },
         });
     }
     catch (error) {
@@ -94,6 +119,18 @@ router.patch('/users/:id/verify', async (req, res) => {
     }
     catch (error) {
         res.status(500).json({ error: 'Failed to update verification' });
+    }
+});
+router.patch('/users/:id/disable', async (req, res) => {
+    try {
+        const { isActive } = req.body;
+        const updatedUser = await User_1.User.findByIdAndUpdate(req.params.id, { isActive: Boolean(isActive) }, { new: true }).select(publicUserFields);
+        if (!updatedUser)
+            return res.status(404).json({ error: 'User not found' });
+        res.json({ success: true, data: updatedUser });
+    }
+    catch (error) {
+        res.status(500).json({ error: 'Failed to update user status' });
     }
 });
 router.delete('/users/:id', async (req, res) => {
@@ -240,6 +277,82 @@ router.delete('/ai-recommendations/:id', async (req, res) => {
     }
     catch (error) {
         res.status(500).json({ error: 'Failed to delete' });
+    }
+});
+// ─── Crop Knowledge Base Admin Routes ────────────────────────────────────────
+router.get('/crop-knowledge', async (req, res) => {
+    try {
+        const page = Math.max(1, parseInt(req.query.page) || 1);
+        const limit = Math.min(100, Math.max(1, parseInt(req.query.limit) || 20));
+        const skip = (page - 1) * limit;
+        const { search, category } = req.query;
+        const filter = {};
+        if (search)
+            filter.cropName = new RegExp(search, 'i');
+        if (category && ['Traditional', 'Medicinal', 'Fruit', 'Vegetable'].includes(category))
+            filter.cropCategory = category;
+        const [crops, total, traditional, medicinal, fruit, vegetable] = await Promise.all([
+            CropKnowledgeBase_1.CropKnowledgeBase.find(filter).sort({ cropName: 1 }).skip(skip).limit(limit),
+            CropKnowledgeBase_1.CropKnowledgeBase.countDocuments(filter),
+            CropKnowledgeBase_1.CropKnowledgeBase.countDocuments({ cropCategory: 'Traditional' }),
+            CropKnowledgeBase_1.CropKnowledgeBase.countDocuments({ cropCategory: 'Medicinal' }),
+            CropKnowledgeBase_1.CropKnowledgeBase.countDocuments({ cropCategory: 'Fruit' }),
+            CropKnowledgeBase_1.CropKnowledgeBase.countDocuments({ cropCategory: 'Vegetable' }),
+        ]);
+        res.json({
+            success: true,
+            data: crops,
+            pagination: { total, page, limit, pages: Math.ceil(total / limit) },
+            summary: { total: await CropKnowledgeBase_1.CropKnowledgeBase.countDocuments(), traditional, medicinal, fruit, vegetable },
+        });
+    }
+    catch (error) {
+        res.status(500).json({ error: 'Failed to fetch crops' });
+    }
+});
+router.get('/crop-knowledge/:id', async (req, res) => {
+    try {
+        const crop = await CropKnowledgeBase_1.CropKnowledgeBase.findById(req.params.id);
+        if (!crop)
+            return res.status(404).json({ error: 'Crop not found' });
+        res.json({ success: true, data: crop });
+    }
+    catch (error) {
+        res.status(500).json({ error: 'Failed to fetch crop' });
+    }
+});
+router.post('/crop-knowledge', async (req, res) => {
+    try {
+        const crop = new CropKnowledgeBase_1.CropKnowledgeBase(req.body);
+        await crop.save();
+        res.status(201).json({ success: true, data: crop });
+    }
+    catch (error) {
+        if (error.code === 11000)
+            return res.status(400).json({ error: 'Crop with this name already exists' });
+        res.status(500).json({ error: error.message || 'Failed to create crop' });
+    }
+});
+router.put('/crop-knowledge/:id', async (req, res) => {
+    try {
+        const crop = await CropKnowledgeBase_1.CropKnowledgeBase.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
+        if (!crop)
+            return res.status(404).json({ error: 'Crop not found' });
+        res.json({ success: true, data: crop });
+    }
+    catch (error) {
+        res.status(500).json({ error: error.message || 'Failed to update crop' });
+    }
+});
+router.delete('/crop-knowledge/:id', async (req, res) => {
+    try {
+        const crop = await CropKnowledgeBase_1.CropKnowledgeBase.findByIdAndDelete(req.params.id);
+        if (!crop)
+            return res.status(404).json({ error: 'Crop not found' });
+        res.json({ success: true, message: 'Crop deleted successfully' });
+    }
+    catch (error) {
+        res.status(500).json({ error: 'Failed to delete crop' });
     }
 });
 exports.default = router;

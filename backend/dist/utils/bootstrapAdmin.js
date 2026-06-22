@@ -6,39 +6,57 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ensureBootstrapAdmin = void 0;
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const User_1 = require("../models/User");
-const ensureBootstrapAdmin = async () => {
-    const adminEmail = process.env.ADMIN_EMAIL;
-    const adminPassword = process.env.ADMIN_PASSWORD;
-    if (!adminEmail || !adminPassword) {
-        return;
+function parseAdminEntries() {
+    const entries = [];
+    // New multi-admin format: ADMIN_EMAILS, ADMIN_PASSWORDS, ADMIN_NAMES
+    const emails = process.env.ADMIN_EMAILS?.split(',').map((e) => e.trim()).filter(Boolean) || [];
+    const passwords = process.env.ADMIN_PASSWORDS?.split(',').map((p) => p.trim()).filter(Boolean) || [];
+    const names = process.env.ADMIN_NAMES?.split(',').map((n) => n.trim()).filter(Boolean) || [];
+    for (let i = 0; i < emails.length; i++) {
+        if (emails[i] && passwords[i]) {
+            entries.push({
+                email: emails[i].toLowerCase(),
+                password: passwords[i],
+                name: names[i] || 'Admin User',
+            });
+        }
     }
-    const existingUser = await User_1.User.findOne({ email: adminEmail });
-    if (existingUser) {
-        if (existingUser.role === 'admin') {
+    // Legacy single-admin fallback: ADMIN_EMAIL, ADMIN_PASSWORD
+    if (entries.length === 0 && process.env.ADMIN_EMAIL && process.env.ADMIN_PASSWORD) {
+        entries.push({
+            email: process.env.ADMIN_EMAIL.toLowerCase(),
+            password: process.env.ADMIN_PASSWORD,
+            name: process.env.ADMIN_NAME || 'Admin User',
+        });
+    }
+    return entries;
+}
+async function ensureAdmin(entry) {
+    const existing = await User_1.User.findOne({ email: entry.email });
+    if (existing) {
+        if (existing.role === 'admin') {
+            console.log(`🔐 Admin already exists: ${entry.email}`);
             return;
         }
-        const hashedPassword = await bcryptjs_1.default.hash(adminPassword, 10);
-        existingUser.role = 'admin';
-        existingUser.password = hashedPassword;
-        existingUser.verified = true;
-        await existingUser.save();
-        console.log(`🔐 Existing user upgraded to admin: ${adminEmail}`);
+        // Upgrade existing user to admin
+        existing.role = 'admin';
+        existing.password = await bcryptjs_1.default.hash(entry.password, 10);
+        existing.verified = true;
+        await existing.save();
+        console.log(`🔐 User upgraded to admin: ${entry.email}`);
         return;
     }
-    const hashedPassword = await bcryptjs_1.default.hash(adminPassword, 10);
+    // Create new admin user
     await User_1.User.create({
-        name: process.env.ADMIN_NAME || 'Admin User',
-        email: adminEmail,
-        phone: process.env.ADMIN_PHONE || '0000000000',
-        password: hashedPassword,
+        name: entry.name,
+        email: entry.email,
+        phone: '0000000000',
+        password: await bcryptjs_1.default.hash(entry.password, 10),
         farmSize: 0,
         location: {
             state: 'Admin',
             district: 'Admin',
-            coordinates: {
-                latitude: 0,
-                longitude: 0,
-            },
+            coordinates: { latitude: 0, longitude: 0 },
         },
         soilType: 'N/A',
         waterSource: 'N/A',
@@ -47,7 +65,16 @@ const ensureBootstrapAdmin = async () => {
         points: 0,
         verified: true,
     });
-    console.log(`🔐 Bootstrap admin created: ${adminEmail}`);
+    console.log(`🔐 Admin account created: ${entry.email}`);
+}
+const ensureBootstrapAdmin = async () => {
+    const admins = parseAdminEntries();
+    if (admins.length === 0) {
+        return;
+    }
+    for (const admin of admins) {
+        await ensureAdmin(admin);
+    }
 };
 exports.ensureBootstrapAdmin = ensureBootstrapAdmin;
 //# sourceMappingURL=bootstrapAdmin.js.map

@@ -36,7 +36,7 @@ export default function MyCropsPage() {
   const [fieldLabel, setFieldLabel] = useState('Field 1');
 
   useEffect(() => {
-    if (!isAuthenticated) { router.push('/auth'); return; }
+    if (!isAuthenticated) { router.replace('/auth/login'); return; }
     fetchCrops();
   }, [isAuthenticated]);
 

@@ -5,6 +5,7 @@ export interface IUser extends Document {
   email: string;
   phone?: string;
   password: string;
+  profileImage?: string;
   farmSize: number;
   companyName?: string;
   businessType?: string;
@@ -26,6 +27,8 @@ export interface IUser extends Document {
   crops: string[];
   points: number;
   verified: boolean;
+  isActive: boolean;
+  lastLogin?: Date;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -36,6 +39,7 @@ const userSchema = new Schema<IUser>(
     email: { type: String, required: true, unique: true, lowercase: true, trim: true },
     phone: { type: String, default: '' },
     password: { type: String, required: true },
+    profileImage: { type: String, default: '' },
     farmSize: { type: Number, required: true },
     companyName: { type: String },
     businessType: { type: String },
@@ -57,6 +61,8 @@ const userSchema = new Schema<IUser>(
     crops: [String],
     points: { type: Number, default: 0 },
     verified: { type: Boolean, default: false },
+    isActive: { type: Boolean, default: true },
+    lastLogin: { type: Date },
   },
   { timestamps: true }
 );

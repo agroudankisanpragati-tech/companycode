@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from 'next';
+import React from 'react';
 // @ts-ignore: allow side-effect CSS import without module declarations
 import '../styles/globals.css';
 import { AdminProvider } from '@/components/admin/AdminProvider';

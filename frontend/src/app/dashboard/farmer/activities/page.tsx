@@ -1,8 +1,9 @@
 "use client";
 
 import Link from 'next/link';
+import ProtectedRoute from '@/components/ProtectedRoute';
 
-export default function ActivitiesPage() {
+function ActivitiesContent() {
   const activities = [
     { text: 'Sold 200 kg wheat at mandi', time: '3h ago' },
     { text: 'New recommendation available', time: '6h ago' },
@@ -30,4 +31,8 @@ export default function ActivitiesPage() {
       </div>
     </div>
   );
+}
+
+export default function ActivitiesPage() {
+  return <ProtectedRoute><ActivitiesContent /></ProtectedRoute>;
 }

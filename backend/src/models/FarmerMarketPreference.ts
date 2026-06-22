@@ -1,7 +1,7 @@
 import mongoose, { Schema, Document } from 'mongoose';
 
 export interface IFarmerMarketPreference extends Document {
-  farmerId: mongoose.Types.ObjectId;
+  farmerId: string;
   selectedCrop: string;
   selectedDistrict: string;
   selectedState: string;
@@ -10,7 +10,7 @@ export interface IFarmerMarketPreference extends Document {
 
 const schema = new Schema<IFarmerMarketPreference>(
   {
-    farmerId: { type: Schema.Types.ObjectId, ref: 'User', required: true, unique: true },
+    farmerId: { type: String, ref: 'User', required: true, unique: true },
     selectedCrop: { type: String, default: 'Wheat' },
     selectedDistrict: { type: String, default: '' },
     selectedState: { type: String, default: '' },

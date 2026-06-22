@@ -2,8 +2,9 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
+import ProtectedRoute from '@/components/ProtectedRoute';
 
-export default function RewardsPage() {
+function RewardsContent() {
   const [points, setPoints] = useState(1240);
   const [value, setValue] = useState(620);
   const [redeeming, setRedeeming] = useState(false);
@@ -54,4 +55,8 @@ export default function RewardsPage() {
       </div>
     </div>
   );
+}
+
+export default function RewardsPage() {
+  return <ProtectedRoute><RewardsContent /></ProtectedRoute>;
 }
