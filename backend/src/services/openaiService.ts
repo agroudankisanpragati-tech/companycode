@@ -1,4 +1,18 @@
-import { IFarmerConditions, IRecommendationItem } from '../models/AIRecommendation';
+import { IRecommendationItem } from './recommendationEngine';
+
+export interface IFarmerConditions {
+  soilType: string;
+  soilPH: number;
+  waterAvailability: string;
+  season: string;
+  district: string;
+  state: string;
+  farmArea: number;
+  budget: number;
+  farmingType: string;
+  rainfall?: number;
+  averageTemperature?: number;
+}
 
 const getApiUrl = () => `${process.env.OPENAI_BASE_URL || 'https://api.openai.com/v1'}/chat/completions`;
 

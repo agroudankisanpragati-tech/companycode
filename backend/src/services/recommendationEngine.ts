@@ -1,6 +1,27 @@
 import { CropKnowledgeBase, ICropKnowledgeBase } from '../models/CropKnowledgeBase';
 import { IFarmerCropRequest } from '../models/FarmerCropRequest';
-import { IRecommendationItem } from '../models/AIRecommendation';
+
+export interface IRecommendationItem {
+  cropName: string;
+  cropCategory: string;
+  suitabilityScore: number;
+  whySuitable: string;
+  waterRequirement: string;
+  estimatedCultivationCost: number;
+  estimatedYield: string;
+  expectedRevenue: number;
+  expectedProfit: number;
+  marketDemand: string;
+  risks: string;
+  cultivationGuide: string;
+  growingDuration?: number;
+  riskLevel?: string;
+  currentMarketPrice?: number;
+  fertilizerRequirement?: string;
+  fertilizerCost?: number;
+  seedRequirement?: string;
+  recommendedSeedVariety?: string;
+}
 
 const WEIGHTS = {
   soilMatch: 0.30,
@@ -45,14 +66,10 @@ function scoreSeason(crop: ICropKnowledgeBase, season: string): number {
 function scoreClimate(crop: ICropKnowledgeBase, rainfall?: number, temperature?: number): number {
   let score = 100;
   if (rainfall !== undefined) {
-    if (rainfall < crop.minRainfall || rainfall > crop.maxRainfall) {
-      score -= 40;
-    }
+    if (rainfall < crop.minRainfall || rainfall > crop.maxRainfall) score -= 40;
   }
   if (temperature !== undefined) {
-    if (temperature < crop.minTemperature || temperature > crop.maxTemperature) {
-      score -= 40;
-    }
+    if (temperature < crop.minTemperature || temperature > crop.maxTemperature) score -= 40;
   }
   return Math.max(0, score);
 }
@@ -109,7 +126,8 @@ function cropToRecommendationItem(crop: ICropKnowledgeBase, score: number): IRec
 export async function runRecommendationEngine(
   req: IFarmerCropRequest
 ): Promise<{ recommendations: IRecommendationItem[]; hasHighScore: boolean }> {
-  const crops = await CropKnowledgeBase.find({});
+  // Only query base entries (no AI context duplicates)
+  const crops = await CropKnowledgeBase.find({ sourceType: { $ne: 'AI' } });
 
   const scored = crops
     .map((crop) => ({ crop, score: computeSuitability(crop, req) }))

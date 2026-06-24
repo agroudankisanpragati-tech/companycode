@@ -13,6 +13,11 @@ const connectDB = async () => {
         }
         await mongoose_1.default.connect(mongoURI);
         console.log('✅ MongoDB Connected Successfully');
+        process.on('SIGINT', async () => {
+            await mongoose_1.default.disconnect();
+            console.log('MongoDB disconnected on app termination');
+            process.exit(0);
+        });
     }
     catch (error) {
         console.error('❌ MongoDB Connection Error:', error);

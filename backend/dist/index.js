@@ -8,6 +8,7 @@ const cors_1 = __importDefault(require("cors"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
+const express_rate_limit_1 = __importDefault(require("express-rate-limit"));
 const database_1 = require("./config/database");
 const auth_1 = __importDefault(require("./routes/auth"));
 const crops_1 = __importDefault(require("./routes/crops"));
@@ -69,7 +70,27 @@ app.use((0, cors_1.default)({
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ limit: '10mb', extended: true }));
 app.use('/uploads', express_1.default.static(uploadsDir));
+// Rate limiters
+const authLimiter = (0, express_rate_limit_1.default)({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 20,
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: { error: 'Too many requests, please try again later.' },
+    skip: () => process.env.NODE_ENV === 'development',
+});
+const otpLimiter = (0, express_rate_limit_1.default)({
+    windowMs: 10 * 60 * 1000, // 10 minutes
+    max: 5,
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: { error: 'Too many OTP requests, please try again in 10 minutes.' },
+    skip: () => process.env.NODE_ENV === 'development',
+});
 // Routes
+app.use('/api/auth/login', authLimiter);
+app.use('/api/auth/register/request-otp', otpLimiter);
+app.use('/api/auth/register/verify-otp', otpLimiter);
 app.use('/api/auth', auth_1.default);
 app.use('/api/crops', crops_1.default);
 // marketplace routes removed per request (UI replaced with mandi-bhav integration)

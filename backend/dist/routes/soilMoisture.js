@@ -9,7 +9,8 @@ const SoilMoisture_1 = require("../models/SoilMoisture");
 const User_1 = require("../models/User");
 const router = express_1.default.Router();
 const CACHE_TTL_MS = 4 * 60 * 60 * 1000; // 4 hours
-const DATA_GOV_KEY = process.env.DATA_GOV_API_KEY || '';
+// Read at request time so dotenv has already been configured
+const getDataGovKey = () => process.env.DATA_GOV_API_KEY || '';
 // Derive moisture % from rainfall (mm/day) + humidity + season
 function deriveMoisture(rainfallMm, humidity, state) {
     const month = new Date().getMonth(); // 0-11
@@ -51,12 +52,12 @@ function getMoistureStatus(pct) {
 }
 // Fetch district rainfall from data.gov.in IMD rainfall dataset
 async function fetchRainfallFromGov(state, district) {
-    if (!DATA_GOV_KEY)
+    if (!getDataGovKey())
         return { rainfallMm: 0, humidity: 60 };
     try {
         // IMD district-wise rainfall resource
         const url = new URL('https://api.data.gov.in/resource/9ef84268-d588-465a-a308-a864a43d0070');
-        url.searchParams.set('api-key', DATA_GOV_KEY);
+        url.searchParams.set('api-key', getDataGovKey());
         url.searchParams.set('format', 'json');
         url.searchParams.set('limit', '5');
         url.searchParams.set('filters[state.keyword]', state);

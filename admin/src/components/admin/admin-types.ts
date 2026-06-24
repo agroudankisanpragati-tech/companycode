@@ -132,6 +132,22 @@ export type CropKnowledge = {
   fertilizerCost?: number;
   seedRequirement?: string;
   recommendedSeedVariety?: string;
+  // AI-generated fields
+  soilType?: string;
+  soilPH?: number;
+  waterAvailability?: string;
+  district?: string;
+  state?: string;
+  season?: string;
+  suitabilityScore?: number;
+  aiRecommendation?: string;
+  expectedYield?: string;
+  marketPrice?: number;
+  diseaseRisks?: string;
+  sourceType?: 'AI' | 'Manual';
+  source?: 'database' | 'openai' | 'admin';
+  status?: 'active' | 'disabled' | 'archived';
+  lastUpdated?: string;
   createdAt?: string;
   updatedAt?: string;
 };

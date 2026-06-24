@@ -197,7 +197,7 @@ router.post('/register', async (req, res) => {
         });
         await user.save();
         emailOtpStore.delete(email);
-        const token = jsonwebtoken_1.default.sign({ userId: user._id }, process.env.JWT_SECRET || 'secret', {
+        const token = jsonwebtoken_1.default.sign({ userId: user._id }, process.env.JWT_SECRET, {
             expiresIn: '30d',
         });
         res.status(201).json({
@@ -228,7 +228,7 @@ router.post('/login', async (req, res) => {
         }
         user.lastLogin = new Date();
         await user.save();
-        const token = jsonwebtoken_1.default.sign({ userId: user._id }, process.env.JWT_SECRET || 'secret', {
+        const token = jsonwebtoken_1.default.sign({ userId: user._id }, process.env.JWT_SECRET, {
             expiresIn: '30d',
         });
         res.json({
@@ -258,7 +258,7 @@ router.get('/me', auth_1.authenticate, async (req, res) => {
 });
 router.get('/google', (req, res) => {
     const clientId = process.env.GOOGLE_CLIENT_ID;
-    const redirectUri = process.env.GOOGLE_REDIRECT_URI || `${process.env.BACKEND_URL || 'http://localhost:5000'}/api/auth/google/callback`;
+    const redirectUri = process.env.GOOGLE_REDIRECT_URI || `${process.env.BACKEND_URL || 'http://localhost:4000'}/api/auth/google/callback`;
     const role = req.query.role || 'farmer';
     const state = Buffer.from(JSON.stringify({ role })).toString('base64');
     const params = new URLSearchParams({
@@ -282,7 +282,7 @@ router.get('/google/callback', async (req, res) => {
             code: code,
             client_id: process.env.GOOGLE_CLIENT_ID || '',
             client_secret: process.env.GOOGLE_CLIENT_SECRET || '',
-            redirect_uri: process.env.GOOGLE_REDIRECT_URI || `${process.env.BACKEND_URL || 'http://localhost:5000'}/api/auth/google/callback`,
+            redirect_uri: process.env.GOOGLE_REDIRECT_URI || `${process.env.BACKEND_URL || 'http://localhost:4000'}/api/auth/google/callback`,
             grant_type: 'authorization_code',
         }).toString(), {
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -322,7 +322,7 @@ router.get('/google/callback', async (req, res) => {
             user.lastLogin = new Date();
             await user.save();
         }
-        const token = jsonwebtoken_1.default.sign({ userId: user._id }, process.env.JWT_SECRET || 'secret', {
+        const token = jsonwebtoken_1.default.sign({ userId: user._id }, process.env.JWT_SECRET, {
             expiresIn: '30d',
         });
         const frontend = process.env.FRONTEND_URL || 'http://localhost:3000';

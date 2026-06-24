@@ -4,7 +4,6 @@ import { GovtScheme } from '../models/GovtScheme';
 import { User } from '../models/User';
 import { CropRecommendation } from '../models/CropRecommendation';
 import { MarketplaceListing } from '../models/Marketplace';
-import { AIRecommendation } from '../models/AIRecommendation';
 import { FarmerCropRequest } from '../models/FarmerCropRequest';
 import { CropKnowledgeBase } from '../models/CropKnowledgeBase';
 import { AuthenticatedRequest, authenticate, requireAdmin } from '../middleware/auth';
@@ -261,33 +260,29 @@ router.delete('/listings/:id', async (req: AuthenticatedRequest, res: Response) 
 });
 
 // ─── AI Crop Recommendation Admin Routes ─────────────────────────────────────
+// Analytics now sourced entirely from CropKnowledgeBase (sourceType: 'AI')
 
 router.get('/ai-analytics', async (_req: AuthenticatedRequest, res: Response) => {
   try {
-    const [totalRequests, totalAICalls, totalCached, feedbackHelpful, feedbackNotHelpful] = await Promise.all([
+    const [totalRequests, totalAICalls, totalCached] = await Promise.all([
       FarmerCropRequest.countDocuments(),
-      AIRecommendation.countDocuments({ source: 'openai' }),
-      AIRecommendation.countDocuments({ source: 'database' }),
-      AIRecommendation.countDocuments({ feedback: 'helpful' }),
-      AIRecommendation.countDocuments({ feedback: 'not_helpful' }),
+      CropKnowledgeBase.countDocuments({ sourceType: 'AI', source: 'openai' }),
+      CropKnowledgeBase.countDocuments({ sourceType: 'AI', source: 'database' }),
     ]);
 
-    // Most recommended crops
-    const cropStats = await AIRecommendation.aggregate([
-      { $unwind: '$recommendations' },
-      { $group: { _id: '$recommendations.cropName', count: { $sum: 1 }, category: { $first: '$recommendations.cropCategory' } } },
+    const cropStats = await CropKnowledgeBase.aggregate([
+      { $match: { sourceType: 'AI' } },
+      { $group: { _id: '$cropName', count: { $sum: 1 }, category: { $first: '$cropCategory' } } },
       { $sort: { count: -1 } },
       { $limit: 10 },
     ]);
 
-    // Category breakdown
-    const categoryStats = await AIRecommendation.aggregate([
-      { $unwind: '$recommendations' },
-      { $group: { _id: '$recommendations.cropCategory', count: { $sum: 1 } } },
+    const categoryStats = await CropKnowledgeBase.aggregate([
+      { $match: { sourceType: 'AI' } },
+      { $group: { _id: '$cropCategory', count: { $sum: 1 } } },
       { $sort: { count: -1 } },
     ]);
 
-    // Cost savings: each cached result saved ~1 API call at avg $0.01
     const estimatedSavings = totalCached * 0.01;
 
     res.json({
@@ -297,7 +292,7 @@ router.get('/ai-analytics', async (_req: AuthenticatedRequest, res: Response) =>
         totalAICalls,
         totalCachedRecommendations: totalCached,
         estimatedApiCostSavings: `$${estimatedSavings.toFixed(2)}`,
-        feedback: { helpful: feedbackHelpful, notHelpful: feedbackNotHelpful },
+        feedback: { helpful: 0, notHelpful: 0 },
         mostRecommendedCrops: cropStats.map((c) => ({ cropName: c._id, count: c.count, category: c.category })),
         categoryAnalytics: categoryStats.map((c) => ({ category: c._id, count: c.count })),
       },
@@ -307,18 +302,60 @@ router.get('/ai-analytics', async (_req: AuthenticatedRequest, res: Response) =>
   }
 });
 
-router.get('/ai-recommendations', async (_req: AuthenticatedRequest, res: Response) => {
+// List all AI-generated entries in CropKnowledgeBase
+router.get('/ai-recommendations', async (req: AuthenticatedRequest, res: Response) => {
   try {
-    const recommendations = await AIRecommendation.find().sort({ createdAt: -1 }).limit(100);
-    res.json({ success: true, data: recommendations });
+    const page = Math.max(1, parseInt(req.query.page as string) || 1);
+    const limit = Math.min(100, parseInt(req.query.limit as string) || 20);
+    const skip = (page - 1) * limit;
+    const crops = await CropKnowledgeBase.find({ sourceType: 'AI' })
+      .sort({ lastUpdated: -1 })
+      .skip(skip)
+      .limit(limit);
+    const total = await CropKnowledgeBase.countDocuments({ sourceType: 'AI' });
+    res.json({ success: true, data: crops, total, page, limit });
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch AI recommendations' });
   }
 });
 
+// Update an AI-generated crop entry (admin can edit)
+router.put('/ai-recommendations/:id', async (req: AuthenticatedRequest, res: Response) => {
+  try {
+    const updated = await CropKnowledgeBase.findByIdAndUpdate(
+      req.params.id,
+      { ...req.body, lastUpdated: new Date() },
+      { new: true, runValidators: true }
+    );
+    if (!updated) return res.status(404).json({ error: 'Not found' });
+    res.json({ success: true, data: updated });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message || 'Failed to update' });
+  }
+});
+
+// Change status of an AI crop entry (approve/disable/archive)
+router.patch('/ai-recommendations/:id/status', async (req: AuthenticatedRequest, res: Response) => {
+  try {
+    const { status } = req.body;
+    if (!['active', 'disabled', 'archived'].includes(status)) {
+      return res.status(400).json({ error: 'Invalid status' });
+    }
+    const updated = await CropKnowledgeBase.findByIdAndUpdate(
+      req.params.id,
+      { status, lastUpdated: new Date() },
+      { new: true }
+    );
+    if (!updated) return res.status(404).json({ error: 'Not found' });
+    res.json({ success: true, data: updated });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to update status' });
+  }
+});
+
 router.delete('/ai-recommendations/:id', async (req: AuthenticatedRequest, res: Response) => {
   try {
-    const deleted = await AIRecommendation.findByIdAndDelete(req.params.id);
+    const deleted = await CropKnowledgeBase.findByIdAndDelete(req.params.id);
     if (!deleted) return res.status(404).json({ error: 'Not found' });
     res.json({ success: true, message: 'Deleted' });
   } catch (error) {

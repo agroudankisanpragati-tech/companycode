@@ -36,7 +36,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.FarmerMarketPreference = void 0;
 const mongoose_1 = __importStar(require("mongoose"));
 const schema = new mongoose_1.Schema({
-    farmerId: { type: mongoose_1.Schema.Types.ObjectId, ref: 'User', required: true, unique: true },
+    farmerId: { type: String, ref: 'User', required: true, unique: true },
     selectedCrop: { type: String, default: 'Wheat' },
     selectedDistrict: { type: String, default: '' },
     selectedState: { type: String, default: '' },

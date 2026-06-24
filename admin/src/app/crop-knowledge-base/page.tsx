@@ -2,7 +2,7 @@
 
 import { FormEvent, useEffect, useState } from 'react';
 import { useAdmin } from '@/components/admin/AdminProvider';
-import { fetchCropKnowledge, createCrop, updateCrop, deleteCrop } from '@/components/admin/admin-api';
+import { fetchCropKnowledge, createCrop, updateCrop, deleteCrop, requestJson } from '@/components/admin/admin-api';
 import { StatCard } from '@/components/admin/AdminUi';
 import type { CropKnowledge, CropKnowledgeSummary } from '@/components/admin/admin-types';
 import { FaLeaf, FaSeedling, FaAppleAlt, FaCarrot, FaDatabase } from 'react-icons/fa';
@@ -113,6 +113,20 @@ export default function CropKnowledgeBasePage() {
       await load(pagination.page);
     } catch (e: any) {
       setError(e.message || 'Failed to delete crop');
+    }
+  };
+
+  const handleStatusChange = async (id: string, status: 'active' | 'disabled' | 'archived') => {
+    if (!token) return;
+    try {
+      await requestJson(`/admin/ai-recommendations/${id}/status`, token, {
+        method: 'PATCH',
+        body: JSON.stringify({ status }),
+      });
+      setMessage(`Status updated to ${status}.`);
+      await load(pagination.page);
+    } catch (e: any) {
+      setError(e.message || 'Failed to update status');
     }
   };
 
@@ -315,11 +329,11 @@ export default function CropKnowledgeBasePage() {
                 <tr className="border-b border-white/10 text-left text-xs uppercase tracking-wider text-slate-400">
                   <th className="pb-3 pr-4">Crop Name</th>
                   <th className="pb-3 pr-4">Category</th>
-                  <th className="pb-3 pr-4">Seasons</th>
-                  <th className="pb-3 pr-4">Duration</th>
+                  <th className="pb-3 pr-4">Source</th>
+                  <th className="pb-3 pr-4">Seasons / Region</th>
                   <th className="pb-3 pr-4">Market Price</th>
                   <th className="pb-3 pr-4">Risk</th>
-                  <th className="pb-3 pr-4">Demand</th>
+                  <th className="pb-3 pr-4">Status</th>
                   <th className="pb-3">Actions</th>
                 </tr>
               </thead>
@@ -328,15 +342,35 @@ export default function CropKnowledgeBasePage() {
                   <tr key={crop._id} className="group hover:bg-white/5 transition-colors">
                     <td className="py-3 pr-4 font-semibold text-white">{crop.cropName}</td>
                     <td className="py-3 pr-4"><span className={badge(crop.cropCategory)}>{crop.cropCategory}</span></td>
-                    <td className="py-3 pr-4 text-slate-300">{(crop.suitableSeasons || []).join(', ') || '—'}</td>
-                    <td className="py-3 pr-4 text-slate-300">{crop.growingDuration}d</td>
-                    <td className="py-3 pr-4 text-slate-300">₹{crop.averageMarketPrice}/q</td>
+                    <td className="py-3 pr-4">
+                      <span className={crop.sourceType === 'AI'
+                        ? 'inline-block rounded-full px-2.5 py-0.5 text-xs font-semibold bg-purple-400/20 text-purple-300'
+                        : 'inline-block rounded-full px-2.5 py-0.5 text-xs font-semibold bg-slate-400/20 text-slate-300'}>
+                        {crop.sourceType === 'AI' ? '🤖 AI' : '📋 Manual'}
+                      </span>
+                    </td>
+                    <td className="py-3 pr-4 text-slate-300">
+                      {(crop.suitableSeasons || []).join(', ') || (crop.season ? `${crop.season}${crop.district ? ` · ${crop.district}` : ''}` : '—')}
+                    </td>
+                    <td className="py-3 pr-4 text-slate-300">{crop.averageMarketPrice ? `₹${crop.averageMarketPrice}/q` : (crop.marketPrice ? `₹${crop.marketPrice}/q` : '—')}</td>
                     <td className="py-3 pr-4"><span className={badge(crop.riskLevel)}>{crop.riskLevel}</span></td>
-                    <td className="py-3 pr-4"><span className={badge(crop.marketDemand)}>{crop.marketDemand}</span></td>
+                    <td className="py-3 pr-4">
+                      <span className={`inline-block rounded-full px-2.5 py-0.5 text-xs font-semibold ${
+                        !crop.status || crop.status === 'active' ? 'bg-emerald-400/20 text-emerald-300' :
+                        crop.status === 'disabled' ? 'bg-red-400/20 text-red-300' :
+                        'bg-slate-400/20 text-slate-300'
+                      }`}>{crop.status || 'active'}</span>
+                    </td>
                     <td className="py-3">
                       <div className="flex gap-1">
                         <button onClick={() => setViewCrop(crop)} className="rounded-lg p-1.5 text-slate-400 hover:bg-white/10 hover:text-blue-300 transition-colors" title="View">👁</button>
                         <button onClick={() => openEdit(crop)} className="rounded-lg p-1.5 text-slate-400 hover:bg-white/10 hover:text-amber-300 transition-colors" title="Edit">✏️</button>
+                        {crop.sourceType === 'AI' && crop.status !== 'disabled' && (
+                          <button onClick={() => handleStatusChange(crop._id, 'disabled')} className="rounded-lg p-1.5 text-slate-400 hover:bg-white/10 hover:text-orange-300 transition-colors" title="Disable">🚫</button>
+                        )}
+                        {crop.sourceType === 'AI' && crop.status === 'disabled' && (
+                          <button onClick={() => handleStatusChange(crop._id, 'active')} className="rounded-lg p-1.5 text-slate-400 hover:bg-white/10 hover:text-emerald-300 transition-colors" title="Activate">✅</button>
+                        )}
                         <button onClick={() => setDeleteConfirm({ id: crop._id, name: crop.cropName })} className="rounded-lg p-1.5 text-slate-400 hover:bg-white/10 hover:text-red-400 transition-colors" title="Delete">🗑️</button>
                       </div>
                     </td>
@@ -366,7 +400,19 @@ export default function CropKnowledgeBasePage() {
             <div className="mb-4 flex items-start justify-between gap-4">
               <div>
                 <h3 className="text-2xl font-bold text-white">{viewCrop.cropName}</h3>
-                <span className={`mt-1 ${badge(viewCrop.cropCategory)}`}>{viewCrop.cropCategory}</span>
+                <div className="mt-1 flex gap-2 flex-wrap">
+                  <span className={badge(viewCrop.cropCategory)}>{viewCrop.cropCategory}</span>
+                  {viewCrop.sourceType === 'AI' && (
+                    <span className="inline-block rounded-full px-2.5 py-0.5 text-xs font-semibold bg-purple-400/20 text-purple-300">
+                      🤖 AI Generated
+                    </span>
+                  )}
+                  {viewCrop.status && viewCrop.status !== 'active' && (
+                    <span className="inline-block rounded-full px-2.5 py-0.5 text-xs font-semibold bg-red-400/20 text-red-300 capitalize">
+                      {viewCrop.status}
+                    </span>
+                  )}
+                </div>
               </div>
               <button onClick={() => setViewCrop(null)} className="rounded-lg p-2 text-slate-400 hover:bg-white/10 hover:text-white">✕</button>
             </div>
@@ -393,6 +439,15 @@ export default function CropKnowledgeBasePage() {
                   </div>
                 ))}
               </div>
+              {viewCrop.sourceType === 'AI' && viewCrop.aiRecommendation && (
+                <div>
+                  <p className="mb-1 text-slate-500">AI Recommendation:</p>
+                  <p className="whitespace-pre-line rounded-xl bg-white/5 p-3">{viewCrop.aiRecommendation}</p>
+                </div>
+              )}
+              {viewCrop.sourceType === 'AI' && (viewCrop.district || viewCrop.state) && (
+                <p><span className="text-slate-500">Location:</span> {[viewCrop.district, viewCrop.state].filter(Boolean).join(', ')}</p>
+              )}
               {viewCrop.suitableSeasons?.length > 0 && <p><span className="text-slate-500">Seasons:</span> {viewCrop.suitableSeasons.join(', ')}</p>}
               {viewCrop.suitableSoilTypes?.length > 0 && <p><span className="text-slate-500">Soil Types:</span> {viewCrop.suitableSoilTypes.join(', ')}</p>}
               {viewCrop.suitableIrrigationTypes?.length > 0 && <p><span className="text-slate-500">Irrigation:</span> {viewCrop.suitableIrrigationTypes.join(', ')}</p>}

@@ -22,7 +22,7 @@ const authenticate = async (req, res, next) => {
         return res.status(401).json({ error: 'Unauthorized' });
     }
     try {
-        const payload = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET || 'secret');
+        const payload = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
         const user = await User_1.User.findById(payload.userId).select('-password');
         if (!user) {
             return res.status(401).json({ error: 'Unauthorized' });

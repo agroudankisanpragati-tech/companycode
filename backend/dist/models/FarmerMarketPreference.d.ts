@@ -1,6 +1,6 @@
 import mongoose, { Document } from 'mongoose';
 export interface IFarmerMarketPreference extends Document {
-    farmerId: mongoose.Types.ObjectId;
+    farmerId: string;
     selectedCrop: string;
     selectedDistrict: string;
     selectedState: string;

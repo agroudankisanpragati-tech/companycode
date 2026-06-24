@@ -27,6 +27,26 @@ export interface ICropKnowledgeBase extends Document {
     fertilizerCost?: number;
     seedRequirement?: string;
     recommendedSeedVariety?: string;
+    soilType?: string;
+    soilPH?: number;
+    waterAvailability?: string;
+    weatherCondition?: string;
+    district?: string;
+    state?: string;
+    season?: string;
+    suitabilityScore?: number;
+    aiRecommendation?: string;
+    expectedYield?: string;
+    marketPrice?: number;
+    fertilizerPlan?: string;
+    organicPractices?: string;
+    diseaseRisks?: string;
+    irrigationAdvice?: string;
+    sourceType?: 'AI' | 'Manual';
+    source?: 'database' | 'openai' | 'admin';
+    createdBy?: string;
+    status?: 'active' | 'disabled' | 'archived';
+    lastUpdated?: Date;
 }
 export declare const CropKnowledgeBase: mongoose.Model<ICropKnowledgeBase, {}, {}, {}, mongoose.Document<unknown, {}, ICropKnowledgeBase, {}, {}> & ICropKnowledgeBase & Required<{
     _id: mongoose.Types.ObjectId;

@@ -1,64 +1,103 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.findSimilarRecommendation = findSimilarRecommendation;
-const AIRecommendation_1 = require("../models/AIRecommendation");
+const CropKnowledgeBase_1 = require("../models/CropKnowledgeBase");
 const SIMILARITY_THRESHOLD = 0.85;
 function calcSimilarity(a, b) {
     let score = 0;
     let total = 0;
-    // Soil type match — weight 30
     total += 30;
-    if (a.soilType.toLowerCase() === b.soilType.toLowerCase())
+    if (b.soilType && a.soilType.toLowerCase() === b.soilType.toLowerCase())
         score += 30;
-    // Season match — weight 20
     total += 20;
-    if (a.season === b.season)
+    if (b.season && a.season === b.season)
         score += 20;
-    // District match — weight 15
     total += 15;
-    if (a.district.toLowerCase() === b.district.toLowerCase())
+    if (b.district && a.district.toLowerCase() === b.district.toLowerCase())
         score += 15;
-    // Water availability match — weight 15
     total += 15;
-    if (a.waterAvailability === b.waterAvailability)
+    if (b.waterAvailability && a.waterAvailability === b.waterAvailability)
         score += 15;
-    // pH proximity — weight 10
     total += 10;
-    const phDiff = Math.abs(a.soilPH - b.soilPH);
-    if (phDiff <= 0.3)
-        score += 10;
-    else if (phDiff <= 0.7)
-        score += 5;
-    // Budget proximity — weight 10
+    if (b.soilPH !== undefined) {
+        const phDiff = Math.abs(a.soilPH - b.soilPH);
+        if (phDiff <= 0.3)
+            score += 10;
+        else if (phDiff <= 0.7)
+            score += 5;
+    }
     total += 10;
-    const budgetRatio = Math.min(a.budget, b.budget) / Math.max(a.budget, b.budget);
-    if (budgetRatio >= 0.8)
-        score += 10;
-    else if (budgetRatio >= 0.5)
-        score += 5;
+    if (b.budget !== undefined && b.budget > 0) {
+        const budgetRatio = Math.min(a.budget, b.budget) / Math.max(a.budget, b.budget);
+        if (budgetRatio >= 0.8)
+            score += 10;
+        else if (budgetRatio >= 0.5)
+            score += 5;
+    }
     return score / total;
 }
 async function findSimilarRecommendation(conditions) {
-    // Pre-filter by soil type + season to reduce comparison set
-    const candidates = await AIRecommendation_1.AIRecommendation.find({
-        'farmerConditions.soilType': { $regex: new RegExp(conditions.soilType, 'i') },
-        'farmerConditions.season': conditions.season,
+    // Find AI-sourced entries matching soil + season in CropKnowledgeBase
+    const candidates = await CropKnowledgeBase_1.CropKnowledgeBase.find({
+        sourceType: 'AI',
+        status: 'active',
+        soilType: { $regex: new RegExp(conditions.soilType, 'i') },
+        season: conditions.season,
     })
-        .sort({ createdAt: -1 })
+        .sort({ lastUpdated: -1 })
         .limit(50);
+    if (candidates.length === 0) {
+        return { found: false, recommendations: [], similarityScore: 0 };
+    }
+    // Group by context (district+soilType+season) to find best matching group
+    const contextMap = new Map();
+    for (const c of candidates) {
+        const key = `${c.district}|${c.soilType}|${c.season}`;
+        if (!contextMap.has(key))
+            contextMap.set(key, []);
+        contextMap.get(key).push(c);
+    }
     let bestScore = 0;
-    let bestMatch = null;
-    for (const candidate of candidates) {
-        const similarity = calcSimilarity(conditions, candidate.farmerConditions);
+    let bestGroup = [];
+    for (const [, group] of contextMap) {
+        const first = group[0];
+        const similarity = calcSimilarity(conditions, {
+            soilType: first.soilType,
+            season: first.season,
+            district: first.district,
+            waterAvailability: first.waterAvailability,
+            soilPH: first.soilPH,
+        });
         if (similarity > bestScore) {
             bestScore = similarity;
-            bestMatch = candidate;
+            bestGroup = group;
         }
     }
-    if (bestScore >= SIMILARITY_THRESHOLD && bestMatch) {
+    if (bestScore >= SIMILARITY_THRESHOLD && bestGroup.length > 0) {
+        const recommendations = bestGroup.map((c) => ({
+            cropName: c.cropName,
+            cropCategory: c.cropCategory,
+            suitabilityScore: c.suitabilityScore || 75,
+            whySuitable: c.aiRecommendation || c.description,
+            waterRequirement: c.waterRequirement,
+            estimatedCultivationCost: c.cultivationCost,
+            estimatedYield: c.expectedYield || `${c.averageYield} quintal/acre`,
+            expectedRevenue: c.averageYield * c.averageMarketPrice,
+            expectedProfit: c.estimatedProfit,
+            marketDemand: c.marketDemand,
+            risks: c.diseaseRisks || `Risk Level: ${c.riskLevel}`,
+            cultivationGuide: c.cultivationProcess,
+            growingDuration: c.growingDuration,
+            riskLevel: c.riskLevel,
+            currentMarketPrice: c.marketPrice || c.averageMarketPrice,
+            fertilizerRequirement: c.fertilizerRequirement,
+            fertilizerCost: c.fertilizerCost,
+            seedRequirement: c.seedRequirement,
+            recommendedSeedVariety: c.recommendedSeedVariety,
+        }));
         return {
             found: true,
-            recommendations: bestMatch.recommendations,
+            recommendations,
             similarityScore: Math.round(bestScore * 100),
         };
     }

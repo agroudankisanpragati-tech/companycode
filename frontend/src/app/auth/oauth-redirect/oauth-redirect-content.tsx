@@ -3,7 +3,8 @@
 import { useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
-const normalizeRole = (value: string | null) => (value === 'vendor' || value === 'shopkeeper' ? 'shopkeeper' : 'farmer');
+const normalizeRole = (value: string | null) =>
+    value === 'vendor' || value === 'shopkeeper' ? 'shopkeeper' : 'farmer';
 
 export default function OAuthRedirectContent() {
     const router = useRouter();
@@ -27,8 +28,8 @@ export default function OAuthRedirectContent() {
             try {
                 localStorage.setItem('authToken', token);
 
-                const apiBase = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
-                const res = await fetch(`${apiBase}/auth/me`, {
+                // Use Next.js proxy /api - works on both local and production
+                const res = await fetch('/api/auth/me', {
                     headers: { Authorization: `Bearer ${token}` },
                 });
 
@@ -39,17 +40,25 @@ export default function OAuthRedirectContent() {
                 }
 
                 const data = await res.json();
-                if (data && data.data) {
-                    const normalizedUser = { ...data.data, role: normalizeRole(data.data.role) };
-                    localStorage.setItem('user', JSON.stringify(normalizedUser));
+                if (data?.data) {
+                    const freshRole = normalizeRole(data.data.role);
+                    const user = {
+                        id: data.data._id || data.data.id,
+                        email: data.data.email,
+                        name: data.data.name,
+                        role: freshRole,
+                        phone: data.data.phone,
+                        avatar: data.data.avatar,
+                        profileImage: data.data.profileImage,
+                    };
+                    localStorage.setItem('user', JSON.stringify(user));
+                    window.dispatchEvent(new Event('auth-session-changed'));
+                    router.replace(`/dashboard/${freshRole}`);
+                } else {
+                    router.replace(`/dashboard/${role}`);
                 }
-
-                window.dispatchEvent(new Event('auth-session-changed'));
-                await new Promise((resolve) => setTimeout(resolve, 50));
-
-                router.replace(`/dashboard/${role}`);
             } catch (err) {
-                console.error(err);
+                console.error('OAuth redirect error:', err);
                 router.replace(`/auth/login?role=${role}`);
             }
         }
@@ -58,10 +67,12 @@ export default function OAuthRedirectContent() {
     }, [params, router]);
 
     return (
-        <div className="min-h-[60vh] flex items-center justify-center">
-            <div className="text-center">
-                <p className="text-xl font-semibold">Signing you in…</p>
+        <main className="min-h-screen bg-[url('/background%20img.jpg')] bg-cover bg-center flex items-center justify-center">
+            <div className="fixed inset-0 bg-black/50" />
+            <div className="relative z-10 text-center">
+                <div className="inline-block h-10 w-10 animate-spin rounded-full border-4 border-white border-t-transparent mb-4" />
+                <p className="text-white text-lg font-semibold">Google se login ho raha hai...</p>
             </div>
-        </div>
+        </main>
     );
 }

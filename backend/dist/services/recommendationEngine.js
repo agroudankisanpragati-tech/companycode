@@ -41,14 +41,12 @@ function scoreSeason(crop, season) {
 function scoreClimate(crop, rainfall, temperature) {
     let score = 100;
     if (rainfall !== undefined) {
-        if (rainfall < crop.minRainfall || rainfall > crop.maxRainfall) {
+        if (rainfall < crop.minRainfall || rainfall > crop.maxRainfall)
             score -= 40;
-        }
     }
     if (temperature !== undefined) {
-        if (temperature < crop.minTemperature || temperature > crop.maxTemperature) {
+        if (temperature < crop.minTemperature || temperature > crop.maxTemperature)
             score -= 40;
-        }
     }
     return Math.max(0, score);
 }
@@ -97,7 +95,8 @@ function cropToRecommendationItem(crop, score) {
     };
 }
 async function runRecommendationEngine(req) {
-    const crops = await CropKnowledgeBase_1.CropKnowledgeBase.find({});
+    // Only query base entries (no AI context duplicates)
+    const crops = await CropKnowledgeBase_1.CropKnowledgeBase.find({ sourceType: { $ne: 'AI' } });
     const scored = crops
         .map((crop) => ({ crop, score: computeSuitability(crop, req) }))
         .filter(({ score }) => score >= MIN_SUITABILITY)

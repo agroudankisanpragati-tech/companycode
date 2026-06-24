@@ -257,7 +257,7 @@ router.get('/crops/:id', auth_1.authenticate, async (req, res) => {
         const report = await SoilReport_1.SoilReport.findById(req.params.id).select('cropRecommendations soilType soilHealthScore farmerId');
         if (!report)
             return res.status(404).json({ error: 'Report not found' });
-        if (report.farmerId !== req.user.userId)
+        if (report.farmerId.toString() !== req.user.userId)
             return res.status(403).json({ error: 'Access denied' });
         res.json({ success: true, data: report.cropRecommendations, soilType: report.soilType, soilHealthScore: report.soilHealthScore });
     }
@@ -271,7 +271,7 @@ router.delete('/:id', auth_1.authenticate, async (req, res) => {
         const report = await SoilReport_1.SoilReport.findById(req.params.id);
         if (!report)
             return res.status(404).json({ error: 'Report not found' });
-        if (report.farmerId !== req.user.userId)
+        if (report.farmerId.toString() !== req.user.userId)
             return res.status(403).json({ error: 'Access denied' });
         // Delete uploaded file if it exists
         if (report.reportUrl) {
@@ -292,7 +292,7 @@ router.get('/:id', auth_1.authenticate, async (req, res) => {
         const report = await SoilReport_1.SoilReport.findById(req.params.id);
         if (!report)
             return res.status(404).json({ error: 'Report not found' });
-        if (report.farmerId !== req.user.userId)
+        if (report.farmerId.toString() !== req.user.userId)
             return res.status(403).json({ error: 'Access denied' });
         res.json({ success: true, data: report });
     }

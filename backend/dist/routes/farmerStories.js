@@ -59,16 +59,14 @@ router.get('/', async (req, res) => {
         res.status(500).json({ error: 'Failed to fetch stories' });
     }
 });
-// ─── PUBLIC: Get single story + increment views ───────────────────────────────
-router.get('/:id', async (req, res) => {
+// ─── FARMER: My stories ───────────────────────────────────────────────────────
+router.get('/my/stories', auth_1.authenticate, async (req, res) => {
     try {
-        const story = await FarmerStory_1.FarmerStory.findByIdAndUpdate(req.params.id, { $inc: { views: 1 } }, { new: true });
-        if (!story)
-            return res.status(404).json({ error: 'Story not found' });
-        res.json({ success: true, data: story });
+        const stories = await FarmerStory_1.FarmerStory.find({ uploadedBy: req.user.userId }).sort({ createdAt: -1 });
+        res.json({ success: true, data: stories });
     }
     catch (error) {
-        res.status(500).json({ error: 'Failed to fetch story' });
+        res.status(500).json({ error: 'Failed to fetch your stories' });
     }
 });
 // ─── FARMER: Upload story ─────────────────────────────────────────────────────
@@ -149,41 +147,16 @@ router.post('/:id/save', auth_1.authenticate, async (req, res) => {
         res.status(500).json({ error: 'Failed to save story' });
     }
 });
-// ─── FARMER: My stories ───────────────────────────────────────────────────────
-router.get('/my/stories', auth_1.authenticate, async (req, res) => {
+// ─── PUBLIC: Get single story + increment views ───────────────────────────────
+router.get('/:id', async (req, res) => {
     try {
-        const stories = await FarmerStory_1.FarmerStory.find({ uploadedBy: req.user.userId }).sort({ createdAt: -1 });
-        res.json({ success: true, data: stories });
+        const story = await FarmerStory_1.FarmerStory.findByIdAndUpdate(req.params.id, { $inc: { views: 1 } }, { new: true });
+        if (!story)
+            return res.status(404).json({ error: 'Story not found' });
+        res.json({ success: true, data: story });
     }
     catch (error) {
-        res.status(500).json({ error: 'Failed to fetch your stories' });
-    }
-});
-// ─── ADMIN: Get all stories ───────────────────────────────────────────────────
-router.get('/admin/all', auth_1.authenticate, auth_1.requireAdmin, async (req, res) => {
-    try {
-        const page = Math.max(1, parseInt(req.query.page) || 1);
-        const limit = Math.min(50, parseInt(req.query.limit) || 20);
-        const status = req.query.status;
-        const query = {};
-        if (status && ['pending', 'approved', 'rejected'].includes(status))
-            query.status = status;
-        const [stories, total, pending, approved, rejected, totalStories] = await Promise.all([
-            FarmerStory_1.FarmerStory.find(query).sort({ createdAt: -1 }).skip((page - 1) * limit).limit(limit),
-            FarmerStory_1.FarmerStory.countDocuments(query),
-            FarmerStory_1.FarmerStory.countDocuments({ status: 'pending' }),
-            FarmerStory_1.FarmerStory.countDocuments({ status: 'approved' }),
-            FarmerStory_1.FarmerStory.countDocuments({ status: 'rejected' }),
-            FarmerStory_1.FarmerStory.countDocuments(),
-        ]);
-        res.json({
-            success: true, data: stories,
-            pagination: { total, page, limit, pages: Math.ceil(total / limit) },
-            summary: { total: totalStories, pending, approved, rejected },
-        });
-    }
-    catch (error) {
-        res.status(500).json({ error: 'Failed to fetch stories' });
+        res.status(500).json({ error: 'Failed to fetch story' });
     }
 });
 // ─── ADMIN: Upload story (auto-approved) ─────────────────────────────────────
