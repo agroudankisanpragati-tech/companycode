@@ -1,494 +1,275 @@
 'use client';
-
-import Link from 'next/link';
-import { FaSignOutAlt, FaCog, FaPlus } from 'react-icons/fa';
-import { useAuth } from '@/context/AuthContext';
-import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { useAuth } from '@/context/AuthContext';
+import { shopkeeperApi } from '@/services/shopkeeperApi';
+import ToastContainer from '@/components/shopkeeper/Toast';
+import {
+  Package, Star, Eye, TrendingUp, Phone, MessageCircle,
+  ArrowUpRight, ArrowRight, Plus, Bell, Search, ChevronRight, Store,
+  BarChart3, Settings, Users, Activity, Zap, Shield, AlertTriangle, CheckCircle, XCircle,
+} from 'lucide-react';
 
-type ProductItem = {
-    _id: string;
-    cropName: string;
-    quantity: number;
-    unit: string;
-    pricePerUnit: number;
-    image?: string;
-    description?: string;
-};
+const API_BASE = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api').replace('/api', '');
 
 export default function ShopkeeperDashboard() {
-    const { user, logout, isAuthenticated } = useAuth();
-    const router = useRouter();
+  const { user, isAuthenticated } = useAuth();
+  const router = useRouter();
+  const [loading, setLoading] = useState(true);
+  const [profile, setProfile] = useState<any>(null);
+  const [products, setProducts] = useState<any[]>([]);
 
-    useEffect(() => {
-        if (!isAuthenticated) {
-            router.replace('/auth/login');
-        } else if (user?.role !== 'shopkeeper') {
-            router.replace('/auth/role-select');
-        }
-    }, [isAuthenticated, user, router]);
+  useEffect(() => {
+    if (!isAuthenticated) { router.replace('/auth/login'); return; }
+    if (user?.role !== 'shopkeeper') { router.replace('/auth/role-select'); return; }
+    loadData();
+  }, [isAuthenticated, user]);
 
-    const handleLogout = () => {
-        logout();
-        router.push('/auth/role-select');
-    };
+  const loadData = async () => {
+    setLoading(true);
+    try {
+      const profileData = await shopkeeperApi.getProfile();
+      if (profileData.profile) setProfile(profileData.profile);
+      const shopType = profileData.profile?.shopType;
+      const [fertData, nurseryData] = await Promise.all([
+        shopType === 'fertilizer' ? shopkeeperApi.getFertilizerProducts().catch(() => ({ products: [] })) : Promise.resolve({ products: [] }),
+        shopType === 'nursery' ? shopkeeperApi.getNurseryProducts().catch(() => ({ products: [] })) : Promise.resolve({ products: [] }),
+      ]);
+      const allProducts = [
+        ...(fertData.products || []).map((p: any) => ({ ...p, _productType: 'fertilizer', displayName: p.productName, displayPrice: `₹${p.sellingPrice}` })),
+        ...(nurseryData.products || []).map((p: any) => ({ ...p, _productType: 'nursery', displayName: p.plantName, displayPrice: `₹${p.price}` })),
+      ];
+      setProducts(allProducts);
+    } catch {}
+    setLoading(false);
+  };
 
-    // Products state and handlers (moved here from edit-profile)
-    const [products, setProducts] = useState<ProductItem[]>([]);
-    const [addingProduct, setAddingProduct] = useState(false);
-    const [prodForm, setProdForm] = useState({ cropName: '', quantity: '', unit: 'kg', pricePerUnit: '', image: '', description: '' });
-    const [editingProductId, setEditingProductId] = useState<string | null>(null);
-    const [message, setMessage] = useState<string | null>(null);
+  if (!isAuthenticated || user?.role !== 'shopkeeper') return null;
 
-    const apiBase = process.env.NEXT_PUBLIC_API_URL || 'https://api.agroudankisanpragati.com/api';
-    const shopId = typeof window !== 'undefined' ? localStorage.getItem('myShopId') : null;
+  const hour = new Date().getHours();
+  const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
+  const firstName = user?.name?.split(' ')[0] || 'there';
 
-    const getToken = () => (typeof window !== 'undefined' ? localStorage.getItem('authToken') : null);
-    const isJwtToken = (value: string | null) => !!value && value.split('.').length === 3;
-    const isLocalShopId = (value: string | null) => !!value && value.startsWith('local-shop-');
+  const verificationStatus = profile?.verificationStatus;
+  const isFertilizer = profile?.shopType === 'fertilizer';
+  const productRoute = isFertilizer ? '/dashboard/shopkeeper/products/fertilizer' : '/dashboard/shopkeeper/products/nursery';
 
-    const readLocalProducts = (id: string | null) => {
-        if (!id || typeof window === 'undefined') return [] as ProductItem[];
-        const raw = localStorage.getItem(`shopProducts_${id}`);
-        if (!raw) return [];
-        try {
-            return JSON.parse(raw) as ProductItem[];
-        } catch {
-            return [];
-        }
-    };
-
-    useEffect(() => {
-        // load local products first
-        if (shopId) {
-            setProducts(readLocalProducts(shopId));
-        }
-    }, [shopId]);
-
-    const addProduct = async (e: React.FormEvent) => {
-        e.preventDefault();
-        if (!shopId) return setMessage('Create a shop first');
-        setAddingProduct(true);
-        setMessage(null);
-
-        const token = getToken();
-        // If editingProductId is set -> update existing product
-        if (editingProductId) {
-            // update local or remote
-            if (isLocalShopId(shopId) || !isJwtToken(token)) {
-                try {
-                    const raw = localStorage.getItem(`shopProducts_${shopId}`) || '[]';
-                    const list = JSON.parse(raw) as ProductItem[];
-                    const next = list.map((p) => p._id === editingProductId ? {
-                        ...p,
-                        cropName: prodForm.cropName,
-                        quantity: Number(prodForm.quantity || 0),
-                        unit: prodForm.unit,
-                        pricePerUnit: Number(prodForm.pricePerUnit || 0),
-                        image: prodForm.image,
-                        description: prodForm.description,
-                    } : p);
-                    localStorage.setItem(`shopProducts_${shopId}`, JSON.stringify(next));
-                    setProducts(next);
-                    setMessage('Product updated locally');
-                    setEditingProductId(null);
-                    setProdForm({ cropName: '', quantity: '', unit: 'kg', pricePerUnit: '', image: '', description: '' });
-                } catch (err) {
-                    console.error(err);
-                    setMessage('Local product update failed');
-                } finally {
-                    setAddingProduct(false);
-                }
-                return;
-            }
-
-            try {
-                const payload = {
-                    cropName: prodForm.cropName,
-                    quantity: Number(prodForm.quantity || 0),
-                    unit: prodForm.unit,
-                    pricePerUnit: Number(prodForm.pricePerUnit || 0),
-                    image: prodForm.image,
-                    description: prodForm.description,
-                };
-                const res = await fetch(`${apiBase}/shops/${shopId}/products/${editingProductId}`, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-                    body: JSON.stringify(payload),
-                });
-                if (!res.ok) {
-                    const err = await res.json();
-                    setMessage(err.error || 'Failed to update product');
-                    setAddingProduct(false);
-                    return;
-                }
-                const data = await res.json();
-                const updated = data.listing || data;
-                setProducts((cur) => cur.map((p) => p._id === editingProductId ? updated : p));
-                setEditingProductId(null);
-                setProdForm({ cropName: '', quantity: '', unit: 'kg', pricePerUnit: '', image: '', description: '' });
-                setMessage('Product updated successfully');
-            } catch (err) {
-                console.error(err);
-                setMessage('Network error');
-            } finally {
-                setAddingProduct(false);
-            }
-            return;
-        }
-
-        if (isLocalShopId(shopId) || !isJwtToken(token)) {
-            try {
-                const raw = localStorage.getItem(`shopProducts_${shopId}`) || '[]';
-                const list = JSON.parse(raw);
-                const newItem = {
-                    _id: `local-product-${Date.now()}`,
-                    cropName: prodForm.cropName,
-                    quantity: Number(prodForm.quantity || 0),
-                    unit: prodForm.unit,
-                    pricePerUnit: Number(prodForm.pricePerUnit || 0),
-                    image: prodForm.image,
-                    description: prodForm.description,
-                };
-                list.push(newItem);
-                localStorage.setItem(`shopProducts_${shopId}`, JSON.stringify(list));
-                setProducts(list);
-                setProdForm({ cropName: '', quantity: '', unit: 'kg', pricePerUnit: '', image: '', description: '' });
-                setMessage('Product added locally');
-            } catch (err) {
-                console.error(err);
-                setMessage('Local product save failed');
-            } finally {
-                setAddingProduct(false);
-            }
-            return;
-        }
-
-        try {
-            const payload = {
-                cropName: prodForm.cropName,
-                quantity: Number(prodForm.quantity || 0),
-                unit: prodForm.unit,
-                pricePerUnit: Number(prodForm.pricePerUnit || 0),
-                image: prodForm.image,
-                description: prodForm.description,
-            };
-
-            const res = await fetch(`${apiBase}/shops/${shopId}/products`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-                body: JSON.stringify(payload),
-            });
-
-            if (!res.ok) {
-                const err = await res.json();
-                setMessage(err.error || 'Failed to add product');
-                setAddingProduct(false);
-                return;
-            }
-
-            const data = await res.json();
-            const created = data.listing || data;
-            // append created product to UI list
-            if (created && created._id) {
-                setProducts((cur) => [created, ...cur]);
-            }
-            setMessage('Product added successfully!');
-            setProdForm({ cropName: '', quantity: '', unit: 'kg', pricePerUnit: '', image: '', description: '' });
-            setAddingProduct(false);
-        } catch (err) {
-            console.error(err);
-            setMessage('Network error');
-            setAddingProduct(false);
-        }
-    };
-
-    const handleEditProduct = (product: ProductItem) => {
-        setEditingProductId(product._id);
-        setProdForm({
-            cropName: product.cropName,
-            quantity: String(product.quantity),
-            unit: product.unit,
-            pricePerUnit: String(product.pricePerUnit),
-            image: product.image || '',
-            description: product.description || '',
-        });
-        setMessage('Editing product');
-        // scroll to form
-        setTimeout(() => {
-            const el = document.getElementById('add-product-form');
-            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }, 50);
-    };
-
-    const handleDeleteProduct = async (productId: string) => {
-        if (!shopId) return;
-        const token = getToken();
-        if (isLocalShopId(shopId) || !isJwtToken(token)) {
-            try {
-                const nextProducts = readLocalProducts(shopId).filter((item) => item._id !== productId);
-                localStorage.setItem(`shopProducts_${shopId}`, JSON.stringify(nextProducts));
-                setProducts(nextProducts);
-                if (editingProductId === productId) {
-                    setEditingProductId(null);
-                    setProdForm({ cropName: '', quantity: '', unit: 'kg', pricePerUnit: '', image: '', description: '' });
-                }
-                setMessage('Product deleted successfully!');
-            } catch (err) {
-                console.error(err);
-                setMessage('Local product delete failed');
-            }
-            return;
-        }
-
-        try {
-            const res = await fetch(`${apiBase}/shops/${shopId}/products/${productId}`, {
-                method: 'DELETE',
-                headers: { Authorization: `Bearer ${token}` },
-            });
-
-            if (!res.ok) {
-                const err = await res.json();
-                setMessage(err.error || 'Failed to delete product');
-                return;
-            }
-
-            setProducts((current) => current.filter((item) => item._id !== productId));
-            if (editingProductId === productId) {
-                setEditingProductId(null);
-                setProdForm({ cropName: '', quantity: '', unit: 'kg', pricePerUnit: '', image: '', description: '' });
-            }
-            setMessage('Product deleted successfully!');
-        } catch (err) {
-            console.error(err);
-            setMessage('Network error');
-        }
-    };
-
-    if (!isAuthenticated || user?.role !== 'shopkeeper') return null;
-
-    return (
-        <main className="min-h-screen bg-gray-50">
-            <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-8">
-                {/* Header */}
-                <header className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 md:p-6 mb-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-                    <div>
-                        <p className="text-xs uppercase tracking-[0.2em] text-green-600 font-semibold">Shopkeeper Panel</p>
-                        <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mt-1">Welcome, {user?.name}</h1>
-                        <p className="text-sm text-gray-500 mt-1">Simple dashboard to manage stock and orders</p>
-                    </div>
-
-                    <div className="flex items-center gap-3">
-                        <Link
-                            href="/dashboard/shopkeeper/edit-profile"
-                            className="px-4 py-2 rounded-lg border border-gray-200 text-gray-700 hover:bg-gray-50 transition text-sm font-medium inline-flex items-center gap-2"
-                        >
-                            <FaCog size={14} />
-                            Edit Profile
-                        </Link>
-                        <button
-                            onClick={handleLogout}
-                            className="px-4 py-2 rounded-lg bg-green-600 text-white hover:bg-green-700 transition text-sm font-semibold inline-flex items-center gap-2"
-                        >
-                            <FaSignOutAlt size={14} />
-                            Logout
-                        </button>
-                    </div>
-                </header>
-                {/* Products Section */}
-                <section className="mt-6 bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-8">
-                    <div className="flex items-center justify-between mb-4">
-                        <div>
-                            <h2 className="text-2xl font-bold text-gray-900">Products</h2>
-                            <p className="text-sm text-gray-500 mt-1">Manage products visible to farmers</p>
-                        </div>
-                        <div className="flex items-center gap-3">
-                            <button
-                                onClick={() => {
-                                    // focus add product form by scrolling
-                                    const el = document.getElementById('add-product-form');
-                                    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                                }}
-                                className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition text-sm font-medium inline-flex items-center gap-2"
-                            >
-                                <FaPlus />
-                                Add Product
-                            </button>
-                        </div>
-                    </div>
-
-                    <div className="text-sm text-gray-500 mb-4">{products.length} item{products.length === 1 ? '' : 's'}</div>
-
-                    {products.length === 0 ? (
-                        <p className="text-sm text-gray-500">No products added yet.</p>
-                    ) : (
-                        <div className="grid grid-cols-1 gap-4">
-                            {products.map((item) => (
-                                <div key={item._id} className="rounded-xl border border-gray-100 bg-gray-50 p-4 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-                                    <div className="flex items-start gap-4">
-                                        <div className="h-16 w-16 rounded-xl bg-white border border-gray-100 flex items-center justify-center overflow-hidden shrink-0">
-                                            {item.image ? (
-                                                // eslint-disable-next-line @next/next/no-img-element
-                                                <img src={item.image} alt={item.cropName} className="h-full w-full object-cover" />
-                                            ) : (
-                                                <span className="text-xs text-gray-400">No image</span>
-                                            )}
-                                        </div>
-                                        <div>
-                                            <h3 className="text-lg font-semibold text-gray-900">{item.cropName}</h3>
-                                            <p className="text-sm text-gray-600">{item.quantity} {item.unit} • ₹{item.pricePerUnit}/{item.unit}</p>
-                                            {item.description && <p className="text-sm text-gray-500 mt-1">{item.description}</p>}
-                                        </div>
-                                    </div>
-                                    <div className="flex gap-2">
-                                        <button
-                                            type="button"
-                                            onClick={() => handleEditProduct(item)}
-                                            className="px-4 py-2 rounded-lg border border-green-200 text-green-700 bg-green-50 hover:bg-green-100 transition text-sm font-medium"
-                                        >
-                                            Edit
-                                        </button>
-                                        <button
-                                            type="button"
-                                            onClick={() => handleDeleteProduct(item._id)}
-                                            className="px-4 py-2 rounded-lg border border-red-200 text-red-700 bg-red-50 hover:bg-red-100 transition text-sm font-medium"
-                                        >
-                                            Delete
-                                        </button>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    )}
-
-                    {/* Add / Edit Products Section */}
-                    <div id="add-product-form" className="mt-8">
-                        <h2 className="text-2xl font-bold text-gray-900 mb-4">{editingProductId ? 'Edit Product' : 'Add Products to Your Shop'}</h2>
-                        <form onSubmit={addProduct} className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-8 space-y-6">
-                            {/* Product Name */}
-                            <div>
-                                <label className="block text-sm font-semibold text-gray-900 mb-2">Product Name *</label>
-                                <input
-                                    type="text"
-                                    value={prodForm.cropName}
-                                    onChange={(e) => setProdForm({ ...prodForm, cropName: e.target.value })}
-                                    placeholder="e.g., Tomatoes, Wheat Seeds"
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                                    required
-                                />
-                            </div>
-
-                            {/* Quantity & Unit */}
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div>
-                                    <label className="block text-sm font-semibold text-gray-900 mb-2">Quantity *</label>
-                                    <input
-                                        type="number"
-                                        value={prodForm.quantity}
-                                        onChange={(e) => setProdForm({ ...prodForm, quantity: e.target.value })}
-                                        placeholder="e.g., 100"
-                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                                        required
-                                    />
-                                </div>
-                                <div>
-                                    <label className="block text-sm font-semibold text-gray-900 mb-2">Unit</label>
-                                    <input
-                                        type="text"
-                                        value={prodForm.unit}
-                                        onChange={(e) => setProdForm({ ...prodForm, unit: e.target.value })}
-                                        placeholder="e.g., kg, packet, liter"
-                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                                    />
-                                </div>
-                            </div>
-
-                            {/* Price */}
-                            <div>
-                                <label className="block text-sm font-semibold text-gray-900 mb-2">Price per Unit (₹) *</label>
-                                <input
-                                    type="number"
-                                    value={prodForm.pricePerUnit}
-                                    onChange={(e) => setProdForm({ ...prodForm, pricePerUnit: e.target.value })}
-                                    placeholder="e.g., 50"
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                                    required
-                                />
-                            </div>
-
-                            {/* Product Image */}
-                            <div>
-                                <label className="block text-sm font-semibold text-gray-900 mb-2">Product Image URL</label>
-                                <input
-                                    type="url"
-                                    value={prodForm.image}
-                                    onChange={(e) => setProdForm({ ...prodForm, image: e.target.value })}
-                                    placeholder="https://example.com/product.jpg"
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                                />
-                            </div>
-
-                            {/* Description */}
-                            <div>
-                                <label className="block text-sm font-semibold text-gray-900 mb-2">Product Description</label>
-                                <textarea
-                                    value={prodForm.description}
-                                    onChange={(e) => setProdForm({ ...prodForm, description: e.target.value })}
-                                    placeholder="Describe your product (quality, freshness, etc.)"
-                                    rows={3}
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                                />
-                            </div>
-
-                            {/* Message */}
-                            {message && message.includes('Product') && (
-                                <div
-                                    className={`p-4 rounded-lg text-sm font-medium ${message.includes('success')
-                                        ? 'bg-green-50 text-green-800 border border-green-200'
-                                        : 'bg-red-50 text-red-800 border border-red-200'
-                                        }`}
-                                >
-                                    {message}
-                                </div>
-                            )}
-
-                            {/* Submit Button */}
-                            <div className="flex gap-3 pt-4">
-                                {editingProductId && (
-                                    <button
-                                        type="button"
-                                        onClick={() => {
-                                            setEditingProductId(null);
-                                            setProdForm({ cropName: '', quantity: '', unit: 'kg', pricePerUnit: '', image: '', description: '' });
-                                        }}
-                                        className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition font-medium"
-                                    >
-                                        Cancel Edit
-                                    </button>
-                                )}
-                                <button
-                                    type="submit"
-                                    disabled={addingProduct}
-                                    className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-medium inline-flex items-center gap-2 disabled:opacity-50"
-                                >
-                                    <FaPlus size={16} />
-                                    {addingProduct ? (editingProductId ? 'Updating...' : 'Adding...') : (editingProductId ? 'Update Product' : 'Add Product')}
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </section>
-
-                {/* Footer */}
-                <footer className="mt-6 border-t border-gray-200 pt-4 flex flex-col gap-2 md:flex-row md:items-center md:justify-between text-sm text-gray-500">
-                    <p>Simple shopkeeper dashboard for inventory and orders.</p>
-                    <div className="flex items-center gap-4">
-                        <Link href="/contact" className="hover:text-green-600 transition">Help</Link>
-                        <Link href="/auth/settings" className="hover:text-green-600 transition">Profile</Link>
-                    </div>
-                </footer>
-            </div>
-        </main>
+  const VerificationBanner = () => {
+    if (!profile) return null;
+    if (verificationStatus === 'verified') return (
+      <div className="flex items-center gap-3 px-4 py-3 bg-emerald-50 border border-emerald-100 rounded-2xl">
+        <CheckCircle className="w-5 h-5 text-emerald-600 flex-shrink-0" />
+        <p className="text-sm text-emerald-700 font-medium">Your shop is <span className="font-bold">Verified</span> ✓</p>
+        <span className="ml-auto px-2.5 py-1 bg-emerald-500 text-white text-xs rounded-full font-semibold">Verified Shop</span>
+      </div>
     );
-}
+    if (verificationStatus === 'rejected') return (
+      <div className="flex items-center gap-3 px-4 py-3 bg-red-50 border border-red-100 rounded-2xl">
+        <XCircle className="w-5 h-5 text-red-500 flex-shrink-0" />
+        <div>
+          <p className="text-sm text-red-700 font-semibold">Verification Rejected</p>
+          {profile.rejectionReason && <p className="text-xs text-red-500 mt-0.5">{profile.rejectionReason}</p>}
+        </div>
+        {profile.reApplicationAllowed && (
+          <Link href="/dashboard/shopkeeper/complete-profile" className="ml-auto px-3 py-1.5 bg-red-500 text-white text-xs rounded-xl font-semibold hover:bg-red-600 transition-colors">
+            Re-apply
+          </Link>
+        )}
+      </div>
+    );
+    if (profile.verificationSubmitted) return (
+      <div className="flex items-center gap-3 px-4 py-3 bg-amber-50 border border-amber-100 rounded-2xl">
+        <AlertTriangle className="w-5 h-5 text-amber-500 flex-shrink-0" />
+        <p className="text-sm text-amber-700">Verification pending admin review — <span className="font-semibold">Unverified Shop</span></p>
+      </div>
+    );
+    return (
+      <div className="flex items-center gap-3 px-4 py-3 bg-blue-50 border border-blue-100 rounded-2xl">
+        <Shield className="w-5 h-5 text-blue-500 flex-shrink-0" />
+        <p className="text-sm text-blue-700">Submit your documents to get your shop verified.</p>
+        <Link href="/dashboard/shopkeeper/complete-profile" className="ml-auto px-3 py-1.5 bg-blue-500 text-white text-xs rounded-xl font-semibold hover:bg-blue-600 transition-colors">
+          Submit Docs
+        </Link>
+      </div>
+    );
+  };
 
+  const stats = [
+    { label: 'Total Products', value: products.length, icon: Package, color: 'text-violet-600', bg: 'bg-violet-50', border: 'border-violet-100' },
+    { label: 'Profile Views', value: 0, icon: Eye, color: 'text-emerald-600', bg: 'bg-emerald-50', border: 'border-emerald-100' },
+    { label: 'Avg. Rating', value: '—', icon: Star, color: 'text-yellow-600', bg: 'bg-yellow-50', border: 'border-yellow-100' },
+    { label: 'Revenue', value: '₹0', icon: TrendingUp, color: 'text-amber-600', bg: 'bg-amber-50', border: 'border-amber-100' },
+  ];
+
+  const quickActions = [
+    { label: 'Add Product', href: productRoute + '/create', icon: Plus, cls: 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-emerald-200' },
+    { label: 'My Products', href: productRoute, icon: Package, cls: 'bg-violet-600 hover:bg-violet-700 text-white shadow-violet-200' },
+    { label: 'Edit Profile', href: '/dashboard/shopkeeper/complete-profile', icon: Store, cls: 'bg-blue-600 hover:bg-blue-700 text-white shadow-blue-200' },
+    { label: 'Analytics', href: '/dashboard/shopkeeper/analytics', icon: BarChart3, cls: 'bg-gray-800 hover:bg-gray-900 text-white shadow-gray-200' },
+  ];
+
+  return (
+    <>
+      <ToastContainer />
+      <div className="p-4 md:p-6 xl:p-8 space-y-6 max-w-7xl mx-auto w-full">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-2">
+          <div>
+            <p className="text-xs font-semibold text-emerald-600 uppercase tracking-widest mb-1">
+              {new Date().toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
+            </p>
+            <h1 className="text-2xl md:text-3xl font-bold text-gray-900">{greeting}, {firstName} 👋</h1>
+            <p className="text-gray-500 text-sm mt-0.5">
+              {profile?.shopName ? `Managing · ${profile.shopName}` : 'Welcome to your shopkeeper panel'}
+            </p>
+          </div>
+          <div className="flex items-center gap-2.5">
+            <div className="relative hidden sm:block">
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <input placeholder="Search…" className="pl-10 pr-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 w-52 shadow-sm" />
+            </div>
+            <button className="relative p-2.5 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 shadow-sm">
+              <Bell style={{ width: 18, height: 18 }} className="text-gray-600" />
+              <span className="absolute top-2 right-2 h-2 w-2 bg-red-500 rounded-full ring-1 ring-white" />
+            </button>
+            <Link href={productRoute + '/create'} className="flex items-center gap-2 px-4 py-2.5 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 text-sm font-semibold shadow-sm shadow-emerald-200 transition-colors">
+              <Plus className="w-4 h-4" /><span className="hidden sm:inline">Add Product</span>
+            </Link>
+          </div>
+        </div>
+
+        <VerificationBanner />
+
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 md:gap-4">
+          {stats.map(s => {
+            const Icon = s.icon;
+            return (
+              <div key={s.label} className={`bg-white rounded-2xl border ${s.border} shadow-sm p-4 md:p-5 hover:shadow-md transition-all duration-200`}>
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-xs font-semibold text-gray-400 uppercase tracking-wide">{s.label}</span>
+                  <div className={`h-9 w-9 rounded-xl flex items-center justify-center ${s.bg}`}>
+                    <Icon className={s.color} style={{ width: 17, height: 17 }} />
+                  </div>
+                </div>
+                <p className="text-2xl font-bold text-gray-900">{loading ? '—' : s.value}</p>
+                <p className="text-xs text-gray-400 mt-1.5 flex items-center gap-1"><ArrowUpRight className="w-3 h-3 text-emerald-500" />All time</p>
+              </div>
+            );
+          })}
+        </div>
+
+        <div>
+          <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-3">Quick Actions</p>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            {quickActions.map(a => {
+              const Icon = a.icon;
+              return (
+                <Link key={a.href} href={a.href} className={`flex items-center justify-center gap-2.5 px-4 py-3.5 rounded-2xl text-sm font-semibold shadow transition-all ${a.cls}`}>
+                  <Icon className="w-4 h-4" />{a.label}
+                </Link>
+              );
+            })}
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+          <div className="lg:col-span-2 bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-50">
+              <h2 className="font-semibold text-gray-900 flex items-center gap-2"><Package className="w-4 h-4 text-gray-400" />Recent Products</h2>
+              <Link href={productRoute} className="text-emerald-600 text-xs font-semibold flex items-center gap-1 px-3 py-1.5 rounded-lg hover:bg-emerald-50">
+                View all <ArrowRight className="w-3 h-3" />
+              </Link>
+            </div>
+            {loading ? (
+              <div className="p-5 space-y-3">{[1,2,3].map(i => <div key={i} className="h-16 bg-gray-50 rounded-xl animate-pulse" />)}</div>
+            ) : products.length === 0 ? (
+              <div className="flex flex-col items-center py-16 px-6 text-center">
+                <div className="h-16 w-16 bg-gray-50 rounded-2xl flex items-center justify-center mb-4 border border-dashed border-gray-200">
+                  <Package className="w-7 h-7 text-gray-300" />
+                </div>
+                <p className="font-semibold text-gray-600 text-sm">No products yet</p>
+                <p className="text-xs text-gray-400 mt-1 mb-4">Add your first product to start selling</p>
+                <Link href={productRoute + '/create'} className="px-4 py-2 bg-emerald-600 text-white rounded-xl text-xs font-semibold hover:bg-emerald-700">
+                  + Add Product
+                </Link>
+              </div>
+            ) : (
+              <div className="divide-y divide-gray-50/80">
+                {products.slice(0, 6).map((p: any) => (
+                  <div key={p._id} className="flex items-center gap-4 px-6 py-4 hover:bg-gray-50/60 transition-colors group">
+                    <div className="h-12 w-12 rounded-xl bg-gray-100 overflow-hidden flex-shrink-0 border border-gray-200/60">
+                      {p.productImages?.[0] ? (
+                        <img src={`${API_BASE}${p.productImages[0]}`} alt={p.displayName} className="h-full w-full object-cover" />
+                      ) : (
+                        <div className="h-full w-full flex items-center justify-center text-lg">🌿</div>
+                      )}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-medium text-gray-900 text-sm truncate">{p.displayName}</p>
+                      <p className="text-xs text-gray-400">{p._productType === 'fertilizer' ? p.brandName : p.variety}</p>
+                    </div>
+                    <div className="text-right flex-shrink-0">
+                      <p className="font-semibold text-gray-900 text-sm">{p.displayPrice}</p>
+                      <span className={`inline-block text-[10px] px-2 py-0.5 rounded-full font-semibold mt-0.5 ${p.stockStatus === 'in_stock' ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-600'}`}>
+                        {p.stockStatus === 'in_stock' ? 'In Stock' : 'Out of Stock'}
+                      </span>
+                    </div>
+                    <ChevronRight className="w-4 h-4 text-gray-200 group-hover:text-gray-400" />
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <div className="space-y-5">
+            {profile && (
+              <div className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl p-5 text-white">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="h-11 w-11 rounded-xl bg-white/10 flex items-center justify-center flex-shrink-0">
+                    {profile.profileImage ? (
+                      <img src={`${API_BASE}${profile.profileImage}`} alt="" className="h-11 w-11 rounded-xl object-cover" />
+                    ) : (
+                      <Store className="w-5 h-5 text-white" />
+                    )}
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-white/50 text-[10px] uppercase tracking-wider">Your Shop</p>
+                    <div className="flex items-center gap-1.5">
+                      <p className="font-bold text-sm truncate">{profile.shopName || 'Unnamed Shop'}</p>
+                      {verificationStatus === 'verified' && (
+                        <CheckCircle className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" />
+                      )}
+                    </div>
+                    <p className="text-white/40 text-[10px]">
+                      {verificationStatus === 'verified' ? 'Verified Shop' : 'Unverified Shop'}
+                    </p>
+                  </div>
+                </div>
+                {profile.district && <p className="text-white/50 text-xs mb-4">{profile.district}, {profile.state}</p>}
+                <div className="flex gap-2">
+                  <Link href="/dashboard/shopkeeper/complete-profile" className="flex-1 text-center px-3 py-2 bg-white text-gray-900 text-xs font-semibold rounded-xl hover:bg-gray-100 transition-colors">
+                    Edit Shop
+                  </Link>
+                </div>
+              </div>
+            )}
+
+            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm">
+              <div className="px-5 py-4 border-b border-gray-50 flex items-center gap-2">
+                <Activity className="w-4 h-4 text-gray-400" />
+                <h2 className="font-semibold text-gray-900 text-sm">Recent Activity</h2>
+              </div>
+              <div className="flex flex-col items-center py-10 px-5 text-center">
+                <div className="h-12 w-12 bg-gray-50 rounded-2xl flex items-center justify-center mb-3 border border-dashed border-gray-200">
+                  <Zap className="w-5 h-5 text-gray-300" />
+                </div>
+                <p className="text-gray-500 text-sm font-medium">No activity yet</p>
+                <p className="text-gray-400 text-xs mt-1">Actions will appear here</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}

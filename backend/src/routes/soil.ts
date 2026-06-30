@@ -13,6 +13,7 @@ import {
   detectDeficiencies,
   SoilAnalysisInput,
 } from '../services/soilAIService';
+import { translateNestedObject, SUPPORTED_LANGUAGES } from '../services/translationService';
 
 const router = express.Router();
 
@@ -287,6 +288,49 @@ router.get('/crops/:id', authenticate, async (req: AuthenticatedRequest, res: Re
     res.json({ success: true, data: report.cropRecommendations, soilType: report.soilType, soilHealthScore: report.soilHealthScore });
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch crop recommendations' });
+  }
+});
+
+// POST /api/soil/translate — Translate a soil report into a selected language
+router.post('/translate', authenticate, async (req: AuthenticatedRequest, res: Response) => {
+  try {
+    const { recordId, language } = req.body;
+    if (!recordId || !language) return res.status(400).json({ error: 'recordId and language are required' });
+    if (language === 'en') return res.status(400).json({ error: 'Source language is already English' });
+    if (!SUPPORTED_LANGUAGES.includes(language)) return res.status(400).json({ error: 'Unsupported language' });
+
+    const report = await SoilReport.findById(recordId);
+    if (!report) return res.status(404).json({ error: 'Report not found' });
+    if (report.farmerId.toString() !== req.user!.userId) return res.status(403).json({ error: 'Access denied' });
+
+    // Check if translation already exists
+    const existing = (report.translations as any)?.get?.(language) ?? (report.translations as any)?.[language];
+    if (existing) {
+      return res.json({ success: true, cached: true, language, data: existing });
+    }
+
+    // Build translatable English content
+    const enData: Record<string, any> = {
+      soilType: report.soilType,
+      soilHealthStatus: report.soilHealthStatus,
+      aiAnalysis: report.aiAnalysis,
+      deficiencies: report.deficiencies,
+      recommendations: report.recommendations,
+      cropRecommendations: report.cropRecommendations,
+      benchmarkComparison: report.benchmarkComparison,
+    };
+
+    const translated = await translateNestedObject(enData, language);
+
+    // Permanently save to DB
+    await SoilReport.findByIdAndUpdate(recordId, {
+      $set: { [`translations.${language}`]: translated },
+    });
+
+    return res.json({ success: true, cached: false, language, data: translated });
+  } catch (error: any) {
+    console.error('Soil translate error:', error);
+    res.status(500).json({ error: error.message || 'Translation failed' });
   }
 });
 

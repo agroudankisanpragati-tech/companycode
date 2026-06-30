@@ -88,6 +88,7 @@ const soilReportSchema = new mongoose_1.Schema({
         },
     ],
     aiAnalysis: { type: String },
+    translations: { type: Map, of: mongoose_1.Schema.Types.Mixed, default: {} },
 }, { timestamps: true });
 exports.SoilReport = mongoose_1.default.model('SoilReport', soilReportSchema);
 //# sourceMappingURL=SoilReport.js.map

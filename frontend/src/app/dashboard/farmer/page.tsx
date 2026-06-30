@@ -11,9 +11,10 @@ import AiFarmSection from '@/components/AiFarmSection';
 import SuccessStoriesSection from '@/components/SuccessStoriesSection';
 import MarketSnapshotCard from '@/components/dashboard/MarketSnapshotCard';
 import LocationModal from '@/components/LocationModal';
+import FarmerProfileModal from '@/components/farmer/FarmerProfileModal';
 import {
     FaBell, FaMapMarkerAlt, FaMicrophone, FaCloudSun, FaTint,
-    FaMicroscope, FaArrowRight, FaWind, FaLeaf, FaSpinner,
+    FaMicroscope, FaArrowRight, FaWind, FaLeaf, FaSpinner, FaGavel,
 } from 'react-icons/fa';
 import { fetchWeather, fetchWeatherByLocation } from '@/services/weather';
 import { getSoilMoisture, SoilMoistureData } from '@/services/soilMoisture';
@@ -25,6 +26,7 @@ export default function FarmerDashboard() {
     const router = useRouter();
 
     const [locationModalOpen, setLocationModalOpen] = useState(false);
+    const [profileModalOpen, setProfileModalOpen] = useState(false);
 
     const [weather, setWeather] = useState<any>(null);
     const [weatherLoading, setWeatherLoading] = useState(false);
@@ -36,11 +38,12 @@ export default function FarmerDashboard() {
     const [modalOpen, setModalOpen] = useState(false);
     const [modalContent, setModalContent] = useState<{ title: string; body: React.ReactNode } | null>(null);
 
-    // ── Auth guard ───────────────────────────────────────────────────────────
+    // ── Auth guard — only runs after session restore is complete ─────────────
     useEffect(() => {
-        if (!isLoading && !isAuthenticated) {
+        if (isLoading) return;
+        if (!isAuthenticated) {
             router.replace('/auth/login');
-        } else if (!isLoading && user?.role !== 'farmer') {
+        } else if (user?.role !== 'farmer') {
             router.replace('/auth/role-select');
         }
     }, [isAuthenticated, isLoading, user, router]);
@@ -68,6 +71,12 @@ export default function FarmerDashboard() {
     // ── Soil moisture fetch ──────────────────────────────────────────────────
     const loadMoisture = useCallback(async () => {
         if (!isAuthenticated) return;
+        const loc = location;
+        if (!loc.state || !loc.district || loc.state === 'Unknown' || loc.district === 'Unknown') {
+            setMoistureError('location_missing');
+            setMoistureLoading(false);
+            return;
+        }
         setMoistureLoading(true);
         setMoistureError(null);
         try {
@@ -125,14 +134,25 @@ export default function FarmerDashboard() {
         setModalOpen(true);
     }
 
-    if (isLoading || !isAuthenticated) return null;
+    // Show spinner while session is being restored from localStorage
+    if (isLoading) {
+        return (
+            <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-green-50 to-blue-50">
+                <div className="flex flex-col items-center gap-3">
+                    <div className="h-10 w-10 animate-spin rounded-full border-4 border-emerald-200 border-t-emerald-600" />
+                    <p className="text-sm text-emerald-700 font-medium">Loading…</p>
+                </div>
+            </div>
+        );
+    }
+    if (!isAuthenticated) return null;
 
     const hasLocation = !!(location.state && location.district);
 
     return (
         <>
             <div className="flex min-h-screen bg-gradient-to-br from-green-50 to-blue-50">
-                <FarmerSidebar open={true} onClose={() => undefined} />
+                <FarmerSidebar open={true} onClose={() => undefined} onProfileClick={() => setProfileModalOpen(true)} />
 
                 <div className="flex-1 flex flex-col">
                     {/* ── Header ── */}
@@ -193,7 +213,7 @@ export default function FarmerDashboard() {
 
                     <main className="flex-1 p-6">
                         <section className="mb-6">
-                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
 
                                 {/* ── Weather Card ── */}
                                 <div
@@ -384,6 +404,31 @@ export default function FarmerDashboard() {
                                     </div>
                                 </div>
 
+                                {/* ── Government Schemes Card ── */}
+                                <div
+                                    onClick={() => router.push('/schemes')}
+                                    className="cursor-pointer h-[17.58rem] rounded-2xl bg-amber-50 p-4 shadow-sm hover:shadow-md transition"
+                                >
+                                    <div className="flex flex-col h-full justify-between">
+                                        <div className="flex items-center gap-3">
+                                            <div className="h-12 w-12 rounded-xl bg-amber-200 text-amber-700 flex items-center justify-center flex-shrink-0">
+                                                <FaGavel className="text-2xl" />
+                                            </div>
+                                            <div>
+                                                <div className="text-xs font-semibold text-slate-600 uppercase tracking-wide">Govt Schemes</div>
+                                                <div className="text-base font-bold text-slate-800">Central &amp; State</div>
+                                            </div>
+                                        </div>
+                                        <p className="text-xs text-slate-500 leading-relaxed">Subsidies, loans, insurance &amp; welfare programs for farmers.</p>
+                                        <div className="w-full mt-auto">
+                                            <button className="w-full -mx-4 flex items-center justify-between gap-2 text-sm font-medium text-emerald-600 border-t border-emerald-600 px-4 py-2 rounded-b-2xl">
+                                                <span>Browse schemes</span>
+                                                <FaArrowRight className="text-slate-400" />
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
                             </div>
                         </section>
 
@@ -412,6 +457,9 @@ export default function FarmerDashboard() {
 
             {/* Global Location Modal */}
             <LocationModal open={locationModalOpen} onClose={() => setLocationModalOpen(false)} />
+
+            {/* Farmer Profile Modal */}
+            <FarmerProfileModal open={profileModalOpen} onClose={() => setProfileModalOpen(false)} />
         </>
     );
 }

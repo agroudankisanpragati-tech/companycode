@@ -56,6 +56,7 @@ export interface SoilAIResult {
         reason: string;
     }>;
     aiAnalysis: string;
+    aiAnalysisHindi: string;
 }
 export declare function calculateSoilHealthScore(data: SoilAnalysisInput, standard: ISoilStandard): {
     score: number;

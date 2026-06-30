@@ -11,6 +11,8 @@ export interface IActiveCrop extends Document {
     isHarvested: boolean;
     harvestDate?: Date;
     notes?: string;
+    aiRecommendation?: string;
+    aiRecommendationTranslations?: Record<string, string>;
     createdAt: Date;
     updatedAt: Date;
 }

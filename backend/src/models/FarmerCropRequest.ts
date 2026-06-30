@@ -23,6 +23,7 @@ export interface IFarmerCropRequest extends Document {
   budget: number;
   previousCrop?: string;
   preferredCrop?: string;
+  translations?: Record<string, any>;
   createdAt: Date;
 }
 
@@ -50,6 +51,7 @@ const FarmerCropRequestSchema = new Schema<IFarmerCropRequest>(
     budget: { type: Number, required: true },
     previousCrop: { type: String },
     preferredCrop: { type: String },
+    translations: { type: Map, of: Schema.Types.Mixed, default: {} },
   },
   { timestamps: true }
 );

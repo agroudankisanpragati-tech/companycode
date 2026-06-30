@@ -10,18 +10,18 @@ export default function Footer() {
     {
       title: 'Popular',
       links: [
-        { label: 'Crop Advisory', href: '/crop-advisory' },
-        { label: 'Weather Forecast', href: '/weather' },
-        { label: 'Market Prices', href: '/mandi-prices' },
-        { label: 'Disease Detection', href: '/disease-detection' },
-        { label: 'Farmer Dashboard', href: '/dashboard/farmer' },
-        { label: 'Contact Us', href: '/contact' },
+        // { label: 'Crop Advisory', href: '/crop-advisory' },
+        // { label: 'Weather Forecast', href: '/weather' },
+        // { label: 'Market Prices', href: '/mandi-prices' },
+        // { label: 'Disease Detection', href: '/disease-detection' },
+        // { label: 'Farmer Dashboard', href: '/dashboard/farmer' },
+        // { label: 'Contact Us', href: '/contact' },
       ]
     },
     {
       title: 'Company',
       links: [
-        { label: 'About', href: '/about' },
+        // { label: 'About', href: '/about' },
         { label: 'Careers', href: '/careers' },
         { label: 'Gallery', href: '/gallery' },
         { label: 'Blog', href: '/blog' },
@@ -34,7 +34,7 @@ export default function Footer() {
   return (
     <footer className="border-t border-emerald-100 bg-[radial-gradient(circle_at_top,_rgba(16,185,129,0.08),_transparent_32%),linear-gradient(180deg,_#ffffff_0%,_#f0fdf4_100%)] text-slate-800">
       <div className="section-container py-10 sm:py-12 lg:py-14">
-        <div className="grid gap-8 lg:grid-cols-[1.15fr_1fr_0.95fr]">
+        <div className="grid gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-[1.15fr_1fr_0.95fr]">
           <div className="space-y-4">
             <div className="flex items-center gap-3">
               <Image

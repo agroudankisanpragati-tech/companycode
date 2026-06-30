@@ -1,9 +1,12 @@
 'use client';
 
-import { useState, useRef, useCallback, useEffect } from 'react';
+import { useState, useRef, useCallback, useEffect, lazy, Suspense } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
 import { FaMicroscope, FaUpload, FaCamera, FaHistory, FaLeaf, FaExclamationTriangle, FaCheckCircle, FaSpinner, FaTimes } from 'react-icons/fa';
+import AILanguageSelector from '@/components/AILanguageSelector';
+
+const VoicePlayer = lazy(() => import('@/components/VoicePlayer'));
 
 const API_BASE = '/api';
 
@@ -15,13 +18,25 @@ function authHeaders(): Record<string, string> {
 type ScanResult = {
   _id?: string;
   cropName: string;
+  cropNameHindi?: string;
   diseaseName: string;
+  diseaseNameHindi?: string;
   diseaseType: string;
   severityLevel: string;
   symptoms: string;
+  symptomsHindi?: string;
+  organicTreatment?: string;
+  organicTreatmentHindi?: string;
+  chemicalTreatment?: string;
+  chemicalTreatmentHindi?: string;
   treatment: string;
   prevention: string;
+  preventionHindi?: string;
   description: string;
+  descriptionHindi?: string;
+  recommendedActions?: string;
+  recommendedActionsHindi?: string;
+  confidenceScore?: number;
   imageUrl?: string;
   source?: string;
   similarityScore?: number;
@@ -61,6 +76,9 @@ export default function DiseaseDetectionPage() {
   const [histLoading, setHistLoading] = useState(false);
   const [cameraOpen, setCameraOpen] = useState(false);
   const [stream, setStream] = useState<MediaStream | null>(null);
+  // multi-language
+  const [baseResult, setBaseResult] = useState<ScanResult | null>(null);
+  const [displayLang, setDisplayLang] = useState('en');
 
   useEffect(() => {
     if (tab === 'history' && isAuthenticated) loadHistory();
@@ -129,7 +147,10 @@ export default function DiseaseDetectionPage() {
       });
       const json = await res.json();
       if (!res.ok) throw new Error(json.error || 'Scan failed');
-      setResult({ ...json.data, source: json.source, similarityScore: json.similarityScore });
+      const scanResult = { ...json.data, source: json.source, similarityScore: json.similarityScore };
+      setBaseResult(scanResult);
+      setResult(scanResult);
+      setDisplayLang('en');
     } catch (e: any) {
       setError(e.message || 'Disease scan failed. Please try again.');
     } finally {
@@ -150,8 +171,17 @@ export default function DiseaseDetectionPage() {
   };
 
   const reset = () => {
-    setFile(null); setPreview(null); setResult(null);
-    setError(''); setCropHint(''); setFeedback(null);
+    setFile(null); setPreview(null); setResult(null); setBaseResult(null);
+    setError(''); setCropHint(''); setFeedback(null); setDisplayLang('en');
+  };
+
+  const handleTranslated = (lang: string, data: Record<string, any>) => {
+    setDisplayLang(lang);
+    if (lang === 'en') {
+      setResult(baseResult);
+    } else {
+      setResult((prev) => prev ? { ...prev, ...data } : prev);
+    }
   };
 
   return (
@@ -290,39 +320,104 @@ export default function DiseaseDetectionPage() {
                             {result.similarityScore}% Match
                           </span>
                         )}
+                        {result.confidenceScore && (
+                          <span className="rounded-full bg-violet-100 px-3 py-1 text-xs font-semibold text-violet-700">
+                            {result.confidenceScore}% Confidence
+                          </span>
+                        )}
                       </div>
                       <h2 className="text-2xl font-extrabold text-slate-900">{result.diseaseName}</h2>
-                      <p className="text-sm text-slate-500">{result.cropName} · {result.diseaseType}</p>
+                      {result.diseaseNameHindi && <p className="text-base font-semibold text-orange-700">{result.diseaseNameHindi}</p>}
+                      <p className="text-sm text-slate-500">{result.cropName}{result.cropNameHindi ? ` / ${result.cropNameHindi}` : ''} · {result.diseaseType}</p>
                     </div>
                     {result.imageUrl && (
                       <img src={`http://localhost:4000${result.imageUrl}`} alt="scanned" className="h-20 w-20 rounded-2xl object-cover shadow border" onError={e => { (e.target as HTMLImageElement).style.display = 'none'; }} />
                     )}
                   </div>
                   <p className="mt-4 text-sm leading-relaxed text-slate-600">{result.description}</p>
+                  {result.descriptionHindi && <p className="mt-1 text-sm leading-relaxed text-slate-500 italic">{result.descriptionHindi}</p>}
+                  {/* Speak full result */}
+                  <Suspense fallback={null}>
+                    <VoicePlayer
+                      text={`Disease: ${result.diseaseName}. Treatment: ${result.organicTreatment || result.treatment}. Prevention: ${result.prevention}`}
+                      lang="en-IN"
+                      autoDetect={false}
+                      label="Speak Result"
+                      className="mt-3"
+                    />
+                  </Suspense>
                 </div>
 
                 {/* Symptoms */}
                 {result.symptoms && (
                   <div className="rounded-2xl border border-amber-100 bg-amber-50 p-5">
-                    <h3 className="mb-2 flex items-center gap-2 font-bold text-amber-800"><FaExclamationTriangle size={14} /> Symptoms</h3>
+                    <h3 className="mb-2 flex items-center gap-2 font-bold text-amber-800"><FaExclamationTriangle size={14} /> Symptoms / लक्षण</h3>
                     <p className="whitespace-pre-line text-sm text-amber-900">{result.symptoms}</p>
+                    {result.symptomsHindi && <p className="mt-1 whitespace-pre-line text-sm text-amber-800 italic">{result.symptomsHindi}</p>}
                   </div>
                 )}
 
-                {/* Treatment */}
-                {result.treatment && (
+                {/* Organic Treatment */}
+                {result.organicTreatment && (
+                  <div className="rounded-2xl border border-green-100 bg-green-50 p-5">
+                    <h3 className="mb-2 font-bold text-green-800">🌿 Organic Treatment / जैविक उपचार</h3>
+                    <p className="whitespace-pre-line text-sm text-green-900">{result.organicTreatment}</p>
+                    {result.organicTreatmentHindi && <p className="mt-1 whitespace-pre-line text-sm text-green-800 italic">{result.organicTreatmentHindi}</p>}
+                  </div>
+                )}
+
+                {/* Chemical Treatment */}
+                {result.chemicalTreatment && (
                   <div className="rounded-2xl border border-blue-100 bg-blue-50 p-5">
-                    <h3 className="mb-2 font-bold text-blue-800">💊 Treatment</h3>
+                    <h3 className="mb-2 font-bold text-blue-800">💊 Chemical Treatment / रासायनिक उपचार</h3>
+                    <p className="whitespace-pre-line text-sm text-blue-900">{result.chemicalTreatment}</p>
+                    {result.chemicalTreatmentHindi && <p className="mt-1 whitespace-pre-line text-sm text-blue-800 italic">{result.chemicalTreatmentHindi}</p>}
+                  </div>
+                )}
+
+                {/* Combined treatment fallback */}
+                {!result.organicTreatment && !result.chemicalTreatment && result.treatment && (
+                  <div className="rounded-2xl border border-blue-100 bg-blue-50 p-5">
+                    <h3 className="mb-2 font-bold text-blue-800">💊 Treatment / उपचार</h3>
                     <p className="whitespace-pre-line text-sm text-blue-900">{result.treatment}</p>
+                  </div>
+                )}
+
+                {/* Recommended Actions */}
+                {result.recommendedActions && (
+                  <div className="rounded-2xl border border-orange-100 bg-orange-50 p-5">
+                    <h3 className="mb-2 font-bold text-orange-800">⚡ Recommended Actions / तत्काल कार्रवाई</h3>
+                    <p className="whitespace-pre-line text-sm text-orange-900">{result.recommendedActions}</p>
+                    {result.recommendedActionsHindi && <p className="mt-1 whitespace-pre-line text-sm text-orange-800 italic">{result.recommendedActionsHindi}</p>}
                   </div>
                 )}
 
                 {/* Prevention */}
                 {result.prevention && (
                   <div className="rounded-2xl border border-green-100 bg-green-50 p-5">
-                    <h3 className="mb-2 flex items-center gap-2 font-bold text-green-800"><FaLeaf size={14} /> Prevention</h3>
+                    <h3 className="mb-2 flex items-center gap-2 font-bold text-green-800"><FaLeaf size={14} /> Prevention / रोकथाम</h3>
                     <p className="whitespace-pre-line text-sm text-green-900">{result.prevention}</p>
+                    {result.preventionHindi && <p className="mt-1 whitespace-pre-line text-sm text-green-800 italic">{result.preventionHindi}</p>}
+                    <Suspense fallback={null}>
+                      <VoicePlayer
+                        text={result.preventionHindi || result.prevention}
+                        lang={result.preventionHindi ? 'hi-IN' : 'en-IN'}
+                        autoDetect={false}
+                        label="सुनें Prevention"
+                        className="mt-2"
+                      />
+                    </Suspense>
                   </div>
+                )}
+
+                {/* Language Selector */}
+                {result._id && (
+                  <AILanguageSelector
+                    recordId={result._id}
+                    module="disease"
+                    englishData={baseResult as any}
+                    onTranslated={handleTranslated}
+                  />
                 )}
 
                 {/* Feedback */}
@@ -366,24 +461,7 @@ export default function DiseaseDetectionPage() {
             ) : (
               <div className="space-y-4">
                 {history.map((item, i) => (
-                  <article key={item._id || i} className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-                    <div className="flex flex-wrap items-start justify-between gap-2">
-                      <div>
-                        <h3 className="font-bold text-slate-900">{item.diseaseName}</h3>
-                        <p className="text-xs text-slate-500">{item.cropName} · {item.diseaseType}</p>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span className={`rounded-full border px-2.5 py-0.5 text-xs font-semibold ${severityColor(item.severityLevel)}`}>{item.severityLevel}</span>
-                        <span className="text-xs text-slate-400">{new Date(item.createdAt).toLocaleDateString('en-IN')}</span>
-                      </div>
-                    </div>
-                    {item.description && <p className="mt-2 line-clamp-2 text-sm text-slate-600">{item.description}</p>}
-                    {item.feedback && (
-                      <span className={`mt-2 inline-block rounded-full px-2.5 py-0.5 text-xs font-semibold ${item.feedback === 'helpful' ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'}`}>
-                        {item.feedback === 'helpful' ? '👍 Helpful' : '👎 Not Helpful'}
-                      </span>
-                    )}
-                  </article>
+                  <DiseaseHistoryCard key={item._id || i} item={item} />
                 ))}
               </div>
             )}
@@ -391,5 +469,84 @@ export default function DiseaseDetectionPage() {
         )}
       </div>
     </main>
+  );
+}
+
+function DiseaseHistoryCard({ item }: { item: HistoryItem }) {
+  const [expanded, setExpanded] = useState(false);
+  const [display, setDisplay] = useState<HistoryItem>(item);
+
+  const handleTranslated = (lang: string, data: Record<string, any>) => {
+    setDisplay(lang === 'en' ? item : { ...item, ...data });
+  };
+
+  return (
+    <article className="rounded-2xl border border-gray-200 bg-white shadow-sm overflow-hidden">
+      <button
+        className="w-full flex flex-wrap items-start justify-between gap-2 p-5 text-left"
+        onClick={() => setExpanded((e) => !e)}
+      >
+        <div>
+          <h3 className="font-bold text-slate-900">{display.diseaseName}</h3>
+          <p className="text-xs text-slate-500">{display.cropName} · {display.diseaseType}</p>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className={`rounded-full border px-2.5 py-0.5 text-xs font-semibold ${severityColor(item.severityLevel)}`}>{item.severityLevel}</span>
+          <span className="text-xs text-slate-400">{new Date(item.createdAt).toLocaleDateString('en-IN')}</span>
+          <span className="text-xs text-slate-400">{expanded ? '▲' : '▼'}</span>
+        </div>
+      </button>
+
+      {expanded && (
+        <div className="border-t border-gray-100 px-5 pb-5 space-y-3">
+          {display.description && <p className="text-sm text-slate-600 leading-relaxed">{display.description}</p>}
+          {display.symptoms && (
+            <div className="rounded-xl bg-amber-50 border border-amber-100 p-3">
+              <div className="text-xs font-bold text-amber-700 mb-1">Symptoms</div>
+              <p className="text-xs text-amber-900 whitespace-pre-line">{display.symptoms}</p>
+            </div>
+          )}
+          {display.organicTreatment && (
+            <div className="rounded-xl bg-green-50 border border-green-100 p-3">
+              <div className="text-xs font-bold text-green-700 mb-1">🌿 Organic Treatment</div>
+              <p className="text-xs text-green-900 whitespace-pre-line">{display.organicTreatment}</p>
+            </div>
+          )}
+          {display.chemicalTreatment && (
+            <div className="rounded-xl bg-blue-50 border border-blue-100 p-3">
+              <div className="text-xs font-bold text-blue-700 mb-1">💊 Chemical Treatment</div>
+              <p className="text-xs text-blue-900 whitespace-pre-line">{display.chemicalTreatment}</p>
+            </div>
+          )}
+          {!display.organicTreatment && !display.chemicalTreatment && display.treatment && (
+            <div className="rounded-xl bg-blue-50 border border-blue-100 p-3">
+              <div className="text-xs font-bold text-blue-700 mb-1">💊 Treatment</div>
+              <p className="text-xs text-blue-900 whitespace-pre-line">{display.treatment}</p>
+            </div>
+          )}
+          {display.prevention && (
+            <div className="rounded-xl bg-green-50 border border-green-100 p-3">
+              <div className="text-xs font-bold text-green-700 mb-1">🛡️ Prevention</div>
+              <p className="text-xs text-green-900 whitespace-pre-line">{display.prevention}</p>
+            </div>
+          )}
+          {item.feedback && (
+            <span className={`inline-block rounded-full px-2.5 py-0.5 text-xs font-semibold ${
+              item.feedback === 'helpful' ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'
+            }`}>
+              {item.feedback === 'helpful' ? '👍 Helpful' : '👎 Not Helpful'}
+            </span>
+          )}
+          {item._id && (
+            <AILanguageSelector
+              recordId={item._id}
+              module="disease"
+              englishData={item as any}
+              onTranslated={handleTranslated}
+            />
+          )}
+        </div>
+      )}
+    </article>
   );
 }

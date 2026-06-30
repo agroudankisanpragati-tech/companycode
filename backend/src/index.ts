@@ -20,13 +20,17 @@ import cropRecommendationRoutes from './routes/cropRecommendation';
 import myCropsRoutes from './routes/myCrops';
 import soilRoutes from './routes/soil';
 import soilMoistureRoutes from './routes/soilMoisture';
+import irrigationRoutes from './routes/irrigation';
 import aiFosRoutes from './routes/aiFos';
 import aiAssistantRoutes from './routes/aiAssistant';
 import settingsRoutes from './routes/settings';
 import farmerProfileRoutes from './routes/farmerProfile';
 import diseaseRoutes from './routes/disease';
 import farmerStoriesRoutes from './routes/farmerStories';
+import shopkeeperRoutes from './routes/shopkeeper';
+import adminShopkeeperRoutes from './routes/adminShopkeeper';
 import { ensureBootstrapAdmin } from './utils/bootstrapAdmin';
+import { bilingualErrorHandler, requestTimeout } from './middleware/errorHandler';
 
 dotenv.config({ override: true });
 
@@ -74,6 +78,7 @@ app.use(cors({
 }));
 app.use(express.json());
 app.use(express.urlencoded({ limit: '10mb', extended: true }));
+app.use(requestTimeout(30000));
 app.use('/uploads', express.static(uploadsDir));
 
 // Rate limiters
@@ -115,12 +120,15 @@ app.use('/api/crop-recommendation', cropRecommendationRoutes);
 app.use('/api/my-crops', myCropsRoutes);
 app.use('/api/soil', soilRoutes);
 app.use('/api/soil-moisture', soilMoistureRoutes);
+app.use('/api/irrigation', irrigationRoutes);
 app.use('/api/ai-fos', aiFosRoutes);
 app.use('/api/ai-assistant', aiAssistantRoutes);
 app.use('/api/settings', settingsRoutes);
 app.use('/api/farmer-profile', farmerProfileRoutes);
 app.use('/api/disease', diseaseRoutes);
 app.use('/api/farmer-stories', farmerStoriesRoutes);
+app.use('/api/shopkeeper', shopkeeperRoutes);
+app.use('/api/admin/shopkeeper', adminShopkeeperRoutes);
 
 // Health Check
 app.get('/api/health', (req, res) => {
@@ -128,12 +136,7 @@ app.get('/api/health', (req, res) => {
 });
 
 // Error Handler
-app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
-  console.error(err);
-  res.status(err.status || 500).json({
-    error: err.message || 'Internal Server Error',
-  });
-});
+app.use(bilingualErrorHandler);
 
 const startServer = async () => {
   await connectDB();

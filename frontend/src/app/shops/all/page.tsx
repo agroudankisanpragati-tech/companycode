@@ -1,20 +1,5 @@
-import ShopSearch from "../../../components/ShopSearch";
-
-export const metadata = {
-    title: "All Shops - Agroudan",
-};
+import { redirect } from 'next/navigation';
 
 export default function AllShopsPage() {
-    return (
-        <>
-            <main className="section-container py-8">
-                <h1 className="text-2xl font-bold mb-4">All Shops</h1>
-                <p className="text-sm text-gray-600 mb-6">Search and browse all registered shops.</p>
-
-                {/* client component handles fetching and searching */}
-                <ShopSearch />
-            </main>
-
-        </>
-    );
+  redirect('/marketplace/shops');
 }

@@ -18,8 +18,15 @@ export interface IDiseaseKnowledgeBase extends Document {
     treatmentDescription?: string;
     preventionMethods?: string;
     preventionDescription?: string;
+    recommendedActions?: string;
     diseaseImages: string[];
     healthyImages: string[];
+    source: 'admin' | 'ai_auto' | 'ai_verified';
+    confidenceScore: number;
+    scanCount: number;
+    helpfulCount: number;
+    notHelpfulCount: number;
+    lastSeenAt: Date;
     createdAt: Date;
     updatedAt: Date;
 }

@@ -58,6 +58,7 @@ const FarmerCropRequestSchema = new mongoose_1.Schema({
     budget: { type: Number, required: true },
     previousCrop: { type: String },
     preferredCrop: { type: String },
+    translations: { type: Map, of: mongoose_1.Schema.Types.Mixed, default: {} },
 }, { timestamps: true });
 exports.FarmerCropRequest = mongoose_1.default.model('FarmerCropRequest', FarmerCropRequestSchema);
 //# sourceMappingURL=FarmerCropRequest.js.map

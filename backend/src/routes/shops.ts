@@ -86,7 +86,7 @@ router.post('/:id/products', authenticate, async (req: AuthenticatedRequest, res
         if (!shop) return res.status(404).json({ error: 'Shop not found' });
 
         // only shop owner or admin can add products
-        if (shop.ownerId !== userId && role !== 'admin') {
+        if (shop.ownerId.toString() !== userId && role !== 'admin') {
             return res.status(403).json({ error: 'Not allowed' });
         }
 
@@ -120,7 +120,7 @@ router.put('/:id/products/:productId', authenticate, async (req: AuthenticatedRe
         const shop = await Shop.findById(id);
         if (!shop) return res.status(404).json({ error: 'Shop not found' });
 
-        if (shop.ownerId !== userId && role !== 'admin') {
+        if (shop.ownerId.toString() !== userId && role !== 'admin') {
             return res.status(403).json({ error: 'Not allowed' });
         }
 
@@ -156,7 +156,7 @@ router.delete('/:id/products/:productId', authenticate, async (req: Authenticate
         const shop = await Shop.findById(id);
         if (!shop) return res.status(404).json({ error: 'Shop not found' });
 
-        if (shop.ownerId !== userId && role !== 'admin') {
+        if (shop.ownerId.toString() !== userId && role !== 'admin') {
             return res.status(403).json({ error: 'Not allowed' });
         }
 
@@ -180,7 +180,7 @@ router.put('/:id', authenticate, async (req: AuthenticatedRequest, res, next) =>
         if (!shop) return res.status(404).json({ error: 'Shop not found' });
 
         // only shop owner or admin can update
-        if (shop.ownerId !== userId && role !== 'admin') {
+        if (shop.ownerId.toString() !== userId && role !== 'admin') {
             return res.status(403).json({ error: 'Not allowed' });
         }
 

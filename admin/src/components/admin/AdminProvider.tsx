@@ -19,6 +19,7 @@ import {
   FaDatabase,
   FaMicroscope,
   FaFilm,
+  FaNewspaper,
 } from 'react-icons/fa';
 import {
   API_BASE,
@@ -59,6 +60,7 @@ type AdminContextValue = {
 const AdminContext = createContext<AdminContextValue | null>(null);
 
 const navItems = [
+  { href: '/blogs', label: 'Blogs', icon: FaNewspaper },
   { href: '/dashboard', label: 'Dashboard', icon: FaChartLine },
   { href: '/crop-knowledge-base', label: 'Crop Knowledge Base', icon: FaDatabase },
   { href: '/disease-knowledge-base', label: 'Disease Knowledge Base', icon: FaMicroscope },
@@ -67,6 +69,8 @@ const navItems = [
   { href: '/users', label: 'Users', icon: FaUsers },
   { href: '/ai-analytics', label: 'AI Analytics', icon: FaRobot },
   { href: '/farmer-stories', label: 'Farmer Stories', icon: FaFilm },
+  { href: '/shopkeeper-verification', label: 'Verification Center', icon: FaUserShield },
+  { href: '/registered-shops', label: 'Registered Shops', icon: FaWarehouse },
   { href: '/settings', label: 'Settings', icon: FaCog },
 ];
 

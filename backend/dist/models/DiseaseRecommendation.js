@@ -42,13 +42,19 @@ const DiseaseRecommendationSchema = new mongoose_1.Schema({
     diseaseType: { type: String },
     severityLevel: { type: String },
     symptoms: { type: String },
+    organicTreatment: { type: String },
+    chemicalTreatment: { type: String },
     treatment: { type: String },
     prevention: { type: String },
     description: { type: String },
+    recommendedActions: { type: String },
+    confidenceScore: { type: Number },
     imageUrl: { type: String },
     source: { type: String, enum: ['cache', 'knowledge_base', 'ai'], default: 'ai' },
     similarityScore: { type: Number },
+    knowledgeBaseId: { type: String },
     feedback: { type: String, enum: ['helpful', 'not_helpful', null], default: null },
+    translations: { type: Map, of: mongoose_1.Schema.Types.Mixed, default: {} },
 }, { timestamps: true });
 DiseaseRecommendationSchema.index({ cropName: 1, diseaseName: 1 });
 exports.DiseaseRecommendation = mongoose_1.default.model('DiseaseRecommendation', DiseaseRecommendationSchema);

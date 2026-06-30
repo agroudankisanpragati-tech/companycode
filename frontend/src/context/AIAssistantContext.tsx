@@ -22,7 +22,7 @@ interface AIAssistantContextType {
 const GREETING: Message = {
   role: 'assistant',
   content:
-    '🌾 Namaste! Main Agrodan Kisan Pragati ka AI Copilot hoon.\n\nMain aapko platform ke har feature ke baare mein guide kar sakta hoon — crop advice, soil health, mandi prices, disease detection, government schemes, aur bahut kuch.\n\nAap kya jaanna chahte hain? 👇',
+    '🌾 Namaste! Main Pragati AI hoon — aapka intelligent krishi sahayak.\n\nMain aapko platform ke har feature ke baare mein guide kar sakta hoon — crop advice, soil health, mandi prices, disease detection, government schemes, aur bahut kuch.\n\nAap kya jaanna chahte hain? 👇',
 };
 
 const AIAssistantContext = createContext<AIAssistantContextType | undefined>(undefined);

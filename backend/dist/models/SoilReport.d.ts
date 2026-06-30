@@ -43,6 +43,7 @@ export interface ISoilReport extends Document {
         reason: string;
     }>;
     aiAnalysis?: string;
+    translations?: Record<string, Record<string, any>>;
     createdAt: Date;
     updatedAt: Date;
 }

@@ -45,20 +45,28 @@ ${conditions.averageTemperature ? `- Average Temperature: ${conditions.averageTe
 
 For each crop provide ALL of these fields:
 - cropName
+- cropNameHindi (हिंदी में फसल का नाम)
 - cropCategory (Medicinal / Fruit / Traditional)
 - suitabilityScore (0-100 integer)
 - whySuitable (2-3 sentences explaining fit)
+- whySuitableHindi (हिंدी में)
 - waterRequirement (low/medium/high)
 - estimatedCultivationCost (INR per acre, integer)
 - estimatedYield (e.g. "8 quintal/acre")
+- estimatedYieldHindi (हिंدी में)
 - expectedRevenue (INR per acre, integer)
 - expectedProfit (INR per acre, integer)
 - marketDemand (low/medium/high)
+- marketDemandHindi (कम / मध्यम / अधिक)
 - currentMarketPrice (INR per quintal, integer)
 - risks (1-2 sentences about key risks)
+- risksHindi (हिंدी में)
 - riskLevel (low/medium/high)
 - cultivationGuide (numbered step-by-step, concise, 6-8 steps)
+- cultivationGuideHindi (हिंدी में)
 - growingDuration (days, integer)
+- bestSowingTime (e.g. "June-July")
+- bestSowingTimeHindi (हिंدी में)
 - fertilizerRequirement (e.g. "DAP 50kg + Urea 30kg per acre")
 - fertilizerCost (INR per acre, integer)
 - seedRequirement (e.g. "8 kg per acre")
@@ -105,18 +113,26 @@ export async function callOpenAIForCrops(conditions: IFarmerConditions): Promise
   const parsed = JSON.parse(content);
   const recommendations: IRecommendationItem[] = (parsed.recommendations || []).map((item: any) => ({
     cropName: item.cropName || '',
+    cropNameHindi: item.cropNameHindi || '',
     cropCategory: item.cropCategory || 'Traditional',
     suitabilityScore: Number(item.suitabilityScore) || 75,
     whySuitable: item.whySuitable || '',
+    whySuitableHindi: item.whySuitableHindi || '',
     waterRequirement: item.waterRequirement || 'medium',
     estimatedCultivationCost: Number(item.estimatedCultivationCost) || 0,
     estimatedYield: item.estimatedYield || '',
+    estimatedYieldHindi: item.estimatedYieldHindi || '',
     expectedRevenue: Number(item.expectedRevenue) || 0,
     expectedProfit: Number(item.expectedProfit) || 0,
     marketDemand: item.marketDemand || 'medium',
+    marketDemandHindi: item.marketDemandHindi || '',
     risks: item.risks || '',
+    risksHindi: item.risksHindi || '',
     cultivationGuide: item.cultivationGuide || '',
+    cultivationGuideHindi: item.cultivationGuideHindi || '',
     growingDuration: Number(item.growingDuration) || 0,
+    bestSowingTime: item.bestSowingTime || '',
+    bestSowingTimeHindi: item.bestSowingTimeHindi || '',
     riskLevel: item.riskLevel || 'medium',
     currentMarketPrice: item.currentMarketPrice ? Number(item.currentMarketPrice) : undefined,
     fertilizerRequirement: item.fertilizerRequirement || undefined,

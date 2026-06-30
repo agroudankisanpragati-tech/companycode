@@ -22,6 +22,7 @@ export interface IFarmerCropRequest extends Document {
     budget: number;
     previousCrop?: string;
     preferredCrop?: string;
+    translations?: Record<string, any>;
     createdAt: Date;
 }
 export declare const FarmerCropRequest: mongoose.Model<IFarmerCropRequest, {}, {}, {}, mongoose.Document<unknown, {}, IFarmerCropRequest, {}, {}> & IFarmerCropRequest & Required<{

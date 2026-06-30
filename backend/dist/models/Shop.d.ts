@@ -1,21 +1,53 @@
 import mongoose, { Document } from 'mongoose';
 export interface IShop extends Document {
-    ownerId: string;
+    ownerId: mongoose.Types.ObjectId;
+    slug: string;
     name: string;
-    phone?: string;
-    address?: string;
-    location?: {
-        state?: string;
-        district?: string;
-        coordinates?: {
-            latitude?: number;
-            longitude?: number;
-        };
+    ownerName: string;
+    businessType: string;
+    category: string;
+    description: string;
+    gstNumber?: string;
+    panNumber?: string;
+    phone: string;
+    whatsapp?: string;
+    email?: string;
+    website?: string;
+    facebook?: string;
+    instagram?: string;
+    youtube?: string;
+    telegram?: string;
+    emergencyContact?: string;
+    logo?: string;
+    cover?: string;
+    address: {
+        state: string;
+        district: string;
+        tehsil?: string;
+        village?: string;
+        pincode?: string;
+        landmark?: string;
+        fullAddress: string;
     };
-    openHours?: string;
-    description?: string;
-    images?: string[];
-    verified?: boolean;
+    location: {
+        latitude: number;
+        longitude: number;
+        googleDirectionLink?: string;
+        placeName?: string;
+    };
+    openingTime?: string;
+    closingTime?: string;
+    workingDays: string[];
+    status: 'pending' | 'approved' | 'rejected' | 'suspended';
+    verified: boolean;
+    featured: boolean;
+    averageRating: number;
+    totalReviews: number;
+    totalViews: number;
+    seoTitle?: string;
+    seoDescription?: string;
+    seoKeywords?: string;
+    deletedAt?: Date;
     createdAt: Date;
     updatedAt: Date;
 }

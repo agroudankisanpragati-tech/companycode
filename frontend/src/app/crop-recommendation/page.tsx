@@ -10,6 +10,7 @@ import {
   RecommendationResponse,
 } from '@/services/cropRecommendation';
 import { useAuth } from '@/context/AuthContext';
+import AILanguageSelector from '@/components/AILanguageSelector';
 
 type Step = 'form' | 'results';
 
@@ -22,8 +23,31 @@ function CropRecommendationContent() {
   const [error, setError] = useState('');
   const [result, setResult] = useState<RecommendationResponse | null>(null);
   const [feedback, setFeedback] = useState<'helpful' | 'not_helpful' | null>(null);
+  const [displayRecommendations, setDisplayRecommendations] = useState<RecommendationResponse['recommendations'] | null>(null);
   const [prefill, setPrefill] = useState<Partial<CropRecommendationRequest>>({});
   const [prefillBanner, setPrefillBanner] = useState('');
+  // Farmer GPS/location for seed shop proximity
+  const [farmerLat, setFarmerLat] = useState<number | undefined>();
+  const [farmerLng, setFarmerLng] = useState<number | undefined>();
+  const [farmerTehsil, setFarmerTehsil] = useState<string | undefined>();
+
+  // Load farmer profile to get GPS coords and village/tehsil
+  useEffect(() => {
+    if (!isAuthenticated) return;
+    const token = typeof window !== 'undefined' ? localStorage.getItem('authToken') : null;
+    if (!token) return;
+    fetch('/api/farmer-profile', { headers: { Authorization: `Bearer ${token}` } })
+      .then(r => r.ok ? r.json() : null)
+      .then(d => {
+        const profile = d?.data;
+        if (!profile) return;
+        const coords = profile.user?.location?.coordinates;
+        if (coords?.latitude) setFarmerLat(coords.latitude);
+        if (coords?.longitude) setFarmerLng(coords.longitude);
+        if (profile.ext?.tehsil) setFarmerTehsil(profile.ext.tehsil);
+      })
+      .catch(() => {});
+  }, [isAuthenticated]);
 
   useEffect(() => {
     if (!searchParams) return;
@@ -58,6 +82,7 @@ function CropRecommendationContent() {
     try {
       const res = await getCropRecommendations(data);
       setResult(res);
+      setDisplayRecommendations(null);
       setStep('results');
     } catch (err: any) {
       setError(err.message || 'Something went wrong. Please try again.');
@@ -144,8 +169,30 @@ function CropRecommendationContent() {
               </div>
             </div>
 
+            {/* Language Selector */}
+            {result.requestId && (
+              <AILanguageSelector
+                recordId={result.requestId}
+                module="crop-recommendation"
+                englishData={{ recommendations: result.recommendations }}
+                onTranslated={(lang, data) => {
+                  if (lang === 'en') setDisplayRecommendations(null);
+                  else if (data?.recommendations) setDisplayRecommendations(data.recommendations);
+                }}
+              />
+            )}
+
             {/* Category Filter Tabs */}
-            <CategoryTabs recommendations={result.recommendations} source={result.source} />
+            <CategoryTabs
+              recommendations={displayRecommendations || result.recommendations}
+              source={result.source}
+              farmerVillage={result.farmerVillage}
+              farmerTehsil={farmerTehsil}
+              farmerDistrict={result.farmerDistrict}
+              farmerState={result.farmerState}
+              farmerLat={farmerLat}
+              farmerLng={farmerLng}
+            />
 
             {/* Feedback */}
             <div className="rounded-2xl border border-gray-100 bg-white px-6 py-4 flex items-center justify-between gap-4">
@@ -177,7 +224,7 @@ function CropRecommendationContent() {
 
             {/* Try Again Button */}
             <button
-              onClick={() => { setStep('form'); setResult(null); setFeedback(null); setError(''); }}
+              onClick={() => { setStep('form'); setResult(null); setDisplayRecommendations(null); setFeedback(null); setError(''); }}
               className="w-full rounded-2xl border border-emerald-200 py-3 text-sm font-semibold text-emerald-700 hover:bg-emerald-50 transition"
             >
               ← Try Different Conditions
@@ -197,7 +244,16 @@ export default function CropRecommendationPage() {
   );
 }
 
-function CategoryTabs({ recommendations, source }: { recommendations: RecommendationResponse['recommendations']; source: 'database' | 'openai' }) {
+function CategoryTabs({ recommendations, source, farmerVillage, farmerTehsil, farmerDistrict, farmerState, farmerLat, farmerLng }: {
+  recommendations: RecommendationResponse['recommendations'];
+  source: 'database' | 'openai';
+  farmerVillage?: string;
+  farmerTehsil?: string;
+  farmerDistrict?: string;
+  farmerState?: string;
+  farmerLat?: number;
+  farmerLng?: number;
+}) {
   const [activeCategory, setActiveCategory] = useState('All');
   const categories = ['All', ...Array.from(new Set(recommendations.map((r) => r.cropCategory)))];
   const filtered = activeCategory === 'All' ? recommendations : recommendations.filter((r) => r.cropCategory === activeCategory);
@@ -221,8 +277,19 @@ function CategoryTabs({ recommendations, source }: { recommendations: Recommenda
 
       {/* Cards */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {filtered.map((crop, i) => (
-          <CropCard key={crop.cropName} crop={crop} source={source} rank={recommendations.indexOf(crop) + 1} />
+        {filtered.map((crop) => (
+          <CropCard
+            key={crop.cropName}
+            crop={crop}
+            source={source}
+            rank={recommendations.indexOf(crop) + 1}
+            farmerVillage={farmerVillage}
+            farmerTehsil={farmerTehsil}
+            farmerDistrict={farmerDistrict}
+            farmerState={farmerState}
+            farmerLat={farmerLat}
+            farmerLng={farmerLng}
+          />
         ))}
       </div>
     </div>

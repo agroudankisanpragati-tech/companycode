@@ -12,6 +12,8 @@ export interface IActiveCrop extends Document {
   isHarvested: boolean;
   harvestDate?: Date;
   notes?: string;
+  aiRecommendation?: string;
+  aiRecommendationTranslations?: Record<string, string>;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -29,6 +31,8 @@ const schema = new Schema<IActiveCrop>(
     isHarvested:          { type: Boolean, default: false },
     harvestDate:          { type: Date },
     notes:                { type: String },
+    aiRecommendation:               { type: String },
+    aiRecommendationTranslations:   { type: Map, of: String, default: {} },
   },
   { timestamps: true }
 );

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useCallback, useEffect } from 'react';
+import { useState, useRef, useCallback, useEffect, lazy, Suspense } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import FarmerSidebar from '@/components/FarmerSidebar';
@@ -14,12 +14,15 @@ import {
   SoilReport,
   SoilHistoryItem,
 } from '@/services/soilHealth';
+import AILanguageSelector from '@/components/AILanguageSelector';
 import {
   FaUpload, FaLeaf, FaFlask, FaChartBar, FaExclamationTriangle,
   FaCheckCircle, FaSeedling, FaHistory, FaDownload, FaSpinner,
   FaArrowLeft, FaFilePdf, FaFileImage, FaTint, FaBolt, FaFire,
   FaTrash,
 } from 'react-icons/fa';
+
+const VoicePlayer = lazy(() => import('@/components/VoicePlayer'));
 
 type PageView = 'upload' | 'analyzing' | 'result' | 'historyDetail';
 
@@ -87,6 +90,19 @@ function AnalysisResult({ report, onBack, onViewCrops }: {
   const score = report.soilHealthScore ?? 0;
   const status = report.soilHealthStatus ?? 'Moderate';
 
+  // Multi-language translation overlay
+  const [translatedData, setTranslatedData] = useState<Record<string, any> | null>(null);
+  const [displayLang, setDisplayLang] = useState('en');
+
+  const handleTranslated = (lang: string, data: Record<string, any>) => {
+    setDisplayLang(lang);
+    setTranslatedData(lang === 'en' ? null : data);
+  };
+
+  // Helper — returns translated value if available, else falls back to English
+  const t = (key: string, fallback: any) => translatedData?.[key] ?? fallback;
+  const tArr = (key: string, fallback: any) => translatedData?.[key] ?? fallback;
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -131,11 +147,37 @@ function AnalysisResult({ report, onBack, onViewCrops }: {
       {/* AI Analysis */}
       {report.aiAnalysis && (
         <div className="rounded-2xl bg-emerald-50 border border-emerald-100 p-5">
-          <div className="flex items-center gap-2 mb-2 text-emerald-700 font-semibold">
-            <FaLeaf /> AI Soil Analysis
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center gap-2 text-emerald-700 font-semibold">
+              <FaLeaf /> AI Soil Analysis
+            </div>
+            <Suspense fallback={null}>
+              <VoicePlayer text={report.aiAnalysis} lang="en-IN" autoDetect={false} label="Listen Report" />
+            </Suspense>
           </div>
-          <p className="text-sm text-slate-700 leading-relaxed">{report.aiAnalysis}</p>
+          <p className="text-sm text-slate-700 leading-relaxed">{t('aiAnalysis', report.aiAnalysis)}</p>
+          {(report as any).aiAnalysisHindi && displayLang === 'en' && (
+            <div className="mt-3 border-t border-emerald-100 pt-3">
+              <div className="flex items-center justify-between mb-1">
+                <span className="text-xs font-bold text-orange-600 uppercase tracking-wider">हिंदी विश्लेषण</span>
+                <Suspense fallback={null}>
+                  <VoicePlayer text={(report as any).aiAnalysisHindi} lang="hi-IN" autoDetect={false} label="सुनें" />
+                </Suspense>
+              </div>
+              <p className="text-sm text-slate-600 leading-relaxed italic">{(report as any).aiAnalysisHindi}</p>
+            </div>
+          )}
         </div>
+      )}
+
+      {/* Language Selector */}
+      {(report as any)._id && (
+        <AILanguageSelector
+          recordId={(report as any)._id}
+          module="soil"
+          englishData={report as any}
+          onTranslated={handleTranslated}
+        />
       )}
 
       {/* Benchmark Comparison */}
@@ -207,7 +249,7 @@ function AnalysisResult({ report, onBack, onViewCrops }: {
               <FaSeedling /> Organic Recommendations
             </div>
             <ul className="space-y-2">
-              {report.recommendations.organic.map((rec, i) => (
+              {tArr('recommendations', report.recommendations).organic?.map?.((rec: string, i: number) => (
                 <li key={i} className="flex items-start gap-2 text-sm text-slate-700">
                   <FaCheckCircle className="text-green-500 mt-0.5 flex-shrink-0" />
                   {rec}
@@ -221,15 +263,15 @@ function AnalysisResult({ report, onBack, onViewCrops }: {
               <FaFlask /> Fertilizer Recommendations
             </div>
             <ul className="space-y-2">
-              {report.recommendations.fertilizer.map((rec, i) => (
+              {tArr('recommendations', report.recommendations).fertilizer?.map?.((rec: string, i: number) => (
                 <li key={i} className="flex items-start gap-2 text-sm text-slate-700">
                   <FaCheckCircle className="text-blue-500 mt-0.5 flex-shrink-0" />
                   {rec}
                 </li>
               ))}
             </ul>
-            {report.recommendations.reasoning && (
-              <p className="mt-3 text-xs text-slate-500 border-t pt-3">{report.recommendations.reasoning}</p>
+            {(tArr('recommendations', report.recommendations) as any).reasoning && (
+              <p className="mt-3 text-xs text-slate-500 border-t pt-3">{(tArr('recommendations', report.recommendations) as any).reasoning}</p>
             )}
           </div>
         </div>

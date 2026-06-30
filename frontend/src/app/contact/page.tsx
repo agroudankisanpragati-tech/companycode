@@ -5,21 +5,21 @@ import { FaEnvelope, FaMapMarkerAlt, FaPhoneAlt, FaRegClock, FaWhatsapp } from '
 const supportChannels = [
     {
         title: 'Phone Support',
-        detail: '+91 98765 43210',
+        detail: '+916358095181',
         note: 'Mon-Sat, 9:00 AM - 7:00 PM',
         icon: FaPhoneAlt,
         accent: 'from-amber-400 to-orange-500',
     },
     {
         title: 'Email Helpdesk',
-        detail: 'support@kisanunnati.in',
+        detail: 'support@agroudankisanpragati.com',
         note: 'Typical response in under 3 hours',
         icon: FaEnvelope,
         accent: 'from-lime-400 to-green-500',
     },
     {
         title: 'WhatsApp Assist',
-        detail: '+91 91234 56789',
+        detail: '+916358095181',
         note: 'Chat for weather, mandi, and app support',
         icon: FaWhatsapp,
         accent: 'from-emerald-400 to-teal-500',
@@ -29,6 +29,7 @@ const supportChannels = [
 export default function ContactPage() {
     return (
         <main className="min-h-screen bg-gradient-to-b from-amber-50 via-lime-50 to-white">
+            <Navbar />
             <section className="relative overflow-hidden">
                 <div className="pointer-events-none absolute -left-24 -top-20 h-72 w-72 rounded-full bg-yellow-300/20 blur-3xl" />
                 <div className="pointer-events-none absolute -right-20 top-20 h-80 w-80 rounded-full bg-green-300/20 blur-3xl" />
@@ -38,7 +39,7 @@ export default function ContactPage() {
                         <div className="grid gap-10 p-6 md:grid-cols-2 md:gap-12 md:p-10 lg:p-12">
                             <div className="space-y-6">
                                 <span className="inline-flex items-center rounded-full bg-green-100 px-4 py-1.5 text-sm font-semibold text-green-700">
-                                    Contact Kisan Unnati
+                                    Contact Agroudan Kisan Pragati
                                 </span>
 
                                 <h1 className="text-3xl font-extrabold tracking-tight text-gray-900 md:text-5xl">

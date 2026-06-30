@@ -47,6 +47,8 @@ const schema = new mongoose_1.Schema({
     isHarvested: { type: Boolean, default: false },
     harvestDate: { type: Date },
     notes: { type: String },
+    aiRecommendation: { type: String },
+    aiRecommendationTranslations: { type: Map, of: String, default: {} },
 }, { timestamps: true });
 exports.ActiveCrop = mongoose_1.default.model('ActiveCrop', schema);
 //# sourceMappingURL=ActiveCrop.js.map

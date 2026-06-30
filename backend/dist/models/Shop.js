@@ -36,22 +36,57 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Shop = void 0;
 const mongoose_1 = __importStar(require("mongoose"));
 const shopSchema = new mongoose_1.Schema({
-    ownerId: { type: String, required: true, index: true },
-    name: { type: String, required: true },
-    phone: { type: String },
-    address: { type: String },
-    location: {
-        state: { type: String },
-        district: { type: String },
-        coordinates: {
-            latitude: { type: Number },
-            longitude: { type: Number },
-        },
+    ownerId: { type: mongoose_1.Schema.Types.ObjectId, ref: 'User', required: true, index: true },
+    slug: { type: String, required: true, unique: true, lowercase: true, trim: true, index: true },
+    name: { type: String, required: true, trim: true },
+    ownerName: { type: String, required: true },
+    businessType: { type: String, required: true },
+    category: { type: String, required: true },
+    description: { type: String, default: '' },
+    gstNumber: String,
+    panNumber: String,
+    phone: { type: String, required: true },
+    whatsapp: String,
+    email: String,
+    website: String,
+    facebook: String,
+    instagram: String,
+    youtube: String,
+    telegram: String,
+    emergencyContact: String,
+    logo: String,
+    cover: String,
+    address: {
+        state: { type: String, default: '' },
+        district: { type: String, default: '' },
+        tehsil: String,
+        village: String,
+        pincode: String,
+        landmark: String,
+        fullAddress: { type: String, default: '' },
     },
-    openHours: { type: String },
-    description: { type: String },
-    images: [String],
+    location: {
+        latitude: { type: Number, default: 0 },
+        longitude: { type: Number, default: 0 },
+        googleDirectionLink: String,
+        placeName: String,
+    },
+    openingTime: String,
+    closingTime: String,
+    workingDays: [String],
+    status: { type: String, enum: ['pending', 'approved', 'rejected', 'suspended'], default: 'pending', index: true },
     verified: { type: Boolean, default: false },
+    featured: { type: Boolean, default: false },
+    averageRating: { type: Number, default: 0, min: 0, max: 5 },
+    totalReviews: { type: Number, default: 0 },
+    totalViews: { type: Number, default: 0 },
+    seoTitle: String,
+    seoDescription: String,
+    seoKeywords: String,
+    deletedAt: Date,
 }, { timestamps: true });
+shopSchema.index({ 'address.state': 1, 'address.district': 1 });
+shopSchema.index({ category: 1, status: 1 });
+shopSchema.index({ name: 'text', description: 'text', 'address.fullAddress': 'text' });
 exports.Shop = mongoose_1.default.model('Shop', shopSchema);
 //# sourceMappingURL=Shop.js.map

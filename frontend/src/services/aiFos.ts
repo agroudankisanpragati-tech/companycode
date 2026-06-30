@@ -52,6 +52,7 @@ export interface CropDashboardEntry {
 export interface FosDashboard {
   cropData:        CropDashboardEntry[];
   aiRecommendation: string;
+  activeCropId:    string | null;
   contextSnapshot: {
     moisture:    { pct: number; status: string } | null;
     soilScore:   number | null;
@@ -86,4 +87,10 @@ export const aiFosService = {
 
   getRecommendedSchemes: () =>
     req<{ success: boolean; data: any[] }>('/schemes'),
+
+  translateRecommendation: (activeCropId: string, language: string) =>
+    req<{ success: boolean; cached: boolean; language: string; data: { aiRecommendation: string } }>('/translate', {
+      method: 'POST',
+      body: JSON.stringify({ activeCropId, language }),
+    }),
 };

@@ -15,7 +15,7 @@ import LanguageSelector from '@/components/LanguageSelector';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || 'http://localhost:4000';
 
-export default function FarmerSidebar({ open, onClose }: { open?: boolean; onClose?: () => void }) {
+export default function FarmerSidebar({ open, onClose, onProfileClick }: { open?: boolean; onClose?: () => void; onProfileClick?: () => void }) {
   const { user } = useAuth();
   const { toggleAssistant } = useAIAssistant();
   const { t } = useLanguage();
@@ -112,10 +112,10 @@ export default function FarmerSidebar({ open, onClose }: { open?: boolean; onClo
           )}
         </div>
 
-        {/* Avatar / Profile section — fully clickable → profile page */}
+        {/* Avatar / Profile section — fully clickable → opens profile modal */}
         <div
           className="relative flex items-center gap-3 px-3 py-3 border-b border-white/10 cursor-pointer group"
-          onClick={() => router.push('/dashboard/farmer/profile')}
+          onClick={() => onProfileClick ? onProfileClick() : router.push('/dashboard/farmer/profile')}
           title={t('sidebar', 'profile', 'Profile')}
         >
           <div
@@ -172,6 +172,37 @@ export default function FarmerSidebar({ open, onClose }: { open?: boolean; onClo
           {navItems.map((item) => {
             const Icon = item.icon;
             const active = pathname === item.href || (item.href !== '/dashboard/farmer' && pathname?.startsWith(item.href));
+
+            // Profile item → open modal if callback provided
+            if (item.key === 'profile' && onProfileClick) {
+              return (
+                <button
+                  key={item.key}
+                  onClick={onProfileClick}
+                  className={`w-full flex items-center gap-3 px-3 py-2.5 transition-colors duration-200 ${
+                    active
+                      ? 'bg-white/15 text-white font-semibold border-r-2 border-lime-300'
+                      : 'text-emerald-50/85 hover:bg-white/10 active:bg-white/20'
+                  }`}
+                >
+                  <span className={`flex-shrink-0 flex h-8 w-8 items-center justify-center rounded-lg transition-colors duration-200 ${active ? 'bg-white/20 shadow-sm' : 'bg-white/10'} text-lime-200`}>
+                    <Icon className="text-sm" />
+                  </span>
+                  <span
+                    className="text-sm whitespace-nowrap"
+                    style={{
+                      opacity: expanded ? 1 : 0,
+                      transition: 'opacity 200ms ease 80ms',
+                      pointerEvents: expanded ? 'auto' : 'none',
+                    }}
+                  >
+                    {t('sidebar', item.key, item.key)}
+                  </span>
+                  {expanded && active && <FaChevronRight className="ml-auto text-xs text-white/60" />}
+                </button>
+              );
+            }
+
             return (
               <Link
                 key={item.key}

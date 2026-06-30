@@ -61,6 +61,17 @@ input,
 select,
 textarea {
   touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Prevent horizontal scroll on mobile */
+body {
+  overflow-x: hidden;
+}
+
+/* Better text rendering on mobile */
+p, span, li {
+  word-break: break-word;
 }
 
 @keyframes fadeIn {
@@ -167,12 +178,30 @@ textarea {
     @apply min-h-10 px-3 py-2;
   }
 
-  /* Improve focus states for accessibility */
-  button:focus,
-  a:focus,
-  input:focus,
-  select:focus,
-  textarea:focus {
-    @apply outline-none ring-2 ring-green-600 ring-offset-2;
+  /* Keyboard-only focus states for accessibility */
+  button:focus-visible,
+  a:focus-visible,
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible {
+    @apply outline-none ring-2 ring-emerald-500 ring-offset-2;
+  }
+
+  /* Page transition */
+  main {
+    animation: fadeIn 0.35s ease-out;
+  }
+
+  /* Form input reusable class */
+  .input-field {
+    @apply w-full rounded-xl border border-gray-200 bg-white px-3.5 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100 outline-none transition;
+  }
+
+  /* Hide scrollbar utility */
+  .scrollbar-none {
+    scrollbar-width: none;
+  }
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
   }
 }

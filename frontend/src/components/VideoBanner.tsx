@@ -74,7 +74,7 @@ export default function VideoBanner() {
   }, [currentIndex, videos]);
 
   return (
-    <section className="w-full h-[45vh] sm:h-[66vh] md:h-[73vh] lg:h-[80vh] overflow-hidden relative py-0">
+    <section className="w-full h-[40vh] sm:h-[55vh] md:h-[65vh] lg:h-[78vh] overflow-hidden relative py-0">
       {videos.length > 0 ? (
         <div
           className="flex h-full transition-transform duration-700 ease-in-out"

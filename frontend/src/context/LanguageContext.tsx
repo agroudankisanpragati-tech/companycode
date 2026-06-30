@@ -18,6 +18,9 @@ interface LanguageContextType {
   isLoading: boolean;
   showPopup: boolean;
   dismissPopup: () => void;
+  /** 'en' | 'hi' | 'both' — AI module display mode */
+  aiDisplayMode: 'en' | 'hi' | 'both';
+  setAiDisplayMode: (mode: 'en' | 'hi' | 'both') => void;
 }
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -84,6 +87,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const [translations, setTranslations] = useState<Translations>({});
   const [isLoading, setIsLoading] = useState(true);
   const [showPopup, setShowPopup] = useState(false);
+  const [aiDisplayMode, setAiDisplayMode] = useState<'en' | 'hi' | 'both'>('both');
   const initialized = useRef(false);
 
   const loadAndSet = useCallback(async (code: string) => {
@@ -161,6 +165,10 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     if (!LANGUAGES.find((l) => l.code === code)) return;
     localStorage.setItem(STORAGE_KEY, code);
     await loadAndSet(code);
+    // Sync aiDisplayMode: hi → 'hi', en → 'en', others → 'both'
+    if (code === 'hi') setAiDisplayMode('hi');
+    else if (code === 'en') setAiDisplayMode('en');
+    else setAiDisplayMode('both');
     if (persistToServer) {
       await persistLanguageToServer(code);
     }
@@ -185,6 +193,8 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
       isLoading,
       showPopup,
       dismissPopup,
+      aiDisplayMode,
+      setAiDisplayMode,
     }}>
       {children}
     </LanguageContext.Provider>

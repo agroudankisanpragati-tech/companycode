@@ -1,4 +1,4 @@
-import type { Overview, AdminUser, Recommendation, Listing, SessionUser, GovtScheme, GalleryItem, UserSummary, UserPagination, CropKnowledge, CropKnowledgeSummary, DiseaseRecord, DiseaseKnowledgeSummary, FarmerStory, FarmerStorySummary } from './admin-types';
+import type { Overview, AdminUser, Recommendation, Listing, SessionUser, GovtScheme, GalleryItem, UserSummary, UserPagination, CropKnowledge, CropKnowledgeSummary, DiseaseRecord, DiseaseKnowledgeSummary, FarmerStory, FarmerStorySummary, BlogPost } from './admin-types';
 
 // In development the Next.js rewrite proxy forwards /api/* → http://localhost:4000/api/*
 // In production NEXT_PUBLIC_API_URL points to the live backend.
@@ -147,6 +147,19 @@ export const deleteGovtScheme = async (token: string, schemeId: string) => {
   });
 };
 
+export const uploadSchemeMedia = async (token: string, formData: FormData) => {
+  return requestFormData<{ success: boolean; data: { images: string[]; videos: string[] } }>(
+    '/schemes/admin/upload-media', token, formData
+  );
+};
+
+export const fetchSchemesFromAPI = async (token: string, schemeType: string, state?: string) => {
+  return requestJson<{ success: boolean; message: string }>('/schemes/admin/fetch-from-api', token, {
+    method: 'POST',
+    body: JSON.stringify({ schemeType, state }),
+  });
+};
+
 export const loadGalleryItems = async (token: string) => {
   return requestJson<{ success: boolean; data: GalleryItem[] }>('/gallery/admin/all', token);
 };
@@ -284,4 +297,36 @@ export const toggleStoryFeatured = (token: string, id: string, featured: boolean
 
 export const deleteAdminStory = (token: string, id: string) =>
   requestJson<{ success: boolean; message: string }>(`/farmer-stories/admin/${id}`, token, { method: 'DELETE' });
+
+// ─── Blog Posts API ──────────────────────────────────────────────────────────
+
+export const fetchAdminBlogs = (token: string) =>
+  requestJson<{ success: boolean; data: BlogPost[] }>('/blogs/admin/all', token);
+
+export const fetchAdminBlog = (token: string, id: string) =>
+  requestJson<{ success: boolean; data: BlogPost }>(`/blogs/admin/${id}`, token);
+
+export const createBlog = (token: string, data: Partial<BlogPost>) =>
+  requestJson<{ success: boolean; data: BlogPost }>('/blogs/admin', token, {
+    method: 'POST',
+    body: JSON.stringify(data),
+  });
+
+export const updateBlog = (token: string, id: string, data: Partial<BlogPost>) =>
+  requestJson<{ success: boolean; data: BlogPost }>(`/blogs/admin/${id}`, token, {
+    method: 'PATCH',
+    body: JSON.stringify(data),
+  });
+
+export const deleteBlog = (token: string, id: string) =>
+  requestJson<{ success: boolean; message: string }>(`/blogs/admin/${id}`, token, { method: 'DELETE' });
+
+export const uploadBlogCover = async (token: string, file: File): Promise<string> => {
+  const fd = new FormData();
+  fd.append('file', file);
+  const res = await requestFormData<{ success: boolean; data: { coverImage: string } }>(
+    '/blogs/admin/upload-cover', token, fd
+  );
+  return res.data.coverImage;
+};
 

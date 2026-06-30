@@ -1,20 +1,28 @@
 "use client";
 
-import FarmerProfile from '@/components/farmer/FarmerProfile';
-import { useAuth } from '@/context/AuthContext';
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import ProtectedRoute from '@/components/ProtectedRoute';
+import FarmerProfileModal from '@/components/farmer/FarmerProfileModal';
 
-function ProfileContent() {
-  const { user } = useAuth();
+function ProfilePageContent() {
+  const router = useRouter();
+
+  // If someone lands directly on /dashboard/farmer/profile, redirect back
+  // to dashboard and let the dashboard handle the modal
+  // We render the modal here as an overlay over whatever is behind
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="py-8">
-        <FarmerProfile user={user} />
-      </div>
-    </div>
+    <FarmerProfileModal
+      open={true}
+      onClose={() => router.push('/dashboard/farmer')}
+    />
   );
 }
 
 export default function Page() {
-  return <ProtectedRoute><ProfileContent /></ProtectedRoute>;
+  return (
+    <ProtectedRoute>
+      <ProfilePageContent />
+    </ProtectedRoute>
+  );
 }

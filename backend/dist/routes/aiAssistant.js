@@ -17,7 +17,7 @@ const chatLimiter = (0, express_rate_limit_1.default)({
     message: { error: 'Too many requests. Please wait a moment.' },
     skip: () => process.env.NODE_ENV === 'development',
 });
-const SYSTEM_PROMPT = `You are Agrodan Kisan Pragati AI Copilot, an expert agricultural assistant helping Indian farmers.
+const SYSTEM_PROMPT = `You are Pragati AI, an intelligent agriculture assistant helping Indian farmers. You are part of the Agroudan Kisan Pragati platform.
 
 You are both a PLATFORM GUIDE and an AGRICULTURE EXPERT. Help farmers with:
 
@@ -44,15 +44,18 @@ PLATFORM FEATURES:
 7. My Crops (/dashboard/farmer/my-crops) — track growing crops
 8. Dashboard (/dashboard/farmer) — Weather, Soil Moisture, Crop Advisor, Market, Disease Scan cards
 
-LANGUAGE RULES:
-- CRITICAL: Always detect and respond in the SAME language the farmer uses
-- If farmer writes in Hindi → respond fully in Hindi
-- If farmer writes in Marathi → respond in Marathi
-- If farmer writes in Hinglish → respond in Hinglish
-- If farmer writes in English → respond in English
-- Use simple, farmer-friendly language with practical advice
-- Use bullet points and emojis where helpful
-- Keep responses concise and actionable`;
+RESPONSE FORMAT:
+- ALWAYS return valid JSON with exactly this structure:
+{
+  "native": "<response in the target language>",
+  "hindi": "<same response translated to Hindi>",
+  "english": "<same response translated to English>"
+}
+- The "native" field is the PRIMARY response. Write it in the language specified by USER LANGUAGE PREFERENCE, or auto-detect from user message if no preference is given.
+- Always fill all three fields.
+- Use simple, farmer-friendly language with bullet points and emojis.
+- Keep responses concise and actionable.
+- Ensure correct Unicode for all Indian scripts.`;
 // GET /api/ai-assistant/dashboard-context — fetch live dashboard data for AI context
 router.get('/dashboard-context', auth_1.authenticate, async (req, res) => {
     try {
@@ -95,7 +98,7 @@ router.get('/dashboard-context', auth_1.authenticate, async (req, res) => {
 // POST /api/ai-assistant/chat
 router.post('/chat', auth_1.authenticate, chatLimiter, async (req, res) => {
     try {
-        const { messages, dashboardContext } = req.body;
+        const { messages, dashboardContext, selectedLang } = req.body;
         if (!Array.isArray(messages) || messages.length === 0) {
             return res.status(400).json({ error: 'messages array is required' });
         }
@@ -130,6 +133,19 @@ router.post('/chat', auth_1.authenticate, chatLimiter, async (req, res) => {
                 contextBlock += `\nSoil Moisture: ${soilMoisture.percentage}% (${soilMoisture.status})`;
             }
         }
+        const langNames = {
+            en: 'English', hi: 'Hindi', mr: 'Marathi', gu: 'Gujarati', pa: 'Punjabi',
+            bn: 'Bengali', as: 'Assamese', or: 'Odia', te: 'Telugu', ta: 'Tamil',
+            kn: 'Kannada', ml: 'Malayalam', ur: 'Urdu', sa: 'Sanskrit', kok: 'Konkani',
+            ks: 'Kashmiri', mni: 'Manipuri', brx: 'Bodo', doi: 'Dogri', sat: 'Santali',
+            mai: 'Maithili', ne: 'Nepali', sd: 'Sindhi', raj: 'Rajasthani',
+        };
+        if (selectedLang && langNames[selectedLang]) {
+            contextBlock += `\n\nLANGUAGE INSTRUCTION (MANDATORY): The user has selected "${langNames[selectedLang]}" as their preferred language. You MUST write the "native" JSON field entirely and only in ${langNames[selectedLang]} script. Do not mix any other language into the "native" field. The "hindi" field must be in Hindi. The "english" field must be in English.`;
+        }
+        else {
+            contextBlock += `\n\nLANGUAGE INSTRUCTION (MANDATORY): Detect the language/script of the user's last message. Write the "native" JSON field in exactly that same language. For example, if the user wrote in Tamil script, write "native" in Tamil. If in Punjabi, write in Punjabi. If in English, write in English. The "hindi" field must always be in Hindi. The "english" field must always be in English.`;
+        }
         const payload = {
             model,
             messages: [
@@ -145,22 +161,51 @@ router.post('/chat', auth_1.authenticate, chatLimiter, async (req, res) => {
                 'Content-Type': 'application/json',
                 Authorization: `Bearer ${apiKey}`,
                 'HTTP-Referer': process.env.FRONTEND_URL || 'http://localhost:3000',
-                'X-Title': 'Kisan Pragati AI Assistant',
+                'X-Title': 'Pragati AI',
             },
             body: JSON.stringify(payload),
         });
         if (!aiRes.ok) {
             const errText = await aiRes.text().catch(() => aiRes.statusText);
             console.error('[AI Assistant] API error:', errText);
-            return res.status(502).json({ error: 'AI service temporarily unavailable. Please try again.' });
+            return res.status(502).json({
+                error: 'AI service temporarily unavailable. Please try again.',
+                hindi: 'AI सेवा अस्थायी रूप से अनुपलब्ध है। कृपया पुनः प्रयास करें।',
+            });
         }
         const data = await aiRes.json();
-        const reply = data.choices?.[0]?.message?.content?.trim() || 'Sorry, I could not generate a response. Please try again.';
-        res.json({ success: true, reply });
+        const rawContent = data.choices?.[0]?.message?.content?.trim() || '';
+        // Parse bilingual JSON or fallback to plain text
+        let bilingual;
+        // Strip markdown code fences if AI wrapped JSON in ```
+        const cleaned = rawContent.replace(/^```[a-z]*\n?/i, '').replace(/\n?```$/i, '').trim();
+        try {
+            const parsed = JSON.parse(cleaned);
+            bilingual = {
+                english: parsed.english || parsed.native || cleaned,
+                hindi: parsed.hindi || parsed.native || cleaned,
+                native: parsed.native || parsed.english || cleaned,
+                timestamp: new Date().toISOString(),
+                source: 'AI',
+            };
+        }
+        catch {
+            bilingual = {
+                english: cleaned || 'Sorry, I could not generate a response. Please try again.',
+                hindi: cleaned || 'माफ करें, उत्तर नहीं मिला। कृपया पुनः प्रयास करें।',
+                native: cleaned,
+                timestamp: new Date().toISOString(),
+                source: 'AI',
+            };
+        }
+        res.json({ success: true, reply: bilingual.native || bilingual.english, bilingual });
     }
     catch (err) {
         console.error('[AI Assistant] error:', err.message);
-        res.status(500).json({ error: 'Failed to process your message. Please try again.' });
+        res.status(500).json({
+            error: 'Failed to process your message. Please try again.',
+            hindi: 'आपका संदेश प्रوसेस नहीं हो सका। कृपया पुनः प्रयास करें।',
+        });
     }
 });
 exports.default = router;

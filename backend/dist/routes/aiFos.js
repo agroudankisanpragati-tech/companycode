@@ -14,6 +14,7 @@ const SoilReport_1 = require("../models/SoilReport");
 const MarketPriceHistory_1 = require("../models/MarketPriceHistory");
 const GovtScheme_1 = require("../models/GovtScheme");
 const aiFosEngine_1 = require("../services/aiFosEngine");
+const translationService_1 = require("../services/translationService");
 const router = express_1.default.Router();
 function daysBetween(a, b) {
     return Math.floor((b.getTime() - a.getTime()) / 86400000);
@@ -143,12 +144,15 @@ router.get('/dashboard', auth_1.authenticate, async (req, res) => {
                 state: farmer?.location?.state || '',
                 district: farmer?.location?.district || '',
             });
+            // Persist English recommendation so translate endpoint can access it
+            await ActiveCrop_1.ActiveCrop.findByIdAndUpdate(cropData[0].activeCrop._id, { aiRecommendation });
         }
         res.json({
             success: true,
             data: {
                 cropData,
                 aiRecommendation,
+                activeCropId: cropData.length > 0 ? cropData[0].activeCrop._id : null,
                 contextSnapshot: {
                     moisture: moisture ? { pct: moisture.moisturePercentage, status: moisture.moistureStatus } : null,
                     soilScore: soilReport?.soilHealthScore ?? null,
@@ -257,6 +261,39 @@ router.get('/schemes', auth_1.authenticate, async (req, res) => {
     }
     catch (err) {
         res.status(500).json({ success: false, error: err.message });
+    }
+});
+// ─────────────────────────────────────────────────────────────────────────────
+// POST /api/ai-fos/translate — Translate AI daily recommendation
+// ─────────────────────────────────────────────────────────────────────────────
+router.post('/translate', auth_1.authenticate, async (req, res) => {
+    try {
+        const { activeCropId, language } = req.body;
+        if (!activeCropId || !language)
+            return res.status(400).json({ error: 'activeCropId and language are required' });
+        if (language === 'en')
+            return res.status(400).json({ error: 'Source language is already English' });
+        if (!translationService_1.SUPPORTED_LANGUAGES.includes(language))
+            return res.status(400).json({ error: 'Unsupported language' });
+        const crop = await ActiveCrop_1.ActiveCrop.findOne({ _id: activeCropId, farmerId: req.user.userId });
+        if (!crop)
+            return res.status(404).json({ error: 'Active crop not found' });
+        // Return cached translation if available
+        const cached = crop.aiRecommendationTranslations?.get?.(language)
+            ?? crop.aiRecommendationTranslations?.[language];
+        if (cached)
+            return res.json({ success: true, cached: true, language, data: { aiRecommendation: cached } });
+        if (!crop.aiRecommendation)
+            return res.status(400).json({ error: 'No English recommendation to translate' });
+        const translated = await (0, translationService_1.translateObject)({ aiRecommendation: crop.aiRecommendation }, language);
+        await ActiveCrop_1.ActiveCrop.findByIdAndUpdate(activeCropId, {
+            $set: { [`aiRecommendationTranslations.${language}`]: translated.aiRecommendation },
+        });
+        return res.json({ success: true, cached: false, language, data: translated });
+    }
+    catch (err) {
+        console.error('[AI-FOS] translate error:', err.message);
+        res.status(500).json({ error: err.message || 'Translation failed' });
     }
 });
 exports.default = router;

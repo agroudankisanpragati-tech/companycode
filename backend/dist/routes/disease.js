@@ -11,6 +11,7 @@ const auth_1 = require("../middleware/auth");
 const DiseaseKnowledgeBase_1 = require("../models/DiseaseKnowledgeBase");
 const DiseaseRecommendation_1 = require("../models/DiseaseRecommendation");
 const diseaseService_1 = require("../services/diseaseService");
+const translationService_1 = require("../services/translationService");
 const router = express_1.default.Router();
 const uploadsDir = path_1.default.join(process.cwd(), 'uploads', 'disease');
 if (!fs_1.default.existsSync(uploadsDir))
@@ -40,54 +41,42 @@ router.post('/scan', auth_1.authenticate, upload.single('image'), async (req, re
         const imageBuffer = fs_1.default.readFileSync(req.file.path);
         const imageBase64 = imageBuffer.toString('base64');
         const savedImageUrl = imgUrl(req.file.filename);
-        // Step 1: search cache
+        // ── Step 1: Search scan-history cache (fastest) ──────────────────────────
         if (cropHint) {
             const cached = await (0, diseaseService_1.searchCache)(cropHint, '');
             if (cached) {
-                return res.json({
-                    success: true,
-                    source: 'cache',
-                    similarityScore: cached.similarityScore,
-                    data: { ...cached, imageUrl: savedImageUrl },
-                });
+                return res.json({ success: true, source: 'cache', similarityScore: cached.similarityScore, data: { ...cached, imageUrl: savedImageUrl } });
             }
         }
-        // Step 2: AI analysis first to get disease name, then check KB
+        // ── Step 2: Search Disease Knowledge Base ─────────────────────────────────
+        if (cropHint) {
+            const kb = await (0, diseaseService_1.searchKnowledgeBase)(cropHint, '');
+            if (kb) {
+                const saved = await DiseaseRecommendation_1.DiseaseRecommendation.create({ userId, ...kb, imageUrl: savedImageUrl });
+                return res.json({ success: true, source: 'knowledge_base', similarityScore: kb.similarityScore, data: saved });
+            }
+        }
+        // ── Step 3: Call AI Vision API ────────────────────────────────────────────
         let aiResult = null;
         try {
             aiResult = await (0, diseaseService_1.callAIForDisease)(imageBase64, cropHint);
         }
-        catch (_e) {
-            // AI failed — still try KB with crop hint
+        catch (aiErr) {
+            console.error('AI Disease API error:', aiErr.message);
         }
         if (aiResult) {
-            // Check cache with AI-identified names
-            const cached = await (0, diseaseService_1.searchCache)(aiResult.cropName, aiResult.diseaseName);
-            if (cached) {
-                return res.json({
-                    success: true, source: 'cache', similarityScore: cached.similarityScore,
-                    data: { ...cached, imageUrl: savedImageUrl },
-                });
-            }
-            // Check knowledge base
+            // Re-check KB with AI-identified names for a better match
             const kb = await (0, diseaseService_1.searchKnowledgeBase)(aiResult.cropName, aiResult.diseaseName);
             if (kb) {
                 const saved = await DiseaseRecommendation_1.DiseaseRecommendation.create({ userId, ...kb, imageUrl: savedImageUrl });
                 return res.json({ success: true, source: 'knowledge_base', similarityScore: kb.similarityScore, data: saved });
             }
-            // Save AI result
-            const saved = await DiseaseRecommendation_1.DiseaseRecommendation.create({
-                userId, ...aiResult, imageUrl: savedImageUrl, source: 'ai',
-            });
+            // ── Step 4: Save AI result to both Recommendation + Knowledge Base ──────
+            const [saved] = await Promise.all([
+                DiseaseRecommendation_1.DiseaseRecommendation.create({ userId, ...aiResult, imageUrl: savedImageUrl, source: 'ai' }),
+                (0, diseaseService_1.autoSaveToKnowledgeBase)(aiResult, savedImageUrl),
+            ]);
             return res.json({ success: true, source: 'ai', data: saved });
-        }
-        // Fallback if AI completely fails — try KB with crop hint only
-        if (cropHint) {
-            const kb = await (0, diseaseService_1.searchKnowledgeBase)(cropHint, '');
-            if (kb) {
-                const saved = await DiseaseRecommendation_1.DiseaseRecommendation.create({ userId, ...kb, imageUrl: savedImageUrl });
-                return res.json({ success: true, source: 'knowledge_base', data: saved });
-            }
         }
         return res.status(422).json({ error: 'Could not analyze the image. Please try a clearer photo.' });
     }
@@ -112,6 +101,52 @@ router.get('/history', auth_1.authenticate, async (req, res) => {
         res.status(500).json({ error: 'Failed to fetch history' });
     }
 });
+// ─── FARMER: Translate disease result ────────────────────────────────────────
+router.post('/translate', auth_1.authenticate, async (req, res) => {
+    try {
+        const { recordId, language } = req.body;
+        if (!recordId || !language)
+            return res.status(400).json({ error: 'recordId and language are required' });
+        if (language === 'en')
+            return res.status(400).json({ error: 'Source language is already English' });
+        if (!translationService_1.SUPPORTED_LANGUAGES.includes(language))
+            return res.status(400).json({ error: 'Unsupported language' });
+        const record = await DiseaseRecommendation_1.DiseaseRecommendation.findById(recordId);
+        if (!record)
+            return res.status(404).json({ error: 'Record not found' });
+        if (record.userId && record.userId !== req.user.userId)
+            return res.status(403).json({ error: 'Access denied' });
+        // Check if translation already exists in DB
+        const existing = record.translations?.get?.(language) ?? record.translations?.[language];
+        if (existing) {
+            return res.json({ success: true, cached: true, language, data: existing });
+        }
+        // Extract translatable fields from the English record
+        const enData = {
+            cropName: record.cropName,
+            diseaseName: record.diseaseName,
+            diseaseType: record.diseaseType,
+            severityLevel: record.severityLevel,
+            symptoms: record.symptoms,
+            organicTreatment: record.organicTreatment,
+            chemicalTreatment: record.chemicalTreatment,
+            treatment: record.treatment,
+            prevention: record.prevention,
+            description: record.description,
+            recommendedActions: record.recommendedActions,
+        };
+        const translated = await (0, translationService_1.translateObject)(enData, language);
+        // Permanently save to DB
+        await DiseaseRecommendation_1.DiseaseRecommendation.findByIdAndUpdate(recordId, {
+            $set: { [`translations.${language}`]: translated },
+        });
+        return res.json({ success: true, cached: false, language, data: translated });
+    }
+    catch (error) {
+        console.error('Disease translate error:', error);
+        res.status(500).json({ error: error.message || 'Translation failed' });
+    }
+});
 // ─── FARMER: Feedback ─────────────────────────────────────────────────────────
 router.post('/feedback', auth_1.authenticate, async (req, res) => {
     try {
@@ -121,6 +156,8 @@ router.post('/feedback', auth_1.authenticate, async (req, res) => {
         const updated = await DiseaseRecommendation_1.DiseaseRecommendation.findByIdAndUpdate(recommendationId, { feedback }, { new: true });
         if (!updated)
             return res.status(404).json({ error: 'Not found' });
+        // Self-learning: update KB feedback counters & auto-promote if threshold met
+        await (0, diseaseService_1.handleFeedbackForKB)(updated.knowledgeBaseId, updated.cropName, updated.diseaseName, feedback === 'helpful');
         res.json({ success: true, data: updated });
     }
     catch (error) {

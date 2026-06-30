@@ -34,19 +34,27 @@ export interface CropRecommendationRequest {
 
 export interface RecommendationItem {
   cropName: string;
+  cropNameHindi?: string;
   cropCategory: string;
   suitabilityScore: number;
   whySuitable: string;
+  whySuitableHindi?: string;
   description?: string;
   waterRequirement: string;
   estimatedCultivationCost: number;
   estimatedYield: string;
+  estimatedYieldHindi?: string;
   expectedRevenue: number;
   expectedProfit: number;
   marketDemand: string;
+  marketDemandHindi?: string;
   risks: string;
+  risksHindi?: string;
   cultivationGuide: string;
+  cultivationGuideHindi?: string;
   growingDuration?: number;
+  bestSowingTime?: string;
+  bestSowingTimeHindi?: string;
   riskLevel?: string;
   // Extended fields
   currentMarketPrice?: number;
@@ -65,6 +73,13 @@ export interface RecommendationResponse {
   similarityScore?: number;
   recommendations: RecommendationItem[];
   message: string;
+  // Farmer context — echoed back for seed shop proximity search
+  farmerVillage?: string;
+  farmerTehsil?: string;
+  farmerDistrict?: string;
+  farmerState?: string;
+  farmerLat?: number;
+  farmerLng?: number;
 }
 
 export async function getCropRecommendations(data: CropRecommendationRequest): Promise<RecommendationResponse> {
@@ -75,7 +90,8 @@ export async function getCropRecommendations(data: CropRecommendationRequest): P
   });
   const json = await res.json();
   if (!res.ok) throw new Error(json.error || 'Failed to get recommendations');
-  return json;
+  // Echo farmer location back into response for seed shop proximity search
+  return { ...json, farmerVillage: data.village, farmerDistrict: data.district, farmerState: data.state };
 }
 
 export async function getRecommendationHistory(page = 1, limit = 10) {

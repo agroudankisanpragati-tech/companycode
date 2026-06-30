@@ -25,13 +25,17 @@ const cropRecommendation_1 = __importDefault(require("./routes/cropRecommendatio
 const myCrops_1 = __importDefault(require("./routes/myCrops"));
 const soil_1 = __importDefault(require("./routes/soil"));
 const soilMoisture_1 = __importDefault(require("./routes/soilMoisture"));
+const irrigation_1 = __importDefault(require("./routes/irrigation"));
 const aiFos_1 = __importDefault(require("./routes/aiFos"));
 const aiAssistant_1 = __importDefault(require("./routes/aiAssistant"));
 const settings_1 = __importDefault(require("./routes/settings"));
 const farmerProfile_1 = __importDefault(require("./routes/farmerProfile"));
 const disease_1 = __importDefault(require("./routes/disease"));
 const farmerStories_1 = __importDefault(require("./routes/farmerStories"));
+const shopkeeper_1 = __importDefault(require("./routes/shopkeeper"));
+const adminShopkeeper_1 = __importDefault(require("./routes/adminShopkeeper"));
 const bootstrapAdmin_1 = require("./utils/bootstrapAdmin");
+const errorHandler_1 = require("./middleware/errorHandler");
 dotenv_1.default.config({ override: true });
 const app = (0, express_1.default)();
 const PORT = process.env.PORT || 5000;
@@ -69,6 +73,7 @@ app.use((0, cors_1.default)({
 }));
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ limit: '10mb', extended: true }));
+app.use((0, errorHandler_1.requestTimeout)(30000));
 app.use('/uploads', express_1.default.static(uploadsDir));
 // Rate limiters
 const authLimiter = (0, express_rate_limit_1.default)({
@@ -107,23 +112,21 @@ app.use('/api/crop-recommendation', cropRecommendation_1.default);
 app.use('/api/my-crops', myCrops_1.default);
 app.use('/api/soil', soil_1.default);
 app.use('/api/soil-moisture', soilMoisture_1.default);
+app.use('/api/irrigation', irrigation_1.default);
 app.use('/api/ai-fos', aiFos_1.default);
 app.use('/api/ai-assistant', aiAssistant_1.default);
 app.use('/api/settings', settings_1.default);
 app.use('/api/farmer-profile', farmerProfile_1.default);
 app.use('/api/disease', disease_1.default);
 app.use('/api/farmer-stories', farmerStories_1.default);
+app.use('/api/shopkeeper', shopkeeper_1.default);
+app.use('/api/admin/shopkeeper', adminShopkeeper_1.default);
 // Health Check
 app.get('/api/health', (req, res) => {
     res.json({ status: 'OK', message: 'Kisan Unnati Backend is running' });
 });
 // Error Handler
-app.use((err, req, res, next) => {
-    console.error(err);
-    res.status(err.status || 500).json({
-        error: err.message || 'Internal Server Error',
-    });
-});
+app.use(errorHandler_1.bilingualErrorHandler);
 const startServer = async () => {
     await (0, database_1.connectDB)();
     await (0, bootstrapAdmin_1.ensureBootstrapAdmin)();

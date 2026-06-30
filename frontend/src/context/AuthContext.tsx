@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState, useRef } from 'react';
 
 export type UserRole = 'farmer' | 'shopkeeper';
 
@@ -54,36 +54,48 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
     const [user, setUser] = useState<User | null>(null);
     const [role, setRole] = useState<UserRole | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
+    // sessionLoading = true only during initial session restore, never during API calls
+    const [sessionLoading, setSessionLoading] = useState(true);
+    const sessionRestored = useRef(false);
 
     const restoreSession = async () => {
+        if (sessionRestored.current) return;
+        sessionRestored.current = true;
+
         const savedUser = localStorage.getItem('user');
         const savedToken = localStorage.getItem('authToken');
 
         if (!savedUser || !savedToken) {
-            setUser(null);
-            setRole(null);
-            setIsLoading(false);
+            setSessionLoading(false);
             return;
         }
 
-        // Restore from storage immediately so UI doesn't flash logout
-        const parsedUser = JSON.parse(savedUser);
-        const normalizedRole = normalizeRole(parsedUser.role);
-        const restoredUser = { ...parsedUser, role: normalizedRole };
-        setUser(restoredUser);
-        setRole(normalizedRole);
-        if (normalizedRole !== parsedUser.role) {
-            localStorage.setItem('user', JSON.stringify(restoredUser));
+        // Restore from localStorage immediately — user is now authenticated
+        try {
+            const parsedUser = JSON.parse(savedUser);
+            const normalizedRole = normalizeRole(parsedUser.role);
+            const restoredUser = { ...parsedUser, role: normalizedRole };
+            setUser(restoredUser);
+            setRole(normalizedRole);
+            if (normalizedRole !== parsedUser.role) {
+                localStorage.setItem('user', JSON.stringify(restoredUser));
+            }
+        } catch {
+            localStorage.removeItem('user');
+            localStorage.removeItem('authToken');
+            setSessionLoading(false);
+            return;
         }
 
-        // Validate token in background — only clear if explicitly invalid (401)
+        // Mark session as loaded — dashboard can render now
+        setSessionLoading(false);
+
+        // Background token validation — only clear on definitive 401
         try {
             const res = await fetch('/api/auth/me', {
                 headers: { Authorization: `Bearer ${savedToken}` },
             });
             if (res.status === 401) {
-                // Token is truly invalid — force logout
                 localStorage.removeItem('user');
                 localStorage.removeItem('authToken');
                 setUser(null);
@@ -106,11 +118,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                     setRole(freshRole);
                 }
             }
-            // Any other error (network, 5xx) — keep existing session, don't logout
+            // 5xx / network errors: keep existing session, don't logout
         } catch {
             // Network error — keep existing session intact
-        } finally {
-            setIsLoading(false);
         }
     };
 
@@ -121,10 +131,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             const savedUser = localStorage.getItem('user');
             const savedToken = localStorage.getItem('authToken');
             if (savedUser && savedToken) {
-                const parsedUser = JSON.parse(savedUser);
-                const normalizedRole = normalizeRole(parsedUser.role);
-                setUser({ ...parsedUser, role: normalizedRole });
-                setRole(normalizedRole);
+                try {
+                    const parsedUser = JSON.parse(savedUser);
+                    const normalizedRole = normalizeRole(parsedUser.role);
+                    setUser({ ...parsedUser, role: normalizedRole });
+                    setRole(normalizedRole);
+                } catch { /* ignore */ }
             } else {
                 setUser(null);
                 setRole(null);
@@ -133,156 +145,98 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
         window.addEventListener('auth-session-changed', handleAuthSessionChange);
         return () => window.removeEventListener('auth-session-changed', handleAuthSessionChange);
-    }, []);
+    }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
     const apiBase = '/api';
 
+    // OTP and API calls use their own local loading — never touch sessionLoading
     const requestEmailOtp = async (email: string) => {
-        setIsLoading(true);
-        try {
-            const res = await fetch(`${apiBase}/auth/register/request-otp`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email }),
-            });
-
-            const data = await res.json().catch(() => ({}));
-            if (!res.ok) {
-                throw new Error(data.error || 'Failed to send OTP');
-            }
-
-            return data;
-        } finally {
-            setIsLoading(false);
-        }
+        const res = await fetch(`${apiBase}/auth/register/request-otp`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email }),
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(data.error || 'Failed to send OTP');
+        return data;
     };
 
     const verifyEmailOtp = async (email: string, otp: string) => {
-        setIsLoading(true);
-        try {
-            const res = await fetch(`${apiBase}/auth/register/verify-otp`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, otp }),
-            });
-
-            const data = await res.json().catch(() => ({}));
-            if (!res.ok) {
-                throw new Error(data.error || 'OTP verification failed');
-            }
-        } finally {
-            setIsLoading(false);
-        }
+        const res = await fetch(`${apiBase}/auth/register/verify-otp`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, otp }),
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(data.error || 'OTP verification failed');
     };
 
     const register = async (userData: RegisterData, preferredRole?: UserRole): Promise<User> => {
-        setIsLoading(true);
+        const payload: Record<string, unknown> = {
+            name: userData.name,
+            email: userData.email,
+            password: userData.password,
+            role: toBackendRole(userData.role),
+            authProvider: 'local',
+        };
+        if (userData.phone) payload.phone = userData.phone;
+        if (userData.companyName || userData.shopName) payload.companyName = userData.companyName || userData.shopName;
+        if (userData.businessType) payload.businessType = userData.businessType;
+        if (userData.location) payload.location = userData.location;
+        if (userData.farmSize) payload.farmSize = userData.farmSize;
+        if (userData.soilType) payload.soilType = userData.soilType;
+        if (userData.waterSource) payload.waterSource = userData.waterSource;
 
-        try {
-            const payload: Record<string, unknown> = {
-                name: userData.name,
-                email: userData.email,
-                password: userData.password,
-                role: toBackendRole(userData.role),
-                authProvider: 'local',
-            };
+        const res = await fetch(`${apiBase}/auth/register`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(data.error || 'Registration failed');
 
-            if (userData.phone) {
-                payload.phone = userData.phone;
-            }
+        const normalizedRole = normalizeRole(preferredRole || data.user?.role || userData.role);
+        const newUser: User = {
+            id: data.user?.id || data.user?._id || Date.now().toString(),
+            email: data.user?.email || userData.email,
+            name: data.user?.name || userData.name,
+            role: normalizedRole,
+            phone: data.user?.phone || userData.phone,
+        };
 
-            if (userData.companyName || userData.shopName) {
-                payload.companyName = userData.companyName || userData.shopName;
-            }
-
-            if (userData.businessType) {
-                payload.businessType = userData.businessType;
-            }
-
-            if (userData.location) {
-                payload.location = userData.location;
-            }
-
-            if (userData.farmSize) {
-                payload.farmSize = userData.farmSize;
-            }
-
-            if (userData.soilType) {
-                payload.soilType = userData.soilType;
-            }
-
-            if (userData.waterSource) {
-                payload.waterSource = userData.waterSource;
-            }
-
-            const res = await fetch(`${apiBase}/auth/register`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload),
-            });
-
-            const data = await res.json().catch(() => ({}));
-            if (!res.ok) {
-                throw new Error(data.error || 'Registration failed');
-            }
-
-            const normalizedRole = normalizeRole(preferredRole || data.user?.role || userData.role);
-            const newUser: User = {
-                id: data.user?.id || data.user?._id || Date.now().toString(),
-                email: data.user?.email || userData.email,
-                name: data.user?.name || userData.name,
-                role: normalizedRole,
-                phone: data.user?.phone || userData.phone,
-            };
-
-            localStorage.setItem('user', JSON.stringify(newUser));
-            if (data.token) {
-                localStorage.setItem('authToken', data.token);
-            }
-
-            setUser(newUser);
-            setRole(newUser.role);
-            window.dispatchEvent(new Event('auth-session-changed'));
-            return newUser;
-        } finally {
-            setIsLoading(false);
-        }
+        localStorage.setItem('user', JSON.stringify(newUser));
+        if (data.token) localStorage.setItem('authToken', data.token);
+        setUser(newUser);
+        setRole(newUser.role);
+        window.dispatchEvent(new Event('auth-session-changed'));
+        return newUser;
     };
 
     const login = async (email: string, password: string, preferredRole?: UserRole): Promise<User> => {
-        setIsLoading(true);
+        const res = await fetch(`${apiBase}/auth/login`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password }),
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(data.error || 'Login failed');
 
-        try {
-            const res = await fetch(`${apiBase}/auth/login`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, password }),
-            });
+        const normalizedRole = normalizeRole(preferredRole || data.user?.role);
+        const loggedUser: User = {
+            id: data.user?.id || data.user?._id || Date.now().toString(),
+            email: data.user?.email,
+            name: data.user?.name,
+            role: normalizedRole,
+            phone: data.user?.phone,
+            profileImage: data.user?.profileImage,
+        };
 
-            const data = await res.json().catch(() => ({}));
-            if (!res.ok) {
-                throw new Error(data.error || 'Login failed');
-            }
-
-            const normalizedRole = normalizeRole(preferredRole || data.user?.role);
-            const loggedUser: User = {
-                id: data.user?.id || data.user?._id || Date.now().toString(),
-                email: data.user?.email,
-                name: data.user?.name,
-                role: normalizedRole,
-                phone: data.user?.phone,
-                profileImage: data.user?.profileImage,
-            };
-
-            localStorage.setItem('authToken', data.token);
-            localStorage.setItem('user', JSON.stringify(loggedUser));
-            setUser(loggedUser);
-            setRole(loggedUser.role);
-            window.dispatchEvent(new Event('auth-session-changed'));
-            return loggedUser;
-        } finally {
-            setIsLoading(false);
-        }
+        localStorage.setItem('authToken', data.token);
+        localStorage.setItem('user', JSON.stringify(loggedUser));
+        setUser(loggedUser);
+        setRole(loggedUser.role);
+        window.dispatchEvent(new Event('auth-session-changed'));
+        return loggedUser;
     };
 
     const logout = () => {
@@ -290,7 +244,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         localStorage.removeItem('authToken');
         setUser(null);
         setRole(null);
-        // Market preferences are stored server-side; no local cleanup needed
     };
 
     return (
@@ -298,7 +251,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             value={{
                 user,
                 role,
-                isLoading,
+                isLoading: sessionLoading,
                 isAuthenticated: !!user,
                 requestEmailOtp,
                 verifyEmailOtp,
@@ -314,8 +267,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
 export function useAuth() {
     const context = useContext(AuthContext);
-    if (!context) {
-        throw new Error('useAuth must be used within AuthProvider');
-    }
+    if (!context) throw new Error('useAuth must be used within AuthProvider');
     return context;
 }

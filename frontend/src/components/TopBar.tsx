@@ -55,17 +55,17 @@ export default function TopBar() {
     };
 
     return (
-        <div className="topbar-root w-full bg-gradient-to-r from-green-700 to-green-600 text-white py-1.5 shadow-lg">
+        <div className="topbar-root w-full bg-gradient-to-r from-green-700 to-green-600 text-white shadow-lg">
             <div className="section-container">
-                <div className="flex justify-between items-center gap-3 flex-wrap">
-                    {/* Social Icons */}
-                    <div className="flex items-center gap-3">
+                <div className="flex justify-between items-center gap-2 py-1.5">
+                    {/* Social Icons - hidden on very small screens */}
+                    <div className="flex items-center gap-2">
                         <span className="text-xs font-semibold hidden sm:inline">Follow Us:</span>
                         <a
                             href="https://www.facebook.com/profile.php?id=61589122658245"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="hover:scale-110 transition-transform duration-300 p-1 rounded-full hover:bg-white hover:bg-opacity-20"
+                            className="hover:scale-110 transition-transform duration-300 p-1.5 rounded-full hover:bg-white/20 touch-manipulation"
                             aria-label="Facebook"
                         >
                             <FaFacebook size={14} />
@@ -74,7 +74,7 @@ export default function TopBar() {
                             href="https://x.com/agroudankisan"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="hover:scale-110 transition-transform duration-300 p-1 rounded-full hover:bg-white hover:bg-opacity-20"
+                            className="hover:scale-110 transition-transform duration-300 p-1.5 rounded-full hover:bg-white/20 touch-manipulation"
                             aria-label="X"
                         >
                             <FaXTwitter size={14} />
@@ -83,7 +83,7 @@ export default function TopBar() {
                             href="https://www.instagram.com/agroudankisanpragati/"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="hover:scale-110 transition-transform duration-300 p-1 rounded-full hover:bg-white hover:bg-opacity-20"
+                            className="hover:scale-110 transition-transform duration-300 p-1.5 rounded-full hover:bg-white/20 touch-manipulation hidden xs:flex"
                             aria-label="Instagram"
                         >
                             <FaInstagram size={14} />
@@ -92,42 +92,42 @@ export default function TopBar() {
                             href="https://www.youtube.com/@AGROUDANKISANPRAGATI"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="hover:scale-110 transition-transform duration-300 p-1 rounded-full hover:bg-white hover:bg-opacity-20"
+                            className="hover:scale-110 transition-transform duration-300 p-1.5 rounded-full hover:bg-white/20 touch-manipulation hidden sm:flex"
                             aria-label="YouTube"
                         >
                             <FaYoutube size={14} />
                         </a>
                     </div>
 
-                    {/* Center Content */}
-                    <div className="flex items-center gap-4">
-                        {/* Zoom Controls */}
-                        <div className="flex items-center gap-1.5 bg-white bg-opacity-20 px-3 py-1 rounded-full backdrop-blur-sm">
+                    {/* Right side: Zoom + Translate */}
+                    <div className="flex items-center gap-2">
+                        {/* Zoom Controls - hidden on mobile to save space */}
+                        <div className="hidden sm:flex items-center gap-1 bg-white/20 px-2 py-0.5 rounded-full backdrop-blur-sm">
                             <button
                                 onClick={handleZoomOut}
-                                className="p-1 hover:bg-white hover:bg-opacity-30 rounded-full transition-colors duration-200"
+                                className="p-1 hover:bg-white/30 rounded-full transition-colors duration-200 touch-manipulation"
                                 title="Zoom Out"
                                 aria-label="Zoom Out"
                             >
-                                <AiOutlineMinus size={13} />
+                                <AiOutlineMinus size={12} />
                             </button>
-                            <span className="text-xs font-medium min-w-[35px] text-center">{zoom}%</span>
+                            <span className="text-xs font-medium min-w-[32px] text-center">{zoom}%</span>
                             <button
                                 onClick={handleZoomIn}
-                                className="p-1 hover:bg-white hover:bg-opacity-30 rounded-full transition-colors duration-200"
+                                className="p-1 hover:bg-white/30 rounded-full transition-colors duration-200 touch-manipulation"
                                 title="Zoom In"
                                 aria-label="Zoom In"
                             >
-                                <AiOutlinePlus size={13} />
+                                <AiOutlinePlus size={12} />
                             </button>
-                            <div className="h-4 w-px bg-white bg-opacity-30"></div>
+                            <div className="h-3 w-px bg-white/30"></div>
                             <button
                                 onClick={handleResetZoom}
-                                className="p-1 hover:bg-white hover:bg-opacity-30 rounded-full transition-colors duration-200"
+                                className="p-1 hover:bg-white/30 rounded-full transition-colors duration-200 touch-manipulation"
                                 title="Reset Zoom"
                                 aria-label="Reset Zoom"
                             >
-                                <MdRefresh size={13} />
+                                <MdRefresh size={12} />
                             </button>
                         </div>
 
@@ -137,27 +137,21 @@ export default function TopBar() {
                             className="!text-white"
                         ></div>
                     </div>
-
-                    {/* Responsive Hide on Mobile */}
-                    <div className="hidden lg:flex"></div>
                 </div>
             </div>
 
-            {/* Google Translate Styling + topbar height constraint */}
+            {/* Google Translate Styling */}
             <style jsx global>{`
                 /* Keep topbar height fixed and prevent child widgets from expanding it */
                 .topbar-root {
-                    height: 40px; /* fixed height */
+                    min-height: 36px;
                     overflow: hidden;
                 }
 
-                .topbar-root .section-container {
-                    height: 100%;
-                }
-
-                .topbar-root .flex {
-                    height: 100%;
-                    align-items: center;
+                @media (max-width: 640px) {
+                    .topbar-root {
+                        min-height: 34px;
+                    }
                 }
 
                 #google_translate_element {

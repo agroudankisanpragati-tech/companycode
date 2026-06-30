@@ -5,6 +5,7 @@ import { CropKnowledgeBase } from '../models/CropKnowledgeBase';
 import { runRecommendationEngine, IRecommendationItem } from '../services/recommendationEngine';
 import { findSimilarRecommendation } from '../services/similaritySearch';
 import { callOpenAIForCrops, IFarmerConditions } from '../services/openaiService';
+import { translateNestedObject, SUPPORTED_LANGUAGES } from '../services/translationService';
 
 const router = express.Router();
 
@@ -221,6 +222,40 @@ router.get('/:id', authenticate, async (req: AuthenticatedRequest, res: Response
 router.post('/feedback', authenticate, async (req: AuthenticatedRequest, res: Response) => {
   // Feedback can be extended later; for now acknowledge silently
   res.json({ success: true, message: 'Feedback recorded' });
+});
+
+// POST /api/crop-recommendation/translate — translate recommendations into selected language
+router.post('/translate', authenticate, async (req: AuthenticatedRequest, res: Response) => {
+  try {
+    const { requestId, language, recommendations } = req.body;
+    if (!requestId || !language) return res.status(400).json({ error: 'requestId and language are required' });
+    if (language === 'en') return res.status(400).json({ error: 'Source language is already English' });
+    if (!SUPPORTED_LANGUAGES.includes(language)) return res.status(400).json({ error: 'Unsupported language' });
+
+    const farmerReq = await FarmerCropRequest.findById(requestId);
+    if (!farmerReq) return res.status(404).json({ error: 'Request not found' });
+    if (farmerReq.farmerId.toString() !== req.user!.userId) return res.status(403).json({ error: 'Access denied' });
+
+    // Check if translation already exists
+    const existing = (farmerReq.translations as any)?.get?.(language) ?? (farmerReq.translations as any)?.[language];
+    if (existing) {
+      return res.json({ success: true, cached: true, language, data: existing });
+    }
+
+    // Translate the recommendations array
+    const dataToTranslate = recommendations || [];
+    const translated = await translateNestedObject({ recommendations: dataToTranslate }, language);
+
+    // Permanently save to DB
+    await FarmerCropRequest.findByIdAndUpdate(requestId, {
+      $set: { [`translations.${language}`]: translated },
+    });
+
+    return res.json({ success: true, cached: false, language, data: translated });
+  } catch (error: any) {
+    console.error('Crop translate error:', error);
+    res.status(500).json({ error: error.message || 'Translation failed' });
+  }
 });
 
 export default router;

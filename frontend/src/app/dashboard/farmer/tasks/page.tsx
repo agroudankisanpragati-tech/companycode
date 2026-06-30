@@ -10,6 +10,7 @@ import {
   FaRobot, FaSeedling, FaCheckCircle, FaClock, FaExclamationTriangle,
   FaLeaf, FaSpinner, FaChevronDown, FaChevronUp, FaTrophy,
 } from 'react-icons/fa';
+import AILanguageSelector from '@/components/AILanguageSelector';
 
 const taskTypeIcon: Record<string, string> = {
   irrigation: '💧', fertilizer: '🌿', pesticide: '🐛',
@@ -42,6 +43,8 @@ function TasksContent() {
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
   const [schemes, setSchemes] = useState<any[]>([]);
   const [allTasks, setAllTasks] = useState<Record<string, CropTask[]>>({});
+  const [activeCropId, setActiveCropId] = useState<string | null>(null);
+  const [displayRecommendation, setDisplayRecommendation] = useState('');
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -51,6 +54,8 @@ function TasksContent() {
         aiFosService.getRecommendedSchemes().catch(() => ({ data: [] })),
       ]);
       setData(dashRes.data);
+      setActiveCropId((dashRes.data as any).activeCropId || null);
+      setDisplayRecommendation(dashRes.data.aiRecommendation || '');
       setSchemes(schemeRes.data || []);
     } catch { /* silent */ }
     finally { setLoading(false); }
@@ -132,11 +137,25 @@ function TasksContent() {
                 <div className="rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 p-4 text-white shadow-md">
                   <div className="flex items-start gap-3">
                     <FaRobot className="text-white text-xl flex-shrink-0 mt-0.5" />
-                    <div>
+                    <div className="flex-1">
                       <div className="text-xs font-bold uppercase tracking-wider text-emerald-100 mb-1">AI Daily Insight</div>
-                      <p className="text-sm leading-relaxed">{data.aiRecommendation}</p>
+                      <p className="text-sm leading-relaxed">{displayRecommendation || data.aiRecommendation}</p>
                     </div>
                   </div>
+                  {activeCropId && (
+                    <div className="mt-3">
+                      <AILanguageSelector
+                        recordId={activeCropId}
+                        module="ai-fos"
+                        englishData={{ aiRecommendation: data.aiRecommendation }}
+                        onTranslated={(lang, d) => {
+                          if (lang === 'en') setDisplayRecommendation(data.aiRecommendation);
+                          else if (d.aiRecommendation) setDisplayRecommendation(d.aiRecommendation);
+                        }}
+                        className="bg-white/10 border-white/20"
+                      />
+                    </div>
+                  )}
                 </div>
               )}
 

@@ -162,7 +162,8 @@ Return ONLY valid JSON in this exact format:
       "reason": "why this crop suits the soil"
     }
   ],
-  "aiAnalysis": "A farmer-friendly, detailed paragraph (200-300 words) explaining the soil health, what is good, what needs attention, and what actions will improve productivity. Use simple language a farmer can understand."
+  "aiAnalysis": "A farmer-friendly, detailed paragraph (200-300 words) explaining the soil health, what is good, what needs attention, and what actions will improve productivity. Use simple language a farmer can understand.",
+  "aiAnalysisHindi": "समान विषयवस्तु हिंدी में (200-300 शब्द)"
 }
 
 Provide 6-8 crop recommendations. If OCR text has no useful data, use reasonable defaults for Indian agricultural soil.`;
@@ -237,6 +238,7 @@ Provide 6-8 crop recommendations. If OCR text has no useful data, use reasonable
             reason: c.reason || '',
         })),
         aiAnalysis: parsed.aiAnalysis || 'Soil analysis complete. Please refer to the recommendations section.',
+        aiAnalysisHindi: parsed.aiAnalysisHindi || 'मिट्टी विश्लेषण पूर्ण हुआ। कृपया सुझाव अनुभाग देखें।',
     };
 }
 // Generate AI analysis when soil data is provided manually (no OCR)
@@ -268,7 +270,8 @@ Return ONLY valid JSON:
   "cropRecommendations": [
     {"cropName": "...", "suitabilityScore": 0-100, "expectedBenefits": "...", "reason": "..."}
   ],
-  "aiAnalysis": "200-300 word farmer-friendly analysis"
+  "aiAnalysis": "200-300 word farmer-friendly analysis",
+  "aiAnalysisHindi": "समान विषयवस्तु 200-300 शब्د हिंدी में"
 }
 
 Provide 6-8 crop recommendations.`;

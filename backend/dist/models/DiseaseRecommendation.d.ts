@@ -6,13 +6,19 @@ export interface IDiseaseRecommendation extends Document {
     diseaseType: string;
     severityLevel: string;
     symptoms: string;
+    organicTreatment: string;
+    chemicalTreatment: string;
     treatment: string;
     prevention: string;
     description: string;
+    recommendedActions?: string;
+    confidenceScore?: number;
     imageUrl?: string;
     source: 'cache' | 'knowledge_base' | 'ai';
     similarityScore?: number;
+    knowledgeBaseId?: string;
     feedback?: 'helpful' | 'not_helpful' | null;
+    translations?: Record<string, Record<string, any>>;
     createdAt: Date;
     updatedAt: Date;
 }

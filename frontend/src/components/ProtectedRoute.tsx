@@ -10,11 +10,14 @@ export default function ProtectedRoute({ children }: { children: React.ReactNode
   const pathname = usePathname();
 
   useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
+    // Wait until session restore is complete before making any redirect decision
+    if (isLoading) return;
+    if (!isAuthenticated) {
       router.replace(`/auth/login?redirect=${encodeURIComponent(pathname || '/')}`);
     }
   }, [isAuthenticated, isLoading, router, pathname]);
 
+  // Show spinner while session is being restored
   if (isLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-green-50 to-blue-50">

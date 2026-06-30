@@ -44,6 +44,7 @@ export interface ISoilReport extends Document {
     reason: string;
   }>;
   aiAnalysis?: string;
+  translations?: Record<string, Record<string, any>>;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -102,6 +103,7 @@ const soilReportSchema = new Schema<ISoilReport>(
       },
     ],
     aiAnalysis: { type: String },
+    translations: { type: Map, of: Schema.Types.Mixed, default: {} },
   },
   { timestamps: true }
 );

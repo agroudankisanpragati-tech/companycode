@@ -83,6 +83,8 @@ export type Listing = {
   createdAt?: string;
 };
 
+export type SchemeType = 'central' | 'state';
+
 export type GovtScheme = {
   _id: string;
   title: string;
@@ -92,10 +94,21 @@ export type GovtScheme = {
   department: string;
   audience: string;
   benefits: string[];
+  eligibility?: string;
+  requiredDocuments?: string[];
+  applicationProcess?: string;
   applicationLink?: string;
+  officialLink?: string;
   coverImage?: string;
+  images: string[];
+  videos: string[];
   tags: string[];
+  keywords: string[];
+  schemeType: SchemeType;
+  state?: string;
   status: 'draft' | 'published';
+  source: 'admin' | 'api';
+  createdBy?: string;
   publishedAt?: string;
   createdAt?: string;
   updatedAt?: string;
@@ -233,6 +246,25 @@ export type FarmerStorySummary = {
   pending: number;
   approved: number;
   rejected: number;
+};
+
+export type BlogPostStatus = 'draft' | 'published';
+
+export type BlogPost = {
+  _id: string;
+  title: string;
+  slug: string;
+  excerpt: string;
+  content: string;
+  contentJson?: string;
+  coverImage?: string;
+  tags: string[];
+  status: BlogPostStatus;
+  authorId?: string;
+  authorName?: string;
+  publishedAt?: string;
+  createdAt?: string;
+  updatedAt?: string;
 };
 
 export type GalleryMediaType = 'photo' | 'video';

@@ -82,7 +82,7 @@ router.post('/:id/products', auth_1.authenticate, async (req, res, next) => {
         if (!shop)
             return res.status(404).json({ error: 'Shop not found' });
         // only shop owner or admin can add products
-        if (shop.ownerId !== userId && role !== 'admin') {
+        if (shop.ownerId.toString() !== userId && role !== 'admin') {
             return res.status(403).json({ error: 'Not allowed' });
         }
         const { cropName, quantity, unit, pricePerUnit, image, description } = req.body;
@@ -113,7 +113,7 @@ router.put('/:id/products/:productId', auth_1.authenticate, async (req, res, nex
         const shop = await Shop_1.Shop.findById(id);
         if (!shop)
             return res.status(404).json({ error: 'Shop not found' });
-        if (shop.ownerId !== userId && role !== 'admin') {
+        if (shop.ownerId.toString() !== userId && role !== 'admin') {
             return res.status(403).json({ error: 'Not allowed' });
         }
         const updated = await Marketplace_1.MarketplaceListing.findOneAndUpdate({ _id: productId, sellerId: shop.ownerId }, {
@@ -143,7 +143,7 @@ router.delete('/:id/products/:productId', auth_1.authenticate, async (req, res, 
         const shop = await Shop_1.Shop.findById(id);
         if (!shop)
             return res.status(404).json({ error: 'Shop not found' });
-        if (shop.ownerId !== userId && role !== 'admin') {
+        if (shop.ownerId.toString() !== userId && role !== 'admin') {
             return res.status(403).json({ error: 'Not allowed' });
         }
         const deleted = await Marketplace_1.MarketplaceListing.findOneAndDelete({ _id: productId, sellerId: shop.ownerId });
@@ -166,7 +166,7 @@ router.put('/:id', auth_1.authenticate, async (req, res, next) => {
         if (!shop)
             return res.status(404).json({ error: 'Shop not found' });
         // only shop owner or admin can update
-        if (shop.ownerId !== userId && role !== 'admin') {
+        if (shop.ownerId.toString() !== userId && role !== 'admin') {
             return res.status(403).json({ error: 'Not allowed' });
         }
         const { name, phone, address, location, openHours, description, images } = req.body;

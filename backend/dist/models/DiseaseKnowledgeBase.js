@@ -38,7 +38,7 @@ const mongoose_1 = __importStar(require("mongoose"));
 const DiseaseKnowledgeBaseSchema = new mongoose_1.Schema({
     cropName: { type: String, required: true, index: true },
     scientificName: { type: String },
-    cropCategory: { type: String, required: true },
+    cropCategory: { type: String, default: 'General' },
     diseaseName: { type: String, required: true, index: true },
     diseaseType: { type: String, required: true },
     severityLevel: { type: String, enum: ['low', 'medium', 'high', 'critical'], required: true },
@@ -54,8 +54,16 @@ const DiseaseKnowledgeBaseSchema = new mongoose_1.Schema({
     treatmentDescription: { type: String },
     preventionMethods: { type: String },
     preventionDescription: { type: String },
+    recommendedActions: { type: String },
     diseaseImages: [{ type: String }],
     healthyImages: [{ type: String }],
+    source: { type: String, enum: ['admin', 'ai_auto', 'ai_verified'], default: 'admin' },
+    confidenceScore: { type: Number, default: 0 },
+    scanCount: { type: Number, default: 0 },
+    helpfulCount: { type: Number, default: 0 },
+    notHelpfulCount: { type: Number, default: 0 },
+    lastSeenAt: { type: Date, default: Date.now },
 }, { timestamps: true });
+DiseaseKnowledgeBaseSchema.index({ cropName: 1, diseaseName: 1 }, { unique: true });
 exports.DiseaseKnowledgeBase = mongoose_1.default.model('DiseaseKnowledgeBase', DiseaseKnowledgeBaseSchema);
 //# sourceMappingURL=DiseaseKnowledgeBase.js.map

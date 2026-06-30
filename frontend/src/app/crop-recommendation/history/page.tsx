@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { getRecommendationHistory } from '@/services/cropRecommendation';
 import { useAuth } from '@/context/AuthContext';
+import AILanguageSelector from '@/components/AILanguageSelector';
 
 interface HistoryEntry {
   request: {
@@ -21,6 +22,75 @@ interface HistoryEntry {
   recommendations: Array<{ cropName: string; suitabilityScore: number; cropCategory: string }>;
   source: 'database' | 'openai' | null;
   recommendationId: string | null;
+}
+
+function HistoryEntryCard({ entry }: { entry: HistoryEntry }) {
+  const [displayRecs, setDisplayRecs] = useState(entry.recommendations);
+
+  return (
+    <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm hover:shadow-md transition-shadow">
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="text-sm font-bold text-slate-900">
+              {entry.request.farmArea} {entry.request.areaUnit} — {entry.request.soilType} Soil
+            </span>
+            <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${
+              entry.source === 'openai' ? 'bg-purple-100 text-purple-700' : 'bg-emerald-100 text-emerald-700'
+            }`}>
+              {entry.source === 'openai' ? '🤖 AI' : '📊 Database'}
+            </span>
+          </div>
+          <p className="mt-1 text-xs text-slate-500">
+            {entry.request.district}, {entry.request.state} · {entry.request.season} season · Budget: ₹{entry.request.budget.toLocaleString('en-IN')}
+          </p>
+          <p className="mt-0.5 text-xs text-slate-400">
+            {new Date(entry.request.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}
+          </p>
+        </div>
+
+        {entry.recommendationId && (
+          <Link
+            href={`/crop-recommendation/${entry.recommendationId}`}
+            className="rounded-xl border border-emerald-200 px-4 py-2 text-xs font-semibold text-emerald-700 hover:bg-emerald-50 transition"
+          >
+            View Details →
+          </Link>
+        )}
+      </div>
+
+      {displayRecs.length > 0 && (
+        <div className="mt-4 flex flex-wrap gap-2">
+          {displayRecs.slice(0, 5).map((rec) => (
+            <span key={rec.cropName} className="inline-flex items-center gap-1 rounded-full border border-gray-100 bg-gray-50 px-3 py-1 text-xs font-medium text-slate-700">
+              {rec.cropName}
+              <span className="font-bold text-emerald-600">{rec.suitabilityScore}%</span>
+            </span>
+          ))}
+          {displayRecs.length > 5 && (
+            <span className="rounded-full bg-gray-100 px-3 py-1 text-xs text-slate-500">
+              +{displayRecs.length - 5} more
+            </span>
+          )}
+        </div>
+      )}
+
+      {/* Language selector — only if we have a requestId and recommendations */}
+      {entry.request._id && entry.recommendations.length > 0 && (
+        <div className="mt-4">
+          <AILanguageSelector
+            recordId={entry.request._id}
+            module="crop-recommendation"
+            englishData={{ recommendations: entry.recommendations }}
+            onTranslated={(lang, data) => {
+              if (lang === 'en') setDisplayRecs(entry.recommendations);
+              else if (data?.recommendations) setDisplayRecs(data.recommendations);
+            }}
+          />
+        </div>
+      )}
+    </div>
+  );
 }
 
 export default function RecommendationHistoryPage() {
@@ -86,53 +156,7 @@ export default function RecommendationHistoryPage() {
         ) : (
           <div className="space-y-4">
             {history.map((entry) => (
-              <div key={entry.request._id} className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm hover:shadow-md transition-shadow">
-                <div className="flex flex-wrap items-start justify-between gap-3">
-                  <div>
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <span className="text-sm font-bold text-slate-900">
-                        {entry.request.farmArea} {entry.request.areaUnit} — {entry.request.soilType} Soil
-                      </span>
-                      <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${
-                        entry.source === 'openai' ? 'bg-purple-100 text-purple-700' : 'bg-emerald-100 text-emerald-700'
-                      }`}>
-                        {entry.source === 'openai' ? '🤖 AI' : '📊 Database'}
-                      </span>
-                    </div>
-                    <p className="mt-1 text-xs text-slate-500">
-                      {entry.request.district}, {entry.request.state} · {entry.request.season} season · Budget: ₹{entry.request.budget.toLocaleString('en-IN')}
-                    </p>
-                    <p className="mt-0.5 text-xs text-slate-400">
-                      {new Date(entry.request.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}
-                    </p>
-                  </div>
-
-                  {entry.recommendationId && (
-                    <Link
-                      href={`/crop-recommendation/${entry.recommendationId}`}
-                      className="rounded-xl border border-emerald-200 px-4 py-2 text-xs font-semibold text-emerald-700 hover:bg-emerald-50 transition"
-                    >
-                      View Details →
-                    </Link>
-                  )}
-                </div>
-
-                {entry.recommendations.length > 0 && (
-                  <div className="mt-4 flex flex-wrap gap-2">
-                    {entry.recommendations.slice(0, 5).map((rec) => (
-                      <span key={rec.cropName} className="inline-flex items-center gap-1 rounded-full border border-gray-100 bg-gray-50 px-3 py-1 text-xs font-medium text-slate-700">
-                        {rec.cropName}
-                        <span className="font-bold text-emerald-600">{rec.suitabilityScore}%</span>
-                      </span>
-                    ))}
-                    {entry.recommendations.length > 5 && (
-                      <span className="rounded-full bg-gray-100 px-3 py-1 text-xs text-slate-500">
-                        +{entry.recommendations.length - 5} more
-                      </span>
-                    )}
-                  </div>
-                )}
-              </div>
+              <HistoryEntryCard key={entry.request._id} entry={entry} />
             ))}
 
             {/* Pagination */}
