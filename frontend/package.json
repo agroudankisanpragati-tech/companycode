@@ -21,6 +21,7 @@
     "react-icons": "^4.12.0"
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^6.9.1",
     "@types/jest": "^29.5.0",
     "@types/node": "^20.0.0",
     "@types/react": "^18.2.0",
@@ -36,13 +37,25 @@
   "jest": {
     "preset": "ts-jest",
     "testEnvironment": "jsdom",
-    "setupFiles": ["<rootDir>/src/__tests__/setup.ts"],
-    "testMatch": ["**/__tests__/**/*.test.ts", "**/__tests__/**/*.test.tsx"],
+    "setupFilesAfterFramework": [
+      "<rootDir>/src/__tests__/setup.ts"
+    ],
+    "testMatch": [
+      "**/__tests__/**/*.test.ts",
+      "**/__tests__/**/*.test.tsx"
+    ],
     "moduleNameMapper": {
       "^@/(.*)$": "<rootDir>/src/$1"
     },
     "transform": {
-      "^.+\\.(ts|tsx)$": ["ts-jest", { "tsconfig": { "jsx": "react" } }]
+      "^.+\\.(ts|tsx)$": [
+        "ts-jest",
+        {
+          "tsconfig": {
+            "jsx": "react"
+          }
+        }
+      ]
     }
   }
 }

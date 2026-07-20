@@ -3,6 +3,7 @@
 import { useAuth } from '@/context/AuthContext';
 import { useLocation } from '@/context/LocationContext';
 import { useAIAssistant } from '@/context/AIAssistantContext';
+import { usePageContext } from '@/hooks/usePageContext';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState, useCallback } from 'react';
 import FarmerFooter from '@/components/FarmerFooter';
@@ -16,6 +17,9 @@ import {
     FaBell, FaMapMarkerAlt, FaMicrophone, FaCloudSun, FaTint,
     FaMicroscope, FaArrowRight, FaWind, FaLeaf, FaSpinner, FaGavel,
 } from 'react-icons/fa';
+import { lazy, Suspense } from 'react';
+
+const NearestKVKWidget = lazy(() => import('@/components/kvk/NearestKVKWidget'));
 import { fetchWeather, fetchWeatherByLocation } from '@/services/weather';
 import { getSoilMoisture, SoilMoistureData } from '@/services/soilMoisture';
 
@@ -23,6 +27,8 @@ export default function FarmerDashboard() {
     const { user, isAuthenticated, isLoading, logout } = useAuth();
     const { location, isReady, onLocationChange } = useLocation();
     const { toggleAssistant } = useAIAssistant();
+    // Dashboard is the broadest context — AI can answer any farming topic
+    usePageContext({ pageContext: 'ui' });
     const router = useRouter();
 
     const [locationModalOpen, setLocationModalOpen] = useState(false);
@@ -379,10 +385,7 @@ export default function FarmerDashboard() {
 
                                 {/* ── Disease Scan Card ── */}
                                 <div
-                                    onClick={() => {
-                                        setModalContent({ title: 'Disease Scan', body: <div>No disease detected. Upload leaf images to run a detailed check.</div> });
-                                        setModalOpen(true);
-                                    }}
+                                    onClick={() => router.push('/disease-detection')}
                                     className="cursor-pointer h-[17.58rem] rounded-2xl bg-violet-50 p-4 shadow-sm hover:shadow-md transition"
                                 >
                                     <div className="flex items-center gap-3 flex-col h-full justify-between">
@@ -431,6 +434,18 @@ export default function FarmerDashboard() {
 
                             </div>
                         </section>
+
+                        {/* ── Nearest KVK Widget ── */}
+                        <div className="mb-6">
+                          <Suspense fallback={
+                            <div className="rounded-3xl border border-emerald-100 bg-emerald-50 p-5 flex items-center gap-3 text-slate-400">
+                              <FaSpinner className="animate-spin text-emerald-400" size={16} />
+                              <span className="text-sm">Loading nearest KVK...</span>
+                            </div>
+                          }>
+                            <NearestKVKWidget />
+                          </Suspense>
+                        </div>
 
                         <AiFarmSection />
 

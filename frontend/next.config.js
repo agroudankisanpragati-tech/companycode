@@ -12,6 +12,8 @@ const nextConfig = {
     ],
   },
   async rewrites() {
+    // Strip trailing /api from NEXT_PUBLIC_API_URL to get the base backend URL.
+    // Backend runs on port 4000 — this is the correct fallback.
     const backendUrl = process.env.NEXT_PUBLIC_API_URL?.replace(/\/api$/, '') || 'http://localhost:4000';
     return [
       {

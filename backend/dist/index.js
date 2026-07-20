@@ -34,8 +34,19 @@ const disease_1 = __importDefault(require("./routes/disease"));
 const farmerStories_1 = __importDefault(require("./routes/farmerStories"));
 const shopkeeper_1 = __importDefault(require("./routes/shopkeeper"));
 const adminShopkeeper_1 = __importDefault(require("./routes/adminShopkeeper"));
+const pestKnowledge_1 = __importDefault(require("./routes/pestKnowledge"));
+const diseasePestSolutions_1 = __importDefault(require("./routes/diseasePestSolutions"));
+const kvk_1 = __importDefault(require("./routes/kvk"));
+const languageDictionary_1 = __importDefault(require("./routes/languageDictionary"));
+const languageEngine_1 = __importDefault(require("./routes/languageEngine"));
+const memoryEngine_1 = __importDefault(require("./routes/memoryEngine"));
+const voiceEngine_1 = __importDefault(require("./routes/voiceEngine"));
+const pragatiAI_1 = __importDefault(require("./routes/pragatiAI"));
 const bootstrapAdmin_1 = require("./utils/bootstrapAdmin");
 const errorHandler_1 = require("./middleware/errorHandler");
+const languageContext_1 = require("./middleware/languageContext");
+const health_1 = __importDefault(require("./routes/health"));
+const logger_1 = require("./utils/logger");
 dotenv_1.default.config({ override: true });
 const app = (0, express_1.default)();
 const PORT = process.env.PORT || 5000;
@@ -75,6 +86,13 @@ app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ limit: '10mb', extended: true }));
 app.use((0, errorHandler_1.requestTimeout)(30000));
 app.use('/uploads', express_1.default.static(uploadsDir));
+// Request logger
+app.use((req, _res, next) => {
+    logger_1.logger.debug(`${req.method} ${req.path}`, { ip: req.ip, ua: req.headers['user-agent']?.slice(0, 60) });
+    next();
+});
+// Language context — auto-attaches langCode + pageContext to every request
+app.use(languageContext_1.languageContextMiddleware);
 // Rate limiters
 const authLimiter = (0, express_rate_limit_1.default)({
     windowMs: 15 * 60 * 1000, // 15 minutes
@@ -121,21 +139,27 @@ app.use('/api/disease', disease_1.default);
 app.use('/api/farmer-stories', farmerStories_1.default);
 app.use('/api/shopkeeper', shopkeeper_1.default);
 app.use('/api/admin/shopkeeper', adminShopkeeper_1.default);
+app.use('/api/admin/pest-knowledge', pestKnowledge_1.default);
+app.use('/api/disease-pest-solutions', diseasePestSolutions_1.default);
+app.use('/api/kvk', kvk_1.default);
+app.use('/api/language-dictionary', languageDictionary_1.default);
+app.use('/api/language-engine', languageEngine_1.default);
+app.use('/api/memory-engine', memoryEngine_1.default);
+app.use('/api/voice-engine', voiceEngine_1.default);
+app.use('/api/pragati-ai', pragatiAI_1.default);
 // Health Check
-app.get('/api/health', (req, res) => {
-    res.json({ status: 'OK', message: 'Kisan Unnati Backend is running' });
-});
+app.use('/api/health', health_1.default);
 // Error Handler
 app.use(errorHandler_1.bilingualErrorHandler);
 const startServer = async () => {
     await (0, database_1.connectDB)();
     await (0, bootstrapAdmin_1.ensureBootstrapAdmin)();
     const server = app.listen(PORT, () => {
-        console.log(`🌾 Kisan Unnati Backend running on port ${PORT}`);
+        logger_1.logger.info('Kisan Unnati Backend started', { port: PORT, env: process.env.NODE_ENV || 'development' });
     });
     server.on('error', (err) => {
         if (err.code === 'EADDRINUSE') {
-            console.error(`❌ Port ${PORT} is already in use. Stop the existing process and restart.`);
+            logger_1.logger.error(`Port ${PORT} is already in use`, { port: PORT });
             process.exit(1);
         }
         else {

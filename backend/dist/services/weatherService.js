@@ -26,6 +26,31 @@ function normalizeIcon(icon) {
         return `https:${icon}`;
     return icon;
 }
+/**
+ * Converts a UNIX timestamp to a human-readable date label.
+ * Returns 'Today', 'Tomorrow', 'Day after tomorrow', or 'Monday 22 July'.
+ */
+function formatDateLabel(ts) {
+    if (!ts)
+        return '';
+    const DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const MONTHS = [
+        'January', 'February', 'March', 'April', 'May', 'June',
+        'July', 'August', 'September', 'October', 'November', 'December',
+    ];
+    const now = new Date();
+    const dt = new Date(ts * 1000);
+    const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const dtStart = new Date(dt.getFullYear(), dt.getMonth(), dt.getDate());
+    const diffDays = Math.round((dtStart.getTime() - todayStart.getTime()) / 86400000);
+    if (diffDays === 0)
+        return 'Today';
+    if (diffDays === 1)
+        return 'Tomorrow';
+    if (diffDays === 2)
+        return 'Day after tomorrow';
+    return `${DAYS[dt.getDay()]} ${dt.getDate()} ${MONTHS[dt.getMonth()]}`;
+}
 function normalizeCondition(condition) {
     if (!condition)
         return null;
@@ -51,6 +76,7 @@ function buildMockWeatherData() {
         },
         daily: Array.from({ length: 7 }, (_, i) => ({
             dt: now + i * 86400,
+            dateLabel: formatDateLabel(now + i * 86400),
             temp: {
                 day: 25 + Math.random() * 8,
                 min: 15 + Math.random() * 5,
@@ -65,6 +91,7 @@ function buildMockWeatherData() {
         })),
         hourly: Array.from({ length: 24 }, (_, i) => ({
             dt: now + i * 3600,
+            dateLabel: formatDateLabel(now + i * 3600),
             temp: 22 + Math.random() * 6,
             pop: Math.random() * 0.2,
             weather: {
@@ -89,6 +116,7 @@ function normalizeWeatherPayload(payload) {
         : null;
     const forecastDays = (payload?.forecast?.forecastday || []).slice(0, 7).map((day) => ({
         dt: day.date_epoch,
+        dateLabel: formatDateLabel(day.date_epoch),
         temp: {
             day: day.day?.avgtemp_c,
             min: day.day?.mintemp_c,
@@ -102,6 +130,7 @@ function normalizeWeatherPayload(payload) {
         .slice(0, 24)
         .map((hour) => ({
         dt: hour.time_epoch,
+        dateLabel: formatDateLabel(hour.time_epoch),
         temp: hour.temp_c,
         pop: (hour.chance_of_rain ?? 0) / 100,
         weather: normalizeCondition(hour.condition),

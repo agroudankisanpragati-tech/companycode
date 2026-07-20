@@ -11,6 +11,7 @@ import {
 } from '@/services/cropRecommendation';
 import { useAuth } from '@/context/AuthContext';
 import AILanguageSelector from '@/components/AILanguageSelector';
+import { usePageContext } from '@/hooks/usePageContext';
 
 type Step = 'form' | 'results';
 
@@ -24,6 +25,13 @@ function CropRecommendationContent() {
   const [result, setResult] = useState<RecommendationResponse | null>(null);
   const [feedback, setFeedback] = useState<'helpful' | 'not_helpful' | null>(null);
   const [displayRecommendations, setDisplayRecommendations] = useState<RecommendationResponse['recommendations'] | null>(null);
+
+  // Register live crop recommendation with Pragati AI
+  const topCrop = (displayRecommendations || result?.recommendations)?.[0];
+  usePageContext({
+    pageContext: 'crop',
+    cropData: topCrop ? { cropName: topCrop.cropName, variety: topCrop.recommendedSeedVariety } : undefined,
+  });
   const [prefill, setPrefill] = useState<Partial<CropRecommendationRequest>>({});
   const [prefillBanner, setPrefillBanner] = useState('');
   // Farmer GPS/location for seed shop proximity

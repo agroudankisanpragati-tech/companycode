@@ -80,6 +80,7 @@ const schema = new mongoose_1.Schema({
     education: { type: String, default: '' },
     experience: { type: Number, default: 0 },
     address: { type: String, default: '' },
+    tehsil: { type: String, default: '' },
     district: { type: String, default: '' },
     state: { type: String, default: '' },
     languagePreference: { type: String, default: 'English' },

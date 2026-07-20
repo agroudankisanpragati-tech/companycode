@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { logger } from '../utils/logger';
 
 export const connectDB = async () => {
   try {
@@ -9,15 +10,15 @@ export const connectDB = async () => {
     }
 
     await mongoose.connect(mongoURI);
-    console.log('✅ MongoDB Connected Successfully');
+    logger.info('MongoDB connected successfully');
 
     process.on('SIGINT', async () => {
       await mongoose.disconnect();
-      console.log('MongoDB disconnected on app termination');
+      logger.info('MongoDB disconnected on app termination');
       process.exit(0);
     });
   } catch (error) {
-    console.error('❌ MongoDB Connection Error:', error);
+    logger.error('MongoDB connection failed', { error: String(error) });
     process.exit(1);
   }
 };

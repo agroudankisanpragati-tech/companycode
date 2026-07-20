@@ -18,7 +18,7 @@
         "@editorjs/image": "^2.8.1",
         "@editorjs/list": "^1.10.0",
         "@editorjs/quote": "^2.4.0",
-        "@tiptap/extension-code-block-lowlight": "^3.23.5",
+        "@tiptap/extension-code-block-lowlight": "^3.27.1",
         "@tiptap/extension-highlight": "^3.27.1",
         "@tiptap/extension-image": "^3.27.1",
         "@tiptap/extension-link": "^3.27.1",

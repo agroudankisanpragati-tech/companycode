@@ -1,9 +1,18 @@
 import { DiseaseRecommendation, IDiseaseRecommendation } from '../models/DiseaseRecommendation';
 import { DiseaseKnowledgeBase } from '../models/DiseaseKnowledgeBase';
+import { DiseasePestSolution } from '../models/DiseasePestSolution';
 import type { Document } from 'mongoose';
+import { isCropSupportedByYolo, callYoloPredict, YoloPrediction } from './yoloService';
 
 const SIMILARITY_THRESHOLD = 0.80;
 const KB_PROMOTE_THRESHOLD = 3; // auto-promote after 3 helpful feedbacks
+
+/** Minimum YOLO confidence (%) required to return a prediction. Below this the
+ *  scan endpoint returns a low-confidence response and asks for a clearer image. */
+export const YOLO_CONFIDENCE_THRESHOLD = parseInt(
+  process.env.YOLO_CONFIDENCE_THRESHOLD || '30',
+  10
+);
 
 function normalize(s: string) { return s.toLowerCase().trim(); }
 
@@ -60,22 +69,171 @@ export async function searchKnowledgeBase(cropName: string, diseaseName: string)
     diseaseName: best.diseaseName,
     diseaseType: best.diseaseType,
     severityLevel: best.severityLevel,
-    symptoms: [best.leafSymptoms, best.stemSymptoms, best.rootSymptoms, best.fruitSymptoms, best.symptomsDescription]
+    symptoms: [best.leafSymptoms, best.stemSymptoms, best.rootSymptoms, best.fruitSymptoms, best.symptomsDescription, best.symptoms]
       .filter(Boolean).join('\n'),
-    organicTreatment: best.organicTreatment || '',
-    chemicalTreatment: best.chemicalTreatment || '',
-    treatment: [best.organicTreatment, best.chemicalTreatment, best.treatmentDescription].filter(Boolean).join('\n'),
-    prevention: [best.preventionMethods, best.preventionDescription].filter(Boolean).join('\n'),
+    organicTreatment: best.organicTreatment || best.organicSolution || '',
+    chemicalTreatment: best.chemicalTreatment || best.chemicalSolution || '',
+    treatment: [best.organicTreatment || best.organicSolution, best.chemicalTreatment || best.chemicalSolution, best.treatmentDescription].filter(Boolean).join('\n'),
+    prevention: [best.preventionMethods, best.preventionDescription, best.prevention].filter(Boolean).join('\n'),
     recommendedActions: best.recommendedActions || '',
     description: best.description,
     confidenceScore: best.confidenceScore,
     source: 'knowledge_base' as const,
     similarityScore: Math.round(bestScore * 100),
+    // Extended fields
+    urgentPrevention: best.urgentPrevention || '',
+    recoveryTips: best.recoveryTips || '',
+    dos: best.dos || '',
+    donts: best.donts || '',
+    recommendedProducts: best.recommendedProducts || '',
+    recommendedFertilizer: best.recommendedFertilizer || '',
+    recommendedBioProduct: best.recommendedBioProduct || '',
+    recommendedOrganicProduct: best.recommendedOrganicProduct || '',
+    extraFarmerAdvice: best.extraFarmerAdvice || '',
+    suitableWeather: best.suitableWeather || '',
+    diseaseImages: best.diseaseImages || [],
+    healthyImages: best.healthyImages || [],
+    imageGallery: best.imageGallery || [],
+    tags: best.tags || [],
   };
 }
 
-/** Step 3 — call OpenAI Vision API */
-export async function callAIForDisease(imageBase64: string, cropHint?: string): Promise<{
+// =============================================================================
+// ADVISORY LOOKUP — uses YOLO prediction labels to fetch KB advisory data.
+// This is the ONLY way advisory content is retrieved in the scan pipeline.
+// Pragati AI / LLM never predicts disease — it only explains KB content.
+// =============================================================================
+
+export interface KBAdvisory {
+  knowledgeBaseId: string;
+  symptoms: string;
+  organicTreatment: string;
+  chemicalTreatment: string;
+  treatment: string;
+  prevention: string;
+  description: string;
+  recommendedActions: string;
+  urgentPrevention: string;
+  recoveryTips: string;
+  dos: string;
+  donts: string;
+  recommendedProducts: string;
+  recommendedFertilizer: string;
+  recommendedBioProduct: string;
+  recommendedOrganicProduct: string;
+  extraFarmerAdvice: string;
+  suitableWeather: string;
+  diseaseImages: string[];
+  tags: string[];
+  source: 'dps' | 'knowledge_base';
+}
+
+/**
+ * Fetch advisory content (symptoms, treatment, prevention, etc.) from the
+ * knowledge base using YOLO-provided crop name and disease/pest label.
+ *
+ * Priority:
+ *   1. Admin-curated DiseasePestSolution (exact crop + disease match)
+ *   2. DiseaseKnowledgeBase (fuzzy crop + disease match)
+ *
+ * Returns null when no advisory data exists — the scan result is still valid
+ * because the prediction came from YOLO.
+ */
+export async function getAdvisoryFromKnowledgeBase(
+  cropName: string,
+  diseaseName: string
+): Promise<KBAdvisory | null> {
+  // ── Priority 1: Admin-curated DiseasePestSolution ─────────────────────────
+  try {
+    const dps = await DiseasePestSolution.findOne({
+      cropName:        { $regex: `^${cropName.trim()}$`,    $options: 'i' },
+      diseasePestName: { $regex: `^${diseaseName.trim()}$`, $options: 'i' },
+      status: 'published',
+    }).lean();
+
+    if (dps) {
+      return {
+        knowledgeBaseId:          '',
+        symptoms:                 dps.symptoms           || '',
+        organicTreatment:         dps.organicSolution    || '',
+        chemicalTreatment:        dps.chemicalSolution   || '',
+        treatment:                [dps.organicSolution, dps.chemicalSolution].filter(Boolean).join('\n'),
+        prevention:               dps.preventiveMeasures || '',
+        description:              dps.description        || '',
+        recommendedActions:       dps.urgentPrevention   || '',
+        urgentPrevention:         dps.urgentPrevention   || '',
+        recoveryTips:             dps.recoveryTips       || '',
+        dos:                      dps.dos                || '',
+        donts:                    dps.donts              || '',
+        recommendedProducts:      dps.recommendedProducts || '',
+        recommendedFertilizer:    '',
+        recommendedBioProduct:    '',
+        recommendedOrganicProduct: '',
+        extraFarmerAdvice:        dps.farmerAdvice       || '',
+        suitableWeather:          '',
+        diseaseImages:            dps.referenceImages    || [],
+        tags:                     dps.tags               || [],
+        source:                   'dps',
+      };
+    }
+  } catch (err: any) {
+    console.warn('[Advisory] DPS lookup failed (non-fatal):', err?.message);
+  }
+
+  // ── Priority 2: DiseaseKnowledgeBase ─────────────────────────────────────
+  try {
+    const candidates = await DiseaseKnowledgeBase.find({
+      cropName: { $regex: cropName.trim(), $options: 'i' },
+    }).lean();
+
+    let best: any = null;
+    let bestScore = 0;
+    for (const c of candidates) {
+      const s = (stringSimilarity(c.cropName, cropName) + stringSimilarity(c.diseaseName, diseaseName)) / 2;
+      if (s > bestScore) { bestScore = s; best = c; }
+    }
+
+    if (!best || bestScore < SIMILARITY_THRESHOLD) return null;
+
+    await DiseaseKnowledgeBase.findByIdAndUpdate(best._id, {
+      $inc: { scanCount: 1 },
+      lastSeenAt: new Date(),
+    });
+
+    return {
+      knowledgeBaseId:          best._id.toString(),
+      symptoms:                 [best.leafSymptoms, best.stemSymptoms, best.rootSymptoms, best.fruitSymptoms, best.symptomsDescription, best.symptoms].filter(Boolean).join('\n'),
+      organicTreatment:         best.organicTreatment  || best.organicSolution  || '',
+      chemicalTreatment:        best.chemicalTreatment || best.chemicalSolution || '',
+      treatment:                [best.organicTreatment || best.organicSolution, best.chemicalTreatment || best.chemicalSolution, best.treatmentDescription].filter(Boolean).join('\n'),
+      prevention:               [best.preventionMethods, best.preventionDescription, best.prevention].filter(Boolean).join('\n'),
+      description:              best.description       || '',
+      recommendedActions:       best.recommendedActions || '',
+      urgentPrevention:         best.urgentPrevention  || '',
+      recoveryTips:             best.recoveryTips      || '',
+      dos:                      best.dos               || '',
+      donts:                    best.donts             || '',
+      recommendedProducts:      best.recommendedProducts || '',
+      recommendedFertilizer:    best.recommendedFertilizer || '',
+      recommendedBioProduct:    best.recommendedBioProduct || '',
+      recommendedOrganicProduct: best.recommendedOrganicProduct || '',
+      extraFarmerAdvice:        best.extraFarmerAdvice || '',
+      suitableWeather:          best.suitableWeather   || '',
+      diseaseImages:            best.diseaseImages     || [],
+      tags:                     best.tags              || [],
+      source:                   'knowledge_base',
+    };
+  } catch (err: any) {
+    console.warn('[Advisory] KB lookup failed (non-fatal):', err?.message);
+    return null;
+  }
+}
+
+// =============================================================================
+// YOLO-ONLY DETECTION — OpenAI Vision removed
+// =============================================================================
+
+export type AIDetectionResult = {
   cropName: string; cropNameHindi: string;
   diseaseName: string; diseaseNameHindi: string;
   diseaseType: string;
@@ -88,95 +246,83 @@ export async function callAIForDisease(imageBase64: string, cropHint?: string): 
   description: string; descriptionHindi: string;
   recommendedActions: string; recommendedActionsHindi: string;
   confidenceScore: number;
+};
+
+/**
+ * YOLO-only disease detection.
+ * OpenAI Vision is NOT used anywhere in this function.
+ */
+export async function runHybridDiseaseDetection(
+  imagePath: string,
+  _imageBase64: string,
+  cropHint?: string,
+): Promise<{
+  engine: 'yolo';
+  result: AIDetectionResult | null;
+  yoloRaw?: YoloPrediction;
 }> {
-  const apiKey = process.env.OPENAI_API_KEY;
-  if (!apiKey) throw new Error('OPENAI_API_KEY not configured');
+  console.log(`[Disease] Received cropName: '${cropHint || ''}'`);
 
-  const apiUrl = `${process.env.OPENAI_BASE_URL || 'https://api.openai.com/v1'}/chat/completions`;
+  const cropSupported = cropHint ? await isCropSupportedByYolo(cropHint) : false;
+  console.log(`[Disease] Crop supported by YOLO: ${cropSupported}`);
 
-const prompt = `You are an expert plant pathologist for Indian agriculture.
-
-Analyze this crop image and identify any disease.${cropHint ? ` The farmer says it is a ${cropHint} plant.` : ''}
-
-Return JSON ONLY with these exact fields:
-{
-  "cropName": "crop name",
-  "cropNameHindi": "फसल का नाम",
-  "diseaseName": "exact disease name or 'Healthy' if no disease",
-  "diseaseNameHindi": "रोग का नाम हिंدी में",
-  "diseaseType": "Fungal / Bacterial / Viral / Pest / Nutrient Deficiency / Healthy",
-  "severityLevel": "low / medium / high / critical",
-  "confidenceScore": 85,
-  "symptoms": "visible symptoms in 3-5 sentences",
-  "symptomsHindi": "लक्षण हिंदी में",
-  "organicTreatment": "organic/natural treatment steps numbered 1,2,3...",
-  "organicTreatmentHindi": "जैविक उपचार हिंदी में",
-  "chemicalTreatment": "chemical treatment with pesticide/fungicide names numbered 1,2,3...",
-  "chemicalTreatmentHindi": "रासायनिक उपचार हिंदी में",
-  "prevention": "prevention methods numbered 1,2,3...",
-  "preventionHindi": "रोकथाम विधियाँ हिंदी में",
-  "recommendedActions": "immediate actions the farmer should take",
-  "recommendedActionsHindi": "तत्काल कार्रवाई हिंدी में",
-  "description": "comprehensive disease description in 4-6 sentences",
-  "descriptionHindi": "विस्तृत विवरण हिंदी में"
-}`;
-
-  const response = await fetch(apiUrl, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${apiKey}` },
-    body: JSON.stringify({
-      model: process.env.OPENAI_MODEL || 'openai/gpt-4o-mini',
-      messages: [{
-        role: 'user',
-        content: [
-          { type: 'text', text: prompt },
-          { type: 'image_url', image_url: { url: `data:image/jpeg;base64,${imageBase64}` } },
-        ],
-      }],
-      max_tokens: 1500,
-      temperature: 0.2,
-      response_format: { type: 'json_object' },
-    }),
-  });
-
-  if (!response.ok) {
-    const errText = await response.text().catch(() => response.statusText);
-    throw new Error(`AI Vision error: ${errText}`);
+  if (!cropSupported) {
+    console.log(`[Disease] Fallback reason: crop '${cropHint}' not found in YOLO index`);
+    return { engine: 'yolo', result: null };
   }
 
-  const data = await response.json() as any;
-  const content = data.choices?.[0]?.message?.content;
-  if (!content) throw new Error('Empty AI response');
+  console.log(`[Disease] Sending to YOLO: imagePath=${imagePath}, cropHint=${cropHint}`);
+  const yoloResult = await callYoloPredict(imagePath, cropHint);
+  console.log(`[Disease] YOLO raw result: ${JSON.stringify(yoloResult)}`);
 
-  const p = JSON.parse(content);
-  const organic = p.organicTreatment || '';
-  const chemical = p.chemicalTreatment || '';
-  return {
-    cropName: p.cropName || 'Unknown Crop',
-    cropNameHindi: p.cropNameHindi || '',
-    diseaseName: p.diseaseName || 'Unknown Disease',
-    diseaseNameHindi: p.diseaseNameHindi || '',
-    diseaseType: p.diseaseType || 'Unknown',
-    severityLevel: p.severityLevel || 'medium',
-    confidenceScore: Math.min(100, Math.max(0, parseInt(p.confidenceScore) || 75)),
-    symptoms: p.symptoms || '',
-    symptomsHindi: p.symptomsHindi || '',
-    organicTreatment: organic,
-    organicTreatmentHindi: p.organicTreatmentHindi || '',
-    chemicalTreatment: chemical,
-    chemicalTreatmentHindi: p.chemicalTreatmentHindi || '',
-    treatment: [organic, chemical].filter(Boolean).join('\n'),
-    prevention: p.prevention || '',
-    preventionHindi: p.preventionHindi || '',
-    recommendedActions: p.recommendedActions || '',
-    recommendedActionsHindi: p.recommendedActionsHindi || '',
-    description: p.description || '',
-    descriptionHindi: p.descriptionHindi || '',
+  if (!yoloResult) {
+    console.log(`[Disease] Fallback reason: YOLO returned null for crop '${cropHint}'`);
+    return { engine: 'yolo', result: null };
+  }
+
+  console.log(`[Disease] YOLO prediction: class=${yoloResult.class_name}, confidence=${yoloResult.confidence}%, category=${yoloResult.category}`);
+
+  const isHealthy =
+    yoloResult.category === 'healthy' ||
+    yoloResult.class_name.toLowerCase().includes('healthy');
+
+  const cropPrefix = (yoloResult.crop || cropHint || '')
+    .replace(/[^a-zA-Z0-9]/g, '_')
+    .replace(/_+/g, '_');
+  const diseaseRaw = yoloResult.class_name
+    .replace(new RegExp(`^${cropPrefix}_?`, 'i'), '')
+    .replace(/_/g, ' ')
+    .trim();
+
+  const conf = yoloResult.confidence;
+  const severity = conf >= 90 ? 'high' : conf >= 70 ? 'medium' : 'low';
+  const diseaseName = isHealthy ? 'Healthy' : (diseaseRaw || yoloResult.class_name);
+
+  console.log(`[Disease] Final disease: '${diseaseName}', severity: ${severity}, confidence: ${conf}%`);
+
+  const mapped: AIDetectionResult = {
+    cropName: yoloResult.crop || cropHint || 'Unknown Crop',
+    cropNameHindi: '',
+    diseaseName,
+    diseaseNameHindi: '',
+    diseaseType: isHealthy ? 'Healthy' : yoloResult.category === 'pests' ? 'Pest' : 'Disease',
+    severityLevel: isHealthy ? 'low' : severity,
+    confidenceScore: Math.round(conf),
+    symptoms: '', symptomsHindi: '',
+    organicTreatment: '', organicTreatmentHindi: '',
+    chemicalTreatment: '', chemicalTreatmentHindi: '',
+    treatment: '',
+    prevention: '', preventionHindi: '',
+    recommendedActions: '', recommendedActionsHindi: '',
+    description: `Detected by AgroDhan AI: ${yoloResult.class_name} (${conf.toFixed(1)}% confidence)`,
+    descriptionHindi: '',
   };
+
+  return { engine: 'yolo', result: mapped, yoloRaw: yoloResult };
 }
 
 /** Auto-save AI result to DiseaseKnowledgeBase for future reuse */
-export async function autoSaveToKnowledgeBase(aiResult: Awaited<ReturnType<typeof callAIForDisease>>, imageUrl?: string) {
+export async function autoSaveToKnowledgeBase(aiResult: AIDetectionResult, imageUrl?: string) {
   try {
     await DiseaseKnowledgeBase.findOneAndUpdate(
       { cropName: new RegExp(`^${aiResult.cropName}$`, 'i'), diseaseName: new RegExp(`^${aiResult.diseaseName}$`, 'i') },
@@ -188,9 +334,13 @@ export async function autoSaveToKnowledgeBase(aiResult: Awaited<ReturnType<typeo
           diseaseType: aiResult.diseaseType,
           severityLevel: aiResult.severityLevel,
           description: aiResult.description,
+          symptoms: aiResult.symptoms,
           symptomsDescription: aiResult.symptoms,
+          organicSolution: aiResult.organicTreatment,
           organicTreatment: aiResult.organicTreatment,
+          chemicalSolution: aiResult.chemicalTreatment,
           chemicalTreatment: aiResult.chemicalTreatment,
+          prevention: aiResult.prevention,
           preventionMethods: aiResult.prevention,
           recommendedActions: aiResult.recommendedActions,
           diseaseImages: imageUrl ? [imageUrl] : [],
@@ -204,7 +354,6 @@ export async function autoSaveToKnowledgeBase(aiResult: Awaited<ReturnType<typeo
       { upsert: true, new: true, setDefaultsOnInsert: true }
     );
   } catch (err) {
-    // Non-blocking — log but don't fail the scan
     console.error('KB auto-save error:', err);
   }
 }

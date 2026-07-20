@@ -162,13 +162,18 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   }, [loadAndSet]);
 
   const setLanguage = useCallback(async (code: string, persistToServer = true) => {
-    if (!LANGUAGES.find((l) => l.code === code)) return;
+    const found = LANGUAGES.find((l) => l.code === code);
+    if (!found) return;
     localStorage.setItem(STORAGE_KEY, code);
     await loadAndSet(code);
-    // Sync aiDisplayMode: hi → 'hi', en → 'en', others → 'both'
-    if (code === 'hi') setAiDisplayMode('hi');
-    else if (code === 'en') setAiDisplayMode('en');
+    // Sync aiDisplayMode: hi/dialects → 'hi', en → 'en', others → 'both'
+    if (code === 'en') setAiDisplayMode('en');
+    else if (code === 'hi' || found.isDialect) setAiDisplayMode('hi');
     else setAiDisplayMode('both');
+    // Dispatch event so notification hooks can react
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('language-changed', { detail: { code, name: found.name } }));
+    }
     if (persistToServer) {
       await persistLanguageToServer(code);
     }

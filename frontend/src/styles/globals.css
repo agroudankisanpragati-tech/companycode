@@ -205,3 +205,62 @@ p, span, li {
     display: none;
   }
 }
+
+/* ── Accessibility: Large Text Mode ─────────────────────────────────────────── */
+html.kp-large-text {
+  font-size: 19px;
+}
+
+html.kp-large-text p,
+html.kp-large-text span,
+html.kp-large-text li,
+html.kp-large-text label,
+html.kp-large-text button,
+html.kp-large-text input,
+html.kp-large-text textarea,
+html.kp-large-text select {
+  font-size: 1.1rem !important;
+  line-height: 1.7 !important;
+}
+
+html.kp-large-text h1 { font-size: 2.2rem !important; }
+html.kp-large-text h2 { font-size: 1.8rem !important; }
+html.kp-large-text h3 { font-size: 1.4rem !important; }
+
+/* ── Accessibility: Touch-friendly minimum tap targets ───────────────────────── */
+button,
+[role="button"],
+a[href],
+input[type="checkbox"],
+input[type="radio"] {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+/* Exception: icon-only small buttons inside cards keep their size */
+.kp-icon-btn {
+  min-height: 2rem !important;
+  min-width: 2rem !important;
+}
+
+/* ── Accessibility: High-contrast focus ring for keyboard navigation ─────────── */
+:focus-visible {
+  outline: 3px solid #059669 !important;
+  outline-offset: 2px !important;
+}
+
+/* ── Accessibility: Reduced motion ──────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ── RTL support ─────────────────────────────────────────────────────────────── */
+[dir="rtl"] .flex-row { flex-direction: row-reverse; }
+[dir="rtl"] .text-left { text-align: right; }
+[dir="rtl"] .text-right { text-align: left; }

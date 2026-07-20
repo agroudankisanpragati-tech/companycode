@@ -1,0 +1,51 @@
+# =============================================================================
+# Pragati AI — Voice Dataset Generator Configuration
+# All paths are relative to the Ai/ root directory.
+# Never use absolute paths.
+# =============================================================================
+
+# ── Languages ─────────────────────────────────────────────────────────────────
+languages:
+  - hindi
+  - marwari
+  - mewari
+  - hadoti
+  - dhundhari
+  - shekhawati
+  - bagri
+
+# ── Paths (all relative to Ai/ root) ─────────────────────────────────────────
+paths:
+  input_folder: "language_dataset"
+  output_folder: "voice_dataset"
+  logs_folder: "logs/voice_generator"
+  piper_dir: "voice_models/piper"
+  voices_dir: "voice_models/voices"
+
+# ── Voice Model Mapping ───────────────────────────────────────────────────────
+# Maps each language to its voice model folder inside voices_dir.
+# All Rajasthani dialects use the Hindi model as the base voice.
+voice_models:
+  hindi: "hindi/hi_IN-pratham-medium.onnx"
+  marwari: "hindi/hi_IN-pratham-medium.onnx"
+  mewari: "hindi/hi_IN-pratham-medium.onnx"
+  hadoti: "hindi/hi_IN-pratham-medium.onnx"
+  dhundhari: "hindi/hi_IN-pratham-medium.onnx"
+  shekhawati: "hindi/hi_IN-pratham-medium.onnx"
+  bagri: "hindi/hi_IN-pratham-medium.onnx"
+
+# ── Audio ─────────────────────────────────────────────────────────────────────
+audio:
+  format: "wav"
+  sample_rate: 22050
+
+# ── Sentence Rules ────────────────────────────────────────────────────────────
+sentence:
+  min_length: 5
+  max_length: 300
+
+# ── Processing ────────────────────────────────────────────────────────────────
+processing:
+  num_workers: 2
+  resume_mode: true
+  batch_size: 50

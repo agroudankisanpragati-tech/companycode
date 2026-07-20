@@ -47,6 +47,7 @@ export interface IFarmerProfileData extends Document {
     education?: string;
     experience: number;
     address?: string;
+    tehsil?: string;
     district?: string;
     state?: string;
     languagePreference?: string;

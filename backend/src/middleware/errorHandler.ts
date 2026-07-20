@@ -1,4 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
+import { createLogger } from '../utils/logger';
+
+const log = createLogger('errorHandler');
 
 const BILINGUAL_ERRORS: Record<number, { en: string; hi: string }> = {
   400: { en: 'Bad request. Please check your input.', hi: 'अनुरोध अमान्य है। कृपया अपना इनपुट जाँचें।' },
@@ -24,11 +27,15 @@ const NAMED_ERRORS: Record<string, { status: number; en: string; hi: string }> =
 };
 
 export function bilingualErrorHandler(err: any, req: Request, res: Response, _next: NextFunction) {
-  console.error(`[Error] ${req.method} ${req.path}:`, err.message || err);
+  log.error(`${req.method} ${req.path}`, { error: err.message || String(err), status: err.status });
+
+  // Never send a response if headers already sent
+  if (res.headersSent) return;
 
   // Multer file size error
   if (err.code === 'LIMIT_FILE_SIZE') {
     return res.status(413).json({
+      success: false,
       error: BILINGUAL_ERRORS[413].en,
       hindi: BILINGUAL_ERRORS[413].hi,
     });
@@ -38,6 +45,7 @@ export function bilingualErrorHandler(err: any, req: Request, res: Response, _ne
   const namedErr = NAMED_ERRORS[err.name];
   if (namedErr) {
     return res.status(namedErr.status).json({
+      success: false,
       error: namedErr.en,
       hindi: namedErr.hi,
     });
@@ -46,6 +54,7 @@ export function bilingualErrorHandler(err: any, req: Request, res: Response, _ne
   // MongoDB duplicate key
   if (err.code === 11000) {
     return res.status(409).json({
+      success: false,
       error: 'Duplicate entry. This record already exists.',
       hindi: 'डुप्लीकेट प्रविष्टि। यह रिकॉर्ड पहले से मौजूद है।',
     });
@@ -56,6 +65,7 @@ export function bilingualErrorHandler(err: any, req: Request, res: Response, _ne
   const bilingual = BILINGUAL_ERRORS[status] || BILINGUAL_ERRORS[500];
 
   res.status(status).json({
+    success: false,
     error: err.message || bilingual.en,
     hindi: bilingual.hi,
   });

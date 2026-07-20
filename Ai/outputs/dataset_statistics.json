@@ -1,0 +1,916 @@
+{
+  "generated_at": "2026-07-18T01:38:17",
+  "dataset_root": "/kaggle/working/Ai/crop_dataset",
+  "total_crops": 6,
+  "total_classes": 104,
+  "healthy_classes": 6,
+  "disease_classes": 21,
+  "pest_classes": 77,
+  "total_images": 53615,
+  "images_per_crop": {
+    "Black_gram": 10499,
+    "Pearl_Millet _Bajra": 13739,
+    "Tomato": 10023,
+    "corn_maize": 9123,
+    "green_gram": 9824,
+    "wheat": 407
+  },
+  "images_per_class": {
+    "Black_Gram_Cercospora_Leaf_Spot": 598,
+    "Black_Gram_Leaf_Crinkle": 806,
+    "Black_Gram_Yellow_Mosaic": 1681,
+    "Black_Gram_healthy": 580,
+    "Black_Gram_Anomis_Caterpillar": 391,
+    "Black_Gram_Aphids": 386,
+    "Black_Gram_Beet_Armyworm": 463,
+    "Black_Gram_Bihar_Hairy_Caterpillar": 430,
+    "Black_Gram_Field_Cricket": 251,
+    "Black_Gram_Flea_Beetle": 316,
+    "Black_Gram_Fruit_Moth": 374,
+    "Black_Gram_Gall_Fly": 490,
+    "Black_Gram_Hairy_Caterpillar": 329,
+    "Black_Gram_Locust": 331,
+    "Black_Gram_Looper": 344,
+    "Black_Gram_Mealybug": 356,
+    "Black_Gram_Microtermes_Termite": 331,
+    "Black_Gram_Spider_Mites": 346,
+    "Black_Gram_Spotted_Bollworm": 405,
+    "Black_Gram_Stem_Borer": 301,
+    "Black_Gram_Stem_Weevil": 360,
+    "Black_Gram_Termite": 361,
+    "Black_Gram_whiteflies": 19,
+    "Black_Gram_yellow_mite": 250,
+    "Pearl_Millet_Blast": 2911,
+    "Pearl_Millet_Rust": 2074,
+    "healthy": 483,
+    "Pearl_Millet_Aphids": 2456,
+    "Pearl_Millet_Armyworm": 642,
+    "Pearl_Millet_Cutworm": 149,
+    "Pearl_Millet_Grasshopper": 309,
+    "Pearl_Millet_Grub": 516,
+    "Pearl_Millet_Locust": 331,
+    "Pearl_Millet_Mites": 319,
+    "Pearl_Millet_Red_Spider_Mite": 317,
+    "Pearl_Millet_Stem_Borer": 474,
+    "Pearl_Millet_Termite": 331,
+    "Pearl_Millet_Thrips": 527,
+    "Pearl_Millet_Whitefly": 1081,
+    "Pearl_Millet_Wireworm": 532,
+    "Pearl_Millet_Yellow_Cutworm": 287,
+    "Tomato_Bacterial_Spot": 297,
+    "Tomato_Early_Blight": 147,
+    "Tomato_Late_Blight": 291,
+    "Tomato_Leaf_Mold": 146,
+    "Tomato_Septoria_Leaf_Spot": 275,
+    "Tomato_Target_Spot": 211,
+    "Tomato_Tomato_Mosaic_Virus": 897,
+    "Tomato_Tomato_Yellow_Leaf_Curl_Virus": 65,
+    "Tomato_healthy": 560,
+    "Tomato_Aphids": 2456,
+    "Tomato_Army_Worm": 642,
+    "Tomato_Cutworm": 149,
+    "Tomato_Fall_Armyworm": 134,
+    "Tomato_Grasshopper": 309,
+    "Tomato_Mealybug": 356,
+    "Tomato_Red_Spider": 317,
+    "Tomato_Spider_Mites_Two_Spotted": 300,
+    "Tomato_Termite": 331,
+    "Tomato_Thrips": 527,
+    "Tomato_Whitefly": 1081,
+    "Tomato_Wireworm": 532,
+    "Corn_Maize_Cercospora_Leaf_Spot_Gray_Leaf_Spot": 187,
+    "Corn_Maize_Common_Rust": 432,
+    "Corn_Maize_Northern_Leaf_Blight": 354,
+    "corn_maize_healthy": 433,
+    "Corn_Maize_Aphids": 2456,
+    "Corn_Maize_Corn_Borer": 1018,
+    "Corn_Maize_Corn_Earworm": 125,
+    "Corn_Maize_Cutworm": 149,
+    "Corn_Maize_Fall_Armyworm": 134,
+    "Corn_Maize_Grasshopper": 309,
+    "Corn_Maize_Large_Cutworm": 294,
+    "Corn_Maize_Stem_Borer": 474,
+    "Corn_Maize_Termite": 331,
+    "Corn_Maize_Thrips": 527,
+    "Corn_Maize_Whitefly": 1081,
+    "Corn_Maize_Wireworm": 532,
+    "Corn_Maize_Yellow_Cutworm": 287,
+    "Green_Gram_Cercospora_Leaf_Spot": 598,
+    "Green_Gram_Leaf_Crinkle": 806,
+    "Green_Gram_Yellow_Mosaic": 1681,
+    "Green_Gram_Healthy": 580,
+    "Green_Gram_Anomis_Caterpillar": 391,
+    "Green_Gram_Aphids": 386,
+    "Green_Gram_Beet_Armyworm": 463,
+    "Green_Gram_Bihar_Hairy_Caterpillar": 430,
+    "Green_Gram_Field_Cricket": 251,
+    "Green_Gram_Flea_Beetle": 316,
+    "Green_Gram_Fruit_Moth": 374,
+    "Green_Gram_Gall_Fly": 490,
+    "Green_Gram_Hairy_Caterpillar": 329,
+    "Green_Gram_Locust": 331,
+    "Green_Gram_Mealybug": 356,
+    "Green_Gram_Spider_Mites": 346,
+    "Green_Gram_Spotted_Bollworm": 405,
+    "Green_Gram_Stem_Borer": 301,
+    "Green_Gram_Stem_Weevil": 360,
+    "Green_Gram_Termite": 361,
+    "Green_Gram_Whitefly": 19,
+    "Green_Gram_Yellow_Mite": 250,
+    "wheat_septoria": 97,
+    "wheat_stripe_rust": 208,
+    "Healthy": 102
+  },
+  "crop_details": [
+    {
+      "crop_name": "Black_gram",
+      "total_images": 10499,
+      "total_classes": 24,
+      "healthy_classes": 1,
+      "disease_classes": 3,
+      "pest_classes": 20,
+      "images_per_class": {
+        "Black_Gram_Cercospora_Leaf_Spot": 598,
+        "Black_Gram_Leaf_Crinkle": 806,
+        "Black_Gram_Yellow_Mosaic": 1681,
+        "Black_Gram_healthy": 580,
+        "Black_Gram_Anomis_Caterpillar": 391,
+        "Black_Gram_Aphids": 386,
+        "Black_Gram_Beet_Armyworm": 463,
+        "Black_Gram_Bihar_Hairy_Caterpillar": 430,
+        "Black_Gram_Field_Cricket": 251,
+        "Black_Gram_Flea_Beetle": 316,
+        "Black_Gram_Fruit_Moth": 374,
+        "Black_Gram_Gall_Fly": 490,
+        "Black_Gram_Hairy_Caterpillar": 329,
+        "Black_Gram_Locust": 331,
+        "Black_Gram_Looper": 344,
+        "Black_Gram_Mealybug": 356,
+        "Black_Gram_Microtermes_Termite": 331,
+        "Black_Gram_Spider_Mites": 346,
+        "Black_Gram_Spotted_Bollworm": 405,
+        "Black_Gram_Stem_Borer": 301,
+        "Black_Gram_Stem_Weevil": 360,
+        "Black_Gram_Termite": 361,
+        "Black_Gram_whiteflies": 19,
+        "Black_Gram_yellow_mite": 250
+      }
+    },
+    {
+      "crop_name": "Pearl_Millet _Bajra",
+      "total_images": 13739,
+      "total_classes": 17,
+      "healthy_classes": 1,
+      "disease_classes": 2,
+      "pest_classes": 14,
+      "images_per_class": {
+        "Pearl_Millet_Blast": 2911,
+        "Pearl_Millet_Rust": 2074,
+        "healthy": 483,
+        "Pearl_Millet_Aphids": 2456,
+        "Pearl_Millet_Armyworm": 642,
+        "Pearl_Millet_Cutworm": 149,
+        "Pearl_Millet_Grasshopper": 309,
+        "Pearl_Millet_Grub": 516,
+        "Pearl_Millet_Locust": 331,
+        "Pearl_Millet_Mites": 319,
+        "Pearl_Millet_Red_Spider_Mite": 317,
+        "Pearl_Millet_Stem_Borer": 474,
+        "Pearl_Millet_Termite": 331,
+        "Pearl_Millet_Thrips": 527,
+        "Pearl_Millet_Whitefly": 1081,
+        "Pearl_Millet_Wireworm": 532,
+        "Pearl_Millet_Yellow_Cutworm": 287
+      }
+    },
+    {
+      "crop_name": "Tomato",
+      "total_images": 10023,
+      "total_classes": 21,
+      "healthy_classes": 1,
+      "disease_classes": 8,
+      "pest_classes": 12,
+      "images_per_class": {
+        "Tomato_Bacterial_Spot": 297,
+        "Tomato_Early_Blight": 147,
+        "Tomato_Late_Blight": 291,
+        "Tomato_Leaf_Mold": 146,
+        "Tomato_Septoria_Leaf_Spot": 275,
+        "Tomato_Target_Spot": 211,
+        "Tomato_Tomato_Mosaic_Virus": 897,
+        "Tomato_Tomato_Yellow_Leaf_Curl_Virus": 65,
+        "Tomato_healthy": 560,
+        "Tomato_Aphids": 2456,
+        "Tomato_Army_Worm": 642,
+        "Tomato_Cutworm": 149,
+        "Tomato_Fall_Armyworm": 134,
+        "Tomato_Grasshopper": 309,
+        "Tomato_Mealybug": 356,
+        "Tomato_Red_Spider": 317,
+        "Tomato_Spider_Mites_Two_Spotted": 300,
+        "Tomato_Termite": 331,
+        "Tomato_Thrips": 527,
+        "Tomato_Whitefly": 1081,
+        "Tomato_Wireworm": 532
+      }
+    },
+    {
+      "crop_name": "corn_maize",
+      "total_images": 9123,
+      "total_classes": 17,
+      "healthy_classes": 1,
+      "disease_classes": 3,
+      "pest_classes": 13,
+      "images_per_class": {
+        "Corn_Maize_Cercospora_Leaf_Spot_Gray_Leaf_Spot": 187,
+        "Corn_Maize_Common_Rust": 432,
+        "Corn_Maize_Northern_Leaf_Blight": 354,
+        "corn_maize_healthy": 433,
+        "Corn_Maize_Aphids": 2456,
+        "Corn_Maize_Corn_Borer": 1018,
+        "Corn_Maize_Corn_Earworm": 125,
+        "Corn_Maize_Cutworm": 149,
+        "Corn_Maize_Fall_Armyworm": 134,
+        "Corn_Maize_Grasshopper": 309,
+        "Corn_Maize_Large_Cutworm": 294,
+        "Corn_Maize_Stem_Borer": 474,
+        "Corn_Maize_Termite": 331,
+        "Corn_Maize_Thrips": 527,
+        "Corn_Maize_Whitefly": 1081,
+        "Corn_Maize_Wireworm": 532,
+        "Corn_Maize_Yellow_Cutworm": 287
+      }
+    },
+    {
+      "crop_name": "green_gram",
+      "total_images": 9824,
+      "total_classes": 22,
+      "healthy_classes": 1,
+      "disease_classes": 3,
+      "pest_classes": 18,
+      "images_per_class": {
+        "Green_Gram_Cercospora_Leaf_Spot": 598,
+        "Green_Gram_Leaf_Crinkle": 806,
+        "Green_Gram_Yellow_Mosaic": 1681,
+        "Green_Gram_Healthy": 580,
+        "Green_Gram_Anomis_Caterpillar": 391,
+        "Green_Gram_Aphids": 386,
+        "Green_Gram_Beet_Armyworm": 463,
+        "Green_Gram_Bihar_Hairy_Caterpillar": 430,
+        "Green_Gram_Field_Cricket": 251,
+        "Green_Gram_Flea_Beetle": 316,
+        "Green_Gram_Fruit_Moth": 374,
+        "Green_Gram_Gall_Fly": 490,
+        "Green_Gram_Hairy_Caterpillar": 329,
+        "Green_Gram_Locust": 331,
+        "Green_Gram_Mealybug": 356,
+        "Green_Gram_Spider_Mites": 346,
+        "Green_Gram_Spotted_Bollworm": 405,
+        "Green_Gram_Stem_Borer": 301,
+        "Green_Gram_Stem_Weevil": 360,
+        "Green_Gram_Termite": 361,
+        "Green_Gram_Whitefly": 19,
+        "Green_Gram_Yellow_Mite": 250
+      }
+    },
+    {
+      "crop_name": "wheat",
+      "total_images": 407,
+      "total_classes": 3,
+      "healthy_classes": 1,
+      "disease_classes": 2,
+      "pest_classes": 0,
+      "images_per_class": {
+        "wheat_septoria": 97,
+        "wheat_stripe_rust": 208,
+        "Healthy": 102
+      }
+    }
+  ],
+  "class_details": [
+    {
+      "class_name": "Black_Gram_Anomis_Caterpillar",
+      "crop_name": "Black_gram",
+      "category": "pests",
+      "image_count": 0
+    },
+    {
+      "class_name": "Black_Gram_Aphids",
+      "crop_name": "Black_gram",
+      "category": "pests",
+      "image_count": 0
+    },
+    {
+      "class_name": "Black_Gram_Beet_Armyworm",
+      "crop_name": "Black_gram",
+      "category": "pests",
+      "image_count": 0
+    },
+    {
+      "class_name": "Black_Gram_Bihar_Hairy_Caterpillar",
+      "crop_name": "Black_gram",
+      "category": "pests",
+      "image_count": 0
+    },
+    {
+      "class_name": "Black_Gram_Cercospora_Leaf_Spot",
+      "crop_name": "Black_gram",
+      "category": "diseases",
+      "image_count": 0
+    },
+    {
+      "class_name": "Black_Gram_Field_Cricket",
+      "crop_name": "Black_gram",
+      "category": "pests",
+      "image_count": 0
+    },
+    {
+      "class_name": "Black_Gram_Flea_Beetle",
+      "crop_name": "Black_gram",
+      "category": "pests",
+      "image_count": 0
+    },
+    {
+      "class_name": "Black_Gram_Fruit_Moth",
+      "crop_name": "Black_gram",
+      "category": "pests",
+      "image_count": 0
+    },
+    {
+      "class_name": "Black_Gram_Gall_Fly",
+      "crop_name": "Black_gram",
+      "category": "pests",
+      "image_count": 0
+    },
+    {
+      "class_name": "Black_Gram_Hairy_Caterpillar",
+      "crop_name": "Black_gram",
+      "category": "pests",
+      "image_count": 0
+    },
+    {
+      "class_name": "Black_Gram_Leaf_Crinkle",
+      "crop_name": "Black_gram",
+      "category": "diseases",
+      "image_count": 0
+    },
+    {
+      "class_name": "Black_Gram_Locust",
+      "crop_name": "Black_gram",
+      "category": "pests",
+      "image_count": 0
+    },
+    {
+      "class_name": "Black_Gram_Looper",
+      "crop_name": "Black_gram",
+      "category": "pests",
+      "image_count": 0
+    },
+    {
+      "class_name": "Black_Gram_Mealybug",
+      "crop_name": "Black_gram",
+      "category": "pests",
+      "image_count": 0
+    },
+    {
+      "class_name": "Black_Gram_Microtermes_Termite",
+      "crop_name": "Black_gram",
+      "category": "pests",
+      "image_count": 0
+    },
+    {
+      "class_name": "Black_Gram_Spider_Mites",
+      "crop_name": "Black_gram",
+      "category": "pests",
+      "image_count": 0
+    },
+    {
+      "class_name": "Black_Gram_Spotted_Bollworm",
+      "crop_name": "Black_gram",
+      "category": "pests",
+      "image_count": 0
+    },
+    {
+      "class_name": "Black_Gram_Stem_Borer",
+      "crop_name": "Black_gram",
+      "category": "pests",
+      "image_count": 0
+    },
+    {
+      "class_name": "Black_Gram_Stem_Weevil",
+      "crop_name": "Black_gram",
+      "category": "pests",
+      "image_count": 0
+    },
+    {
+      "class_name": "Black_Gram_Termite",
+      "crop_name": "Black_gram",
+      "category": "pests",
+      "image_count": 0
+    },
+    {
+      "class_name": "Black_Gram_Yellow_Mosaic",
+      "crop_name": "Black_gram",
+      "category": "diseases",
+      "image_count": 0
+    },
+    {
+      "class_name": "Black_Gram_healthy",
+      "crop_name": "Black_gram",
+      "category": "healthy",
+      "image_count": 0
+    },
+    {
+      "class_name": "Black_Gram_whiteflies",
+      "crop_name": "Black_gram",
+      "category": "pests",
+      "image_count": 0
+    },
+    {
+      "class_name": "Black_Gram_yellow_mite",
+      "crop_name": "Black_gram",
+      "category": "pests",
+      "image_count": 0
+    },
+    {
+      "class_name": "Corn_Maize_Aphids",
+      "crop_name": "corn_maize",
+      "category": "pests",
+      "image_count": 0
+    },
+    {
+      "class_name": "Corn_Maize_Cercospora_Leaf_Spot_Gray_Leaf_Spot",
+      "crop_name": "corn_maize",
+      "category": "diseases",
+      "image_count": 0
+    },
+    {
+      "class_name": "Corn_Maize_Common_Rust",
+      "crop_name": "corn_maize",
+      "category": "diseases",
+      "image_count": 0
+    },
+    {
+      "class_name": "Corn_Maize_Corn_Borer",
+      "crop_name": "corn_maize",
+      "category": "pests",
+      "image_count": 0
+    },
+    {
+      "class_name": "Corn_Maize_Corn_Earworm",
+      "crop_name": "corn_maize",
+      "category": "pests",
+      "image_count": 0
+    },
+    {
+      "class_name": "Corn_Maize_Cutworm",
+      "crop_name": "corn_maize",
+      "category": "pests",
+      "image_count": 0
+    },
+    {
+      "class_name": "Corn_Maize_Fall_Armyworm",
+      "crop_name": "corn_maize",
+      "category": "pests",
+      "image_count": 0
+    },
+    {
+      "class_name": "Corn_Maize_Grasshopper",
+      "crop_name": "corn_maize",
+      "category": "pests",
+      "image_count": 0
+    },
+    {
+      "class_name": "Corn_Maize_Large_Cutworm",
+      "crop_name": "corn_maize",
+      "category": "pests",
+      "image_count": 0
+    },
+    {
+      "class_name": "Corn_Maize_Northern_Leaf_Blight",
+      "crop_name": "corn_maize",
+      "category": "diseases",
+      "image_count": 0
+    },
+    {
+      "class_name": "Corn_Maize_Stem_Borer",
+      "crop_name": "corn_maize",
+      "category": "pests",
+      "image_count": 0
+    },
+    {
+      "class_name": "Corn_Maize_Termite",
+      "crop_name": "corn_maize",
+      "category": "pests",
+      "image_count": 0
+    },
+    {
+      "class_name": "Corn_Maize_Thrips",
+      "crop_name": "corn_maize",
+      "category": "pests",
+      "image_count": 0
+    },
+    {
+      "class_name": "Corn_Maize_Whitefly",
+      "crop_name": "corn_maize",
+      "category": "pests",
+      "image_count": 0
+    },
+    {
+      "class_name": "Corn_Maize_Wireworm",
+      "crop_name": "corn_maize",
+      "category": "pests",
+      "image_count": 0
+    },
+    {
+      "class_name": "Corn_Maize_Yellow_Cutworm",
+      "crop_name": "corn_maize",
+      "category": "pests",
+      "image_count": 0
+    },
+    {
+      "class_name": "Green_Gram_Anomis_Caterpillar",
+      "crop_name": "green_gram",
+      "category": "pests",
+      "image_count": 0
+    },
+    {
+      "class_name": "Green_Gram_Aphids",
+      "crop_name": "green_gram",
+      "category": "pests",
+      "image_count": 0
+    },
+    {
+      "class_name": "Green_Gram_Beet_Armyworm",
+      "crop_name": "green_gram",
+      "category": "pests",
+      "image_count": 0
+    },
+    {
+      "class_name": "Green_Gram_Bihar_Hairy_Caterpillar",
+      "crop_name": "green_gram",
+      "category": "pests",
+      "image_count": 0
+    },
+    {
+      "class_name": "Green_Gram_Cercospora_Leaf_Spot",
+      "crop_name": "green_gram",
+      "category": "diseases",
+      "image_count": 0
+    },
+    {
+      "class_name": "Green_Gram_Field_Cricket",
+      "crop_name": "green_gram",
+      "category": "pests",
+      "image_count": 0
+    },
+    {
+      "class_name": "Green_Gram_Flea_Beetle",
+      "crop_name": "green_gram",
+      "category": "pests",
+      "image_count": 0
+    },
+    {
+      "class_name": "Green_Gram_Fruit_Moth",
+      "crop_name": "green_gram",
+      "category": "pests",
+      "image_count": 0
+    },
+    {
+      "class_name": "Green_Gram_Gall_Fly",
+      "crop_name": "green_gram",
+      "category": "pests",
+      "image_count": 0
+    },
+    {
+      "class_name": "Green_Gram_Hairy_Caterpillar",
+      "crop_name": "green_gram",
+      "category": "pests",
+      "image_count": 0
+    },
+    {
+      "class_name": "Green_Gram_Healthy",
+      "crop_name": "green_gram",
+      "category": "healthy",
+      "image_count": 0
+    },
+    {
+      "class_name": "Green_Gram_Leaf_Crinkle",
+      "crop_name": "green_gram",
+      "category": "diseases",
+      "image_count": 0
+    },
+    {
+      "class_name": "Green_Gram_Locust",
+      "crop_name": "green_gram",
+      "category": "pests",
+      "image_count": 0
+    },
+    {
+      "class_name": "Green_Gram_Mealybug",
+      "crop_name": "green_gram",
+      "category": "pests",
+      "image_count": 0
+    },
+    {
+      "class_name": "Green_Gram_Spider_Mites",
+      "crop_name": "green_gram",
+      "category": "pests",
+      "image_count": 0
+    },
+    {
+      "class_name": "Green_Gram_Spotted_Bollworm",
+      "crop_name": "green_gram",
+      "category": "pests",
+      "image_count": 0
+    },
+    {
+      "class_name": "Green_Gram_Stem_Borer",
+      "crop_name": "green_gram",
+      "category": "pests",
+      "image_count": 0
+    },
+    {
+      "class_name": "Green_Gram_Stem_Weevil",
+      "crop_name": "green_gram",
+      "category": "pests",
+      "image_count": 0
+    },
+    {
+      "class_name": "Green_Gram_Termite",
+      "crop_name": "green_gram",
+      "category": "pests",
+      "image_count": 0
+    },
+    {
+      "class_name": "Green_Gram_Whitefly",
+      "crop_name": "green_gram",
+      "category": "pests",
+      "image_count": 0
+    },
+    {
+      "class_name": "Green_Gram_Yellow_Mite",
+      "crop_name": "green_gram",
+      "category": "pests",
+      "image_count": 0
+    },
+    {
+      "class_name": "Green_Gram_Yellow_Mosaic",
+      "crop_name": "green_gram",
+      "category": "diseases",
+      "image_count": 0
+    },
+    {
+      "class_name": "Healthy",
+      "crop_name": "wheat",
+      "category": "healthy",
+      "image_count": 0
+    },
+    {
+      "class_name": "Pearl_Millet_Aphids",
+      "crop_name": "Pearl_Millet _Bajra",
+      "category": "pests",
+      "image_count": 0
+    },
+    {
+      "class_name": "Pearl_Millet_Armyworm",
+      "crop_name": "Pearl_Millet _Bajra",
+      "category": "pests",
+      "image_count": 0
+    },
+    {
+      "class_name": "Pearl_Millet_Blast",
+      "crop_name": "Pearl_Millet _Bajra",
+      "category": "diseases",
+      "image_count": 0
+    },
+    {
+      "class_name": "Pearl_Millet_Cutworm",
+      "crop_name": "Pearl_Millet _Bajra",
+      "category": "pests",
+      "image_count": 0
+    },
+    {
+      "class_name": "Pearl_Millet_Grasshopper",
+      "crop_name": "Pearl_Millet _Bajra",
+      "category": "pests",
+      "image_count": 0
+    },
+    {
+      "class_name": "Pearl_Millet_Grub",
+      "crop_name": "Pearl_Millet _Bajra",
+      "category": "pests",
+      "image_count": 0
+    },
+    {
+      "class_name": "Pearl_Millet_Locust",
+      "crop_name": "Pearl_Millet _Bajra",
+      "category": "pests",
+      "image_count": 0
+    },
+    {
+      "class_name": "Pearl_Millet_Mites",
+      "crop_name": "Pearl_Millet _Bajra",
+      "category": "pests",
+      "image_count": 0
+    },
+    {
+      "class_name": "Pearl_Millet_Red_Spider_Mite",
+      "crop_name": "Pearl_Millet _Bajra",
+      "category": "pests",
+      "image_count": 0
+    },
+    {
+      "class_name": "Pearl_Millet_Rust",
+      "crop_name": "Pearl_Millet _Bajra",
+      "category": "diseases",
+      "image_count": 0
+    },
+    {
+      "class_name": "Pearl_Millet_Stem_Borer",
+      "crop_name": "Pearl_Millet _Bajra",
+      "category": "pests",
+      "image_count": 0
+    },
+    {
+      "class_name": "Pearl_Millet_Termite",
+      "crop_name": "Pearl_Millet _Bajra",
+      "category": "pests",
+      "image_count": 0
+    },
+    {
+      "class_name": "Pearl_Millet_Thrips",
+      "crop_name": "Pearl_Millet _Bajra",
+      "category": "pests",
+      "image_count": 0
+    },
+    {
+      "class_name": "Pearl_Millet_Whitefly",
+      "crop_name": "Pearl_Millet _Bajra",
+      "category": "pests",
+      "image_count": 0
+    },
+    {
+      "class_name": "Pearl_Millet_Wireworm",
+      "crop_name": "Pearl_Millet _Bajra",
+      "category": "pests",
+      "image_count": 0
+    },
+    {
+      "class_name": "Pearl_Millet_Yellow_Cutworm",
+      "crop_name": "Pearl_Millet _Bajra",
+      "category": "pests",
+      "image_count": 0
+    },
+    {
+      "class_name": "Tomato_Aphids",
+      "crop_name": "Tomato",
+      "category": "pests",
+      "image_count": 0
+    },
+    {
+      "class_name": "Tomato_Army_Worm",
+      "crop_name": "Tomato",
+      "category": "pests",
+      "image_count": 0
+    },
+    {
+      "class_name": "Tomato_Bacterial_Spot",
+      "crop_name": "Tomato",
+      "category": "diseases",
+      "image_count": 0
+    },
+    {
+      "class_name": "Tomato_Cutworm",
+      "crop_name": "Tomato",
+      "category": "pests",
+      "image_count": 0
+    },
+    {
+      "class_name": "Tomato_Early_Blight",
+      "crop_name": "Tomato",
+      "category": "diseases",
+      "image_count": 0
+    },
+    {
+      "class_name": "Tomato_Fall_Armyworm",
+      "crop_name": "Tomato",
+      "category": "pests",
+      "image_count": 0
+    },
+    {
+      "class_name": "Tomato_Grasshopper",
+      "crop_name": "Tomato",
+      "category": "pests",
+      "image_count": 0
+    },
+    {
+      "class_name": "Tomato_Late_Blight",
+      "crop_name": "Tomato",
+      "category": "diseases",
+      "image_count": 0
+    },
+    {
+      "class_name": "Tomato_Leaf_Mold",
+      "crop_name": "Tomato",
+      "category": "diseases",
+      "image_count": 0
+    },
+    {
+      "class_name": "Tomato_Mealybug",
+      "crop_name": "Tomato",
+      "category": "pests",
+      "image_count": 0
+    },
+    {
+      "class_name": "Tomato_Red_Spider",
+      "crop_name": "Tomato",
+      "category": "pests",
+      "image_count": 0
+    },
+    {
+      "class_name": "Tomato_Septoria_Leaf_Spot",
+      "crop_name": "Tomato",
+      "category": "diseases",
+      "image_count": 0
+    },
+    {
+      "class_name": "Tomato_Spider_Mites_Two_Spotted",
+      "crop_name": "Tomato",
+      "category": "pests",
+      "image_count": 0
+    },
+    {
+      "class_name": "Tomato_Target_Spot",
+      "crop_name": "Tomato",
+      "category": "diseases",
+      "image_count": 0
+    },
+    {
+      "class_name": "Tomato_Termite",
+      "crop_name": "Tomato",
+      "category": "pests",
+      "image_count": 0
+    },
+    {
+      "class_name": "Tomato_Thrips",
+      "crop_name": "Tomato",
+      "category": "pests",
+      "image_count": 0
+    },
+    {
+      "class_name": "Tomato_Tomato_Mosaic_Virus",
+      "crop_name": "Tomato",
+      "category": "diseases",
+      "image_count": 0
+    },
+    {
+      "class_name": "Tomato_Tomato_Yellow_Leaf_Curl_Virus",
+      "crop_name": "Tomato",
+      "category": "diseases",
+      "image_count": 0
+    },
+    {
+      "class_name": "Tomato_Whitefly",
+      "crop_name": "Tomato",
+      "category": "pests",
+      "image_count": 0
+    },
+    {
+      "class_name": "Tomato_Wireworm",
+      "crop_name": "Tomato",
+      "category": "pests",
+      "image_count": 0
+    },
+    {
+      "class_name": "Tomato_healthy",
+      "crop_name": "Tomato",
+      "category": "healthy",
+      "image_count": 0
+    },
+    {
+      "class_name": "corn_maize_healthy",
+      "crop_name": "corn_maize",
+      "category": "healthy",
+      "image_count": 0
+    },
+    {
+      "class_name": "healthy",
+      "crop_name": "Pearl_Millet _Bajra",
+      "category": "healthy",
+      "image_count": 0
+    },
+    {
+      "class_name": "wheat_septoria",
+      "crop_name": "wheat",
+      "category": "diseases",
+      "image_count": 0
+    },
+    {
+      "class_name": "wheat_stripe_rust",
+      "crop_name": "wheat",
+      "category": "diseases",
+      "image_count": 0
+    }
+  ]
+}

@@ -50,10 +50,21 @@ const DiseaseRecommendationSchema = new mongoose_1.Schema({
     recommendedActions: { type: String },
     confidenceScore: { type: Number },
     imageUrl: { type: String },
-    source: { type: String, enum: ['cache', 'knowledge_base', 'ai'], default: 'ai' },
+    source: { type: String, enum: ['cache', 'knowledge_base', 'ai', 'yolo'], default: 'ai' },
+    predictionSource: { type: String, default: 'YOLOv8 Classification Model' },
+    yoloTop5: [
+        {
+            rank: { type: Number },
+            class_name: { type: String },
+            confidence: { type: Number },
+            category: { type: String },
+        },
+    ],
     similarityScore: { type: Number },
     knowledgeBaseId: { type: String },
     feedback: { type: String, enum: ['helpful', 'not_helpful', null], default: null },
+    comment: { type: String },
+    correctDisease: { type: String },
     translations: { type: Map, of: mongoose_1.Schema.Types.Mixed, default: {} },
 }, { timestamps: true });
 DiseaseRecommendationSchema.index({ cropName: 1, diseaseName: 1 });

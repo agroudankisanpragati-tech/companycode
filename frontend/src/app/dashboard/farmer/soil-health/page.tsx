@@ -6,6 +6,7 @@ import Link from 'next/link';
 import FarmerSidebar from '@/components/FarmerSidebar';
 import FarmerFooter from '@/components/FarmerFooter';
 import { useAuth } from '@/context/AuthContext';
+import { usePageContext } from '@/hooks/usePageContext';
 import {
   uploadSoilReport,
   getSoilHistory,
@@ -434,6 +435,20 @@ export default function SoilHealthPage() {
   const [report, setReport] = useState<SoilReport | null>(null);
   const [history, setHistory] = useState<SoilHistoryItem[]>([]);
   const [historyLoading, setHistoryLoading] = useState(false);
+
+  // Register live soil report with Root AI
+  usePageContext({
+    pageContext: 'soil',
+    soilData: report ? {
+      healthScore: report.soilHealthScore,
+      healthStatus: report.soilHealthStatus,
+      nitrogen: report.nitrogen != null ? String(report.nitrogen) : undefined,
+      phosphorus: report.phosphorus != null ? String(report.phosphorus) : undefined,
+      potassium: report.potassium != null ? String(report.potassium) : undefined,
+      ph: report.pH,
+      recommendations: report.aiAnalysis,
+    } : undefined,
+  });
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 

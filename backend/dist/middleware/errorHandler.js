@@ -2,6 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.bilingualErrorHandler = bilingualErrorHandler;
 exports.requestTimeout = requestTimeout;
+const logger_1 = require("../utils/logger");
+const log = (0, logger_1.createLogger)('errorHandler');
 const BILINGUAL_ERRORS = {
     400: { en: 'Bad request. Please check your input.', hi: 'अनुरोध अमान्य है। कृपया अपना इनपुट जाँचें।' },
     401: { en: 'Unauthorized. Please login.', hi: 'अनधिकृत। कृपया लॉगिन करें।' },
@@ -24,10 +26,14 @@ const NAMED_ERRORS = {
     MulterError: { status: 413, en: 'File upload failed. Max size is 10MB.', hi: 'फ़ाइल अपलोड विफल। अधिकतम आकार 10MB है।' },
 };
 function bilingualErrorHandler(err, req, res, _next) {
-    console.error(`[Error] ${req.method} ${req.path}:`, err.message || err);
+    log.error(`${req.method} ${req.path}`, { error: err.message || String(err), status: err.status });
+    // Never send a response if headers already sent
+    if (res.headersSent)
+        return;
     // Multer file size error
     if (err.code === 'LIMIT_FILE_SIZE') {
         return res.status(413).json({
+            success: false,
             error: BILINGUAL_ERRORS[413].en,
             hindi: BILINGUAL_ERRORS[413].hi,
         });
@@ -36,6 +42,7 @@ function bilingualErrorHandler(err, req, res, _next) {
     const namedErr = NAMED_ERRORS[err.name];
     if (namedErr) {
         return res.status(namedErr.status).json({
+            success: false,
             error: namedErr.en,
             hindi: namedErr.hi,
         });
@@ -43,6 +50,7 @@ function bilingualErrorHandler(err, req, res, _next) {
     // MongoDB duplicate key
     if (err.code === 11000) {
         return res.status(409).json({
+            success: false,
             error: 'Duplicate entry. This record already exists.',
             hindi: 'डुप्लीकेट प्रविष्टि। यह रिकॉर्ड पहले से मौजूद है।',
         });
@@ -51,6 +59,7 @@ function bilingualErrorHandler(err, req, res, _next) {
     const status = typeof err.status === 'number' ? err.status : 500;
     const bilingual = BILINGUAL_ERRORS[status] || BILINGUAL_ERRORS[500];
     res.status(status).json({
+        success: false,
         error: err.message || bilingual.en,
         hindi: bilingual.hi,
     });

@@ -19,8 +19,8 @@ const getApiUrl = () => `${process.env.OPENAI_BASE_URL || 'https://api.openai.co
 const getHeaders = () => ({
   'Content-Type': 'application/json',
   'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
-  'HTTP-Referer': 'http://localhost:3000',
-  'X-Title': 'Kisan Pragati',
+  'HTTP-Referer': process.env.FRONTEND_URL || 'http://localhost:3000',
+  'X-Title': 'AgroDhan Kisan Pragati',
 });
 
 function buildPrompt(conditions: IFarmerConditions): string {
@@ -95,7 +95,6 @@ export async function callOpenAIForCrops(conditions: IFarmerConditions): Promise
       messages: [{ role: 'user', content: buildPrompt(conditions) }],
       temperature: 0.3,
       max_tokens: 4000,
-      response_format: { type: 'json_object' },
     }),
   });
 
@@ -110,7 +109,12 @@ export async function callOpenAIForCrops(conditions: IFarmerConditions): Promise
   const content = data.choices?.[0]?.message?.content;
   if (!content) throw new Error('Empty response from AI');
 
-  const parsed = JSON.parse(content);
+  // Strip markdown fences and extract JSON robustly
+  const cleaned = content.replace(/^```[a-z]*\n?/i, '').replace(/\n?```$/i, '').trim();
+  const start = cleaned.indexOf('{');
+  const end = cleaned.lastIndexOf('}');
+  if (start === -1 || end === -1) throw new Error('No JSON found in AI response');
+  const parsed = JSON.parse(cleaned.slice(start, end + 1));
   const recommendations: IRecommendationItem[] = (parsed.recommendations || []).map((item: any) => ({
     cropName: item.cropName || '',
     cropNameHindi: item.cropNameHindi || '',

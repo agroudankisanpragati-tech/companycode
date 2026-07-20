@@ -29,6 +29,7 @@ export default function FarmerSidebar({ open, onClose, onProfileClick }: { open?
     { key: 'myCrops',      href: '/dashboard/farmer/my-crops',       icon: FaSeedling },
     { key: 'aiAdvisor',    href: '/crop-recommendation',             icon: FaLeaf },
     { key: 'diseaseScan',  href: '/disease-detection',               icon: FaMicroscope },
+    { key: 'kvk',          href: '/kvk',                             icon: FaMapMarkerAlt },
     { key: 'weather',      href: '/weather',                         icon: FaCloudSun },
     { key: 'marketPrice',  href: '/dashboard/farmer/market',         icon: FaTags },
     { key: 'marketplace',  href: '/marketplace',                     icon: FaShoppingCart },

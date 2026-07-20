@@ -1,0 +1,111 @@
+{
+  "generated_at": "2026-07-15T10:25:43.119268+00:00",
+  "total_raw": 2580,
+  "total_clean": 1380,
+  "duplicates_removed": 1200,
+  "total_train": 976,
+  "total_val": 202,
+  "total_test": 202,
+  "num_intents": 13,
+  "intent_labels": [
+    "crop",
+    "disease",
+    "weather",
+    "market",
+    "government",
+    "soil",
+    "fertilizer",
+    "irrigation",
+    "seed",
+    "machinery",
+    "general",
+    "greeting",
+    "emergency"
+  ],
+  "per_intent": {
+    "crop": {
+      "total": 136,
+      "train": 96,
+      "val": 20,
+      "test": 20
+    },
+    "disease": {
+      "total": 122,
+      "train": 86,
+      "val": 18,
+      "test": 18
+    },
+    "weather": {
+      "total": 98,
+      "train": 70,
+      "val": 14,
+      "test": 14
+    },
+    "market": {
+      "total": 99,
+      "train": 71,
+      "val": 14,
+      "test": 14
+    },
+    "government": {
+      "total": 99,
+      "train": 71,
+      "val": 14,
+      "test": 14
+    },
+    "soil": {
+      "total": 122,
+      "train": 86,
+      "val": 18,
+      "test": 18
+    },
+    "fertilizer": {
+      "total": 104,
+      "train": 74,
+      "val": 15,
+      "test": 15
+    },
+    "irrigation": {
+      "total": 99,
+      "train": 71,
+      "val": 14,
+      "test": 14
+    },
+    "seed": {
+      "total": 101,
+      "train": 71,
+      "val": 15,
+      "test": 15
+    },
+    "machinery": {
+      "total": 100,
+      "train": 70,
+      "val": 15,
+      "test": 15
+    },
+    "general": {
+      "total": 100,
+      "train": 70,
+      "val": 15,
+      "test": 15
+    },
+    "greeting": {
+      "total": 100,
+      "train": 70,
+      "val": 15,
+      "test": 15
+    },
+    "emergency": {
+      "total": 100,
+      "train": 70,
+      "val": 15,
+      "test": 15
+    }
+  },
+  "failed_files": [],
+  "split_ratios": {
+    "train": 0.7,
+    "val": 0.15,
+    "test": 0.15
+  }
+}

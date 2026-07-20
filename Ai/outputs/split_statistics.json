@@ -1,0 +1,802 @@
+{
+  "generated_at": "2026-07-11T03:32:26",
+  "dataset_root": "/kaggle/working/Ai/crop_dataset",
+  "train_ratio": 0.8,
+  "val_ratio": 0.1,
+  "test_ratio": 0.1,
+  "seed": 42,
+  "total_images": 39469,
+  "train_images": 31581,
+  "val_images": 3948,
+  "test_images": 3940,
+  "total_classes": 84,
+  "total_crops": 4,
+  "class_stats": [
+    {
+      "class_name": "Black_Gram_Anomis_Caterpillar",
+      "crop_name": "Black_gram",
+      "category": "pests",
+      "total": 391,
+      "train": 313,
+      "validation": 39,
+      "test": 39
+    },
+    {
+      "class_name": "Black_Gram_Aphids",
+      "crop_name": "Black_gram",
+      "category": "pests",
+      "total": 386,
+      "train": 309,
+      "validation": 39,
+      "test": 38
+    },
+    {
+      "class_name": "Black_Gram_Beet_Armyworm",
+      "crop_name": "Black_gram",
+      "category": "pests",
+      "total": 463,
+      "train": 370,
+      "validation": 46,
+      "test": 47
+    },
+    {
+      "class_name": "Black_Gram_Bihar_Hairy_Caterpillar",
+      "crop_name": "Black_gram",
+      "category": "pests",
+      "total": 430,
+      "train": 344,
+      "validation": 43,
+      "test": 43
+    },
+    {
+      "class_name": "Black_Gram_Cercospora_Leaf_Spot",
+      "crop_name": "Black_gram",
+      "category": "diseases",
+      "total": 598,
+      "train": 478,
+      "validation": 60,
+      "test": 60
+    },
+    {
+      "class_name": "Black_Gram_Field_Cricket",
+      "crop_name": "Black_gram",
+      "category": "pests",
+      "total": 251,
+      "train": 201,
+      "validation": 25,
+      "test": 25
+    },
+    {
+      "class_name": "Black_Gram_Flea_Beetle",
+      "crop_name": "Black_gram",
+      "category": "pests",
+      "total": 316,
+      "train": 253,
+      "validation": 32,
+      "test": 31
+    },
+    {
+      "class_name": "Black_Gram_Fruit_Moth",
+      "crop_name": "Black_gram",
+      "category": "pests",
+      "total": 374,
+      "train": 299,
+      "validation": 37,
+      "test": 38
+    },
+    {
+      "class_name": "Black_Gram_Gall_Fly",
+      "crop_name": "Black_gram",
+      "category": "pests",
+      "total": 490,
+      "train": 392,
+      "validation": 49,
+      "test": 49
+    },
+    {
+      "class_name": "Black_Gram_Hairy_Caterpillar",
+      "crop_name": "Black_gram",
+      "category": "pests",
+      "total": 329,
+      "train": 263,
+      "validation": 33,
+      "test": 33
+    },
+    {
+      "class_name": "Black_Gram_Leaf_Crinkle",
+      "crop_name": "Black_gram",
+      "category": "diseases",
+      "total": 806,
+      "train": 645,
+      "validation": 81,
+      "test": 80
+    },
+    {
+      "class_name": "Black_Gram_Locust",
+      "crop_name": "Black_gram",
+      "category": "pests",
+      "total": 331,
+      "train": 265,
+      "validation": 33,
+      "test": 33
+    },
+    {
+      "class_name": "Black_Gram_Looper",
+      "crop_name": "Black_gram",
+      "category": "pests",
+      "total": 344,
+      "train": 275,
+      "validation": 34,
+      "test": 35
+    },
+    {
+      "class_name": "Black_Gram_Mealybug",
+      "crop_name": "Black_gram",
+      "category": "pests",
+      "total": 356,
+      "train": 285,
+      "validation": 36,
+      "test": 35
+    },
+    {
+      "class_name": "Black_Gram_Microtermes_Termite",
+      "crop_name": "Black_gram",
+      "category": "pests",
+      "total": 331,
+      "train": 265,
+      "validation": 33,
+      "test": 33
+    },
+    {
+      "class_name": "Black_Gram_Spider_Mites",
+      "crop_name": "Black_gram",
+      "category": "pests",
+      "total": 346,
+      "train": 277,
+      "validation": 35,
+      "test": 34
+    },
+    {
+      "class_name": "Black_Gram_Spotted_Bollworm",
+      "crop_name": "Black_gram",
+      "category": "pests",
+      "total": 405,
+      "train": 324,
+      "validation": 40,
+      "test": 41
+    },
+    {
+      "class_name": "Black_Gram_Stem_Borer",
+      "crop_name": "Black_gram",
+      "category": "pests",
+      "total": 301,
+      "train": 241,
+      "validation": 30,
+      "test": 30
+    },
+    {
+      "class_name": "Black_Gram_Stem_Weevil",
+      "crop_name": "Black_gram",
+      "category": "pests",
+      "total": 360,
+      "train": 288,
+      "validation": 36,
+      "test": 36
+    },
+    {
+      "class_name": "Black_Gram_Termite",
+      "crop_name": "Black_gram",
+      "category": "pests",
+      "total": 361,
+      "train": 289,
+      "validation": 36,
+      "test": 36
+    },
+    {
+      "class_name": "Black_Gram_Yellow_Mosaic",
+      "crop_name": "Black_gram",
+      "category": "diseases",
+      "total": 1681,
+      "train": 1345,
+      "validation": 168,
+      "test": 168
+    },
+    {
+      "class_name": "Black_Gram_healthy",
+      "crop_name": "Black_gram",
+      "category": "healthy",
+      "total": 580,
+      "train": 464,
+      "validation": 58,
+      "test": 58
+    },
+    {
+      "class_name": "Black_Gram_whiteflies",
+      "crop_name": "Black_gram",
+      "category": "pests",
+      "total": 19,
+      "train": 15,
+      "validation": 2,
+      "test": 2
+    },
+    {
+      "class_name": "Black_Gram_yellow_mite",
+      "crop_name": "Black_gram",
+      "category": "pests",
+      "total": 250,
+      "train": 200,
+      "validation": 25,
+      "test": 25
+    },
+    {
+      "class_name": "Tomato_Aphids",
+      "crop_name": "Tomato",
+      "category": "pests",
+      "total": 2456,
+      "train": 1965,
+      "validation": 246,
+      "test": 245
+    },
+    {
+      "class_name": "Tomato_Army_Worm",
+      "crop_name": "Tomato",
+      "category": "pests",
+      "total": 642,
+      "train": 514,
+      "validation": 64,
+      "test": 64
+    },
+    {
+      "class_name": "Tomato_Bacterial_Spot",
+      "crop_name": "Tomato",
+      "category": "diseases",
+      "total": 297,
+      "train": 238,
+      "validation": 30,
+      "test": 29
+    },
+    {
+      "class_name": "Tomato_Cutworm",
+      "crop_name": "Tomato",
+      "category": "pests",
+      "total": 149,
+      "train": 119,
+      "validation": 15,
+      "test": 15
+    },
+    {
+      "class_name": "Tomato_Early_Blight",
+      "crop_name": "Tomato",
+      "category": "diseases",
+      "total": 147,
+      "train": 118,
+      "validation": 15,
+      "test": 14
+    },
+    {
+      "class_name": "Tomato_Fall_Armyworm",
+      "crop_name": "Tomato",
+      "category": "pests",
+      "total": 134,
+      "train": 107,
+      "validation": 13,
+      "test": 14
+    },
+    {
+      "class_name": "Tomato_Grasshopper",
+      "crop_name": "Tomato",
+      "category": "pests",
+      "total": 309,
+      "train": 247,
+      "validation": 31,
+      "test": 31
+    },
+    {
+      "class_name": "Tomato_Late_Blight",
+      "crop_name": "Tomato",
+      "category": "diseases",
+      "total": 291,
+      "train": 233,
+      "validation": 29,
+      "test": 29
+    },
+    {
+      "class_name": "Tomato_Leaf_Mold",
+      "crop_name": "Tomato",
+      "category": "diseases",
+      "total": 146,
+      "train": 117,
+      "validation": 15,
+      "test": 14
+    },
+    {
+      "class_name": "Tomato_Mealybug",
+      "crop_name": "Tomato",
+      "category": "pests",
+      "total": 356,
+      "train": 285,
+      "validation": 36,
+      "test": 35
+    },
+    {
+      "class_name": "Tomato_Red_Spider",
+      "crop_name": "Tomato",
+      "category": "pests",
+      "total": 317,
+      "train": 254,
+      "validation": 32,
+      "test": 31
+    },
+    {
+      "class_name": "Tomato_Septoria_Leaf_Spot",
+      "crop_name": "Tomato",
+      "category": "diseases",
+      "total": 275,
+      "train": 220,
+      "validation": 28,
+      "test": 27
+    },
+    {
+      "class_name": "Tomato_Spider_Mites_Two_Spotted",
+      "crop_name": "Tomato",
+      "category": "pests",
+      "total": 300,
+      "train": 240,
+      "validation": 30,
+      "test": 30
+    },
+    {
+      "class_name": "Tomato_Target_Spot",
+      "crop_name": "Tomato",
+      "category": "diseases",
+      "total": 211,
+      "train": 169,
+      "validation": 21,
+      "test": 21
+    },
+    {
+      "class_name": "Tomato_Termite",
+      "crop_name": "Tomato",
+      "category": "pests",
+      "total": 331,
+      "train": 265,
+      "validation": 33,
+      "test": 33
+    },
+    {
+      "class_name": "Tomato_Thrips",
+      "crop_name": "Tomato",
+      "category": "pests",
+      "total": 527,
+      "train": 422,
+      "validation": 53,
+      "test": 52
+    },
+    {
+      "class_name": "Tomato_Tomato_Mosaic_Virus",
+      "crop_name": "Tomato",
+      "category": "diseases",
+      "total": 897,
+      "train": 718,
+      "validation": 90,
+      "test": 89
+    },
+    {
+      "class_name": "Tomato_Tomato_Yellow_Leaf_Curl_Virus",
+      "crop_name": "Tomato",
+      "category": "diseases",
+      "total": 65,
+      "train": 52,
+      "validation": 6,
+      "test": 7
+    },
+    {
+      "class_name": "Tomato_Whitefly",
+      "crop_name": "Tomato",
+      "category": "pests",
+      "total": 1081,
+      "train": 865,
+      "validation": 108,
+      "test": 108
+    },
+    {
+      "class_name": "Tomato_Wireworm",
+      "crop_name": "Tomato",
+      "category": "pests",
+      "total": 532,
+      "train": 426,
+      "validation": 53,
+      "test": 53
+    },
+    {
+      "class_name": "Tomato_healthy",
+      "crop_name": "Tomato",
+      "category": "healthy",
+      "total": 560,
+      "train": 448,
+      "validation": 56,
+      "test": 56
+    },
+    {
+      "class_name": "Corn_Maize_Aphids",
+      "crop_name": "corn_maize",
+      "category": "pests",
+      "total": 2456,
+      "train": 1965,
+      "validation": 246,
+      "test": 245
+    },
+    {
+      "class_name": "Corn_Maize_Cercospora_Leaf_Spot_Gray_Leaf_Spot",
+      "crop_name": "corn_maize",
+      "category": "diseases",
+      "total": 187,
+      "train": 150,
+      "validation": 19,
+      "test": 18
+    },
+    {
+      "class_name": "Corn_Maize_Common_Rust",
+      "crop_name": "corn_maize",
+      "category": "diseases",
+      "total": 432,
+      "train": 346,
+      "validation": 43,
+      "test": 43
+    },
+    {
+      "class_name": "Corn_Maize_Corn_Borer",
+      "crop_name": "corn_maize",
+      "category": "pests",
+      "total": 1018,
+      "train": 814,
+      "validation": 102,
+      "test": 102
+    },
+    {
+      "class_name": "Corn_Maize_Corn_Earworm",
+      "crop_name": "corn_maize",
+      "category": "pests",
+      "total": 125,
+      "train": 100,
+      "validation": 12,
+      "test": 13
+    },
+    {
+      "class_name": "Corn_Maize_Cutworm",
+      "crop_name": "corn_maize",
+      "category": "pests",
+      "total": 149,
+      "train": 119,
+      "validation": 15,
+      "test": 15
+    },
+    {
+      "class_name": "Corn_Maize_Fall_Armyworm",
+      "crop_name": "corn_maize",
+      "category": "pests",
+      "total": 134,
+      "train": 107,
+      "validation": 13,
+      "test": 14
+    },
+    {
+      "class_name": "Corn_Maize_Grasshopper",
+      "crop_name": "corn_maize",
+      "category": "pests",
+      "total": 309,
+      "train": 247,
+      "validation": 31,
+      "test": 31
+    },
+    {
+      "class_name": "Corn_Maize_Large_Cutworm",
+      "crop_name": "corn_maize",
+      "category": "pests",
+      "total": 294,
+      "train": 235,
+      "validation": 29,
+      "test": 30
+    },
+    {
+      "class_name": "Corn_Maize_Northern_Leaf_Blight",
+      "crop_name": "corn_maize",
+      "category": "diseases",
+      "total": 354,
+      "train": 283,
+      "validation": 35,
+      "test": 36
+    },
+    {
+      "class_name": "Corn_Maize_Stem_Borer",
+      "crop_name": "corn_maize",
+      "category": "pests",
+      "total": 474,
+      "train": 379,
+      "validation": 47,
+      "test": 48
+    },
+    {
+      "class_name": "Corn_Maize_Termite",
+      "crop_name": "corn_maize",
+      "category": "pests",
+      "total": 331,
+      "train": 265,
+      "validation": 33,
+      "test": 33
+    },
+    {
+      "class_name": "Corn_Maize_Thrips",
+      "crop_name": "corn_maize",
+      "category": "pests",
+      "total": 527,
+      "train": 422,
+      "validation": 53,
+      "test": 52
+    },
+    {
+      "class_name": "Corn_Maize_Whitefly",
+      "crop_name": "corn_maize",
+      "category": "pests",
+      "total": 1081,
+      "train": 865,
+      "validation": 108,
+      "test": 108
+    },
+    {
+      "class_name": "Corn_Maize_Wireworm",
+      "crop_name": "corn_maize",
+      "category": "pests",
+      "total": 532,
+      "train": 426,
+      "validation": 53,
+      "test": 53
+    },
+    {
+      "class_name": "Corn_Maize_Yellow_Cutworm",
+      "crop_name": "corn_maize",
+      "category": "pests",
+      "total": 287,
+      "train": 230,
+      "validation": 29,
+      "test": 28
+    },
+    {
+      "class_name": "corn_maize_healthy",
+      "crop_name": "corn_maize",
+      "category": "healthy",
+      "total": 433,
+      "train": 346,
+      "validation": 43,
+      "test": 44
+    },
+    {
+      "class_name": "Green_Gram_Anomis_Caterpillar",
+      "crop_name": "green_gram",
+      "category": "pests",
+      "total": 391,
+      "train": 313,
+      "validation": 39,
+      "test": 39
+    },
+    {
+      "class_name": "Green_Gram_Aphids",
+      "crop_name": "green_gram",
+      "category": "pests",
+      "total": 386,
+      "train": 309,
+      "validation": 39,
+      "test": 38
+    },
+    {
+      "class_name": "Green_Gram_Beet_Armyworm",
+      "crop_name": "green_gram",
+      "category": "pests",
+      "total": 463,
+      "train": 370,
+      "validation": 46,
+      "test": 47
+    },
+    {
+      "class_name": "Green_Gram_Bihar_Hairy_Caterpillar",
+      "crop_name": "green_gram",
+      "category": "pests",
+      "total": 430,
+      "train": 344,
+      "validation": 43,
+      "test": 43
+    },
+    {
+      "class_name": "Green_Gram_Cercospora_Leaf_Spot",
+      "crop_name": "green_gram",
+      "category": "diseases",
+      "total": 598,
+      "train": 478,
+      "validation": 60,
+      "test": 60
+    },
+    {
+      "class_name": "Green_Gram_Field_Cricket",
+      "crop_name": "green_gram",
+      "category": "pests",
+      "total": 251,
+      "train": 201,
+      "validation": 25,
+      "test": 25
+    },
+    {
+      "class_name": "Green_Gram_Flea_Beetle",
+      "crop_name": "green_gram",
+      "category": "pests",
+      "total": 316,
+      "train": 253,
+      "validation": 32,
+      "test": 31
+    },
+    {
+      "class_name": "Green_Gram_Fruit_Moth",
+      "crop_name": "green_gram",
+      "category": "pests",
+      "total": 374,
+      "train": 299,
+      "validation": 37,
+      "test": 38
+    },
+    {
+      "class_name": "Green_Gram_Gall_Fly",
+      "crop_name": "green_gram",
+      "category": "pests",
+      "total": 490,
+      "train": 392,
+      "validation": 49,
+      "test": 49
+    },
+    {
+      "class_name": "Green_Gram_Hairy_Caterpillar",
+      "crop_name": "green_gram",
+      "category": "pests",
+      "total": 329,
+      "train": 263,
+      "validation": 33,
+      "test": 33
+    },
+    {
+      "class_name": "Green_Gram_Healthy",
+      "crop_name": "green_gram",
+      "category": "healthy",
+      "total": 580,
+      "train": 464,
+      "validation": 58,
+      "test": 58
+    },
+    {
+      "class_name": "Green_Gram_Leaf_Crinkle",
+      "crop_name": "green_gram",
+      "category": "diseases",
+      "total": 806,
+      "train": 645,
+      "validation": 81,
+      "test": 80
+    },
+    {
+      "class_name": "Green_Gram_Locust",
+      "crop_name": "green_gram",
+      "category": "pests",
+      "total": 331,
+      "train": 265,
+      "validation": 33,
+      "test": 33
+    },
+    {
+      "class_name": "Green_Gram_Mealybug",
+      "crop_name": "green_gram",
+      "category": "pests",
+      "total": 356,
+      "train": 285,
+      "validation": 36,
+      "test": 35
+    },
+    {
+      "class_name": "Green_Gram_Spider_Mites",
+      "crop_name": "green_gram",
+      "category": "pests",
+      "total": 346,
+      "train": 277,
+      "validation": 35,
+      "test": 34
+    },
+    {
+      "class_name": "Green_Gram_Spotted_Bollworm",
+      "crop_name": "green_gram",
+      "category": "pests",
+      "total": 405,
+      "train": 324,
+      "validation": 40,
+      "test": 41
+    },
+    {
+      "class_name": "Green_Gram_Stem_Borer",
+      "crop_name": "green_gram",
+      "category": "pests",
+      "total": 301,
+      "train": 241,
+      "validation": 30,
+      "test": 30
+    },
+    {
+      "class_name": "Green_Gram_Stem_Weevil",
+      "crop_name": "green_gram",
+      "category": "pests",
+      "total": 360,
+      "train": 288,
+      "validation": 36,
+      "test": 36
+    },
+    {
+      "class_name": "Green_Gram_Termite",
+      "crop_name": "green_gram",
+      "category": "pests",
+      "total": 361,
+      "train": 289,
+      "validation": 36,
+      "test": 36
+    },
+    {
+      "class_name": "Green_Gram_Whitefly",
+      "crop_name": "green_gram",
+      "category": "pests",
+      "total": 19,
+      "train": 15,
+      "validation": 2,
+      "test": 2
+    },
+    {
+      "class_name": "Green_Gram_Yellow_Mite",
+      "crop_name": "green_gram",
+      "category": "pests",
+      "total": 250,
+      "train": 200,
+      "validation": 25,
+      "test": 25
+    },
+    {
+      "class_name": "Green_Gram_Yellow_Mosaic",
+      "crop_name": "green_gram",
+      "category": "diseases",
+      "total": 1681,
+      "train": 1345,
+      "validation": 168,
+      "test": 168
+    }
+  ],
+  "crop_stats": [
+    {
+      "crop_name": "Black_gram",
+      "total": 10499,
+      "train": 8400,
+      "validation": 1050,
+      "test": 1049
+    },
+    {
+      "crop_name": "Tomato",
+      "total": 10023,
+      "train": 8022,
+      "validation": 1004,
+      "test": 997
+    },
+    {
+      "crop_name": "corn_maize",
+      "total": 9123,
+      "train": 7299,
+      "validation": 911,
+      "test": 913
+    },
+    {
+      "crop_name": "green_gram",
+      "total": 9824,
+      "train": 7860,
+      "validation": 983,
+      "test": 981
+    }
+  ]
+}

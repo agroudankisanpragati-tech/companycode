@@ -1,0 +1,6902 @@
+[
+  {
+    "text": "सर्दी में कोहरा कब तक रहेगा",
+    "intent": "weather",
+    "source": "weather.csv"
+  },
+  {
+    "text": "सीड ड्रिल मशीन से बुवाई कैसे करें",
+    "intent": "machinery",
+    "source": "machinery.csv"
+  },
+  {
+    "text": "टमाटर के पत्ते पीले पड़ रहे हैं, कोई दवाई बताओ",
+    "intent": "disease",
+    "source": "disease.json"
+  },
+  {
+    "text": "animal attack emergency meri fasal bachao",
+    "intent": "emergency",
+    "source": "emergency.csv"
+  },
+  {
+    "text": "प्याज में सिंचाई का सही समय बताओ",
+    "intent": "irrigation",
+    "source": "irrigation.csv"
+  },
+  {
+    "text": "म्हारी उड़द री फसल में पत्ती मोड़क रोग लाग री है",
+    "intent": "disease",
+    "source": "disease.csv"
+  },
+  {
+    "text": "seed storage ka sahi tarika kya hai",
+    "intent": "seed",
+    "source": "seed.csv"
+  },
+  {
+    "text": "मेरे खेत की मिट्टी में नमक ज्यादा है, कौन सी फसल उगाऊं?",
+    "intent": "crop",
+    "source": "crop.json"
+  },
+  {
+    "text": "मूंगफली की जड़ें सड़ रही हैं कौन सी दवाई डालूं?",
+    "intent": "disease",
+    "source": "disease.csv"
+  },
+  {
+    "text": "किसान क्रेडिट कार्ड की लिमिट कितनी होती है",
+    "intent": "government",
+    "source": "government.csv"
+  },
+  {
+    "text": "खम्मा घणी जी प्रणाम",
+    "intent": "greeting",
+    "source": "greeting.csv"
+  },
+  {
+    "text": "बीज को नमी से कैसे बचाएं",
+    "intent": "seed",
+    "source": "seed.csv"
+  },
+  {
+    "text": "बाजरे की बुवाई के लिए बीज दर क्या है",
+    "intent": "seed",
+    "source": "seed.csv"
+  },
+  {
+    "text": "मेरे बैंगन के पत्तों पर भूरे धब्बे हैं",
+    "intent": "disease",
+    "source": "disease.csv"
+  },
+  {
+    "text": "मेरी फसल में वर्मीकम्पोस्ट कब और कितना डालें?",
+    "intent": "fertilizer",
+    "source": "fertilizer.csv"
+  },
+  {
+    "text": "rotavator aur cultivator mein kya difference hai",
+    "intent": "machinery",
+    "source": "machinery.csv"
+  },
+  {
+    "text": "guar ka aaj ka rate kya hai",
+    "intent": "market",
+    "source": "market.csv"
+  },
+  {
+    "text": "भाई म्हारे खेत में कौन सी फसल बोवां जो रबी में अच्छी हो?",
+    "intent": "crop",
+    "source": "crop.csv"
+  },
+  {
+    "text": "मेरे खेत की मिट्टी बलुई है, कौन सी फसल अच्छी रहेगी?",
+    "intent": "crop",
+    "source": "crop.json"
+  },
+  {
+    "text": "jai shri ram bhai sarson ki baat karni thi",
+    "intent": "greeting",
+    "source": "greeting.csv"
+  },
+  {
+    "text": "मेरे खेत में मिट्टी की जांच रिपोर्ट में ec ज्यादा है",
+    "intent": "soil",
+    "source": "soil.csv"
+  },
+  {
+    "text": "gehu ka bhav is hafte kitna badha",
+    "intent": "market",
+    "source": "market.csv"
+  },
+  {
+    "text": "आज जोधपुर मंडी में सरसों का भाव",
+    "intent": "market",
+    "source": "market.csv"
+  },
+  {
+    "text": "प्रोफाइल फोटो कैसे लगाएं",
+    "intent": "general",
+    "source": "general.csv"
+  },
+  {
+    "text": "मेरे खेत में npk 12-32-16 कब डालें?",
+    "intent": "fertilizer",
+    "source": "fertilizer.csv"
+  },
+  {
+    "text": "tiddi dal ne mera poora khet kha liya",
+    "intent": "emergency",
+    "source": "emergency.csv"
+  },
+  {
+    "text": "my entire wheat crop is dying please help",
+    "intent": "emergency",
+    "source": "emergency.csv"
+  },
+  {
+    "text": "आप कौन हैं",
+    "intent": "general",
+    "source": "general.csv"
+  },
+  {
+    "text": "otp nahi aa raha hai kya karein",
+    "intent": "general",
+    "source": "general.csv"
+  },
+  {
+    "text": "बीज उपचार के लिए इमिडाक्लोप्रिड कैसे उपयोग करें",
+    "intent": "seed",
+    "source": "seed.csv"
+  },
+  {
+    "text": "aaj kitni thand hai bahar",
+    "intent": "weather",
+    "source": "weather.csv"
+  },
+  {
+    "text": "kya aaj fungicide spray kar sakte hain",
+    "intent": "weather",
+    "source": "weather.csv"
+  },
+  {
+    "text": "soil colour se kya pata chalta hai?",
+    "intent": "soil",
+    "source": "soil.csv"
+  },
+  {
+    "text": "प्याज का बीज कब बोना चाहिए",
+    "intent": "seed",
+    "source": "seed.csv"
+  },
+  {
+    "text": "bajra mandi rate today rajasthan",
+    "intent": "market",
+    "source": "market.csv"
+  },
+  {
+    "text": "best cash crop for rajasthan farmers?",
+    "intent": "crop",
+    "source": "crop.csv"
+  },
+  {
+    "text": "मेरे खेत में नाइट्रोजन की कमी है पत्ते पीले हो रहे हैं",
+    "intent": "soil",
+    "source": "soil.csv"
+  },
+  {
+    "text": "soil sample kaise collect karein testing ke liye?",
+    "intent": "soil",
+    "source": "soil.csv"
+  },
+  {
+    "text": "मेरे खेत में पिछले साल ज्वार था, अब क्या बोऊं?",
+    "intent": "crop",
+    "source": "crop.json"
+  },
+  {
+    "text": "which crop is best for black cotton soil?",
+    "intent": "crop",
+    "source": "crop.csv"
+  },
+  {
+    "text": "bolkar sawaal poochne ka tarika kya hai",
+    "intent": "general",
+    "source": "general.csv"
+  },
+  {
+    "text": "रात को सिंचाई करना सही है क्या",
+    "intent": "irrigation",
+    "source": "irrigation.csv"
+  },
+  {
+    "text": "zinc sulphate ka dose per acre kya hai?",
+    "intent": "fertilizer",
+    "source": "fertilizer.csv"
+  },
+  {
+    "text": "kota mandi mein aaj soybean ka rate kya hai",
+    "intent": "market",
+    "source": "market.csv"
+  },
+  {
+    "text": "rain forecast for next 3 days in rajasthan",
+    "intent": "weather",
+    "source": "weather.csv"
+  },
+  {
+    "text": "gps लोकेशन कैसे ऑन करें",
+    "intent": "general",
+    "source": "general.csv"
+  },
+  {
+    "text": "मेरी गाजर की फसल में पत्ती धब्बा रोग है",
+    "intent": "disease",
+    "source": "disease.csv"
+  },
+  {
+    "text": "paani ki kami se fasal ka rang peela kyun ho jata hai",
+    "intent": "irrigation",
+    "source": "irrigation.csv"
+  },
+  {
+    "text": "मेरे गांव में सॉइल हेल्थ कार्ड कैंप कब लगेगा",
+    "intent": "government",
+    "source": "government.csv"
+  },
+  {
+    "text": "pest infestation bahut bada hai poori fasal khatam ho rahi hai",
+    "intent": "emergency",
+    "source": "emergency.csv"
+  },
+  {
+    "text": "बीज पर सरकारी सब्सिडी मिलती है क्या",
+    "intent": "seed",
+    "source": "seed.csv"
+  },
+  {
+    "text": "seed subsidy ke liye kahan apply karein",
+    "intent": "government",
+    "source": "government.csv"
+  },
+  {
+    "text": "seed kharidne ke liye kahan jaana chahiye",
+    "intent": "seed",
+    "source": "seed.csv"
+  },
+  {
+    "text": "मेरी अरहर में फाइटोफ्थोरा ब्लाइट है",
+    "intent": "disease",
+    "source": "disease.csv"
+  },
+  {
+    "text": "कृषि यंत्र पर 50 प्रतिशत सब्सिडी मिलती है क्या",
+    "intent": "machinery",
+    "source": "machinery.csv"
+  },
+  {
+    "text": "namaste bhai gehu ki variety batao",
+    "intent": "greeting",
+    "source": "greeting.csv"
+  },
+  {
+    "text": "सरकारी बीज पर सब्सिडी कैसे मिलती है",
+    "intent": "government",
+    "source": "government.csv"
+  },
+  {
+    "text": "प्रणाम जी",
+    "intent": "greeting",
+    "source": "greeting.csv"
+  },
+  {
+    "text": "बाजरे में माहू कीड़ा लग गया है, उपाय बताओ",
+    "intent": "disease",
+    "source": "disease.json"
+  },
+  {
+    "text": "मेरी फसल में पोटाश की कमी है कितना डालूं?",
+    "intent": "fertilizer",
+    "source": "fertilizer.csv"
+  },
+  {
+    "text": "certified seed aur normal seed mein kya difference hai",
+    "intent": "seed",
+    "source": "seed.csv"
+  },
+  {
+    "text": "भाई म्हारे खेत में कौन सी फसल बोवां जो जैविक खेती में अच्छी हो?",
+    "intent": "crop",
+    "source": "crop.csv"
+  },
+  {
+    "text": "sos meri fasal mar rahi hai",
+    "intent": "emergency",
+    "source": "emergency.csv"
+  },
+  {
+    "text": "push notification kaise on karein",
+    "intent": "general",
+    "source": "general.csv"
+  },
+  {
+    "text": "how to check if crop needs water or not",
+    "intent": "irrigation",
+    "source": "irrigation.csv"
+  },
+  {
+    "text": "नहर से खेत तक पानी कैसे लाएं",
+    "intent": "irrigation",
+    "source": "irrigation.csv"
+  },
+  {
+    "text": "bajra ki kheti kab karni chahiye?",
+    "intent": "crop",
+    "source": "crop.csv"
+  },
+  {
+    "text": "मेरे खेत में पिछले साल मसूर था, अब क्या बोऊं?",
+    "intent": "crop",
+    "source": "crop.json"
+  },
+  {
+    "text": "खम्मा घणी सा आज खेत में पानी देना है",
+    "intent": "greeting",
+    "source": "greeting.csv"
+  },
+  {
+    "text": "मेरे खेत में मिट्टी परीक्षण कब करवाना चाहिए?",
+    "intent": "soil",
+    "source": "soil.csv"
+  },
+  {
+    "text": "sandy soil mein paani jaldi nikal jaata hai kya karein?",
+    "intent": "soil",
+    "source": "soil.csv"
+  },
+  {
+    "text": "फसल बीमा का प्रीमियम कितना है गेहूं के लिए",
+    "intent": "government",
+    "source": "government.csv"
+  },
+  {
+    "text": "पीएम किसान की किस्त कब आती है",
+    "intent": "government",
+    "source": "government.csv"
+  },
+  {
+    "text": "यह ai कितना सटीक जवाब देता है",
+    "intent": "general",
+    "source": "general.csv"
+  },
+  {
+    "text": "नमस्ते जी pm kisan ka paisa aaya kya",
+    "intent": "greeting",
+    "source": "greeting.csv"
+  },
+  {
+    "text": "मेरी फसल मर रही है अभी तुरंत कुछ बताओ",
+    "intent": "emergency",
+    "source": "emergency.csv"
+  },
+  {
+    "text": "सिंचाई के बाद खाद कब डालें",
+    "intent": "irrigation",
+    "source": "irrigation.csv"
+  },
+  {
+    "text": "aap kya kaam karte ho",
+    "intent": "general",
+    "source": "general.csv"
+  },
+  {
+    "text": "मेरे खेत में पिछले साल अजवाइन था, अब क्या बोऊं?",
+    "intent": "crop",
+    "source": "crop.json"
+  },
+  {
+    "text": "मूंगफली की बुवाई का सही समय बताओ",
+    "intent": "crop",
+    "source": "crop.csv"
+  },
+  {
+    "text": "मेरे खेत में पिछले साल मूंग था अब क्या बोऊं?",
+    "intent": "crop",
+    "source": "crop.csv"
+  },
+  {
+    "text": "म्हारे खेत री मिट्टी में लवणता ज्यादा है, के करूं?",
+    "intent": "soil",
+    "source": "soil.json"
+  },
+  {
+    "text": "आज धनिया का भाव क्या है",
+    "intent": "market",
+    "source": "market.csv"
+  },
+  {
+    "text": "rajasthan kisan yojana 2024 list batao",
+    "intent": "government",
+    "source": "government.csv"
+  },
+  {
+    "text": "अगले 7 दिन का मौसम बताओ",
+    "intent": "weather",
+    "source": "weather.csv"
+  },
+  {
+    "text": "बैंगन में सिंचाई का सही तरीका बताओ",
+    "intent": "irrigation",
+    "source": "irrigation.csv"
+  },
+  {
+    "text": "कृषि यंत्र पर सब्सिडी के लिए आवेदन कैसे करें",
+    "intent": "machinery",
+    "source": "machinery.csv"
+  },
+  {
+    "text": "राजस्थान में आज का तापमान क्या है",
+    "intent": "weather",
+    "source": "weather.csv"
+  },
+  {
+    "text": "यह ऐप किस कंपनी ने बनाया है",
+    "intent": "general",
+    "source": "general.csv"
+  },
+  {
+    "text": "म्हारी मिट्टी में ऑर्गेनिक मैटर बढ़ाने के लिए के करूं?",
+    "intent": "soil",
+    "source": "soil.csv"
+  },
+  {
+    "text": "ड्रोन स्प्रेयर से दवाई कैसे छिड़कें",
+    "intent": "machinery",
+    "source": "machinery.csv"
+  },
+  {
+    "text": "sulphur fertilizer kab dena chahiye aur kitna?",
+    "intent": "fertilizer",
+    "source": "fertilizer.csv"
+  },
+  {
+    "text": "water efficient crops for rajasthan desert area",
+    "intent": "irrigation",
+    "source": "irrigation.csv"
+  },
+  {
+    "text": "स्प्रेयर पंप काम नहीं कर रहा क्या करूं",
+    "intent": "machinery",
+    "source": "machinery.csv"
+  },
+  {
+    "text": "म्हारी अरहर री फसल में स्टेरिलिटी मोजेक लाग री है",
+    "intent": "disease",
+    "source": "disease.csv"
+  },
+  {
+    "text": "rotavator se khet taiyar karne ka tarika",
+    "intent": "machinery",
+    "source": "machinery.csv"
+  },
+  {
+    "text": "wrong answer aaya to kaise report karein",
+    "intent": "general",
+    "source": "general.csv"
+  },
+  {
+    "text": "magnesium sulphate ka dose per acre kya hai?",
+    "intent": "fertilizer",
+    "source": "fertilizer.csv"
+  },
+  {
+    "text": "paani dene ke baad fasal mein kya change aata hai",
+    "intent": "irrigation",
+    "source": "irrigation.csv"
+  },
+  {
+    "text": "मेरे खेत में पानी की अच्छी सुविधा है कौन सी फसल ज्यादा फायदेमंद है?",
+    "intent": "crop",
+    "source": "crop.csv"
+  },
+  {
+    "text": "मेरे खेत में पानी की कमी है ड्रिप से कौन सी फसल उगाऊं?",
+    "intent": "crop",
+    "source": "crop.csv"
+  },
+  {
+    "text": "best crop rotation for wheat in rajasthan?",
+    "intent": "crop",
+    "source": "crop.csv"
+  },
+  {
+    "text": "मेरे खेत में बुवाई के समय कौन सी खाद डालें?",
+    "intent": "fertilizer",
+    "source": "fertilizer.csv"
+  },
+  {
+    "text": "मेरी मक्का में चारकोल रॉट रोग है उपाय बताओ",
+    "intent": "disease",
+    "source": "disease.csv"
+  },
+  {
+    "text": "म्हारे खेत में वर्मीकम्पोस्ट कितनो डालूं?",
+    "intent": "fertilizer",
+    "source": "fertilizer.csv"
+  },
+  {
+    "text": "आज ग्वार का भाव बढ़ा है क्या",
+    "intent": "market",
+    "source": "market.csv"
+  },
+  {
+    "text": "मेरे खेत में पिछले साल उड़द था, अब क्या बोऊं?",
+    "intent": "crop",
+    "source": "crop.json"
+  },
+  {
+    "text": "मेरे खेत में पिछले साल तिल था, अब क्या बोऊं?",
+    "intent": "crop",
+    "source": "crop.json"
+  },
+  {
+    "text": "groundnut mein fertilizer dose kya hona chahiye?",
+    "intent": "fertilizer",
+    "source": "fertilizer.csv"
+  },
+  {
+    "text": "खेती के लिए कौन सा ट्रैक्टर अच्छा है",
+    "intent": "machinery",
+    "source": "machinery.csv"
+  },
+  {
+    "text": "drip tape kaise install karte hain",
+    "intent": "irrigation",
+    "source": "irrigation.csv"
+  },
+  {
+    "text": "मेरी मिट्टी बहुत अम्लीय है कैसे सुधारूं?",
+    "intent": "soil",
+    "source": "soil.csv"
+  },
+  {
+    "text": "म्हारी कपास री फसल में npk कद डालणो चाहिए?",
+    "intent": "fertilizer",
+    "source": "fertilizer.csv"
+  },
+  {
+    "text": "भाई म्हारी सरसों री फसल में सफेद रतुआ लाग री है",
+    "intent": "disease",
+    "source": "disease.csv"
+  },
+  {
+    "text": "किसान क्रेडिट कार्ड का ब्याज माफ होता है क्या",
+    "intent": "government",
+    "source": "government.csv"
+  },
+  {
+    "text": "free bijli yojana for farmers in rajasthan",
+    "intent": "government",
+    "source": "government.csv"
+  },
+  {
+    "text": "इस महीने कितनी बारिश होगी",
+    "intent": "weather",
+    "source": "weather.csv"
+  },
+  {
+    "text": "मेरे गांव के पास कौन सी मंडी है",
+    "intent": "market",
+    "source": "market.csv"
+  },
+  {
+    "text": "मेरे खेत में पानी की बर्बादी कैसे रोकें",
+    "intent": "irrigation",
+    "source": "irrigation.csv"
+  },
+  {
+    "text": "बीज अंकुरण कम हो रहा है क्या करूं",
+    "intent": "seed",
+    "source": "seed.csv"
+  },
+  {
+    "text": "मेरे खेत में मिट्टी परीक्षण रिपोर्ट कैसे पढ़ें?",
+    "intent": "soil",
+    "source": "soil.csv"
+  },
+  {
+    "text": "मेरे खेत में पिछले साल गेहूं था, अब क्या बोऊं?",
+    "intent": "crop",
+    "source": "crop.json"
+  },
+  {
+    "text": "under irrigation se fasal mein kya problem hoti hai",
+    "intent": "irrigation",
+    "source": "irrigation.csv"
+  },
+  {
+    "text": "moong ka best variety seed batao",
+    "intent": "seed",
+    "source": "seed.csv"
+  },
+  {
+    "text": "aaj ka temperature kitna hai",
+    "intent": "weather",
+    "source": "weather.csv"
+  },
+  {
+    "text": "play store पर यह ऐप कैसे खोजें",
+    "intent": "general",
+    "source": "general.csv"
+  },
+  {
+    "text": "pm kisan mein aadhar link karna zaroori hai kya",
+    "intent": "government",
+    "source": "government.csv"
+  },
+  {
+    "text": "ट्रैक्टर का क्लच खराब हो गया है",
+    "intent": "machinery",
+    "source": "machinery.csv"
+  },
+  {
+    "text": "app ke baare mein apni rai kaise dein",
+    "intent": "general",
+    "source": "general.csv"
+  },
+  {
+    "text": "haryanvi mein bhi kaam karta hai kya yeh app",
+    "intent": "general",
+    "source": "general.csv"
+  },
+  {
+    "text": "धनिया की खेती कब और कैसे करें?",
+    "intent": "crop",
+    "source": "crop.csv"
+  },
+  {
+    "text": "उड़द की बुवाई का सही समय बताओ",
+    "intent": "crop",
+    "source": "crop.csv"
+  },
+  {
+    "text": "mandi bhav gir raha hai kya is hafte",
+    "intent": "market",
+    "source": "market.csv"
+  },
+  {
+    "text": "मेरे खेत में मिट्टी की जल धारण क्षमता कैसे बढ़ाऊं?",
+    "intent": "soil",
+    "source": "soil.csv"
+  },
+  {
+    "text": "green manure se soil fertility kaise badhti hai?",
+    "intent": "soil",
+    "source": "soil.csv"
+  },
+  {
+    "text": "good morning bhai kisan yojana ke baare mein batao",
+    "intent": "greeting",
+    "source": "greeting.csv"
+  },
+  {
+    "text": "स्प्रेयर मशीन की सफाई कैसे करें",
+    "intent": "machinery",
+    "source": "machinery.csv"
+  },
+  {
+    "text": "म्हारी मिट्टी में पोटाश री कमी है के करूं?",
+    "intent": "soil",
+    "source": "soil.csv"
+  },
+  {
+    "text": "मंडी भाव में उतार चढ़ाव क्यों होता है",
+    "intent": "market",
+    "source": "market.csv"
+  },
+  {
+    "text": "onion mein stemphylium blight disease hai",
+    "intent": "disease",
+    "source": "disease.csv"
+  },
+  {
+    "text": "फव्वारा सिंचाई कैसे काम करती है",
+    "intent": "irrigation",
+    "source": "irrigation.csv"
+  },
+  {
+    "text": "म्हारी मिट्टी में ph 8 से ज्यादा है के करूं?",
+    "intent": "soil",
+    "source": "soil.csv"
+  },
+  {
+    "text": "भाई म्हारी चावल री फसल में नेक ब्लास्ट लाग री है",
+    "intent": "disease",
+    "source": "disease.csv"
+  },
+  {
+    "text": "मेरी मूंग में सर्कोस्पोरा पत्ती धब्बा रोग है",
+    "intent": "disease",
+    "source": "disease.csv"
+  },
+  {
+    "text": "पाले से गेहूं की फसल को कैसे बचाएं",
+    "intent": "weather",
+    "source": "weather.csv"
+  },
+  {
+    "text": "crop insurance claim karne ka tarika kya hai",
+    "intent": "government",
+    "source": "government.csv"
+  },
+  {
+    "text": "म्हारी मिट्टी रो ph कितनो होणो चाहिए?",
+    "intent": "soil",
+    "source": "soil.csv"
+  },
+  {
+    "text": "hello pragati bhai mujhe kuch janna hai",
+    "intent": "greeting",
+    "source": "greeting.csv"
+  },
+  {
+    "text": "which crop is best for crop rotation after wheat?",
+    "intent": "crop",
+    "source": "crop.csv"
+  },
+  {
+    "text": "kcc loan kaise milega mujhe",
+    "intent": "government",
+    "source": "government.csv"
+  },
+  {
+    "text": "vanakkam",
+    "intent": "greeting",
+    "source": "greeting.csv"
+  },
+  {
+    "text": "farm loan maafi ki koi yojana hai kya rajasthan mein",
+    "intent": "government",
+    "source": "government.csv"
+  },
+  {
+    "text": "मेरी फसल में माइक्रोन्यूट्रिएंट खाद कब डालें?",
+    "intent": "fertilizer",
+    "source": "fertilizer.csv"
+  },
+  {
+    "text": "soil moisture kaise check karein?",
+    "intent": "soil",
+    "source": "soil.csv"
+  },
+  {
+    "text": "pm kisan yojana app mein kaise dekhein",
+    "intent": "general",
+    "source": "general.csv"
+  },
+  {
+    "text": "मेथी का बीज कब और कैसे बोएं",
+    "intent": "seed",
+    "source": "seed.csv"
+  },
+  {
+    "text": "मेरे खेत में खाद डालने का सही तरीका क्या है?",
+    "intent": "fertilizer",
+    "source": "fertilizer.csv"
+  },
+  {
+    "text": "खेत में पानी की निकासी कैसे करें",
+    "intent": "irrigation",
+    "source": "irrigation.csv"
+  },
+  {
+    "text": "आज कितनी गर्मी पड़ेगी",
+    "intent": "weather",
+    "source": "weather.csv"
+  },
+  {
+    "text": "आज मेथी का भाव क्या है",
+    "intent": "market",
+    "source": "market.csv"
+  },
+  {
+    "text": "मेरे खेत में ssp और dap में कौन सा बेहतर है?",
+    "intent": "fertilizer",
+    "source": "fertilizer.csv"
+  },
+  {
+    "text": "फसल बीमा में नुकसान का सर्वे कब होगा",
+    "intent": "government",
+    "source": "government.csv"
+  },
+  {
+    "text": "jai hind jai bharat",
+    "intent": "greeting",
+    "source": "greeting.csv"
+  },
+  {
+    "text": "कम पानी में कौन सी फसल उगाई जा सकती है?",
+    "intent": "crop",
+    "source": "crop.csv"
+  },
+  {
+    "text": "मेरे खेत में खाद की अधिक मात्रा से क्या नुकसान होता है?",
+    "intent": "fertilizer",
+    "source": "fertilizer.csv"
+  },
+  {
+    "text": "basal dose fertilizer kya hota hai?",
+    "intent": "fertilizer",
+    "source": "fertilizer.csv"
+  },
+  {
+    "text": "चने की फसल में पानी कितनी बार देना है",
+    "intent": "irrigation",
+    "source": "irrigation.csv"
+  },
+  {
+    "text": "कल मूंग का भाव क्या था",
+    "intent": "market",
+    "source": "market.csv"
+  },
+  {
+    "text": "मेरे खेत में सरसों के लिए खाद की सिफारिश बताओ",
+    "intent": "fertilizer",
+    "source": "fertilizer.csv"
+  },
+  {
+    "text": "राम राम काका",
+    "intent": "greeting",
+    "source": "greeting.csv"
+  },
+  {
+    "text": "groundnut mein tikka disease ho gayi hai, kya karein?",
+    "intent": "disease",
+    "source": "disease.json"
+  },
+  {
+    "text": "farm machinery rent kahan se milegi mere gaon mein",
+    "intent": "machinery",
+    "source": "machinery.csv"
+  },
+  {
+    "text": "bore well se kitna paani nikal sakta hoon",
+    "intent": "irrigation",
+    "source": "irrigation.csv"
+  },
+  {
+    "text": "kal barish hogi to beej bona band karna chahiye kya",
+    "intent": "weather",
+    "source": "weather.csv"
+  },
+  {
+    "text": "हार्वेस्टर मशीन का किराया कितना है प्रति बीघा",
+    "intent": "machinery",
+    "source": "machinery.csv"
+  },
+  {
+    "text": "soybean mein pod borer ka attack ho gaya hai",
+    "intent": "disease",
+    "source": "disease.csv"
+  },
+  {
+    "text": "canal water band ho gaya emergency irrigation kaise karein",
+    "intent": "emergency",
+    "source": "emergency.csv"
+  },
+  {
+    "text": "seed drill machine rent per bigha kitna hai",
+    "intent": "machinery",
+    "source": "machinery.csv"
+  },
+  {
+    "text": "आंधी आने वाली है क्या आज",
+    "intent": "weather",
+    "source": "weather.csv"
+  },
+  {
+    "text": "मेथी की बुवाई का सही समय बताओ",
+    "intent": "crop",
+    "source": "crop.csv"
+  },
+  {
+    "text": "ऐप में राजस्थानी भाषा कैसे चुनें",
+    "intent": "general",
+    "source": "general.csv"
+  },
+  {
+    "text": "सरसों का भाव पिछले महीने से कितना बदला",
+    "intent": "market",
+    "source": "market.csv"
+  },
+  {
+    "text": "hi bhai khamma ghani sa",
+    "intent": "greeting",
+    "source": "greeting.csv"
+  },
+  {
+    "text": "germination rate kam hai kya karein",
+    "intent": "seed",
+    "source": "seed.csv"
+  },
+  {
+    "text": "meri personal jankari kahan jaati hai",
+    "intent": "general",
+    "source": "general.csv"
+  },
+  {
+    "text": "मेरे खेत में वर्मीकम्पोस्ट डालने से क्या फायदा होगा?",
+    "intent": "soil",
+    "source": "soil.csv"
+  },
+  {
+    "text": "म्हारे खेत री मिट्टी में लाइम डालने से के होसी?",
+    "intent": "soil",
+    "source": "soil.csv"
+  },
+  {
+    "text": "मल्टी क्रॉप थ्रेशर क्या होता है",
+    "intent": "machinery",
+    "source": "machinery.csv"
+  },
+  {
+    "text": "crop loss survey kab hoga mere khet ka",
+    "intent": "government",
+    "source": "government.csv"
+  },
+  {
+    "text": "pm kisan ka paisa kab aayega mere account mein",
+    "intent": "government",
+    "source": "government.csv"
+  },
+  {
+    "text": "मेरे खेत में पिछले साल अजवाइन था अब क्या बोऊं?",
+    "intent": "crop",
+    "source": "crop.csv"
+  },
+  {
+    "text": "भाई म्हारे खेत में कौन सी फसल बोवां जो कम खर्च में ज्यादा पैदावार दे?",
+    "intent": "crop",
+    "source": "crop.csv"
+  },
+  {
+    "text": "मेरे खेत में मिट्टी की संरचना कैसे सुधारें?",
+    "intent": "soil",
+    "source": "soil.csv"
+  },
+  {
+    "text": "ड्रिप इरिगेशन और स्प्रिंकलर में कौन सा बेहतर है",
+    "intent": "irrigation",
+    "source": "irrigation.csv"
+  },
+  {
+    "text": "सरसों की बुवाई कब करनी चाहिए?",
+    "intent": "crop",
+    "source": "crop.csv"
+  },
+  {
+    "text": "खरीफ फसल में पानी की जरूरत कब होती है",
+    "intent": "irrigation",
+    "source": "irrigation.csv"
+  },
+  {
+    "text": "म्हारे खेत में अमोनियम सल्फेट कद डालणो चाहिए?",
+    "intent": "fertilizer",
+    "source": "fertilizer.csv"
+  },
+  {
+    "text": "groundnut seed kahan milega mere paas",
+    "intent": "seed",
+    "source": "seed.csv"
+  },
+  {
+    "text": "crop insurance claim rejected kya karein",
+    "intent": "government",
+    "source": "government.csv"
+  },
+  {
+    "text": "मेरे खेत में हल्की मिट्टी है, कौन सी फसल उगाऊं?",
+    "intent": "crop",
+    "source": "crop.json"
+  },
+  {
+    "text": "सरकारी सब्सिडी पर स्प्रिंकलर सेट कैसे मिलेगा",
+    "intent": "government",
+    "source": "government.csv"
+  },
+  {
+    "text": "chilli seed best variety batao",
+    "intent": "seed",
+    "source": "seed.csv"
+  },
+  {
+    "text": "फसल में कीड़े इतने हो गए हैं कि दिखाई नहीं देती",
+    "intent": "emergency",
+    "source": "emergency.csv"
+  },
+  {
+    "text": "म्हारी फसल में कल से अचानक पत्ते मुड़ने लगे हैं",
+    "intent": "emergency",
+    "source": "emergency.csv"
+  },
+  {
+    "text": "ऐप में फसल डायरी कैसे देखें",
+    "intent": "general",
+    "source": "general.csv"
+  },
+  {
+    "text": "bajra seed rate per bigha kitna hona chahiye",
+    "intent": "seed",
+    "source": "seed.csv"
+  },
+  {
+    "text": "मेरे खेत में मिट्टी की जांच के लिए कहां जाऊं?",
+    "intent": "soil",
+    "source": "soil.csv"
+  },
+  {
+    "text": "soybean seed variety rajasthan ke liye",
+    "intent": "seed",
+    "source": "seed.csv"
+  },
+  {
+    "text": "waterlogged soil kaise sudharen?",
+    "intent": "soil",
+    "source": "soil.csv"
+  },
+  {
+    "text": "आज अजमेर मंडी में सरसों का रेट",
+    "intent": "market",
+    "source": "market.csv"
+  },
+  {
+    "text": "मेरी मिट्टी में माइक्रोन्यूट्रिएंट्स की कमी है क्या करूं?",
+    "intent": "soil",
+    "source": "soil.csv"
+  },
+  {
+    "text": "नीलगाय और सूअर ने मिलकर पूरी फसल बर्बाद कर दी",
+    "intent": "emergency",
+    "source": "emergency.csv"
+  },
+  {
+    "text": "bikaner mandi moong price today",
+    "intent": "market",
+    "source": "market.csv"
+  },
+  {
+    "text": "आज तिल का भाव क्या है",
+    "intent": "market",
+    "source": "market.csv"
+  },
+  {
+    "text": "मंडी में फसल बेचने का सही समय कब है",
+    "intent": "market",
+    "source": "market.csv"
+  },
+  {
+    "text": "औषधीय फसलें कौन सी हैं जो मुझे ज्यादा मुनाफा दें?",
+    "intent": "crop",
+    "source": "crop.csv"
+  },
+  {
+    "text": "मेरी फसल बेचने के लिए सबसे अच्छी मंडी कौन सी है",
+    "intent": "market",
+    "source": "market.csv"
+  },
+  {
+    "text": "नहर का पानी बंद हो गया फसल सूख रही है",
+    "intent": "emergency",
+    "source": "emergency.csv"
+  },
+  {
+    "text": "आज कपास का भाव क्या है",
+    "intent": "market",
+    "source": "market.csv"
+  },
+  {
+    "text": "over irrigation se mitti kharab hoti hai kya",
+    "intent": "irrigation",
+    "source": "irrigation.csv"
+  },
+  {
+    "text": "मेरी धनिया की फसल में स्टेम रॉट हो गई है",
+    "intent": "disease",
+    "source": "disease.csv"
+  },
+  {
+    "text": "gehu ka bhav msp se upar hai kya aaj",
+    "intent": "market",
+    "source": "market.csv"
+  },
+  {
+    "text": "calcium nitrate fertilizer kab dena chahiye?",
+    "intent": "fertilizer",
+    "source": "fertilizer.csv"
+  },
+  {
+    "text": "मेरे खेत में मिट्टी का कटाव हो रहा है, कैसे रोकूं?",
+    "intent": "soil",
+    "source": "soil.json"
+  },
+  {
+    "text": "गुआर का भाव आज कितना है",
+    "intent": "market",
+    "source": "market.csv"
+  },
+  {
+    "text": "wheat mein loose smut disease aa gayi hai",
+    "intent": "disease",
+    "source": "disease.csv"
+  },
+  {
+    "text": "ssp single super phosphate ka dose kya hai?",
+    "intent": "fertilizer",
+    "source": "fertilizer.csv"
+  },
+  {
+    "text": "soil hardpan kaise todein?",
+    "intent": "soil",
+    "source": "soil.csv"
+  },
+  {
+    "text": "imidacloprid seed treatment kaise karein",
+    "intent": "seed",
+    "source": "seed.csv"
+  },
+  {
+    "text": "fertilizer subsidy ke liye kya karna padta hai",
+    "intent": "government",
+    "source": "government.csv"
+  },
+  {
+    "text": "yesterday mustard price in mandi",
+    "intent": "market",
+    "source": "market.csv"
+  },
+  {
+    "text": "म्हारी फसल में ssp खाद कद डालणो चाहिए?",
+    "intent": "fertilizer",
+    "source": "fertilizer.csv"
+  },
+  {
+    "text": "मेरी मेथी में पाउडरी मिल्ड्यू हो गई है",
+    "intent": "disease",
+    "source": "disease.csv"
+  },
+  {
+    "text": "मेरी गेहूं में पीला रतुआ बहुत तेजी से फैल रहा है",
+    "intent": "emergency",
+    "source": "emergency.csv"
+  },
+  {
+    "text": "मेरे खेत की मिट्टी में पोषक तत्वों की कमी है क्या करूं?",
+    "intent": "soil",
+    "source": "soil.csv"
+  },
+  {
+    "text": "aadhar se login ho sakta hai kya",
+    "intent": "general",
+    "source": "general.csv"
+  },
+  {
+    "text": "मानसून कब आएगा इस साल",
+    "intent": "weather",
+    "source": "weather.csv"
+  },
+  {
+    "text": "jeera seed best variety rajasthan mein",
+    "intent": "seed",
+    "source": "seed.csv"
+  },
+  {
+    "text": "khamma ghani bhaisa",
+    "intent": "greeting",
+    "source": "greeting.csv"
+  },
+  {
+    "text": "आज बिजली गिरने का खतरा है क्या",
+    "intent": "weather",
+    "source": "weather.csv"
+  },
+  {
+    "text": "tomato seed kahan se kharidein",
+    "intent": "seed",
+    "source": "seed.csv"
+  },
+  {
+    "text": "msp क्या है गेहूं का इस साल",
+    "intent": "market",
+    "source": "market.csv"
+  },
+  {
+    "text": "कल दोपहर को मौसम कैसा रहेगा",
+    "intent": "weather",
+    "source": "weather.csv"
+  },
+  {
+    "text": "खम्मा घणी सा राम राम",
+    "intent": "greeting",
+    "source": "greeting.csv"
+  },
+  {
+    "text": "rice mein brown plant hopper ka attack ho gaya hai",
+    "intent": "disease",
+    "source": "disease.csv"
+  },
+  {
+    "text": "गेहूं बोने का सही समय क्या है?",
+    "intent": "crop",
+    "source": "crop.csv"
+  },
+  {
+    "text": "नई हाइब्रिड सरसों की किस्म कौन सी है",
+    "intent": "seed",
+    "source": "seed.csv"
+  },
+  {
+    "text": "mustard price trend last month kya raha",
+    "intent": "market",
+    "source": "market.csv"
+  },
+  {
+    "text": "मेरे खेत में पिछले साल सौंफ था, अब क्या बोऊं?",
+    "intent": "crop",
+    "source": "crop.json"
+  },
+  {
+    "text": "urad bean best seed variety batao",
+    "intent": "seed",
+    "source": "seed.csv"
+  },
+  {
+    "text": "मेरे खेत में पिछले साल सरसों थी, अब क्या बोऊं?",
+    "intent": "crop",
+    "source": "crop.json"
+  },
+  {
+    "text": "jai shri ram bhai mausam ke baare mein poochna tha",
+    "intent": "greeting",
+    "source": "greeting.csv"
+  },
+  {
+    "text": "चैट हिस्ट्री कैसे डिलीट करें",
+    "intent": "general",
+    "source": "general.csv"
+  },
+  {
+    "text": "बरसात के बाद सिंचाई करनी चाहिए या नहीं",
+    "intent": "irrigation",
+    "source": "irrigation.csv"
+  },
+  {
+    "text": "म्हारी मिर्च री फसल में लीफ कर्ल वायरस लाग री है",
+    "intent": "disease",
+    "source": "disease.csv"
+  },
+  {
+    "text": "ram ram sa bhai khad ke baare mein poochna tha",
+    "intent": "greeting",
+    "source": "greeting.csv"
+  },
+  {
+    "text": "black soil ki khasiyat kya hoti hai?",
+    "intent": "soil",
+    "source": "soil.csv"
+  },
+  {
+    "text": "good morning bhai khamma ghani",
+    "intent": "greeting",
+    "source": "greeting.csv"
+  },
+  {
+    "text": "म्हारे खेत में सब कुछ खत्म हो गया मदद करो",
+    "intent": "emergency",
+    "source": "emergency.csv"
+  },
+  {
+    "text": "namaste ji fasal bima ke baare mein batao",
+    "intent": "greeting",
+    "source": "greeting.csv"
+  },
+  {
+    "text": "greenhouse subsidy rajasthan apply process",
+    "intent": "government",
+    "source": "government.csv"
+  },
+  {
+    "text": "सरकारी सब्सिडी पर ड्रिप इरिगेशन कैसे लगाएं",
+    "intent": "government",
+    "source": "government.csv"
+  },
+  {
+    "text": "maize price today in rajasthan",
+    "intent": "market",
+    "source": "market.csv"
+  },
+  {
+    "text": "best time to sell sarson in mandi",
+    "intent": "market",
+    "source": "market.csv"
+  },
+  {
+    "text": "तिल की खेती कब और कैसे करें?",
+    "intent": "crop",
+    "source": "crop.csv"
+  },
+  {
+    "text": "fasal barbad ho gayi hai turant koi upay batao bhai",
+    "intent": "emergency",
+    "source": "emergency.csv"
+  },
+  {
+    "text": "post harvest fertilizer application kab karein?",
+    "intent": "fertilizer",
+    "source": "fertilizer.csv"
+  },
+  {
+    "text": "jai shri ram bhai good morning",
+    "intent": "greeting",
+    "source": "greeting.csv"
+  },
+  {
+    "text": "mic se ai se kaise baat karein",
+    "intent": "general",
+    "source": "general.csv"
+  },
+  {
+    "text": "मेरे खेत में काली मिट्टी है इसमें कौन सी फसल अच्छी होगी?",
+    "intent": "soil",
+    "source": "soil.csv"
+  },
+  {
+    "text": "मेरे लिए कौन सी फसल सही रहेगी",
+    "intent": "general",
+    "source": "general.csv"
+  },
+  {
+    "text": "राजस्थान में किसान पेंशन योजना है क्या",
+    "intent": "government",
+    "source": "government.csv"
+  },
+  {
+    "text": "मेरी मिट्टी की जांच कैसे करवाऊं?",
+    "intent": "soil",
+    "source": "soil.csv"
+  },
+  {
+    "text": "आज जीरे का मंडी भाव क्या है",
+    "intent": "market",
+    "source": "market.csv"
+  },
+  {
+    "text": "भाई म्हारे बाजरे में हरित बाली रोग आ गयो है",
+    "intent": "disease",
+    "source": "disease.csv"
+  },
+  {
+    "text": "मेरी मक्का में फॉल आर्मीवर्म का भयंकर हमला है",
+    "intent": "emergency",
+    "source": "emergency.csv"
+  },
+  {
+    "text": "मंडी में आज सबसे ज्यादा भाव किस फसल का है",
+    "intent": "market",
+    "source": "market.csv"
+  },
+  {
+    "text": "tractor clutch kharab ho gaya hai kya karein",
+    "intent": "machinery",
+    "source": "machinery.csv"
+  },
+  {
+    "text": "राजस्थान में सोलर पंप पर सब्सिडी मिलती है क्या",
+    "intent": "government",
+    "source": "government.csv"
+  },
+  {
+    "text": "ग्रीष्मकाल में सब्जियों को कितना पानी चाहिए",
+    "intent": "irrigation",
+    "source": "irrigation.csv"
+  },
+  {
+    "text": "mere khet ke liye crop suggest karo",
+    "intent": "general",
+    "source": "general.csv"
+  },
+  {
+    "text": "मेरे खेत में धान के लिए खाद की मात्रा बताओ",
+    "intent": "fertilizer",
+    "source": "fertilizer.csv"
+  },
+  {
+    "text": "आज मंडी में गेहूं का भाव क्या है",
+    "intent": "market",
+    "source": "market.csv"
+  },
+  {
+    "text": "potash fertilizer kab aur kitna dena chahiye?",
+    "intent": "fertilizer",
+    "source": "fertilizer.csv"
+  },
+  {
+    "text": "तुरंत मदद चाहिए",
+    "intent": "emergency",
+    "source": "emergency.csv"
+  },
+  {
+    "text": "मेरी उड़द की फसल में पीला मोजेक वायरस है",
+    "intent": "disease",
+    "source": "disease.csv"
+  },
+  {
+    "text": "म्हारे खेत री मिट्टी में फास्फोरस री कमी है",
+    "intent": "soil",
+    "source": "soil.csv"
+  },
+  {
+    "text": "namaste bhai good morning",
+    "intent": "greeting",
+    "source": "greeting.csv"
+  },
+  {
+    "text": "म्हारे खेत में काली मिट्टी है कांई बोवां?",
+    "intent": "crop",
+    "source": "crop.csv"
+  },
+  {
+    "text": "अलसी की खेती कब और कैसे करें?",
+    "intent": "crop",
+    "source": "crop.csv"
+  },
+  {
+    "text": "नमस्ते भाई मेरे खेत में कीड़े लग गए हैं",
+    "intent": "greeting",
+    "source": "greeting.csv"
+  },
+  {
+    "text": "कपास की बुवाई का सही समय और तरीका बताओ",
+    "intent": "crop",
+    "source": "crop.csv"
+  },
+  {
+    "text": "म्हारी रेतीली मिट्टी में नमी कैसे बनाए रखूं?",
+    "intent": "soil",
+    "source": "soil.csv"
+  },
+  {
+    "text": "सिंचाई के लिए तालाब का पानी इस्तेमाल कर सकते हैं",
+    "intent": "irrigation",
+    "source": "irrigation.csv"
+  },
+  {
+    "text": "clay soil mein drainage kaise improve karein?",
+    "intent": "soil",
+    "source": "soil.csv"
+  },
+  {
+    "text": "आज चने का भाव क्या चल रहा है",
+    "intent": "market",
+    "source": "market.csv"
+  },
+  {
+    "text": "canal water schedule kab aayega meri tehsil mein",
+    "intent": "irrigation",
+    "source": "irrigation.csv"
+  },
+  {
+    "text": "wheat mein rust disease aa gayi hai, spray kya karein?",
+    "intent": "disease",
+    "source": "disease.json"
+  },
+  {
+    "text": "इस हफ्ते गेहूं का भाव बढ़ा है क्या",
+    "intent": "market",
+    "source": "market.csv"
+  },
+  {
+    "text": "aaj mandi mein sabse achha bhav kis fasal ka hai",
+    "intent": "market",
+    "source": "market.csv"
+  },
+  {
+    "text": "micronutrient fertilizer kab aur kaise dena chahiye?",
+    "intent": "fertilizer",
+    "source": "fertilizer.csv"
+  },
+  {
+    "text": "cotton hybrid seed best variety rajasthan",
+    "intent": "seed",
+    "source": "seed.csv"
+  },
+  {
+    "text": "सीड ड्रिल मशीन का किराया कितना है",
+    "intent": "machinery",
+    "source": "machinery.csv"
+  },
+  {
+    "text": "राजस्थान कृषि विभाग की योजनाओं की जानकारी दो",
+    "intent": "government",
+    "source": "government.csv"
+  },
+  {
+    "text": "सौंफ की खेती कब और कैसे करें?",
+    "intent": "crop",
+    "source": "crop.csv"
+  },
+  {
+    "text": "मराठी में बात कर सकते हो क्या",
+    "intent": "general",
+    "source": "general.csv"
+  },
+  {
+    "text": "जीरे का सबसे अच्छा बीज कौन सा है",
+    "intent": "seed",
+    "source": "seed.csv"
+  },
+  {
+    "text": "today wheat price in rajasthan mandi",
+    "intent": "market",
+    "source": "market.csv"
+  },
+  {
+    "text": "आज अलवर मंडी में क्या भाव है",
+    "intent": "market",
+    "source": "market.csv"
+  },
+  {
+    "text": "म्हारे खेत री मिट्टी में नमी कम है के करूं?",
+    "intent": "soil",
+    "source": "soil.csv"
+  },
+  {
+    "text": "मेरी मिर्च में फाइटोफ्थोरा ब्लाइट है क्या करूं?",
+    "intent": "disease",
+    "source": "disease.csv"
+  },
+  {
+    "text": "लू चलने से फसल को कैसे बचाएं",
+    "intent": "weather",
+    "source": "weather.csv"
+  },
+  {
+    "text": "aaj barish hogi to harvesting ruk jayegi kya",
+    "intent": "weather",
+    "source": "weather.csv"
+  },
+  {
+    "text": "मूंगफली में सिंचाई कब करें",
+    "intent": "irrigation",
+    "source": "irrigation.csv"
+  },
+  {
+    "text": "मिर्च के फल सड़ रहे हैं कौन सी बीमारी है?",
+    "intent": "disease",
+    "source": "disease.csv"
+  },
+  {
+    "text": "बीज उपचार के लिए थीरम का उपयोग कैसे करें",
+    "intent": "seed",
+    "source": "seed.csv"
+  },
+  {
+    "text": "fertilizer application method kya hona chahiye?",
+    "intent": "fertilizer",
+    "source": "fertilizer.csv"
+  },
+  {
+    "text": "म्हारे खेत री मिट्टी में सल्फर री कमी है, के डालूं?",
+    "intent": "soil",
+    "source": "soil.json"
+  },
+  {
+    "text": "app mein available languages kaun kaun si hain",
+    "intent": "general",
+    "source": "general.csv"
+  },
+  {
+    "text": "मेरे खेत में पिछले साल अरहर थी अब क्या बोऊं?",
+    "intent": "crop",
+    "source": "crop.csv"
+  },
+  {
+    "text": "rotavator kaise use karte hain",
+    "intent": "machinery",
+    "source": "machinery.csv"
+  },
+  {
+    "text": "क्या इस ऐप में कोई सब्सक्रिप्शन है",
+    "intent": "general",
+    "source": "general.csv"
+  },
+  {
+    "text": "kitne hp ka tractor mujhe chahiye mere khet ke liye",
+    "intent": "machinery",
+    "source": "machinery.csv"
+  },
+  {
+    "text": "मेरे खेत में पिछले साल जौ था अब क्या बोऊं?",
+    "intent": "crop",
+    "source": "crop.csv"
+  },
+  {
+    "text": "आज बादल छाए रहेंगे क्या",
+    "intent": "weather",
+    "source": "weather.csv"
+  },
+  {
+    "text": "neem coated urea kya hota hai aur kab dena chahiye?",
+    "intent": "fertilizer",
+    "source": "fertilizer.csv"
+  },
+  {
+    "text": "मेरे खेत में मिट्टी का रंग काला क्यों है?",
+    "intent": "soil",
+    "source": "soil.csv"
+  },
+  {
+    "text": "germination test karne ka tarika kya hai",
+    "intent": "seed",
+    "source": "seed.csv"
+  },
+  {
+    "text": "गेहूं का भाव msp से ज्यादा है क्या आज",
+    "intent": "market",
+    "source": "market.csv"
+  },
+  {
+    "text": "मेरी फसल बाढ़ में खराब हुई मुआवजा कैसे मिलेगा",
+    "intent": "government",
+    "source": "government.csv"
+  },
+  {
+    "text": "फसल में पानी कम देने से क्या होता है",
+    "intent": "irrigation",
+    "source": "irrigation.csv"
+  },
+  {
+    "text": "jai hind bhai good evening",
+    "intent": "greeting",
+    "source": "greeting.csv"
+  },
+  {
+    "text": "मेरी गेहूं में करनाल बंट रोग आ गया है",
+    "intent": "disease",
+    "source": "disease.csv"
+  },
+  {
+    "text": "पाला पड़ने की संभावना है क्या इस हफ्ते",
+    "intent": "weather",
+    "source": "weather.csv"
+  },
+  {
+    "text": "मेरे खेत में नाइट्रोजन की कमी है, पत्ते पीले हो रहे हैं",
+    "intent": "soil",
+    "source": "soil.json"
+  },
+  {
+    "text": "app ka menu kahan hai",
+    "intent": "general",
+    "source": "general.csv"
+  },
+  {
+    "text": "खम्मा घणी भाई फसल बीमा पूछना था",
+    "intent": "greeting",
+    "source": "greeting.csv"
+  },
+  {
+    "text": "क्या यह ऐप सभी किसानों के लिए है",
+    "intent": "general",
+    "source": "general.csv"
+  },
+  {
+    "text": "pragati ai se kheti mein kya badlaav aayega",
+    "intent": "general",
+    "source": "general.csv"
+  },
+  {
+    "text": "tomato ka aaj ka market rate kya hai",
+    "intent": "market",
+    "source": "market.csv"
+  },
+  {
+    "text": "drip irrigation mein filter kaise saaf karein",
+    "intent": "irrigation",
+    "source": "irrigation.csv"
+  },
+  {
+    "text": "khet mein aag lag gayi hai turant help chahiye",
+    "intent": "emergency",
+    "source": "emergency.csv"
+  },
+  {
+    "text": "म्हारी फसल में बोरोन री कमी है के डालूं?",
+    "intent": "fertilizer",
+    "source": "fertilizer.csv"
+  },
+  {
+    "text": "मेरे खेत में पिछले साल कपास था अब क्या बोऊं?",
+    "intent": "crop",
+    "source": "crop.csv"
+  },
+  {
+    "text": "सिंचाई के लिए सरकारी योजना कौन सी है",
+    "intent": "irrigation",
+    "source": "irrigation.csv"
+  },
+  {
+    "text": "internet nahi hai to app chalega kya",
+    "intent": "general",
+    "source": "general.csv"
+  },
+  {
+    "text": "micronutrient deficiency kaise pahchanen aur theek karein?",
+    "intent": "soil",
+    "source": "soil.csv"
+  },
+  {
+    "text": "solar pump machine khet mein kaise lagayein",
+    "intent": "machinery",
+    "source": "machinery.csv"
+  },
+  {
+    "text": "beej kharidne se pehle kya check karein",
+    "intent": "seed",
+    "source": "seed.csv"
+  },
+  {
+    "text": "मेरी जमीन काली मिट्टी की है कौन सी फसल उगाऊं?",
+    "intent": "crop",
+    "source": "crop.csv"
+  },
+  {
+    "text": "hi bhai pranam ji",
+    "intent": "greeting",
+    "source": "greeting.csv"
+  },
+  {
+    "text": "thiram se seed treatment kaise karein",
+    "intent": "seed",
+    "source": "seed.csv"
+  },
+  {
+    "text": "drone sprayer se pesticide spray kaise karein",
+    "intent": "machinery",
+    "source": "machinery.csv"
+  },
+  {
+    "text": "कम बारिश में सिंचाई कैसे करें",
+    "intent": "irrigation",
+    "source": "irrigation.csv"
+  },
+  {
+    "text": "sprinkler set subsidy rajasthan apply kaise karein",
+    "intent": "government",
+    "source": "government.csv"
+  },
+  {
+    "text": "फसल बीमा क्लेम रिजेक्ट हो गया क्या करूं",
+    "intent": "government",
+    "source": "government.csv"
+  },
+  {
+    "text": "मेरी गेहूं में ब्राउन रस्ट रोग आ गया है",
+    "intent": "disease",
+    "source": "disease.csv"
+  },
+  {
+    "text": "भाई म्हारी चना री फसल में जड़ सड़न लाग री है",
+    "intent": "disease",
+    "source": "disease.csv"
+  },
+  {
+    "text": "hi ji jai hind jai bharat",
+    "intent": "greeting",
+    "source": "greeting.csv"
+  },
+  {
+    "text": "suprabhat ji",
+    "intent": "greeting",
+    "source": "greeting.csv"
+  },
+  {
+    "text": "नमस्ते जी jai hind",
+    "intent": "greeting",
+    "source": "greeting.csv"
+  },
+  {
+    "text": "मूंगफली का बीज कहां से मिलेगा",
+    "intent": "seed",
+    "source": "seed.csv"
+  },
+  {
+    "text": "tomato ke patte curl ho rahe hain kya bimari hai?",
+    "intent": "disease",
+    "source": "disease.csv"
+  },
+  {
+    "text": "म्हारे खेत री मिट्टी चिकनी है, पाणी नहीं सोखती",
+    "intent": "soil",
+    "source": "soil.json"
+  },
+  {
+    "text": "मेरे खेत के लिए कौन सी मशीन सही रहेगी",
+    "intent": "machinery",
+    "source": "machinery.csv"
+  },
+  {
+    "text": "मौसम की जानकारी कहां से मिलेगी",
+    "intent": "weather",
+    "source": "weather.csv"
+  },
+  {
+    "text": "म्हारी मक्का री फसल में यूरिया कद डालणो चाहिए?",
+    "intent": "fertilizer",
+    "source": "fertilizer.csv"
+  },
+  {
+    "text": "खेत का नक्शा कैसे जोड़ें",
+    "intent": "general",
+    "source": "general.csv"
+  },
+  {
+    "text": "virus fasal mein fail gaya hai emergency pesticide batao",
+    "intent": "emergency",
+    "source": "emergency.csv"
+  },
+  {
+    "text": "government scheme application status check online",
+    "intent": "government",
+    "source": "government.csv"
+  },
+  {
+    "text": "sprayer machine price kitni hai market mein",
+    "intent": "machinery",
+    "source": "machinery.csv"
+  },
+  {
+    "text": "जौ की बुवाई का सही समय बताओ",
+    "intent": "crop",
+    "source": "crop.csv"
+  },
+  {
+    "text": "heat wave alert hai kya mere area mein",
+    "intent": "weather",
+    "source": "weather.csv"
+  },
+  {
+    "text": "irrigation ke liye government loan kaise milega",
+    "intent": "irrigation",
+    "source": "irrigation.csv"
+  },
+  {
+    "text": "lू चलने से फसल को कैसे बचाएं",
+    "intent": "weather",
+    "source": "weather.json"
+  },
+  {
+    "text": "drip irrigation kaise lagaye khet mein",
+    "intent": "irrigation",
+    "source": "irrigation.csv"
+  },
+  {
+    "text": "government yojana ke liye documents kya chahiye",
+    "intent": "government",
+    "source": "government.csv"
+  },
+  {
+    "text": "भाई म्हारे खेत में कौन सी फसल बोवां जो गर्मी में भी हो जावे?",
+    "intent": "crop",
+    "source": "crop.csv"
+  },
+  {
+    "text": "seed packet mein kya kya information hoti hai",
+    "intent": "seed",
+    "source": "seed.csv"
+  },
+  {
+    "text": "बारिश के बाद खाद डालना सही है क्या",
+    "intent": "weather",
+    "source": "weather.csv"
+  },
+  {
+    "text": "टमाटर के पत्ते पीले पड़ रहे हैं कोई दवाई बताओ",
+    "intent": "disease",
+    "source": "disease.csv"
+  },
+  {
+    "text": "कस्टम हायरिंग सेंटर क्या होता है",
+    "intent": "machinery",
+    "source": "machinery.csv"
+  },
+  {
+    "text": "किसान क्रेडिट कार्ड से खाद बीज खरीद सकते हैं क्या",
+    "intent": "government",
+    "source": "government.csv"
+  },
+  {
+    "text": "कपास में गुलाबी सुंडी का बहुत बड़ा हमला है",
+    "intent": "emergency",
+    "source": "emergency.csv"
+  },
+  {
+    "text": "बोरवेल बंद हो गया फसल को पानी नहीं मिल रहा",
+    "intent": "emergency",
+    "source": "emergency.csv"
+  },
+  {
+    "text": "krishi yantra mela kab lagega rajasthan mein",
+    "intent": "machinery",
+    "source": "machinery.csv"
+  },
+  {
+    "text": "gram seed variety rajasthan ke liye best kaunsi hai",
+    "intent": "seed",
+    "source": "seed.csv"
+  },
+  {
+    "text": "क्या ऐप हरियाणवी में भी काम करता है",
+    "intent": "general",
+    "source": "general.csv"
+  },
+  {
+    "text": "aaj wind chill kitna hai",
+    "intent": "weather",
+    "source": "weather.csv"
+  },
+  {
+    "text": "मेरे खेत में पिछले साल जीरा था, अब क्या बोऊं?",
+    "intent": "crop",
+    "source": "crop.json"
+  },
+  {
+    "text": "drip irrigation subsidy ke liye apply kaise karein",
+    "intent": "government",
+    "source": "government.csv"
+  },
+  {
+    "text": "मेरी मक्का में तना छेदक कीड़ा लग गया है",
+    "intent": "disease",
+    "source": "disease.csv"
+  },
+  {
+    "text": "मेरी फसल में नैनो यूरिया का छिड़काव कब करें?",
+    "intent": "fertilizer",
+    "source": "fertilizer.csv"
+  },
+  {
+    "text": "sandy soil mein paani jaldi nikal jaata hai, kya karein?",
+    "intent": "soil",
+    "source": "soil.json"
+  },
+  {
+    "text": "khamma ghani sa bhai khet mein kya chal raha hai",
+    "intent": "greeting",
+    "source": "greeting.csv"
+  },
+  {
+    "text": "आलू की फसल रात भर में काली पड़ गई",
+    "intent": "emergency",
+    "source": "emergency.csv"
+  },
+  {
+    "text": "aaj raat minimum temperature kitna hoga",
+    "intent": "weather",
+    "source": "weather.csv"
+  },
+  {
+    "text": "reaper machine se fasal katai kaise karein",
+    "intent": "machinery",
+    "source": "machinery.csv"
+  },
+  {
+    "text": "tomato mein damping off ho rahi hai, seedlings mar rahi hain",
+    "intent": "disease",
+    "source": "disease.json"
+  },
+  {
+    "text": "फसल बीमा योजना में ऑनलाइन आवेदन कैसे करें",
+    "intent": "government",
+    "source": "government.csv"
+  },
+  {
+    "text": "म्हारी गेहूं री फसल में लूज स्मट लाग री है, के करूं?",
+    "intent": "disease",
+    "source": "disease.json"
+  },
+  {
+    "text": "कल का तापमान कितना रहेगा",
+    "intent": "weather",
+    "source": "weather.csv"
+  },
+  {
+    "text": "आज हवा की गति कितनी है",
+    "intent": "weather",
+    "source": "weather.csv"
+  },
+  {
+    "text": "good night bhai",
+    "intent": "greeting",
+    "source": "greeting.csv"
+  },
+  {
+    "text": "how to switch language to english in app",
+    "intent": "general",
+    "source": "general.csv"
+  },
+  {
+    "text": "cold wave alert rajasthan mein hai kya",
+    "intent": "weather",
+    "source": "weather.csv"
+  },
+  {
+    "text": "chilli mein thrips ka attack ho gaya hai, kya karein?",
+    "intent": "disease",
+    "source": "disease.json"
+  },
+  {
+    "text": "jai shri ram bhai aaj ka din shubh ho",
+    "intent": "greeting",
+    "source": "greeting.csv"
+  },
+  {
+    "text": "jai hind bhai aaj ka mausam kaisa rahega",
+    "intent": "greeting",
+    "source": "greeting.csv"
+  },
+  {
+    "text": "seed sowing se pehle khet taiyar karne ka tarika",
+    "intent": "seed",
+    "source": "seed.csv"
+  },
+  {
+    "text": "humidity kitni hai aaj khet mein spray ke liye",
+    "intent": "weather",
+    "source": "weather.csv"
+  },
+  {
+    "text": "vermicompost ka dose per bigha kya hona chahiye?",
+    "intent": "fertilizer",
+    "source": "fertilizer.csv"
+  },
+  {
+    "text": "मेरे खेत में मिट्टी का ph कम करने के लिए क्या डालें?",
+    "intent": "soil",
+    "source": "soil.csv"
+  },
+  {
+    "text": "मेरी मूंग की फसल में पत्ती मोड़क रोग है",
+    "intent": "disease",
+    "source": "disease.csv"
+  },
+  {
+    "text": "jai mata di",
+    "intent": "greeting",
+    "source": "greeting.csv"
+  },
+  {
+    "text": "kharif mein kaunsi dal ki fasal best hai?",
+    "intent": "crop",
+    "source": "crop.csv"
+  },
+  {
+    "text": "धान की रोपाई के बाद कितना पानी दें",
+    "intent": "irrigation",
+    "source": "irrigation.csv"
+  },
+  {
+    "text": "कम पानी में कौन सी फसल उगाएं",
+    "intent": "irrigation",
+    "source": "irrigation.csv"
+  },
+  {
+    "text": "मेरे खेत में पिछले साल ज्वार था अब क्या बोऊं?",
+    "intent": "crop",
+    "source": "crop.csv"
+  },
+  {
+    "text": "पानी बचाने के लिए कौन सी सिंचाई विधि अच्छी है",
+    "intent": "irrigation",
+    "source": "irrigation.csv"
+  },
+  {
+    "text": "आज दवाई छिड़काव करना सही है क्या",
+    "intent": "weather",
+    "source": "weather.csv"
+  },
+  {
+    "text": "fertilizer deficiency emergency paudhe mar rahe hain",
+    "intent": "emergency",
+    "source": "emergency.csv"
+  },
+  {
+    "text": "app baar baar crash ho raha hai",
+    "intent": "general",
+    "source": "general.csv"
+  },
+  {
+    "text": "ram ram bhai khamma ghani sa",
+    "intent": "greeting",
+    "source": "greeting.csv"
+  },
+  {
+    "text": "म्हारी मिट्टी री उर्वरता कैसे बढ़ाऊं?",
+    "intent": "soil",
+    "source": "soil.csv"
+  },
+  {
+    "text": "बीज की बुवाई गहराई कितनी होनी चाहिए",
+    "intent": "seed",
+    "source": "seed.csv"
+  },
+  {
+    "text": "म्हारे खेत में रेतीली मिट्टी है, कांई बोवां?",
+    "intent": "crop",
+    "source": "crop.json"
+  },
+  {
+    "text": "soil erosion rokne ke liye kya karein?",
+    "intent": "soil",
+    "source": "soil.csv"
+  },
+  {
+    "text": "seed treatment ke liye kya use karein",
+    "intent": "seed",
+    "source": "seed.csv"
+  },
+  {
+    "text": "मेरी फसल का सही दाम कैसे पता करूं",
+    "intent": "market",
+    "source": "market.csv"
+  },
+  {
+    "text": "मेरे खेत का सॉइल हेल्थ कार्ड नहीं बना है क्या करूं",
+    "intent": "government",
+    "source": "government.csv"
+  },
+  {
+    "text": "म्हारे खेत में फेरस सल्फेट कद डालणो चाहिए?",
+    "intent": "fertilizer",
+    "source": "fertilizer.csv"
+  },
+  {
+    "text": "gehu ka beej kitne saal tak store kar sakte hain",
+    "intent": "seed",
+    "source": "seed.csv"
+  },
+  {
+    "text": "म्हारी फसल में बोरोन री कमी है, के डालूं?",
+    "intent": "fertilizer",
+    "source": "fertilizer.json"
+  },
+  {
+    "text": "seed storage mein keede na lage iske liye kya karein",
+    "intent": "seed",
+    "source": "seed.csv"
+  },
+  {
+    "text": "kcc ke liye eligibility kya hai",
+    "intent": "government",
+    "source": "government.csv"
+  },
+  {
+    "text": "मेरे खेत में सिंचाई नहर से पानी मिलता है कौन सी फसल बोऊं?",
+    "intent": "crop",
+    "source": "crop.csv"
+  },
+  {
+    "text": "harvester machine booking kab karni chahiye",
+    "intent": "machinery",
+    "source": "machinery.csv"
+  },
+  {
+    "text": "स्प्रेयर नोजल बंद हो गई है क्या करूं",
+    "intent": "machinery",
+    "source": "machinery.csv"
+  },
+  {
+    "text": "मेरे खेत में टमाटर की फसल में फंगस लग गई है",
+    "intent": "disease",
+    "source": "disease.csv"
+  },
+  {
+    "text": "मेरे खेत में dap की मात्रा कितनी डालूं?",
+    "intent": "fertilizer",
+    "source": "fertilizer.csv"
+  },
+  {
+    "text": "प्याज के पत्ते मुड़ रहे हैं और पीले हो रहे हैं",
+    "intent": "disease",
+    "source": "disease.csv"
+  },
+  {
+    "text": "ट्रैक्टर खरीदने के लिए लोन कैसे मिलेगा",
+    "intent": "machinery",
+    "source": "machinery.csv"
+  },
+  {
+    "text": "chittorgarh mandi maize rate today",
+    "intent": "market",
+    "source": "market.csv"
+  },
+  {
+    "text": "मेरी अरहर में विल्ट रोग आ गया है क्या करूं?",
+    "intent": "disease",
+    "source": "disease.csv"
+  },
+  {
+    "text": "hello bhai shubh prabhat",
+    "intent": "greeting",
+    "source": "greeting.csv"
+  },
+  {
+    "text": "टमाटर की पूरी फसल में लेट ब्लाइट फैल गई है",
+    "intent": "emergency",
+    "source": "emergency.csv"
+  },
+  {
+    "text": "namaste ji jai shri ram",
+    "intent": "greeting",
+    "source": "greeting.csv"
+  },
+  {
+    "text": "राम राम भाई प्रणाम",
+    "intent": "greeting",
+    "source": "greeting.csv"
+  },
+  {
+    "text": "kal subah pala padne ki sambhavna hai kya",
+    "intent": "weather",
+    "source": "weather.csv"
+  },
+  {
+    "text": "ट्रैक्टर की बैटरी खराब हो गई है",
+    "intent": "machinery",
+    "source": "machinery.csv"
+  },
+  {
+    "text": "paani ki kami mein gehu ki kheti ho sakti hai kya",
+    "intent": "irrigation",
+    "source": "irrigation.csv"
+  },
+  {
+    "text": "which crop is best for drip irrigation?",
+    "intent": "crop",
+    "source": "crop.csv"
+  },
+  {
+    "text": "स्प्रेयर मशीन खरीदने में कितना खर्च आएगा",
+    "intent": "machinery",
+    "source": "machinery.csv"
+  },
+  {
+    "text": "किसान सम्मान निधि का पैसा नहीं आया शिकायत कहां करें",
+    "intent": "government",
+    "source": "government.csv"
+  },
+  {
+    "text": "light mode kaise enable karein app mein",
+    "intent": "general",
+    "source": "general.csv"
+  },
+  {
+    "text": "भाई म्हारे खेत में कौन सी फसल बोवां जो मेडिसिनल हो?",
+    "intent": "crop",
+    "source": "crop.csv"
+  },
+  {
+    "text": "pranam bhai",
+    "intent": "greeting",
+    "source": "greeting.csv"
+  },
+  {
+    "text": "मेरे खेत के लिए कितने hp का ट्रैक्टर चाहिए",
+    "intent": "machinery",
+    "source": "machinery.csv"
+  },
+  {
+    "text": "इस हफ्ते बारिश का अनुमान है क्या",
+    "intent": "weather",
+    "source": "weather.csv"
+  },
+  {
+    "text": "आज चित्तौड़गढ़ मंडी में मक्का का भाव",
+    "intent": "market",
+    "source": "market.csv"
+  },
+  {
+    "text": "मेरे खेत में आग लगी है फसल जल रही है",
+    "intent": "emergency",
+    "source": "emergency.csv"
+  },
+  {
+    "text": "म्हारे खेत में पिछले साल बाजरा था, अब कांई बोवां?",
+    "intent": "crop",
+    "source": "crop.json"
+  },
+  {
+    "text": "म्हारे खेत में फर्टिगेशन से कौन सी खाद दे सकते हैं?",
+    "intent": "fertilizer",
+    "source": "fertilizer.csv"
+  },
+  {
+    "text": "भाई म्हारे खेत में कौन सी फसल बोवां जो बाजार में अच्छे दाम मिलें?",
+    "intent": "crop",
+    "source": "crop.csv"
+  },
+  {
+    "text": "मंडी भाव ऑनलाइन कैसे देखें",
+    "intent": "market",
+    "source": "market.csv"
+  },
+  {
+    "text": "ट्रैक्टर का डीजल ज्यादा खर्च हो रहा है क्यों",
+    "intent": "machinery",
+    "source": "machinery.csv"
+  },
+  {
+    "text": "क्या आज बाहर काम करना सुरक्षित है",
+    "intent": "weather",
+    "source": "weather.csv"
+  },
+  {
+    "text": "what is the best irrigation method for sandy soil",
+    "intent": "irrigation",
+    "source": "irrigation.csv"
+  },
+  {
+    "text": "kcc banwane ke liye kahan jaana padega",
+    "intent": "government",
+    "source": "government.csv"
+  },
+  {
+    "text": "बारिश कब होगी इस महीने",
+    "intent": "weather",
+    "source": "weather.csv"
+  },
+  {
+    "text": "कंबाइन हार्वेस्टर का किराया कितना है",
+    "intent": "machinery",
+    "source": "machinery.csv"
+  },
+  {
+    "text": "is hafte mausam kaisa rahega kheti ke liye",
+    "intent": "weather",
+    "source": "weather.csv"
+  },
+  {
+    "text": "मेरे बोरवेल का पानी खारा है क्या करूं",
+    "intent": "irrigation",
+    "source": "irrigation.csv"
+  },
+  {
+    "text": "tomato mein mosaic virus ke symptoms dikh rahe hain",
+    "intent": "disease",
+    "source": "disease.csv"
+  },
+  {
+    "text": "pm किसान योजना की जानकारी दो",
+    "intent": "government",
+    "source": "government.csv"
+  },
+  {
+    "text": "राम राम ताऊ जी",
+    "intent": "greeting",
+    "source": "greeting.csv"
+  },
+  {
+    "text": "best mandi to sell wheat in rajasthan",
+    "intent": "market",
+    "source": "market.csv"
+  },
+  {
+    "text": "ग्वार का उन्नत बीज कौन सा है",
+    "intent": "seed",
+    "source": "seed.csv"
+  },
+  {
+    "text": "combine harvester charges per bigha rajasthan mein",
+    "intent": "machinery",
+    "source": "machinery.csv"
+  },
+  {
+    "text": "मेरे खेत में कपास के लिए खाद की सिफारिश बताओ",
+    "intent": "fertilizer",
+    "source": "fertilizer.csv"
+  },
+  {
+    "text": "मेरे खेत में ऊसर जमीन है, कौन सी फसल उगाऊं?",
+    "intent": "crop",
+    "source": "crop.json"
+  },
+  {
+    "text": "मेरी मिट्टी में कैल्शियम की कमी है, क्या करूं?",
+    "intent": "soil",
+    "source": "soil.json"
+  },
+  {
+    "text": "manganese sulphate ka dose kya hai?",
+    "intent": "fertilizer",
+    "source": "fertilizer.csv"
+  },
+  {
+    "text": "good evening bhai aaj mandi mein kya bhav hai",
+    "intent": "greeting",
+    "source": "greeting.csv"
+  },
+  {
+    "text": "hailstorm destroyed everything compensation kaise milega",
+    "intent": "emergency",
+    "source": "emergency.csv"
+  },
+  {
+    "text": "मेरी मक्का में मेडिस लीफ ब्लाइट रोग है",
+    "intent": "disease",
+    "source": "disease.csv"
+  },
+  {
+    "text": "सरसों का आज का रेट बताओ",
+    "intent": "market",
+    "source": "market.csv"
+  },
+  {
+    "text": "sesame price today rajasthan mandi",
+    "intent": "market",
+    "source": "market.csv"
+  },
+  {
+    "text": "ईसबगोल की खेती कब और कैसे करें?",
+    "intent": "crop",
+    "source": "crop.csv"
+  },
+  {
+    "text": "fenugreek seed price today mandi",
+    "intent": "market",
+    "source": "market.csv"
+  },
+  {
+    "text": "iron deficiency in soil kaise pahchanen?",
+    "intent": "soil",
+    "source": "soil.csv"
+  },
+  {
+    "text": "groundnut mein tikka disease ho gayi hai kya karein?",
+    "intent": "disease",
+    "source": "disease.csv"
+  },
+  {
+    "text": "ऐप की सेटिंग कैसे खोलें",
+    "intent": "general",
+    "source": "general.csv"
+  },
+  {
+    "text": "saari pattiyaan ek raat mein gir gayi kya hua",
+    "intent": "emergency",
+    "source": "emergency.csv"
+  },
+  {
+    "text": "heavy clay soil ko kaise halka karein?",
+    "intent": "soil",
+    "source": "soil.csv"
+  },
+  {
+    "text": "मेरे खेत में पिछले साल तिल था अब क्या बोऊं?",
+    "intent": "crop",
+    "source": "crop.csv"
+  },
+  {
+    "text": "soil health card camp kab lagega mere gaon mein",
+    "intent": "government",
+    "source": "government.csv"
+  },
+  {
+    "text": "मौसम विभाग का अलर्ट क्या है आज",
+    "intent": "weather",
+    "source": "weather.csv"
+  },
+  {
+    "text": "stem rot emergency fasal gir rahi hai turant upay batao",
+    "intent": "emergency",
+    "source": "emergency.csv"
+  },
+  {
+    "text": "soil microbes kaise badhayein?",
+    "intent": "soil",
+    "source": "soil.csv"
+  },
+  {
+    "text": "borewell band ho gaya fasal ko paani nahi mil raha",
+    "intent": "emergency",
+    "source": "emergency.csv"
+  },
+  {
+    "text": "मूंग की खेती कब और कैसे करें?",
+    "intent": "crop",
+    "source": "crop.csv"
+  },
+  {
+    "text": "jaipur mandi mein aaj gehu ka bhav",
+    "intent": "market",
+    "source": "market.csv"
+  },
+  {
+    "text": "मेरी कपास में बोल वीविल का प्रकोप है",
+    "intent": "disease",
+    "source": "disease.csv"
+  },
+  {
+    "text": "चना बोने का सही समय और तरीका बताओ",
+    "intent": "crop",
+    "source": "crop.csv"
+  },
+  {
+    "text": "म्हारी फसल में पोटेशियम सल्फेट कद डालणो चाहिए?",
+    "intent": "fertilizer",
+    "source": "fertilizer.csv"
+  },
+  {
+    "text": "भाई म्हारे खेत में कौन सी फसल बोवां जो सूखे में भी हो जावे?",
+    "intent": "crop",
+    "source": "crop.csv"
+  },
+  {
+    "text": "पीएम किसान में मोबाइल नंबर कैसे बदलें",
+    "intent": "government",
+    "source": "government.csv"
+  },
+  {
+    "text": "krishi yantra subsidy ke liye apply kaise karein",
+    "intent": "machinery",
+    "source": "machinery.csv"
+  },
+  {
+    "text": "jai shri krishna",
+    "intent": "greeting",
+    "source": "greeting.csv"
+  },
+  {
+    "text": "coriander seed sowing time kya hai",
+    "intent": "seed",
+    "source": "seed.csv"
+  },
+  {
+    "text": "जीरे की खेती कब और कैसे करें?",
+    "intent": "crop",
+    "source": "crop.csv"
+  },
+  {
+    "text": "मेरी मक्का में डाउनी मिल्ड्यू रोग है",
+    "intent": "disease",
+    "source": "disease.csv"
+  },
+  {
+    "text": "फसल बीमा का पैसा कब मिलेगा",
+    "intent": "government",
+    "source": "government.csv"
+  },
+  {
+    "text": "मेरे खेत की मिट्टी में नमक की मात्रा ज्यादा है",
+    "intent": "soil",
+    "source": "soil.csv"
+  },
+  {
+    "text": "म्हारी मिट्टी में ह्यूमस कैसे बढ़ाऊं?",
+    "intent": "soil",
+    "source": "soil.csv"
+  },
+  {
+    "text": "सरकारी योजनाओं की लिस्ट कहां है",
+    "intent": "general",
+    "source": "general.csv"
+  },
+  {
+    "text": "crop is completely yellow and dying urgent help needed",
+    "intent": "emergency",
+    "source": "emergency.csv"
+  },
+  {
+    "text": "flood damaged crop compensation kaise milega",
+    "intent": "government",
+    "source": "government.csv"
+  },
+  {
+    "text": "मंडी में भाव गिर रहा है क्या इस हफ्ते",
+    "intent": "market",
+    "source": "market.csv"
+  },
+  {
+    "text": "कृषि यंत्र किराए पर कहां मिलेंगे",
+    "intent": "machinery",
+    "source": "machinery.csv"
+  },
+  {
+    "text": "मेरे खेत की मिट्टी में पानी जल्दी सूख जाता है",
+    "intent": "irrigation",
+    "source": "irrigation.csv"
+  },
+  {
+    "text": "fall armyworm ne poori maize fasal kha li hai",
+    "intent": "emergency",
+    "source": "emergency.csv"
+  },
+  {
+    "text": "मेरे खेत में पिछले साल मूंगफली थी अब क्या बोऊं?",
+    "intent": "crop",
+    "source": "crop.csv"
+  },
+  {
+    "text": "म्हारे खेत में पिछले साल चना था अब कांई बोवां?",
+    "intent": "crop",
+    "source": "crop.csv"
+  },
+  {
+    "text": "root rot emergency hai meri fasal bachao",
+    "intent": "emergency",
+    "source": "emergency.csv"
+  },
+  {
+    "text": "new agriculture scheme rajasthan 2024 kya hai",
+    "intent": "government",
+    "source": "government.csv"
+  },
+  {
+    "text": "म्हारी मिट्टी में सल्फर री कमी है के उपाय करूं?",
+    "intent": "soil",
+    "source": "soil.csv"
+  },
+  {
+    "text": "ओलावृष्टि से पूरी फसल नष्ट हो गई मुआवजा कैसे मिलेगा",
+    "intent": "emergency",
+    "source": "emergency.csv"
+  },
+  {
+    "text": "गेहूं का msp कितना है 2024 में",
+    "intent": "market",
+    "source": "market.csv"
+  },
+  {
+    "text": "म्हारी मिट्टी में जिंक री कमी है जिंक सल्फेट कितनो डालूं?",
+    "intent": "fertilizer",
+    "source": "fertilizer.csv"
+  },
+  {
+    "text": "म्हारी गेहूं री फसल में लूज स्मट लाग री है के करूं?",
+    "intent": "disease",
+    "source": "disease.csv"
+  },
+  {
+    "text": "aphid attack bahut bada hai sarson mein turant spray batao",
+    "intent": "emergency",
+    "source": "emergency.csv"
+  },
+  {
+    "text": "rabi crops ke liye certified seed kahan milega",
+    "intent": "seed",
+    "source": "seed.csv"
+  },
+  {
+    "text": "मेरी मिट्टी बहुत अम्लीय है, कैसे सुधारूं?",
+    "intent": "soil",
+    "source": "soil.json"
+  },
+  {
+    "text": "फसल पीली पड़ रही है और मर रही है तुरंत बताओ",
+    "intent": "emergency",
+    "source": "emergency.csv"
+  },
+  {
+    "text": "किसान आईडी कैसे बनाएं",
+    "intent": "general",
+    "source": "general.csv"
+  },
+  {
+    "text": "hello bhai jai bajrang bali",
+    "intent": "greeting",
+    "source": "greeting.csv"
+  },
+  {
+    "text": "किसान क्रेडिट कार्ड से कितना लोन मिलता है",
+    "intent": "government",
+    "source": "government.csv"
+  },
+  {
+    "text": "chana mein botrytis grey mold disease hai",
+    "intent": "disease",
+    "source": "disease.csv"
+  },
+  {
+    "text": "रबी फसलों के लिए उन्नत बीज कौन से हैं",
+    "intent": "seed",
+    "source": "seed.csv"
+  },
+  {
+    "text": "mandi commission charge kitna hota hai",
+    "intent": "market",
+    "source": "market.csv"
+  },
+  {
+    "text": "मेरे खेत में पिछले साल जौ था, अब क्या बोऊं?",
+    "intent": "crop",
+    "source": "crop.json"
+  },
+  {
+    "text": "म्हारे खेत री मिट्टी में बोरोन री कमी है",
+    "intent": "soil",
+    "source": "soil.csv"
+  },
+  {
+    "text": "कृषि यंत्र मेले में कौन सी मशीनें मिलती हैं",
+    "intent": "machinery",
+    "source": "machinery.csv"
+  },
+  {
+    "text": "pm kisan last date for registration kya hai",
+    "intent": "government",
+    "source": "government.csv"
+  },
+  {
+    "text": "jai hind bhai khamma ghani",
+    "intent": "greeting",
+    "source": "greeting.csv"
+  },
+  {
+    "text": "is saal sardi jaldi aayegi kya",
+    "intent": "weather",
+    "source": "weather.csv"
+  },
+  {
+    "text": "battery sprayer vs petrol sprayer kaunsa better hai",
+    "intent": "machinery",
+    "source": "machinery.csv"
+  },
+  {
+    "text": "सूखे से फसल मर रही है पानी नहीं है",
+    "intent": "emergency",
+    "source": "emergency.csv"
+  },
+  {
+    "text": "mujhe is app ki jankari do",
+    "intent": "general",
+    "source": "general.csv"
+  },
+  {
+    "text": "मेरे नजदीक कौन सी मंडी है",
+    "intent": "market",
+    "source": "market.csv"
+  },
+  {
+    "text": "hi bhai jai shri krishna",
+    "intent": "greeting",
+    "source": "greeting.csv"
+  },
+  {
+    "text": "मेरे खेत में पानी जमा हो जाता है क्या करूं",
+    "intent": "irrigation",
+    "source": "irrigation.csv"
+  },
+  {
+    "text": "मेरी फसल को तुरंत बचाना है क्या करूं",
+    "intent": "emergency",
+    "source": "emergency.csv"
+  },
+  {
+    "text": "khet mein paani bhar gaya hai kya karein",
+    "intent": "irrigation",
+    "source": "irrigation.csv"
+  },
+  {
+    "text": "राजस्थान में नई कृषि योजना 2024 कौन सी है",
+    "intent": "government",
+    "source": "government.csv"
+  },
+  {
+    "text": "कौन सी बीज कंपनी सबसे अच्छी है",
+    "intent": "seed",
+    "source": "seed.csv"
+  },
+  {
+    "text": "म्हारी मिट्टी में नाइट्रोजन री कमी है पत्ते पीले हो रहे हैं",
+    "intent": "soil",
+    "source": "soil.csv"
+  },
+  {
+    "text": "power tiller vs tractor kaunsa sasta padega",
+    "intent": "machinery",
+    "source": "machinery.csv"
+  },
+  {
+    "text": "khamma ghani ji namaskar",
+    "intent": "greeting",
+    "source": "greeting.csv"
+  },
+  {
+    "text": "tomato mein root knot nematode ka attack hai",
+    "intent": "disease",
+    "source": "disease.csv"
+  },
+  {
+    "text": "pink bollworm emergency in cotton crop please help",
+    "intent": "emergency",
+    "source": "emergency.csv"
+  },
+  {
+    "text": "new wheat variety 2024 rajasthan ke liye",
+    "intent": "seed",
+    "source": "seed.csv"
+  },
+  {
+    "text": "भाई म्हारे खेत में कौन सी फसल बोवां जो कम पाणी में हो जावे?",
+    "intent": "crop",
+    "source": "crop.csv"
+  },
+  {
+    "text": "म्हारी फसल में सल्फर री कमी है, के डालूं?",
+    "intent": "fertilizer",
+    "source": "fertilizer.json"
+  },
+  {
+    "text": "camera se fasal ki jaanch kaise karein",
+    "intent": "general",
+    "source": "general.csv"
+  },
+  {
+    "text": "मेरे खेत की मिट्टी बहुत सख्त हो गई है कैसे सुधारूं?",
+    "intent": "soil",
+    "source": "soil.csv"
+  },
+  {
+    "text": "rice mein blast disease ho gayi hai, kya spray karein?",
+    "intent": "disease",
+    "source": "disease.json"
+  },
+  {
+    "text": "soil health card kaise banwayein",
+    "intent": "government",
+    "source": "government.csv"
+  },
+  {
+    "text": "बाजरे का उन्नत बीज कौन सा है राजस्थान में",
+    "intent": "seed",
+    "source": "seed.csv"
+  },
+  {
+    "text": "म्हारे खेत री मिट्टी में जिप्सम डालने से के फायदो होसी?",
+    "intent": "soil",
+    "source": "soil.csv"
+  },
+  {
+    "text": "मेरे खेत में हरी खाद कैसे डालें?",
+    "intent": "soil",
+    "source": "soil.csv"
+  },
+  {
+    "text": "मसूर की बुवाई का सही समय बताओ",
+    "intent": "crop",
+    "source": "crop.csv"
+  },
+  {
+    "text": "मेरी मूंगफली में टिक्का रोग के लिए क्या स्प्रे करूं?",
+    "intent": "disease",
+    "source": "disease.csv"
+  },
+  {
+    "text": "फसल की तस्वीर खींचकर कैसे भेजें",
+    "intent": "general",
+    "source": "general.csv"
+  },
+  {
+    "text": "म्हारे खेत में रेतीली मिट्टी है कांई बोवां?",
+    "intent": "crop",
+    "source": "crop.csv"
+  },
+  {
+    "text": "is week barish hogi kya mere gaon mein",
+    "intent": "weather",
+    "source": "weather.csv"
+  },
+  {
+    "text": "virus outbreak ho gaya hai khet mein kya karein",
+    "intent": "emergency",
+    "source": "emergency.csv"
+  },
+  {
+    "text": "wild boar attacked my crop last night total loss",
+    "intent": "emergency",
+    "source": "emergency.csv"
+  },
+  {
+    "text": "फसल में फंगस इतनी तेजी से फैल रही है कि रोक नहीं पा रहा",
+    "intent": "emergency",
+    "source": "emergency.csv"
+  },
+  {
+    "text": "ओले पड़ने से पूरी फसल नष्ट हो गई",
+    "intent": "emergency",
+    "source": "emergency.csv"
+  },
+  {
+    "text": "म्हारी सरसों में npk खाद कितनी डालूं?",
+    "intent": "fertilizer",
+    "source": "fertilizer.csv"
+  },
+  {
+    "text": "मेरे खेत में मिट्टी में जैव विविधता कैसे बढ़ाऊं?",
+    "intent": "soil",
+    "source": "soil.csv"
+  },
+  {
+    "text": "cold wave se fasal ko kaise bachayein",
+    "intent": "weather",
+    "source": "weather.csv"
+  },
+  {
+    "text": "मक्का में पानी की जरूरत कब होती है",
+    "intent": "irrigation",
+    "source": "irrigation.csv"
+  },
+  {
+    "text": "emergency fertilizer recommendation chahiye abhi",
+    "intent": "emergency",
+    "source": "emergency.csv"
+  },
+  {
+    "text": "borewell ka paani khaara hai kya use kar sakte hain",
+    "intent": "irrigation",
+    "source": "irrigation.csv"
+  },
+  {
+    "text": "राम राम जी आज बुवाई करनी है",
+    "intent": "greeting",
+    "source": "greeting.csv"
+  },
+  {
+    "text": "कल्टीवेटर से खेत जोतने का तरीका बताओ",
+    "intent": "machinery",
+    "source": "machinery.csv"
+  },
+  {
+    "text": "कम पानी में अधिक उत्पादन कैसे लें",
+    "intent": "irrigation",
+    "source": "irrigation.csv"
+  },
+  {
+    "text": "सरसों के लिए कौन सा हाइब्रिड बीज अच्छा है",
+    "intent": "seed",
+    "source": "seed.csv"
+  },
+  {
+    "text": "मेरे खेत में मिट्टी की उर्वरता बनाए रखने के लिए क्या करूं?",
+    "intent": "soil",
+    "source": "soil.csv"
+  },
+  {
+    "text": "मंडी में भाव बढ़ेगा या घटेगा इस हफ्ते",
+    "intent": "market",
+    "source": "market.csv"
+  },
+  {
+    "text": "मेरी फसल में मैग्नीशियम की कमी है, क्या करूं?",
+    "intent": "fertilizer",
+    "source": "fertilizer.json"
+  },
+  {
+    "text": "sprayer nozzle band ho gayi hai kaise theek karein",
+    "intent": "machinery",
+    "source": "machinery.csv"
+  },
+  {
+    "text": "is mahine mein kitni barish hogi",
+    "intent": "weather",
+    "source": "weather.csv"
+  },
+  {
+    "text": "bhindi mein yellow vein mosaic virus hai, kya karein?",
+    "intent": "disease",
+    "source": "disease.json"
+  },
+  {
+    "text": "mandi mein fasal kaise bechein step by step",
+    "intent": "market",
+    "source": "market.csv"
+  },
+  {
+    "text": "pest attack bahut zyada ho gaya hai turant spray batao",
+    "intent": "emergency",
+    "source": "emergency.csv"
+  },
+  {
+    "text": "hi pragati ai aaj kya kaam aayega",
+    "intent": "greeting",
+    "source": "greeting.csv"
+  },
+  {
+    "text": "सरकारी योजना का स्टेटस ऑनलाइन कैसे चेक करें",
+    "intent": "government",
+    "source": "government.csv"
+  },
+  {
+    "text": "हेल्पलाइन नंबर क्या है",
+    "intent": "general",
+    "source": "general.csv"
+  },
+  {
+    "text": "मेरे खेत के लिए कौन सा बीज सही रहेगा",
+    "intent": "seed",
+    "source": "seed.csv"
+  },
+  {
+    "text": "disease spreading very fast in my field help me now",
+    "intent": "emergency",
+    "source": "emergency.csv"
+  },
+  {
+    "text": "मेरे खेत में मिट्टी में पानी जमा रहता है क्या करूं?",
+    "intent": "soil",
+    "source": "soil.csv"
+  },
+  {
+    "text": "best seed company in india for wheat",
+    "intent": "seed",
+    "source": "seed.csv"
+  },
+  {
+    "text": "मिर्च का अच्छा बीज कौन सा है",
+    "intent": "seed",
+    "source": "seed.csv"
+  },
+  {
+    "text": "multi crop thresher kya hota hai aur kaise use karein",
+    "intent": "machinery",
+    "source": "machinery.csv"
+  },
+  {
+    "text": "tell me about this app features",
+    "intent": "general",
+    "source": "general.csv"
+  },
+  {
+    "text": "मेरे खेत में जिंक सल्फेट कब और कैसे डालें?",
+    "intent": "fertilizer",
+    "source": "fertilizer.csv"
+  },
+  {
+    "text": "mustard mein fertilizer schedule kya hona chahiye?",
+    "intent": "fertilizer",
+    "source": "fertilizer.csv"
+  },
+  {
+    "text": "मुझे अच्छा मुनाफा चाहिए, कौन सी फसल बोऊं?",
+    "intent": "crop",
+    "source": "crop.json"
+  },
+  {
+    "text": "ठंड कब से शुरू होगी इस साल",
+    "intent": "weather",
+    "source": "weather.csv"
+  },
+  {
+    "text": "what is the weather like tomorrow morning",
+    "intent": "weather",
+    "source": "weather.csv"
+  },
+  {
+    "text": "best crop for sandy soil in rajasthan?",
+    "intent": "crop",
+    "source": "crop.csv"
+  },
+  {
+    "text": "fungus spreading uncontrollably in my field emergency",
+    "intent": "emergency",
+    "source": "emergency.csv"
+  },
+  {
+    "text": "is app mein koi paid subscription hai kya",
+    "intent": "general",
+    "source": "general.csv"
+  },
+  {
+    "text": "मेरे खेत में मिट्टी परीक्षण की रिपोर्ट में oc कम है",
+    "intent": "soil",
+    "source": "soil.csv"
+  },
+  {
+    "text": "मेरे खेत में जैविक खाद कितनी डालें?",
+    "intent": "fertilizer",
+    "source": "fertilizer.csv"
+  },
+  {
+    "text": "guar gum price today mandi mein",
+    "intent": "market",
+    "source": "market.csv"
+  },
+  {
+    "text": "ऐप में अपना खेत कैसे जोड़ें",
+    "intent": "general",
+    "source": "general.csv"
+  },
+  {
+    "text": "everything is lost in my field sos please help",
+    "intent": "emergency",
+    "source": "emergency.csv"
+  },
+  {
+    "text": "आज श्रीगंगानगर मंडी में नरमा का भाव",
+    "intent": "market",
+    "source": "market.csv"
+  },
+  {
+    "text": "किसान कर्ज माफी योजना राजस्थान में है क्या",
+    "intent": "government",
+    "source": "government.csv"
+  },
+  {
+    "text": "मेरे खेत में पिछले साल मूंग था, अब क्या बोऊं?",
+    "intent": "crop",
+    "source": "crop.json"
+  },
+  {
+    "text": "बीज को घर पर कैसे स्टोर करें",
+    "intent": "seed",
+    "source": "seed.csv"
+  },
+  {
+    "text": "ओलावृष्टि की चेतावनी है क्या",
+    "intent": "weather",
+    "source": "weather.csv"
+  },
+  {
+    "text": "high ec soil mein kya karein?",
+    "intent": "soil",
+    "source": "soil.csv"
+  },
+  {
+    "text": "cotton mein boll rot ho rahi hai, kya karein?",
+    "intent": "disease",
+    "source": "disease.json"
+  },
+  {
+    "text": "म्हारे खेत री मिट्टी में मैंगनीज री कमी है",
+    "intent": "soil",
+    "source": "soil.csv"
+  },
+  {
+    "text": "मेरे खेत में पिछले साल धनिया था अब क्या बोऊं?",
+    "intent": "crop",
+    "source": "crop.csv"
+  },
+  {
+    "text": "soil moisture check karne ka tarika kya hai",
+    "intent": "irrigation",
+    "source": "irrigation.csv"
+  },
+  {
+    "text": "मेरी फसल में आयरन की कमी है क्या डालूं?",
+    "intent": "fertilizer",
+    "source": "fertilizer.csv"
+  },
+  {
+    "text": "म्हारी गेहूं री फसल में खाद री मात्रा बताओ",
+    "intent": "fertilizer",
+    "source": "fertilizer.csv"
+  },
+  {
+    "text": "jai hind bhai jai shri ram",
+    "intent": "greeting",
+    "source": "greeting.csv"
+  },
+  {
+    "text": "root rot se paudhe gir rahe hain emergency hai",
+    "intent": "emergency",
+    "source": "emergency.csv"
+  },
+  {
+    "text": "kharif season mein kaunsi fasal best hai?",
+    "intent": "crop",
+    "source": "crop.csv"
+  },
+  {
+    "text": "कल सुबह तापमान कितना रहेगा",
+    "intent": "weather",
+    "source": "weather.csv"
+  },
+  {
+    "text": "aaj bajra ka mandi bhav kya hai",
+    "intent": "market",
+    "source": "market.csv"
+  },
+  {
+    "text": "मंडी में ऑनलाइन बिक्री कैसे करें",
+    "intent": "market",
+    "source": "market.csv"
+  },
+  {
+    "text": "कपास का हाइब्रिड बीज कौन सा अच्छा है",
+    "intent": "seed",
+    "source": "seed.csv"
+  },
+  {
+    "text": "मेरे खेत में मिट्टी में कार्बनिक पदार्थ कैसे बढ़ाऊं?",
+    "intent": "soil",
+    "source": "soil.csv"
+  },
+  {
+    "text": "मेरे खेत में बाढ़ सिंचाई से पानी बर्बाद होता है",
+    "intent": "irrigation",
+    "source": "irrigation.csv"
+  },
+  {
+    "text": "रोटावेटर की गहराई कितनी रखें",
+    "intent": "machinery",
+    "source": "machinery.csv"
+  },
+  {
+    "text": "मेरे खेत में बैंगन की फसल में लिटिल लीफ रोग है",
+    "intent": "disease",
+    "source": "disease.csv"
+  },
+  {
+    "text": "nano urea spray kaise karein aur kitni matra mein?",
+    "intent": "fertilizer",
+    "source": "fertilizer.csv"
+  },
+  {
+    "text": "soil structure improve karne ke liye kya karein?",
+    "intent": "soil",
+    "source": "soil.csv"
+  },
+  {
+    "text": "बाजरे में कितने पानी की जरूरत होती है",
+    "intent": "irrigation",
+    "source": "irrigation.csv"
+  },
+  {
+    "text": "मूंग का बीज कब बोएं राजस्थान में",
+    "intent": "seed",
+    "source": "seed.csv"
+  },
+  {
+    "text": "मेरे खेत में पानी की लाइन नहीं है क्या करूं",
+    "intent": "irrigation",
+    "source": "irrigation.csv"
+  },
+  {
+    "text": "npk deficiency ke symptoms kya hote hain?",
+    "intent": "soil",
+    "source": "soil.csv"
+  },
+  {
+    "text": "गेहूं में पहली सिंचाई कब करें",
+    "intent": "irrigation",
+    "source": "irrigation.csv"
+  },
+  {
+    "text": "मेरे खेत में पिछले साल ईसबगोल था, अब क्या बोऊं?",
+    "intent": "crop",
+    "source": "crop.json"
+  },
+  {
+    "text": "gehu ka certified seed kahan milega",
+    "intent": "seed",
+    "source": "seed.csv"
+  },
+  {
+    "text": "khamma ghani bhai jai shri ram",
+    "intent": "greeting",
+    "source": "greeting.csv"
+  },
+  {
+    "text": "pm kisan correction kaise karein online",
+    "intent": "government",
+    "source": "government.csv"
+  },
+  {
+    "text": "hello bhai radhe radhe",
+    "intent": "greeting",
+    "source": "greeting.csv"
+  },
+  {
+    "text": "आज उड़द का भाव क्या है",
+    "intent": "market",
+    "source": "market.csv"
+  },
+  {
+    "text": "सरसों की फसल को कितना पानी चाहिए",
+    "intent": "irrigation",
+    "source": "irrigation.csv"
+  },
+  {
+    "text": "भाई म्हारे खेत में कौन सी औषधीय फसल बोवां?",
+    "intent": "crop",
+    "source": "crop.csv"
+  },
+  {
+    "text": "ग्रीष्मकालीन फसलें कौन सी हैं?",
+    "intent": "crop",
+    "source": "crop.csv"
+  },
+  {
+    "text": "kaunsi fasal mein sabse zyada munafa hai?",
+    "intent": "crop",
+    "source": "crop.csv"
+  },
+  {
+    "text": "moong price forecast this season kya hai",
+    "intent": "market",
+    "source": "market.csv"
+  },
+  {
+    "text": "tractor mein diesel zyada kyun lag raha hai",
+    "intent": "machinery",
+    "source": "machinery.csv"
+  },
+  {
+    "text": "kaunsi fasal mein sabse kam paani lagta hai?",
+    "intent": "crop",
+    "source": "crop.csv"
+  },
+  {
+    "text": "today weather forecast for my village",
+    "intent": "weather",
+    "source": "weather.csv"
+  },
+  {
+    "text": "आज बाजरे का भाव क्या है मंडी में",
+    "intent": "market",
+    "source": "market.csv"
+  },
+  {
+    "text": "rotavator chain toot gayi hai kaise theek karein",
+    "intent": "machinery",
+    "source": "machinery.csv"
+  },
+  {
+    "text": "मेथी की कटाई कब करनी चाहिए?",
+    "intent": "crop",
+    "source": "crop.csv"
+  },
+  {
+    "text": "मेरी पूरी फसल खराब हो गई",
+    "intent": "emergency",
+    "source": "emergency.csv"
+  },
+  {
+    "text": "apni fasal ka sahi rate kaise pata karein",
+    "intent": "market",
+    "source": "market.csv"
+  },
+  {
+    "text": "neelgai ne mera poora khet barbad kar diya",
+    "intent": "emergency",
+    "source": "emergency.csv"
+  },
+  {
+    "text": "guar seed variety rajasthan ke liye best",
+    "intent": "seed",
+    "source": "seed.csv"
+  },
+  {
+    "text": "animals destroyed my crop overnight total loss",
+    "intent": "emergency",
+    "source": "emergency.csv"
+  },
+  {
+    "text": "मेरा ट्रैक्टर खराब हो गया है क्या करूं",
+    "intent": "machinery",
+    "source": "machinery.csv"
+  },
+  {
+    "text": "can you help me with farming",
+    "intent": "general",
+    "source": "general.csv"
+  },
+  {
+    "text": "cotton mein fusarium wilt disease aa gayi hai",
+    "intent": "disease",
+    "source": "disease.csv"
+  },
+  {
+    "text": "all leaves turned yellow suddenly urgent help needed",
+    "intent": "emergency",
+    "source": "emergency.csv"
+  },
+  {
+    "text": "barish ka pani fasal ke liye achha hai kya",
+    "intent": "weather",
+    "source": "weather.csv"
+  },
+  {
+    "text": "बाढ़ आ गई है खेत में पानी भर गया",
+    "intent": "emergency",
+    "source": "emergency.csv"
+  },
+  {
+    "text": "मेरे बोरवेल में पानी कम हो गया है",
+    "intent": "irrigation",
+    "source": "irrigation.csv"
+  },
+  {
+    "text": "म्हारे खेत री मिट्टी में जिंक री कमी है, के करूं?",
+    "intent": "soil",
+    "source": "soil.json"
+  },
+  {
+    "text": "disease photo kaise bhejein ai ko",
+    "intent": "general",
+    "source": "general.csv"
+  },
+  {
+    "text": "म्हारे खेत री मिट्टी चिकनी है पाणी नहीं सोखती",
+    "intent": "soil",
+    "source": "soil.csv"
+  },
+  {
+    "text": "म्हारे खेत री मिट्टी में जिंक री कमी है के करूं?",
+    "intent": "soil",
+    "source": "soil.csv"
+  },
+  {
+    "text": "wheat crop insurance premium kitna hoga",
+    "intent": "government",
+    "source": "government.csv"
+  },
+  {
+    "text": "मेरे खेत में पिछले साल सूरजमुखी था अब क्या बोऊं?",
+    "intent": "crop",
+    "source": "crop.csv"
+  },
+  {
+    "text": "मेरी मिट्टी में माइक्रोन्यूट्रिएंट्स की कमी है, क्या करूं?",
+    "intent": "soil",
+    "source": "soil.json"
+  },
+  {
+    "text": "नमस्ते दादा जी",
+    "intent": "greeting",
+    "source": "greeting.csv"
+  },
+  {
+    "text": "आज बीकानेर मंडी में मूंग का भाव",
+    "intent": "market",
+    "source": "market.csv"
+  },
+  {
+    "text": "pmfby online registration process kya hai",
+    "intent": "government",
+    "source": "government.csv"
+  },
+  {
+    "text": "मेरे खेत में मैंगनीज सल्फेट कब और कितना डालें?",
+    "intent": "fertilizer",
+    "source": "fertilizer.csv"
+  },
+  {
+    "text": "मेरे खेत की मिट्टी में नमक ज्यादा है कौन सी फसल उगाऊं?",
+    "intent": "crop",
+    "source": "crop.csv"
+  },
+  {
+    "text": "मेरे खेत में मिट्टी में सूक्ष्म जीवाणु कैसे बढ़ाऊं?",
+    "intent": "soil",
+    "source": "soil.csv"
+  },
+  {
+    "text": "राजस्थान में मिनी ट्रैक्टर पर सब्सिडी है क्या",
+    "intent": "government",
+    "source": "government.csv"
+  },
+  {
+    "text": "tractor subsidy rajasthan mein kaise milegi",
+    "intent": "machinery",
+    "source": "machinery.csv"
+  },
+  {
+    "text": "aaj ka mandi rate app mein kahan hai",
+    "intent": "general",
+    "source": "general.csv"
+  },
+  {
+    "text": "मेरी प्याज की फसल में पर्पल ब्लॉच रोग है",
+    "intent": "disease",
+    "source": "disease.csv"
+  },
+  {
+    "text": "म्हारी फसल में गोबर खाद कद डालणो चाहिए?",
+    "intent": "fertilizer",
+    "source": "fertilizer.csv"
+  },
+  {
+    "text": "ट्रैक्टर का टायर पंचर हो गया है",
+    "intent": "machinery",
+    "source": "machinery.csv"
+  },
+  {
+    "text": "shubh prabhat bhai sahab",
+    "intent": "greeting",
+    "source": "greeting.csv"
+  },
+  {
+    "text": "म्हारी फसल में रात को जानवर घुस गए सब खा गए",
+    "intent": "emergency",
+    "source": "emergency.csv"
+  },
+  {
+    "text": "namaste pragati bhai kaise ho",
+    "intent": "greeting",
+    "source": "greeting.csv"
+  },
+  {
+    "text": "मुझे अच्छा मुनाफा चाहिए कौन सी फसल बोऊं?",
+    "intent": "crop",
+    "source": "crop.csv"
+  },
+  {
+    "text": "मेरी मिट्टी का ph बहुत ज्यादा है कैसे कम करूं?",
+    "intent": "soil",
+    "source": "soil.csv"
+  },
+  {
+    "text": "tractor battery kharab ho gayi hai kya karein",
+    "intent": "machinery",
+    "source": "machinery.csv"
+  },
+  {
+    "text": "जड़ें सड़ रही हैं पूरी फसल गिर रही है",
+    "intent": "emergency",
+    "source": "emergency.csv"
+  },
+  {
+    "text": "drip irrigation subsidy rajasthan mein milti hai kya",
+    "intent": "irrigation",
+    "source": "irrigation.csv"
+  },
+  {
+    "text": "इस ऐप में कितने सेक्शन हैं",
+    "intent": "general",
+    "source": "general.csv"
+  },
+  {
+    "text": "मेरी मक्का में फॉल आर्मीवर्म कीड़ा लग गया है",
+    "intent": "disease",
+    "source": "disease.csv"
+  },
+  {
+    "text": "किसान क्रेडिट कार्ड बनवाने में कितना समय लगता है",
+    "intent": "government",
+    "source": "government.csv"
+  },
+  {
+    "text": "which company developed pragati ai",
+    "intent": "general",
+    "source": "general.csv"
+  },
+  {
+    "text": "mandi bhav mein utaar chadhav kyun hota hai",
+    "intent": "market",
+    "source": "market.csv"
+  },
+  {
+    "text": "बारिश का मौसम कब तक रहेगा",
+    "intent": "weather",
+    "source": "weather.csv"
+  },
+  {
+    "text": "म्हारे खेत में बाजरे के लिए खाद की मात्रा बताओ",
+    "intent": "fertilizer",
+    "source": "fertilizer.csv"
+  },
+  {
+    "text": "ajmer mandi sarson rate today",
+    "intent": "market",
+    "source": "market.csv"
+  },
+  {
+    "text": "म्हारी फसल में dap कद डालणो चाहिए?",
+    "intent": "fertilizer",
+    "source": "fertilizer.csv"
+  },
+  {
+    "text": "frost warning kya hai aaj raat ke liye",
+    "intent": "weather",
+    "source": "weather.csv"
+  },
+  {
+    "text": "म्हारे खेत री मिट्टी में कॉपर री कमी है",
+    "intent": "soil",
+    "source": "soil.csv"
+  },
+  {
+    "text": "new hybrid mustard variety 2024 kaunsi hai",
+    "intent": "seed",
+    "source": "seed.csv"
+  },
+  {
+    "text": "मेरी फसल पीली पड़ रही है पानी की कमी से",
+    "intent": "irrigation",
+    "source": "irrigation.csv"
+  },
+  {
+    "text": "jowar ki harvesting kab karni chahiye?",
+    "intent": "crop",
+    "source": "crop.csv"
+  },
+  {
+    "text": "कपास में पानी देने का सही तरीका क्या है",
+    "intent": "irrigation",
+    "source": "irrigation.csv"
+  },
+  {
+    "text": "pm kisan complaint kaise darj karein",
+    "intent": "government",
+    "source": "government.csv"
+  },
+  {
+    "text": "cotton mein fertilizer schedule kya hona chahiye?",
+    "intent": "fertilizer",
+    "source": "fertilizer.csv"
+  },
+  {
+    "text": "मंडी में फसल बेचने पर कमीशन कितना लगता है",
+    "intent": "market",
+    "source": "market.csv"
+  },
+  {
+    "text": "tomato mein septoria leaf spot disease hai",
+    "intent": "disease",
+    "source": "disease.csv"
+  },
+  {
+    "text": "मेरे खेत में पिछले साल उड़द था अब क्या बोऊं?",
+    "intent": "crop",
+    "source": "crop.csv"
+  },
+  {
+    "text": "ammonium sulphate fertilizer kab dena chahiye?",
+    "intent": "fertilizer",
+    "source": "fertilizer.csv"
+  },
+  {
+    "text": "आज का मंडी भाव कहां देखें",
+    "intent": "general",
+    "source": "general.csv"
+  },
+  {
+    "text": "ऐप में लाइट मोड कैसे करें",
+    "intent": "general",
+    "source": "general.csv"
+  },
+  {
+    "text": "ट्रैक्टर का इंजन ऑयल कब बदलें",
+    "intent": "machinery",
+    "source": "machinery.csv"
+  },
+  {
+    "text": "म्हारे खेत में नीम कोटेड यूरिया कद डालणो चाहिए?",
+    "intent": "fertilizer",
+    "source": "fertilizer.csv"
+  },
+  {
+    "text": "जैविक बीज कहां से मिलेगा",
+    "intent": "seed",
+    "source": "seed.csv"
+  },
+  {
+    "text": "क्या आज ओले पड़ेंगे",
+    "intent": "weather",
+    "source": "weather.csv"
+  },
+  {
+    "text": "online mandi se fasal kaise bechein",
+    "intent": "market",
+    "source": "market.csv"
+  },
+  {
+    "text": "नमस्ते जी आज खाद डालनी है",
+    "intent": "greeting",
+    "source": "greeting.csv"
+  },
+  {
+    "text": "भाई म्हारी गेहूं री फसल में पीला रतुआ लाग रयो है",
+    "intent": "disease",
+    "source": "disease.csv"
+  },
+  {
+    "text": "नमस्ते जी मेरी फसल में बीमारी लग गई है",
+    "intent": "greeting",
+    "source": "greeting.csv"
+  },
+  {
+    "text": "बीज बोने से पहले खेत कैसे तैयार करें",
+    "intent": "seed",
+    "source": "seed.csv"
+  },
+  {
+    "text": "आज सोयाबीन का भाव क्या है",
+    "intent": "market",
+    "source": "market.csv"
+  },
+  {
+    "text": "मेरे खेत में मिट्टी की परत सख्त हो गई है",
+    "intent": "soil",
+    "source": "soil.csv"
+  },
+  {
+    "text": "soil test kitne saal mein ek baar karwana chahiye?",
+    "intent": "soil",
+    "source": "soil.csv"
+  },
+  {
+    "text": "मेरे खेत में पिछले साल ईसबगोल था अब क्या बोऊं?",
+    "intent": "crop",
+    "source": "crop.csv"
+  },
+  {
+    "text": "जवाब गलत आया तो क्या करूं",
+    "intent": "general",
+    "source": "general.csv"
+  },
+  {
+    "text": "म्हारी मिट्टी में पानी सोखने की क्षमता कम है",
+    "intent": "soil",
+    "source": "soil.csv"
+  },
+  {
+    "text": "ड्रिप सिस्टम में पाइप बंद हो गई है क्या करूं",
+    "intent": "irrigation",
+    "source": "irrigation.csv"
+  },
+  {
+    "text": "drought se meri fasal khatam ho rahi hai",
+    "intent": "emergency",
+    "source": "emergency.csv"
+  },
+  {
+    "text": "बीज की नमी कितनी होनी चाहिए भंडारण के लिए",
+    "intent": "seed",
+    "source": "seed.csv"
+  },
+  {
+    "text": "म्हारी मिट्टी में नाइट्रोजन री कमी है, पत्ते पीले हो रहे हैं",
+    "intent": "soil",
+    "source": "soil.json"
+  },
+  {
+    "text": "good evening ji jai hind",
+    "intent": "greeting",
+    "source": "greeting.csv"
+  },
+  {
+    "text": "which crop is best for loamy soil?",
+    "intent": "crop",
+    "source": "crop.csv"
+  },
+  {
+    "text": "म्हारे खेत में खाद कम डालने से के होसी?",
+    "intent": "fertilizer",
+    "source": "fertilizer.csv"
+  },
+  {
+    "text": "वायरस फैल गया है पूरे खेत में तुरंत उपाय बताओ",
+    "intent": "emergency",
+    "source": "emergency.csv"
+  },
+  {
+    "text": "chana mein wilt disease aa gayi hai, upay batao",
+    "intent": "disease",
+    "source": "disease.json"
+  },
+  {
+    "text": "सरकारी लोन पर ब्याज दर कितनी है",
+    "intent": "government",
+    "source": "government.csv"
+  },
+  {
+    "text": "helpline number kya hai pragati ai ka",
+    "intent": "general",
+    "source": "general.csv"
+  },
+  {
+    "text": "ऐप का नया वर्जन कब आएगा",
+    "intent": "general",
+    "source": "general.csv"
+  },
+  {
+    "text": "मेरे खेत में काली मिट्टी है, इसमें कौन सी फसल अच्छी होगी?",
+    "intent": "soil",
+    "source": "soil.json"
+  },
+  {
+    "text": "kcc se khad aur beej kharid sakte hain kya",
+    "intent": "government",
+    "source": "government.csv"
+  },
+  {
+    "text": "chilli mein bacterial wilt ho gayi hai, upay batao",
+    "intent": "disease",
+    "source": "disease.json"
+  },
+  {
+    "text": "hailstorm se meri poori fasal barbad ho gayi",
+    "intent": "emergency",
+    "source": "emergency.csv"
+  },
+  {
+    "text": "soil health card kya hota hai aur kaise milega?",
+    "intent": "soil",
+    "source": "soil.csv"
+  },
+  {
+    "text": "drip irrigation se kitne percent paani bachta hai",
+    "intent": "irrigation",
+    "source": "irrigation.csv"
+  },
+  {
+    "text": "गेहूं में पानी कब देना चाहिए",
+    "intent": "irrigation",
+    "source": "irrigation.csv"
+  },
+  {
+    "text": "म्हारी कपास री फसल में गुलाबी सुंडी लाग री है",
+    "intent": "disease",
+    "source": "disease.csv"
+  },
+  {
+    "text": "मेरी फसल में पोटाश की कमी है, कितना डालूं?",
+    "intent": "fertilizer",
+    "source": "fertilizer.json"
+  },
+  {
+    "text": "गर्मी में सब्जियों को दिन में कितनी बार पानी दें",
+    "intent": "irrigation",
+    "source": "irrigation.csv"
+  },
+  {
+    "text": "गेहूं की बुवाई में बीज दर कितनी रखें",
+    "intent": "seed",
+    "source": "seed.csv"
+  },
+  {
+    "text": "play store mein pragati ai kaise dhundhein",
+    "intent": "general",
+    "source": "general.csv"
+  },
+  {
+    "text": "मंडी में बिक्री के लिए रजिस्ट्रेशन कैसे करें",
+    "intent": "market",
+    "source": "market.csv"
+  },
+  {
+    "text": "किसान सम्मान निधि में आधार लिंक कैसे करें",
+    "intent": "government",
+    "source": "government.csv"
+  },
+  {
+    "text": "म्हारी फसल में कौन सी खाद सबसे पहले डालणो चाहिए?",
+    "intent": "fertilizer",
+    "source": "fertilizer.csv"
+  },
+  {
+    "text": "flood irrigation aur drip irrigation mein kya fark hai",
+    "intent": "irrigation",
+    "source": "irrigation.csv"
+  },
+  {
+    "text": "फसल में वायरस फैल गया है तुरंत दवाई बताओ",
+    "intent": "emergency",
+    "source": "emergency.csv"
+  },
+  {
+    "text": "पीएम किसान योजना में बैंक खाता कैसे जोड़ें",
+    "intent": "government",
+    "source": "government.csv"
+  },
+  {
+    "text": "kcc loan ki interest rate kya hai",
+    "intent": "government",
+    "source": "government.csv"
+  },
+  {
+    "text": "बीज उपचार कैसे करें बुवाई से पहले",
+    "intent": "seed",
+    "source": "seed.csv"
+  },
+  {
+    "text": "सरसों का msp 2024-25 में कितना है",
+    "intent": "market",
+    "source": "market.csv"
+  },
+  {
+    "text": "बूंद बूंद सिंचाई के बारे में बताओ",
+    "intent": "irrigation",
+    "source": "irrigation.csv"
+  },
+  {
+    "text": "मेरी फसल में कीड़ा लग गया है क्या करूं?",
+    "intent": "disease",
+    "source": "disease.csv"
+  },
+  {
+    "text": "yeh app kaise kaam karta hai",
+    "intent": "general",
+    "source": "general.csv"
+  },
+  {
+    "text": "बीज उपचार से क्या फायदा होता है",
+    "intent": "seed",
+    "source": "seed.csv"
+  },
+  {
+    "text": "mandi mein achha bhav kaise milega apni fasal ka",
+    "intent": "market",
+    "source": "market.csv"
+  },
+  {
+    "text": "trichoderma se seed treatment kaise karein",
+    "intent": "seed",
+    "source": "seed.csv"
+  },
+  {
+    "text": "आज तापमान 40 डिग्री से ज्यादा जाएगा क्या",
+    "intent": "weather",
+    "source": "weather.csv"
+  },
+  {
+    "text": "मिट्टी परीक्षण रिपोर्ट कैसे देखें",
+    "intent": "general",
+    "source": "general.csv"
+  },
+  {
+    "text": "fasal ki tasveer kheenchkar kaise bhejein",
+    "intent": "general",
+    "source": "general.csv"
+  },
+  {
+    "text": "ram ram bhai aaj harvesting karni hai",
+    "intent": "greeting",
+    "source": "greeting.csv"
+  },
+  {
+    "text": "मिर्च में एन्थ्रेक्नोज रोग के लिए कौन सी दवाई डालें?",
+    "intent": "disease",
+    "source": "disease.csv"
+  },
+  {
+    "text": "मेरी मिट्टी का ph बहुत ज्यादा है, कैसे कम करूं?",
+    "intent": "soil",
+    "source": "soil.json"
+  },
+  {
+    "text": "मेरे खेत में मिट्टी में पानी जमा रहता है, क्या करूं?",
+    "intent": "soil",
+    "source": "soil.json"
+  },
+  {
+    "text": "मेरे खेत में पानी की अच्छी सुविधा है, कौन सी फसल ज्यादा फायदेमंद है?",
+    "intent": "crop",
+    "source": "crop.json"
+  },
+  {
+    "text": "long term soil fertility kaise maintain karein?",
+    "intent": "soil",
+    "source": "soil.csv"
+  },
+  {
+    "text": "नहर का पानी कब मिलेगा इस हफ्ते",
+    "intent": "irrigation",
+    "source": "irrigation.csv"
+  },
+  {
+    "text": "which crop gives maximum profit in rajasthan?",
+    "intent": "crop",
+    "source": "crop.csv"
+  },
+  {
+    "text": "मौसम के हिसाब से कौन सी फसल लगाएं",
+    "intent": "weather",
+    "source": "weather.csv"
+  },
+  {
+    "text": "radhe radhe",
+    "intent": "greeting",
+    "source": "greeting.csv"
+  },
+  {
+    "text": "gehu ki aavak aaj mandi mein kitni hai",
+    "intent": "market",
+    "source": "market.csv"
+  },
+  {
+    "text": "म्हारी टमाटर री फसल में अर्ली ब्लाइट लाग री है, के करूं?",
+    "intent": "disease",
+    "source": "disease.json"
+  },
+  {
+    "text": "seed sowing depth kitni honi chahiye",
+    "intent": "seed",
+    "source": "seed.csv"
+  },
+  {
+    "text": "new account banane mein problem aa rahi hai",
+    "intent": "general",
+    "source": "general.csv"
+  },
+  {
+    "text": "आज धूप निकलेगी क्या",
+    "intent": "weather",
+    "source": "weather.csv"
+  },
+  {
+    "text": "रोटावेटर और कल्टीवेटर में क्या फर्क है",
+    "intent": "machinery",
+    "source": "machinery.csv"
+  },
+  {
+    "text": "aaj aasman saaf hai ya badal hai",
+    "intent": "weather",
+    "source": "weather.csv"
+  },
+  {
+    "text": "onion mein purple blotch disease ka attack hai",
+    "intent": "disease",
+    "source": "disease.csv"
+  },
+  {
+    "text": "solar pump yojana rajasthan mein kaise milega",
+    "intent": "government",
+    "source": "government.csv"
+  },
+  {
+    "text": "आज मौसम कैसा रहेगा",
+    "intent": "weather",
+    "source": "weather.csv"
+  },
+  {
+    "text": "मेरी फसल में अमोनियम सल्फेट का क्या फायदा है?",
+    "intent": "fertilizer",
+    "source": "fertilizer.csv"
+  },
+  {
+    "text": "aaj pesticide spray ke liye mausam theek hai kya",
+    "intent": "weather",
+    "source": "weather.csv"
+  },
+  {
+    "text": "best crop for saline soil in rajasthan?",
+    "intent": "crop",
+    "source": "crop.csv"
+  },
+  {
+    "text": "sprinkler se paani dene ka sahi time kya hai",
+    "intent": "irrigation",
+    "source": "irrigation.csv"
+  },
+  {
+    "text": "सरकारी योजना में आवेदन की अंतिम तारीख क्या है",
+    "intent": "government",
+    "source": "government.csv"
+  },
+  {
+    "text": "app ki setting kaise open karein",
+    "intent": "general",
+    "source": "general.csv"
+  },
+  {
+    "text": "मेरे आलू में लेट ब्लाइट आ गई है, तुरंत उपाय बताओ",
+    "intent": "disease",
+    "source": "disease.json"
+  },
+  {
+    "text": "मेरे खेत में ऊसर जमीन है कौन सी फसल उगाऊं?",
+    "intent": "crop",
+    "source": "crop.csv"
+  },
+  {
+    "text": "bajra msp 2024 kya hai",
+    "intent": "market",
+    "source": "market.csv"
+  },
+  {
+    "text": "sarson ka seed rate per bigha kitna hona chahiye",
+    "intent": "seed",
+    "source": "seed.csv"
+  },
+  {
+    "text": "मेरे टमाटर में फ्यूजेरियम विल्ट आ गई है",
+    "intent": "disease",
+    "source": "disease.csv"
+  },
+  {
+    "text": "मेरी मूंगफली में एस्परजिलस क्राउन रॉट है",
+    "intent": "disease",
+    "source": "disease.csv"
+  },
+  {
+    "text": "seed bank se beej kaise milega",
+    "intent": "seed",
+    "source": "seed.csv"
+  },
+  {
+    "text": "hello bhai aaj khet mein jaana hai",
+    "intent": "greeting",
+    "source": "greeting.csv"
+  },
+  {
+    "text": "मूंगफली की जड़ें सड़ रही हैं, कौन सी दवाई डालूं?",
+    "intent": "disease",
+    "source": "disease.json"
+  },
+  {
+    "text": "ज्यादा पानी देने से फसल को नुकसान होता है क्या",
+    "intent": "irrigation",
+    "source": "irrigation.csv"
+  },
+  {
+    "text": "मेरे खेत में पिछले साल सौंफ था अब क्या बोऊं?",
+    "intent": "crop",
+    "source": "crop.csv"
+  },
+  {
+    "text": "massive pest attack on my crop urgent pesticide needed",
+    "intent": "emergency",
+    "source": "emergency.csv"
+  },
+  {
+    "text": "kcc interest subvention scheme kya hai",
+    "intent": "government",
+    "source": "government.csv"
+  },
+  {
+    "text": "pmfby ke liye bank mein jaana padega kya",
+    "intent": "government",
+    "source": "government.csv"
+  },
+  {
+    "text": "thresher machine maintenance kaise karein",
+    "intent": "machinery",
+    "source": "machinery.csv"
+  },
+  {
+    "text": "ऐप में कितनी भाषाएं उपलब्ध हैं",
+    "intent": "general",
+    "source": "general.csv"
+  },
+  {
+    "text": "fasal peeli pad rahi hai aur mar rahi hai sos",
+    "intent": "emergency",
+    "source": "emergency.csv"
+  },
+  {
+    "text": "मेरे खेत में पिछले साल अलसी था अब क्या बोऊं?",
+    "intent": "crop",
+    "source": "crop.csv"
+  },
+  {
+    "text": "namaskar ji kaise hain aap",
+    "intent": "greeting",
+    "source": "greeting.csv"
+  },
+  {
+    "text": "म्हारी मूंगफली री फसल में कॉलर रॉट लाग री है",
+    "intent": "disease",
+    "source": "disease.csv"
+  },
+  {
+    "text": "good morning ji khamma ghani",
+    "intent": "greeting",
+    "source": "greeting.csv"
+  },
+  {
+    "text": "मेरे खेत की मिट्टी बहुत सख्त हो गई है, कैसे सुधारूं?",
+    "intent": "soil",
+    "source": "soil.json"
+  },
+  {
+    "text": "paani dene ke baad khad dena chahiye ya pehle",
+    "intent": "irrigation",
+    "source": "irrigation.csv"
+  },
+  {
+    "text": "सोयाबीन का बीज कहां से मिलेगा",
+    "intent": "seed",
+    "source": "seed.csv"
+  },
+  {
+    "text": "tractor loan kaise milega bank se",
+    "intent": "machinery",
+    "source": "machinery.csv"
+  },
+  {
+    "text": "मेरी मूंग में पाउडरी मिल्ड्यू रोग है दवाई बताओ",
+    "intent": "disease",
+    "source": "disease.csv"
+  },
+  {
+    "text": "good evening ji aaj ki fasal kaisi rahi",
+    "intent": "greeting",
+    "source": "greeting.csv"
+  },
+  {
+    "text": "सिंचाई के लिए सोलर पंप पर सब्सिडी मिलती है क्या",
+    "intent": "irrigation",
+    "source": "irrigation.csv"
+  },
+  {
+    "text": "fertilizer deficiency symptoms kya hote hain?",
+    "intent": "fertilizer",
+    "source": "fertilizer.csv"
+  },
+  {
+    "text": "mausam vibhag ne kya bataya aaj ke liye",
+    "intent": "weather",
+    "source": "weather.csv"
+  },
+  {
+    "text": "leaf curl virus emergency meri fasal barbad ho rahi hai",
+    "intent": "emergency",
+    "source": "emergency.csv"
+  },
+  {
+    "text": "jai bajrang bali",
+    "intent": "greeting",
+    "source": "greeting.csv"
+  },
+  {
+    "text": "राजस्थान में ग्रीनहाउस पर सब्सिडी मिलती है क्या",
+    "intent": "government",
+    "source": "government.csv"
+  },
+  {
+    "text": "फसल बीमा के लिए कौन सी फसलें कवर होती हैं",
+    "intent": "government",
+    "source": "government.csv"
+  },
+  {
+    "text": "आलू में पानी देने का तरीका बताओ",
+    "intent": "irrigation",
+    "source": "irrigation.csv"
+  },
+  {
+    "text": "मंडी में आज कितनी आवक है गेहूं की",
+    "intent": "market",
+    "source": "market.csv"
+  },
+  {
+    "text": "cotton price today in rajasthan mandi",
+    "intent": "market",
+    "source": "market.csv"
+  },
+  {
+    "text": "emergency irrigation chahiye abhi fasal sukh rahi hai",
+    "intent": "emergency",
+    "source": "emergency.csv"
+  },
+  {
+    "text": "बाढ़ के पानी में खेत डूब गया फसल बचाने का उपाय बताओ",
+    "intent": "emergency",
+    "source": "emergency.csv"
+  },
+  {
+    "text": "राजस्थान में इस मौसम में कौन सी फसल बोनी चाहिए?",
+    "intent": "crop",
+    "source": "crop.csv"
+  },
+  {
+    "text": "फसल में पानी देने का सही तरीका क्या है",
+    "intent": "irrigation",
+    "source": "irrigation.csv"
+  },
+  {
+    "text": "fasal diary feature kahan hai app mein",
+    "intent": "general",
+    "source": "general.csv"
+  },
+  {
+    "text": "मेरे खेत में गोबर की खाद कितनी डालें?",
+    "intent": "fertilizer",
+    "source": "fertilizer.csv"
+  },
+  {
+    "text": "म्हारे खेत में ओले पड़े और सब कुछ बर्बाद हो गया",
+    "intent": "emergency",
+    "source": "emergency.csv"
+  },
+  {
+    "text": "pm kisan beneficiary status kaise check karein",
+    "intent": "government",
+    "source": "government.csv"
+  },
+  {
+    "text": "horticulture subsidy rajasthan mein kaise milegi",
+    "intent": "government",
+    "source": "government.csv"
+  },
+  {
+    "text": "weather alert for hailstorm in my area",
+    "intent": "weather",
+    "source": "weather.csv"
+  },
+  {
+    "text": "बाजरे में सिंचाई का सही समय क्या है",
+    "intent": "irrigation",
+    "source": "irrigation.csv"
+  },
+  {
+    "text": "namaste bhai soil test karwana hai",
+    "intent": "greeting",
+    "source": "greeting.csv"
+  },
+  {
+    "text": "बीज बैंक क्या होता है",
+    "intent": "seed",
+    "source": "seed.csv"
+  },
+  {
+    "text": "tractor engine oil change kab karna chahiye",
+    "intent": "machinery",
+    "source": "machinery.csv"
+  },
+  {
+    "text": "मेरी फसल में राइजोबियम कल्चर कब और कैसे लगाएं?",
+    "intent": "fertilizer",
+    "source": "fertilizer.csv"
+  },
+  {
+    "text": "chilli mein bacterial wilt ho gayi hai upay batao",
+    "intent": "disease",
+    "source": "disease.csv"
+  },
+  {
+    "text": "narma cotton price today sriganganagar mandi",
+    "intent": "market",
+    "source": "market.csv"
+  },
+  {
+    "text": "मेरी फसल खराब हो गई बीमा क्लेम कैसे करें",
+    "intent": "government",
+    "source": "government.csv"
+  },
+  {
+    "text": "म्हारी सरसों में माहू इतना ज्यादा हो गया है कि फसल दिख नहीं रही",
+    "intent": "emergency",
+    "source": "emergency.csv"
+  },
+  {
+    "text": "khamma ghani bhai mujhe madad chahiye",
+    "intent": "greeting",
+    "source": "greeting.csv"
+  },
+  {
+    "text": "मेरी फसल में मैग्नीशियम की कमी है क्या करूं?",
+    "intent": "fertilizer",
+    "source": "fertilizer.csv"
+  },
+  {
+    "text": "aaj spray karna sahi rahega ya nahi mausam ke hisab se",
+    "intent": "weather",
+    "source": "weather.csv"
+  },
+  {
+    "text": "मक्का का हाइब्रिड बीज कौन सा लगाएं",
+    "intent": "seed",
+    "source": "seed.csv"
+  },
+  {
+    "text": "मंडी में फसल का सही दाम कैसे मिलेगा",
+    "intent": "market",
+    "source": "market.csv"
+  },
+  {
+    "text": "म्हारी फसल में अचानक सफेद मक्खी का हमला हो गया",
+    "intent": "emergency",
+    "source": "emergency.csv"
+  },
+  {
+    "text": "मेरी जानकारी किसके साथ शेयर होती है",
+    "intent": "general",
+    "source": "general.csv"
+  },
+  {
+    "text": "potato crop turned black overnight what to do urgent",
+    "intent": "emergency",
+    "source": "emergency.csv"
+  },
+  {
+    "text": "ram ram bhai jai hind",
+    "intent": "greeting",
+    "source": "greeting.csv"
+  },
+  {
+    "text": "मेरे खेत में पिछले साल धनिया था, अब क्या बोऊं?",
+    "intent": "crop",
+    "source": "crop.json"
+  },
+  {
+    "text": "ट्रैक्टर पर सरकारी सब्सिडी कैसे मिलती है",
+    "intent": "machinery",
+    "source": "machinery.csv"
+  },
+  {
+    "text": "hello sir good morning",
+    "intent": "greeting",
+    "source": "greeting.csv"
+  },
+  {
+    "text": "बैटरी स्प्रेयर और पेट्रोल स्प्रेयर में कौन सा अच्छा है",
+    "intent": "machinery",
+    "source": "machinery.csv"
+  },
+  {
+    "text": "मेरी मिट्टी में लोहे की कमी है, पत्ते पीले हो रहे हैं",
+    "intent": "soil",
+    "source": "soil.json"
+  },
+  {
+    "text": "acidic soil mein chuna dalne se kya hota hai?",
+    "intent": "soil",
+    "source": "soil.csv"
+  },
+  {
+    "text": "hi there pragati",
+    "intent": "greeting",
+    "source": "greeting.csv"
+  },
+  {
+    "text": "cultivator teeth kahan milenge replacement ke liye",
+    "intent": "machinery",
+    "source": "machinery.csv"
+  },
+  {
+    "text": "म्हारी चना री फसल में राइजोबियम कल्चर कद लगाऊं?",
+    "intent": "fertilizer",
+    "source": "fertilizer.csv"
+  },
+  {
+    "text": "म्हारी फसल में सल्फर री कमी है के डालूं?",
+    "intent": "fertilizer",
+    "source": "fertilizer.csv"
+  },
+  {
+    "text": "इसबगोल का बीज कहां से मिलेगा",
+    "intent": "seed",
+    "source": "seed.csv"
+  },
+  {
+    "text": "ram ram bhai fasal kaisi hai is baar",
+    "intent": "greeting",
+    "source": "greeting.csv"
+  },
+  {
+    "text": "moong dal ka aaj ka rate batao",
+    "intent": "market",
+    "source": "market.csv"
+  },
+  {
+    "text": "namaste ji khamma ghani sa",
+    "intent": "greeting",
+    "source": "greeting.csv"
+  },
+  {
+    "text": "नमस्ते जी शुभ संध्या",
+    "intent": "greeting",
+    "source": "greeting.csv"
+  },
+  {
+    "text": "jai shri ram bhai beej kahan milega",
+    "intent": "greeting",
+    "source": "greeting.csv"
+  },
+  {
+    "text": "ऐप में बग रिपोर्ट कैसे करें",
+    "intent": "general",
+    "source": "general.csv"
+  },
+  {
+    "text": "paani ki bachat ke liye kya karna chahiye khet mein",
+    "intent": "irrigation",
+    "source": "irrigation.csv"
+  },
+  {
+    "text": "chat history delete kaise karein",
+    "intent": "general",
+    "source": "general.csv"
+  },
+  {
+    "text": "मेरे खेत में मिट्टी बहुत भारी है जुताई मुश्किल है",
+    "intent": "soil",
+    "source": "soil.csv"
+  },
+  {
+    "text": "rotavator depth setting kaise karein",
+    "intent": "machinery",
+    "source": "machinery.csv"
+  },
+  {
+    "text": "kharif season ke liye best seeds kaunse hain",
+    "intent": "seed",
+    "source": "seed.csv"
+  },
+  {
+    "text": "which crop needs less water in rajasthan?",
+    "intent": "crop",
+    "source": "crop.csv"
+  },
+  {
+    "text": "म्हारी सारी फसल बर्बाद हो गई बचाओ",
+    "intent": "emergency",
+    "source": "emergency.csv"
+  },
+  {
+    "text": "wheat mein flag smut disease aa gayi hai",
+    "intent": "disease",
+    "source": "disease.csv"
+  },
+  {
+    "text": "pm kisan yojana mein kitna paisa milta hai",
+    "intent": "government",
+    "source": "government.csv"
+  },
+  {
+    "text": "मेरे खेत में मूंगफली के लिए खाद की मात्रा बताओ",
+    "intent": "fertilizer",
+    "source": "fertilizer.csv"
+  },
+  {
+    "text": "farm machinery loan kaise milega",
+    "intent": "machinery",
+    "source": "machinery.csv"
+  },
+  {
+    "text": "बोलकर सवाल पूछने का तरीका बताओ",
+    "intent": "general",
+    "source": "general.csv"
+  },
+  {
+    "text": "pm kisan eligibility criteria kya hai",
+    "intent": "government",
+    "source": "government.csv"
+  },
+  {
+    "text": "fertilizer timing kya honi chahiye for best results?",
+    "intent": "fertilizer",
+    "source": "fertilizer.csv"
+  },
+  {
+    "text": "fire in my field crop is burning help immediately",
+    "intent": "emergency",
+    "source": "emergency.csv"
+  },
+  {
+    "text": "सिंचाई के लिए सोलर पंप कैसे लगाएं",
+    "intent": "irrigation",
+    "source": "irrigation.csv"
+  },
+  {
+    "text": "खम्मा घणी भाई प्रणाम जी",
+    "intent": "greeting",
+    "source": "greeting.csv"
+  },
+  {
+    "text": "immediate crop rescue needed please help me now",
+    "intent": "emergency",
+    "source": "emergency.csv"
+  },
+  {
+    "text": "म्हारे खेत में आलू के लिए खाद की मात्रा बताओ",
+    "intent": "fertilizer",
+    "source": "fertilizer.csv"
+  },
+  {
+    "text": "pm kisan mein bank account update kaise karein",
+    "intent": "government",
+    "source": "government.csv"
+  },
+  {
+    "text": "मेरे खेत में सिंचाई नहर से पानी मिलता है, कौन सी फसल बोऊं?",
+    "intent": "crop",
+    "source": "crop.json"
+  },
+  {
+    "text": "chote kisan ke liye sabse sasta tractor kaunsa hai",
+    "intent": "machinery",
+    "source": "machinery.csv"
+  },
+  {
+    "text": "hybrid seed aur normal seed mein kya fark hai",
+    "intent": "seed",
+    "source": "seed.csv"
+  },
+  {
+    "text": "government se khet ke liye paisa kaise milega",
+    "intent": "government",
+    "source": "government.csv"
+  },
+  {
+    "text": "म्हारी टमाटर री फसल में अर्ली ब्लाइट लाग री है के करूं?",
+    "intent": "disease",
+    "source": "disease.csv"
+  },
+  {
+    "text": "guar price increase hua kya aaj",
+    "intent": "market",
+    "source": "market.csv"
+  },
+  {
+    "text": "हार्वेस्टर मशीन कब बुक करें",
+    "intent": "machinery",
+    "source": "machinery.csv"
+  },
+  {
+    "text": "water holding capacity of soil kaise badhayein?",
+    "intent": "soil",
+    "source": "soil.csv"
+  },
+  {
+    "text": "अरहर की खेती कब करनी चाहिए?",
+    "intent": "crop",
+    "source": "crop.csv"
+  },
+  {
+    "text": "10 din se baarish nahi hui fasal mar rahi hai",
+    "intent": "emergency",
+    "source": "emergency.csv"
+  },
+  {
+    "text": "इस ऐप से खेती में कितना फायदा होगा",
+    "intent": "general",
+    "source": "general.csv"
+  },
+  {
+    "text": "seed drill machine ka kya kaam hota hai",
+    "intent": "machinery",
+    "source": "machinery.csv"
+  },
+  {
+    "text": "खम्मा घणी भाई आज मंडी जाना है",
+    "intent": "greeting",
+    "source": "greeting.csv"
+  },
+  {
+    "text": "मेरे खेत में कैल्शियम खाद कब और कितना डालें?",
+    "intent": "fertilizer",
+    "source": "fertilizer.csv"
+  },
+  {
+    "text": "बिना इंटरनेट के ऐप चलेगा क्या",
+    "intent": "general",
+    "source": "general.csv"
+  },
+  {
+    "text": "pm kisan mobile number update kaise karein",
+    "intent": "government",
+    "source": "government.csv"
+  },
+  {
+    "text": "urea ki matra per bigha kitni honi chahiye?",
+    "intent": "fertilizer",
+    "source": "fertilizer.csv"
+  },
+  {
+    "text": "म्हारी मिट्टी में पोटाश री कमी है, के करूं?",
+    "intent": "soil",
+    "source": "soil.json"
+  },
+  {
+    "text": "सुबह पानी देना अच्छा है या शाम को",
+    "intent": "irrigation",
+    "source": "irrigation.csv"
+  },
+  {
+    "text": "मेरे खेत में पिछले साल सोयाबीन था अब क्या बोऊं?",
+    "intent": "crop",
+    "source": "crop.csv"
+  },
+  {
+    "text": "आज मक्का का रेट क्या है",
+    "intent": "market",
+    "source": "market.csv"
+  },
+  {
+    "text": "म्हारी मिट्टी में केंचुए कम हैं, के करूं?",
+    "intent": "soil",
+    "source": "soil.json"
+  },
+  {
+    "text": "मेरे खेत में सूखा पड़ गया है फसल बचाओ",
+    "intent": "emergency",
+    "source": "emergency.csv"
+  },
+  {
+    "text": "म्हारी फसल में कैल्शियम नाइट्रेट कद डालणो चाहिए?",
+    "intent": "fertilizer",
+    "source": "fertilizer.csv"
+  },
+  {
+    "text": "भाई म्हारी मक्का री फसल में पत्ती झुलसा लाग री है",
+    "intent": "disease",
+    "source": "disease.csv"
+  },
+  {
+    "text": "kem cho bhai",
+    "intent": "greeting",
+    "source": "greeting.csv"
+  },
+  {
+    "text": "म्हारे खेत में पिछले साल बाजरा था अब कांई बोवां?",
+    "intent": "crop",
+    "source": "crop.csv"
+  },
+  {
+    "text": "how to lower soil ph naturally?",
+    "intent": "soil",
+    "source": "soil.csv"
+  },
+  {
+    "text": "मेरी मिर्च के फलों पर काले धब्बे आ गए हैं",
+    "intent": "disease",
+    "source": "disease.csv"
+  },
+  {
+    "text": "मिनी ट्रैक्टर और बड़े ट्रैक्टर में कौन सा अच्छा है",
+    "intent": "machinery",
+    "source": "machinery.csv"
+  },
+  {
+    "text": "मेरे खेत में नमी कितनी होनी चाहिए",
+    "intent": "irrigation",
+    "source": "irrigation.csv"
+  },
+  {
+    "text": "irrigation pump ki maintenance kaise karein",
+    "intent": "irrigation",
+    "source": "irrigation.csv"
+  },
+  {
+    "text": "khet mein paani bhar gaya fasal bachane ka upay batao",
+    "intent": "emergency",
+    "source": "emergency.csv"
+  },
+  {
+    "text": "गेहूं में यूरिया कब और कितना डालें?",
+    "intent": "fertilizer",
+    "source": "fertilizer.csv"
+  },
+  {
+    "text": "बारिश के बाद खेत में काम कब करें",
+    "intent": "weather",
+    "source": "weather.csv"
+  },
+  {
+    "text": "बारिश में बीज बोना सही है क्या",
+    "intent": "weather",
+    "source": "weather.csv"
+  },
+  {
+    "text": "मेरी फसल में पानी की जरूरत है अभी",
+    "intent": "irrigation",
+    "source": "irrigation.csv"
+  },
+  {
+    "text": "kharab beej ki pehchaan kaise karein",
+    "intent": "seed",
+    "source": "seed.csv"
+  },
+  {
+    "text": "भाई म्हारी कपास री फसल में जड़ सड़न लाग री है",
+    "intent": "disease",
+    "source": "disease.csv"
+  },
+  {
+    "text": "बीज बोने का सही समय क्या है",
+    "intent": "seed",
+    "source": "seed.csv"
+  },
+  {
+    "text": "sprayer machine ki safai kaise karein",
+    "intent": "machinery",
+    "source": "machinery.csv"
+  },
+  {
+    "text": "मेरे खेत में मिट्टी की उर्वरता जांचने के लिए क्या करूं?",
+    "intent": "soil",
+    "source": "soil.csv"
+  },
+  {
+    "text": "mini tractor vs big tractor kaunsa better hai",
+    "intent": "machinery",
+    "source": "machinery.csv"
+  },
+  {
+    "text": "मेरी फसल में टॉप ड्रेसिंग कब करें?",
+    "intent": "fertilizer",
+    "source": "fertilizer.csv"
+  },
+  {
+    "text": "isabgol seed kahan milega rajasthan mein",
+    "intent": "seed",
+    "source": "seed.csv"
+  },
+  {
+    "text": "राम राम सा भाई आज बारिश होगी क्या",
+    "intent": "greeting",
+    "source": "greeting.csv"
+  },
+  {
+    "text": "how much water does mustard crop need per week",
+    "intent": "irrigation",
+    "source": "irrigation.csv"
+  },
+  {
+    "text": "ओलावृष्टि से फसल बचाने के उपाय बताओ",
+    "intent": "weather",
+    "source": "weather.csv"
+  },
+  {
+    "text": "म्हारे खेत में भयंकर कीड़ा लग गयो है",
+    "intent": "emergency",
+    "source": "emergency.csv"
+  },
+  {
+    "text": "मेरी मिर्च में फाइटोफ्थोरा ब्लाइट है, क्या करूं?",
+    "intent": "disease",
+    "source": "disease.json"
+  },
+  {
+    "text": "nearest mandi from my village kahan hai",
+    "intent": "market",
+    "source": "market.csv"
+  },
+  {
+    "text": "नमस्ते भाई राम राम सा",
+    "intent": "greeting",
+    "source": "greeting.csv"
+  },
+  {
+    "text": "पावर वीडर से खरपतवार कैसे हटाएं",
+    "intent": "machinery",
+    "source": "machinery.csv"
+  },
+  {
+    "text": "नमस्ते भाई खेत कैसा है",
+    "intent": "greeting",
+    "source": "greeting.csv"
+  },
+  {
+    "text": "बीज खरीदते समय क्या देखना चाहिए",
+    "intent": "seed",
+    "source": "seed.csv"
+  },
+  {
+    "text": "मेरे खेत में sop खाद कब और कितना डालें?",
+    "intent": "fertilizer",
+    "source": "fertilizer.csv"
+  },
+  {
+    "text": "baler machine se straw bale kaise banayein",
+    "intent": "machinery",
+    "source": "machinery.csv"
+  },
+  {
+    "text": "ज्यादा सिंचाई से जड़ें सड़ जाती हैं क्या",
+    "intent": "irrigation",
+    "source": "irrigation.csv"
+  },
+  {
+    "text": "मेरी मिट्टी में लोहे की कमी है पत्ते पीले हो रहे हैं",
+    "intent": "soil",
+    "source": "soil.csv"
+  },
+  {
+    "text": "गर्म हवा लू कब तक रहेगी",
+    "intent": "weather",
+    "source": "weather.csv"
+  },
+  {
+    "text": "namaste bhai jai hind",
+    "intent": "greeting",
+    "source": "greeting.csv"
+  },
+  {
+    "text": "मेरे आलू में लेट ब्लाइट आ गई है तुरंत उपाय बताओ",
+    "intent": "disease",
+    "source": "disease.csv"
+  },
+  {
+    "text": "मक्का की बुवाई का सही समय क्या है?",
+    "intent": "crop",
+    "source": "crop.csv"
+  },
+  {
+    "text": "potassium sulphate vs mop kya fark hai?",
+    "intent": "fertilizer",
+    "source": "fertilizer.csv"
+  },
+  {
+    "text": "सोलर पंप मशीन कैसे लगाएं खेत में",
+    "intent": "machinery",
+    "source": "machinery.csv"
+  },
+  {
+    "text": "soybean mein yellow mosaic virus ho gaya hai",
+    "intent": "disease",
+    "source": "disease.csv"
+  },
+  {
+    "text": "canal water kab band hoga is season mein",
+    "intent": "irrigation",
+    "source": "irrigation.csv"
+  },
+  {
+    "text": "मेरे पास कम पानी है कौन सी फसल लगाऊं",
+    "intent": "irrigation",
+    "source": "irrigation.csv"
+  },
+  {
+    "text": "सरसों के पत्तों पर काले धब्बे आ गए हैं",
+    "intent": "disease",
+    "source": "disease.csv"
+  },
+  {
+    "text": "power weeder se kharpatwar hatane ka tarika",
+    "intent": "machinery",
+    "source": "machinery.csv"
+  },
+  {
+    "text": "मेरी अरहर में विल्ट रोग आ गया है, क्या करूं?",
+    "intent": "disease",
+    "source": "disease.json"
+  },
+  {
+    "text": "बेलर मशीन से पुआल कैसे बनाएं",
+    "intent": "machinery",
+    "source": "machinery.csv"
+  },
+  {
+    "text": "बीज उपचार के लिए ट्राइकोडर्मा कैसे उपयोग करें",
+    "intent": "seed",
+    "source": "seed.csv"
+  },
+  {
+    "text": "chana mein wilt disease aa gayi hai upay batao",
+    "intent": "disease",
+    "source": "disease.csv"
+  },
+  {
+    "text": "sprinkler system ke fayde kya hain",
+    "intent": "irrigation",
+    "source": "irrigation.csv"
+  },
+  {
+    "text": "पीएम किसान में गलत जानकारी सुधार कैसे करें",
+    "intent": "government",
+    "source": "government.csv"
+  },
+  {
+    "text": "isabgol price today rajasthan mandi",
+    "intent": "market",
+    "source": "market.csv"
+  },
+  {
+    "text": "sprayer pump band ho gaya hai kya karein",
+    "intent": "machinery",
+    "source": "machinery.csv"
+  },
+  {
+    "text": "thresher se gehu nikalne ka tarika kya hai",
+    "intent": "machinery",
+    "source": "machinery.csv"
+  },
+  {
+    "text": "राजस्थान में किसानों के लिए कौन कौन सी योजनाएं हैं",
+    "intent": "government",
+    "source": "government.csv"
+  },
+  {
+    "text": "मिर्च में कितने दिन में एक बार पानी देना चाहिए",
+    "intent": "irrigation",
+    "source": "irrigation.csv"
+  },
+  {
+    "text": "dap aur urea mein kya fark hai?",
+    "intent": "fertilizer",
+    "source": "fertilizer.csv"
+  },
+  {
+    "text": "मेरे खेत में पानी की कमी है, ड्रिप से कौन सी फसल उगाऊं?",
+    "intent": "crop",
+    "source": "crop.json"
+  },
+  {
+    "text": "जय जवान जय किसान",
+    "intent": "greeting",
+    "source": "greeting.csv"
+  },
+  {
+    "text": "मौसम खराब है तो कटाई कब करें",
+    "intent": "weather",
+    "source": "weather.csv"
+  },
+  {
+    "text": "good morning bhai aaj spray karna hai",
+    "intent": "greeting",
+    "source": "greeting.csv"
+  },
+  {
+    "text": "मेरी प्याज में डैम्पिंग ऑफ हो रही है",
+    "intent": "disease",
+    "source": "disease.csv"
+  },
+  {
+    "text": "म्हारे खेत में पोटाश कद डालणो चाहिए?",
+    "intent": "fertilizer",
+    "source": "fertilizer.csv"
+  },
+  {
+    "text": "urad dal price today in mandi",
+    "intent": "market",
+    "source": "market.csv"
+  },
+  {
+    "text": "मेरे खेत में पिछले साल सरसों थी अब क्या बोऊं?",
+    "intent": "crop",
+    "source": "crop.csv"
+  },
+  {
+    "text": "combine harvester rent per bigha kitna hai",
+    "intent": "machinery",
+    "source": "machinery.csv"
+  },
+  {
+    "text": "इस सीजन में सूखे की संभावना है क्या",
+    "intent": "weather",
+    "source": "weather.csv"
+  },
+  {
+    "text": "water logging se fasal kaise bachayein",
+    "intent": "irrigation",
+    "source": "irrigation.csv"
+  },
+  {
+    "text": "50 percent subsidy on farm machinery rajasthan mein",
+    "intent": "machinery",
+    "source": "machinery.csv"
+  },
+  {
+    "text": "पावर टिलर और ट्रैक्टर में क्या फर्क है",
+    "intent": "machinery",
+    "source": "machinery.csv"
+  },
+  {
+    "text": "मेरे खेत में सल्फर खाद कब डालें?",
+    "intent": "fertilizer",
+    "source": "fertilizer.csv"
+  },
+  {
+    "text": "yellow rust spreading fast in wheat emergency spray batao",
+    "intent": "emergency",
+    "source": "emergency.csv"
+  },
+  {
+    "text": "soybean ki kheti kab karni chahiye?",
+    "intent": "crop",
+    "source": "crop.csv"
+  },
+  {
+    "text": "म्हारे खेत री मिट्टी में क्लोरीन री कमी है",
+    "intent": "soil",
+    "source": "soil.csv"
+  },
+  {
+    "text": "aaj barish ke baad khet mein jaana chahiye kya",
+    "intent": "weather",
+    "source": "weather.csv"
+  },
+  {
+    "text": "म्हारी बाजरा री फसल में डाउनी मिल्ड्यू लाग री है",
+    "intent": "disease",
+    "source": "disease.csv"
+  },
+  {
+    "text": "फसल बीमा योजना में नाम कैसे दर्ज करें",
+    "intent": "government",
+    "source": "government.csv"
+  },
+  {
+    "text": "soil health card mein kya kya jankari hoti hai",
+    "intent": "government",
+    "source": "government.csv"
+  },
+  {
+    "text": "म्हारी फसल में जैविक खाद कद डालणो चाहिए?",
+    "intent": "fertilizer",
+    "source": "fertilizer.csv"
+  },
+  {
+    "text": "सिंचाई के लिए नहर का पानी कब आएगा",
+    "intent": "irrigation",
+    "source": "irrigation.csv"
+  },
+  {
+    "text": "अजवाइन की खेती कब और कैसे करें?",
+    "intent": "crop",
+    "source": "crop.csv"
+  },
+  {
+    "text": "late blight spreading rapidly in tomato field emergency",
+    "intent": "emergency",
+    "source": "emergency.csv"
+  },
+  {
+    "text": "उड़द का सबसे अच्छा बीज कौन सा है",
+    "intent": "seed",
+    "source": "seed.csv"
+  },
+  {
+    "text": "म्हारे खेत री मिट्टी में लवणता ज्यादा है के करूं?",
+    "intent": "soil",
+    "source": "soil.csv"
+  },
+  {
+    "text": "सरकारी बीज भंडार से बीज कैसे खरीदें",
+    "intent": "seed",
+    "source": "seed.csv"
+  },
+  {
+    "text": "tractor repair kahan karwayein",
+    "intent": "machinery",
+    "source": "machinery.csv"
+  },
+  {
+    "text": "थ्रेशर से गेहूं निकालने का तरीका बताओ",
+    "intent": "machinery",
+    "source": "machinery.csv"
+  },
+  {
+    "text": "मेरे खेत में मिट्टी परीक्षण के लिए सैंपल कैसे लें?",
+    "intent": "soil",
+    "source": "soil.csv"
+  },
+  {
+    "text": "profile photo kaise lagayein app mein",
+    "intent": "general",
+    "source": "general.csv"
+  },
+  {
+    "text": "flood aa gaya hai khet mein kya karein",
+    "intent": "emergency",
+    "source": "emergency.csv"
+  },
+  {
+    "text": "good morning ji aaj ka din shubh ho",
+    "intent": "greeting",
+    "source": "greeting.csv"
+  },
+  {
+    "text": "खरीफ सीजन में कौन सी फसल बोनी चाहिए?",
+    "intent": "crop",
+    "source": "crop.csv"
+  },
+  {
+    "text": "मेरे खेत में पिछले साल मसूर था अब क्या बोऊं?",
+    "intent": "crop",
+    "source": "crop.csv"
+  },
+  {
+    "text": "pm fasal bima yojana ke liye kya documents chahiye",
+    "intent": "government",
+    "source": "government.csv"
+  },
+  {
+    "text": "खरीफ फसलों के लिए कौन से बीज अच्छे हैं",
+    "intent": "seed",
+    "source": "seed.csv"
+  },
+  {
+    "text": "आज लू चलेगी क्या",
+    "intent": "weather",
+    "source": "weather.csv"
+  },
+  {
+    "text": "फसल चक्र के बारे में बताओ, क्या बोना चाहिए?",
+    "intent": "crop",
+    "source": "crop.json"
+  },
+  {
+    "text": "म्हारे खेत री मिट्टी में सल्फर री कमी है के डालूं?",
+    "intent": "soil",
+    "source": "soil.csv"
+  },
+  {
+    "text": "म्हारी मिट्टी में मैग्नीशियम री कमी है",
+    "intent": "soil",
+    "source": "soil.csv"
+  },
+  {
+    "text": "आज हनुमानगढ़ मंडी में गेहूं का भाव",
+    "intent": "market",
+    "source": "market.csv"
+  },
+  {
+    "text": "purani chat kaise dekhein app mein",
+    "intent": "general",
+    "source": "general.csv"
+  },
+  {
+    "text": "fym farmyard manure ka dose per bigha kya hai?",
+    "intent": "fertilizer",
+    "source": "fertilizer.csv"
+  },
+  {
+    "text": "नमस्ते भाई ट्रैक्टर के बारे में पूछना था",
+    "intent": "greeting",
+    "source": "greeting.csv"
+  },
+  {
+    "text": "biofertilizer kab aur kaise use karein?",
+    "intent": "fertilizer",
+    "source": "fertilizer.csv"
+  },
+  {
+    "text": "खेती के लिए सरकारी लोन कैसे मिलेगा",
+    "intent": "government",
+    "source": "government.csv"
+  },
+  {
+    "text": "pragati ai ka customer care number kya hai",
+    "intent": "general",
+    "source": "general.csv"
+  },
+  {
+    "text": "इस हफ्ते ओले पड़ेंगे क्या",
+    "intent": "weather",
+    "source": "weather.csv"
+  },
+  {
+    "text": "rice mein tungro virus disease ho gayi hai",
+    "intent": "disease",
+    "source": "disease.csv"
+  },
+  {
+    "text": "मेरी फसल में कीड़ा लग गया है, क्या करूं?",
+    "intent": "disease",
+    "source": "disease.json"
+  },
+  {
+    "text": "आज तेज हवा चलेगी क्या",
+    "intent": "weather",
+    "source": "weather.csv"
+  },
+  {
+    "text": "बीमारी बहुत तेजी से फैल रही है पूरे खेत में",
+    "intent": "emergency",
+    "source": "emergency.csv"
+  },
+  {
+    "text": "म्हारी बाजरा री फसल में स्मट रोग लाग री है",
+    "intent": "disease",
+    "source": "disease.csv"
+  },
+  {
+    "text": "कृषि यंत्र पर सब्सिडी कैसे मिलती है",
+    "intent": "government",
+    "source": "government.csv"
+  },
+  {
+    "text": "organic farming mein kaunsi fasal best hai?",
+    "intent": "crop",
+    "source": "crop.csv"
+  },
+  {
+    "text": "पीएम किसान योजना के लिए पात्रता क्या है",
+    "intent": "government",
+    "source": "government.csv"
+  },
+  {
+    "text": "मेरी मिट्टी में कैल्शियम की कमी है क्या करूं?",
+    "intent": "soil",
+    "source": "soil.csv"
+  },
+  {
+    "text": "compost se soil organic matter kaise badhta hai?",
+    "intent": "soil",
+    "source": "soil.csv"
+  },
+  {
+    "text": "पीएम किसान में मेरा नाम है या नहीं कैसे पता करें",
+    "intent": "government",
+    "source": "government.csv"
+  },
+  {
+    "text": "खम्मा घणी सा good morning bhai",
+    "intent": "greeting",
+    "source": "greeting.csv"
+  },
+  {
+    "text": "kitne sections hain is app mein",
+    "intent": "general",
+    "source": "general.csv"
+  },
+  {
+    "text": "प्रमाणित बीज और साधारण बीज में क्या अंतर है",
+    "intent": "seed",
+    "source": "seed.csv"
+  },
+  {
+    "text": "hello ji aaj ka temperature kitna hai",
+    "intent": "greeting",
+    "source": "greeting.csv"
+  },
+  {
+    "text": "fasal achanak sukh rahi hai emergency hai",
+    "intent": "emergency",
+    "source": "emergency.csv"
+  },
+  {
+    "text": "organic seed kahan se kharidein rajasthan mein",
+    "intent": "seed",
+    "source": "seed.csv"
+  },
+  {
+    "text": "hanumangarh mandi gehu price today",
+    "intent": "market",
+    "source": "market.csv"
+  },
+  {
+    "text": "मेरी फसल में पत्तियों पर खाद का छिड़काव कब करें?",
+    "intent": "fertilizer",
+    "source": "fertilizer.csv"
+  },
+  {
+    "text": "आलू की फसल में अर्ली ब्लाइट दिख रही है",
+    "intent": "disease",
+    "source": "disease.csv"
+  },
+  {
+    "text": "rice mein sheath blight disease ho gayi hai",
+    "intent": "disease",
+    "source": "disease.csv"
+  },
+  {
+    "text": "ट्रैक्टर चलाने का लाइसेंस कैसे बनवाएं",
+    "intent": "machinery",
+    "source": "machinery.csv"
+  },
+  {
+    "text": "फसल चक्र के बारे में बताओ क्या बोना चाहिए?",
+    "intent": "crop",
+    "source": "crop.csv"
+  },
+  {
+    "text": "cotton mein whitefly bahut zyada ho gayi hai",
+    "intent": "disease",
+    "source": "disease.csv"
+  },
+  {
+    "text": "बीज खराब हो गया है कैसे पता करें",
+    "intent": "seed",
+    "source": "seed.csv"
+  },
+  {
+    "text": "कल्टीवेटर के दांत टूट गए हैं कहां से मिलेंगे",
+    "intent": "machinery",
+    "source": "machinery.csv"
+  },
+  {
+    "text": "tractor subsidy ke liye apply kaise karein",
+    "intent": "government",
+    "source": "government.csv"
+  },
+  {
+    "text": "मेरे खेत में टिड्डी दल आ गया है",
+    "intent": "emergency",
+    "source": "emergency.csv"
+  },
+  {
+    "text": "म्हारी मिट्टी में ph 8 से ज्यादा है, के करूं?",
+    "intent": "soil",
+    "source": "soil.json"
+  },
+  {
+    "text": "aaj subah ka temperature kitna tha",
+    "intent": "weather",
+    "source": "weather.csv"
+  },
+  {
+    "text": "apna naam aur jila app mein kaise badlein",
+    "intent": "general",
+    "source": "general.csv"
+  },
+  {
+    "text": "पीएम किसान की अगली किस्त कब आएगी",
+    "intent": "government",
+    "source": "government.csv"
+  },
+  {
+    "text": "मेरी फसल में नीम कोटेड यूरिया का क्या फायदा है?",
+    "intent": "fertilizer",
+    "source": "fertilizer.csv"
+  },
+  {
+    "text": "app ka naya version kab aayega",
+    "intent": "general",
+    "source": "general.csv"
+  },
+  {
+    "text": "फसल बीमा के लिए बैंक में जाना जरूरी है क्या",
+    "intent": "government",
+    "source": "government.csv"
+  },
+  {
+    "text": "बीज का अंकुरण परीक्षण कैसे करें",
+    "intent": "seed",
+    "source": "seed.csv"
+  },
+  {
+    "text": "paani dene ke sahi tarike kya kya hain",
+    "intent": "irrigation",
+    "source": "irrigation.csv"
+  },
+  {
+    "text": "mustard mein aphid ka bahut zyada attack hai",
+    "intent": "disease",
+    "source": "disease.csv"
+  },
+  {
+    "text": "मेरे खेत में पिछले साल जीरा था अब क्या बोऊं?",
+    "intent": "crop",
+    "source": "crop.csv"
+  },
+  {
+    "text": "khet ka naksha app mein kaise add karein",
+    "intent": "general",
+    "source": "general.csv"
+  },
+  {
+    "text": "मिर्च के फल सड़ रहे हैं, कौन सी बीमारी है?",
+    "intent": "disease",
+    "source": "disease.json"
+  },
+  {
+    "text": "सिंचाई के बाद खेत में जुताई करनी चाहिए क्या",
+    "intent": "irrigation",
+    "source": "irrigation.csv"
+  },
+  {
+    "text": "माइक से बात कैसे करें",
+    "intent": "general",
+    "source": "general.csv"
+  },
+  {
+    "text": "बाजरे में माहू कीड़ा लग गया है उपाय बताओ",
+    "intent": "disease",
+    "source": "disease.csv"
+  },
+  {
+    "text": "मिर्च के पत्तों पर सफेद धब्बे आ गए हैं",
+    "intent": "disease",
+    "source": "disease.csv"
+  },
+  {
+    "text": "organic fertilizer kab aur kaise dena chahiye?",
+    "intent": "fertilizer",
+    "source": "fertilizer.csv"
+  },
+  {
+    "text": "rice mein blast disease ho gayi hai kya spray karein?",
+    "intent": "disease",
+    "source": "disease.csv"
+  },
+  {
+    "text": "masoor dal price today in mandi",
+    "intent": "market",
+    "source": "market.csv"
+  },
+  {
+    "text": "मेरे खेत में पिछले साल मक्का था, अब क्या बोऊं?",
+    "intent": "crop",
+    "source": "crop.json"
+  },
+  {
+    "text": "म्हारे खेत में बिजली गिरी और आग लग गई",
+    "intent": "emergency",
+    "source": "emergency.csv"
+  },
+  {
+    "text": "mustard sowing seed rate per hectare",
+    "intent": "seed",
+    "source": "seed.csv"
+  },
+  {
+    "text": "मंडी में फसल बेचने का तरीका क्या है",
+    "intent": "market",
+    "source": "market.csv"
+  },
+  {
+    "text": "sarson ka bhav aaj badhega ya ghategaa",
+    "intent": "market",
+    "source": "market.csv"
+  },
+  {
+    "text": "मेरे पास सिंचाई की सुविधा नहीं है, कौन सी फसल बोऊं?",
+    "intent": "crop",
+    "source": "crop.json"
+  },
+  {
+    "text": "मेरे खेत में दोमट मिट्टी है, कौन सी फसल उगाऊं?",
+    "intent": "crop",
+    "source": "crop.json"
+  },
+  {
+    "text": "agriculture loan interest rate government bank mein",
+    "intent": "government",
+    "source": "government.csv"
+  },
+  {
+    "text": "seed moisture content for storage kitna hona chahiye",
+    "intent": "seed",
+    "source": "seed.csv"
+  },
+  {
+    "text": "मेरे खेत में पिछले साल कपास था, अब क्या बोऊं?",
+    "intent": "crop",
+    "source": "crop.json"
+  },
+  {
+    "text": "मेरी फसल में खाद डालने का सही समय क्या है?",
+    "intent": "fertilizer",
+    "source": "fertilizer.csv"
+  },
+  {
+    "text": "सरकारी योजना का लाभ लेने के लिए क्या करना होगा",
+    "intent": "government",
+    "source": "government.csv"
+  },
+  {
+    "text": "मेरे खेत में ड्रिप से खाद कैसे दें?",
+    "intent": "fertilizer",
+    "source": "fertilizer.csv"
+  },
+  {
+    "text": "whitefly ka bada attack ho gaya hai turant kya karein",
+    "intent": "emergency",
+    "source": "emergency.csv"
+  },
+  {
+    "text": "groundnut price aaj ki mandi mein",
+    "intent": "market",
+    "source": "market.csv"
+  },
+  {
+    "text": "vermicompost se soil health kaise improve hoti hai?",
+    "intent": "soil",
+    "source": "soil.csv"
+  },
+  {
+    "text": "किसान क्रेडिट कार्ड के लिए कौन से कागज चाहिए",
+    "intent": "government",
+    "source": "government.csv"
+  },
+  {
+    "text": "tractor tyre puncture repair kaise karein",
+    "intent": "machinery",
+    "source": "machinery.csv"
+  },
+  {
+    "text": "आधार से लॉगिन हो सकता है क्या",
+    "intent": "general",
+    "source": "general.csv"
+  },
+  {
+    "text": "irrigation schedule for wheat in rajasthan",
+    "intent": "irrigation",
+    "source": "irrigation.csv"
+  },
+  {
+    "text": "जैविक खेती के लिए कौन सी फसल सबसे अच्छी है?",
+    "intent": "crop",
+    "source": "crop.csv"
+  },
+  {
+    "text": "राजस्थान में पानी की कमी में खेती कैसे करें",
+    "intent": "irrigation",
+    "source": "irrigation.csv"
+  },
+  {
+    "text": "drought emergency mera khet sukh raha hai",
+    "intent": "emergency",
+    "source": "emergency.csv"
+  },
+  {
+    "text": "मेरी मिट्टी में फास्फोरस की कमी है क्या करूं?",
+    "intent": "soil",
+    "source": "soil.csv"
+  },
+  {
+    "text": "aaj ka max temperature kitna hoga",
+    "intent": "weather",
+    "source": "weather.csv"
+  },
+  {
+    "text": "foliar spray fertilizer kab aur kaise karein?",
+    "intent": "fertilizer",
+    "source": "fertilizer.csv"
+  },
+  {
+    "text": "कल सरसों का भाव क्या था मंडी में",
+    "intent": "market",
+    "source": "market.csv"
+  },
+  {
+    "text": "मेरी मिट्टी में जैविक पदार्थ कैसे बढ़ाऊं?",
+    "intent": "soil",
+    "source": "soil.csv"
+  },
+  {
+    "text": "sprinkler irrigation ke liye kitna pressure chahiye",
+    "intent": "irrigation",
+    "source": "irrigation.csv"
+  },
+  {
+    "text": "no rain for 15 days crop dying emergency irrigation needed",
+    "intent": "emergency",
+    "source": "emergency.csv"
+  },
+  {
+    "text": "ai kitna accurate hai is app mein",
+    "intent": "general",
+    "source": "general.csv"
+  },
+  {
+    "text": "आज का मौसम खेती के लिए कैसा है",
+    "intent": "weather",
+    "source": "weather.csv"
+  },
+  {
+    "text": "cotton ki buwai kab karni chahiye?",
+    "intent": "crop",
+    "source": "crop.csv"
+  },
+  {
+    "text": "seed treatment se fasal ko kya fayda hota hai",
+    "intent": "seed",
+    "source": "seed.csv"
+  },
+  {
+    "text": "मेरी जमीन काली मिट्टी की है, कौन सी फसल उगाऊं?",
+    "intent": "crop",
+    "source": "crop.json"
+  },
+  {
+    "text": "मेरी धनिया में बैक्टीरियल लीफ स्पॉट है",
+    "intent": "disease",
+    "source": "disease.csv"
+  },
+  {
+    "text": "seed subsidy government se kaise milegi",
+    "intent": "seed",
+    "source": "seed.csv"
+  },
+  {
+    "text": "custom hiring centre se machine kaise milegi",
+    "intent": "machinery",
+    "source": "machinery.csv"
+  },
+  {
+    "text": "सोयाबीन में पत्ती धब्बा रोग आ गया है",
+    "intent": "disease",
+    "source": "disease.csv"
+  },
+  {
+    "text": "पुश नोटिफिकेशन कैसे चालू करें",
+    "intent": "general",
+    "source": "general.csv"
+  },
+  {
+    "text": "laser land leveller machine kaise kaam karti hai",
+    "intent": "machinery",
+    "source": "machinery.csv"
+  },
+  {
+    "text": "organic matter badhane ke liye kya karein?",
+    "intent": "soil",
+    "source": "soil.csv"
+  },
+  {
+    "text": "म्हारे खेत में नैनो यूरिया कैसे इस्तेमाल करूं?",
+    "intent": "fertilizer",
+    "source": "fertilizer.csv"
+  },
+  {
+    "text": "soil organic carbon kaise badhayein?",
+    "intent": "soil",
+    "source": "soil.csv"
+  },
+  {
+    "text": "म्हारी फसल में रात भर में सब पत्ते गिर गए",
+    "intent": "emergency",
+    "source": "emergency.csv"
+  },
+  {
+    "text": "ट्रैक्टर की सर्विसिंग कब करानी चाहिए",
+    "intent": "machinery",
+    "source": "machinery.csv"
+  },
+  {
+    "text": "aaj ki humidity kitni hai",
+    "intent": "weather",
+    "source": "weather.csv"
+  },
+  {
+    "text": "म्हारे खेत री मिट्टी में पानी रुकता नहीं है",
+    "intent": "soil",
+    "source": "soil.csv"
+  },
+  {
+    "text": "top dressing fertilizer kab dena chahiye?",
+    "intent": "fertilizer",
+    "source": "fertilizer.csv"
+  },
+  {
+    "text": "ऐप क्रैश हो रहा है बार बार",
+    "intent": "general",
+    "source": "general.csv"
+  },
+  {
+    "text": "मेरे बैंगन में जड़ गांठ सूत्रकृमि का प्रकोप है",
+    "intent": "disease",
+    "source": "disease.csv"
+  },
+  {
+    "text": "hi bhai drip irrigation ke baare mein batao",
+    "intent": "greeting",
+    "source": "greeting.csv"
+  },
+  {
+    "text": "मूंग की फसल में पानी कब देना है",
+    "intent": "irrigation",
+    "source": "irrigation.csv"
+  },
+  {
+    "text": "मेरे खेत में पिछले साल सोयाबीन था, अब क्या बोऊं?",
+    "intent": "crop",
+    "source": "crop.json"
+  },
+  {
+    "text": "bajra mein downy mildew disease ho gayi hai",
+    "intent": "disease",
+    "source": "disease.csv"
+  },
+  {
+    "text": "म्हारे खेत में काली मिट्टी है, कांई बोवां?",
+    "intent": "crop",
+    "source": "crop.json"
+  },
+  {
+    "text": "रोटावेटर की चेन टूट गई है कैसे ठीक करें",
+    "intent": "machinery",
+    "source": "machinery.csv"
+  },
+  {
+    "text": "फसल में पानी देने का सबसे सस्ता तरीका कौन सा है",
+    "intent": "irrigation",
+    "source": "irrigation.csv"
+  },
+  {
+    "text": "power weeder kya hota hai aur kaise use karein",
+    "intent": "machinery",
+    "source": "machinery.csv"
+  },
+  {
+    "text": "ram ram bhai aaj khet mein kya karein",
+    "intent": "greeting",
+    "source": "greeting.csv"
+  },
+  {
+    "text": "थ्रेशर मशीन की देखभाल कैसे करें",
+    "intent": "machinery",
+    "source": "machinery.csv"
+  },
+  {
+    "text": "इस सीजन में बारिश कम होगी क्या",
+    "intent": "weather",
+    "source": "weather.csv"
+  },
+  {
+    "text": "मेरे बैंगन में फोमोप्सिस ब्लाइट रोग है",
+    "intent": "disease",
+    "source": "disease.csv"
+  },
+  {
+    "text": "fertigation kya hota hai aur kaise karein?",
+    "intent": "fertilizer",
+    "source": "fertilizer.csv"
+  },
+  {
+    "text": "सिंचाई के लिए बिजली कब मिलेगी",
+    "intent": "irrigation",
+    "source": "irrigation.csv"
+  },
+  {
+    "text": "soil ph kaise check karein ghar par?",
+    "intent": "soil",
+    "source": "soil.csv"
+  },
+  {
+    "text": "ऐप का मेनू कैसे खोलें",
+    "intent": "general",
+    "source": "general.csv"
+  },
+  {
+    "text": "minimum support price for mustard 2024",
+    "intent": "market",
+    "source": "market.csv"
+  },
+  {
+    "text": "फसल अचानक सूख रही है क्या करूं",
+    "intent": "emergency",
+    "source": "emergency.csv"
+  },
+  {
+    "text": "म्हारे खेत री मिट्टी में नमी कम है, के करूं?",
+    "intent": "soil",
+    "source": "soil.json"
+  },
+  {
+    "text": "म्हारी फसल में यूरिया का पत्तियों पर छिड़काव कद करूं?",
+    "intent": "fertilizer",
+    "source": "fertilizer.csv"
+  },
+  {
+    "text": "coriander seed price today rajasthan mandi",
+    "intent": "market",
+    "source": "market.csv"
+  },
+  {
+    "text": "kisan credit card ke liye apply kaise karein",
+    "intent": "government",
+    "source": "government.csv"
+  },
+  {
+    "text": "अपना नाम और जिला कैसे बदलें",
+    "intent": "general",
+    "source": "general.csv"
+  },
+  {
+    "text": "soybean price today in rajasthan mandi",
+    "intent": "market",
+    "source": "market.csv"
+  },
+  {
+    "text": "potassium deficiency mein patte ke kinare kyon jalte hain?",
+    "intent": "soil",
+    "source": "soil.csv"
+  },
+  {
+    "text": "खम्मा घणी दादा",
+    "intent": "greeting",
+    "source": "greeting.csv"
+  },
+  {
+    "text": "सूरजमुखी की खेती कब और कैसे करें?",
+    "intent": "crop",
+    "source": "crop.csv"
+  },
+  {
+    "text": "मेरी गेहूं की फसल में झुलसा रोग आ गया है",
+    "intent": "disease",
+    "source": "disease.csv"
+  },
+  {
+    "text": "pragati ai ke baare mein batao",
+    "intent": "general",
+    "source": "general.csv"
+  },
+  {
+    "text": "मेरे खेत में पिछले साल अरहर थी, अब क्या बोऊं?",
+    "intent": "crop",
+    "source": "crop.json"
+  },
+  {
+    "text": "wheat mein rust disease aa gayi hai spray kya karein?",
+    "intent": "disease",
+    "source": "disease.csv"
+  },
+  {
+    "text": "रबी सीजन में कौन सी फसल ज्यादा फायदेमंद है?",
+    "intent": "crop",
+    "source": "crop.csv"
+  },
+  {
+    "text": "weather forecast for next week rajasthan",
+    "intent": "weather",
+    "source": "weather.csv"
+  },
+  {
+    "text": "फसल की बीमारी की फोटो कैसे भेजें",
+    "intent": "general",
+    "source": "general.csv"
+  },
+  {
+    "text": "बीज की पैकेट पर क्या जानकारी देखें",
+    "intent": "seed",
+    "source": "seed.csv"
+  },
+  {
+    "text": "मेरे खेत में हल्की मिट्टी है कौन सी फसल उगाऊं?",
+    "intent": "crop",
+    "source": "crop.csv"
+  },
+  {
+    "text": "राम राम भाई बीज के बारे में पूछना था",
+    "intent": "greeting",
+    "source": "greeting.csv"
+  },
+  {
+    "text": "मेरे खेत में पिछले साल अलसी था, अब क्या बोऊं?",
+    "intent": "crop",
+    "source": "crop.json"
+  },
+  {
+    "text": "मेरी फसल में आयरन की कमी है, क्या डालूं?",
+    "intent": "fertilizer",
+    "source": "fertilizer.json"
+  },
+  {
+    "text": "otp नहीं आ रहा है क्या करूं",
+    "intent": "general",
+    "source": "general.csv"
+  },
+  {
+    "text": "tomato ke patte curl ho rahe hain, kya bimari hai?",
+    "intent": "disease",
+    "source": "disease.json"
+  },
+  {
+    "text": "कृषि यंत्र बैंक से लोन पर मिलते हैं क्या",
+    "intent": "machinery",
+    "source": "machinery.csv"
+  },
+  {
+    "text": "गेहूं का सबसे अच्छा बीज कौन सा है",
+    "intent": "seed",
+    "source": "seed.csv"
+  },
+  {
+    "text": "cultivator se khet jotne ka sahi tarika kya hai",
+    "intent": "machinery",
+    "source": "machinery.csv"
+  },
+  {
+    "text": "मेरे खेत में पानी की कमी है क्या करूं",
+    "intent": "irrigation",
+    "source": "irrigation.csv"
+  },
+  {
+    "text": "म्हारी मिट्टी में सल्फर री कमी है, के उपाय करूं?",
+    "intent": "soil",
+    "source": "soil.json"
+  },
+  {
+    "text": "mini tractor subsidy rajasthan 2024",
+    "intent": "government",
+    "source": "government.csv"
+  },
+  {
+    "text": "म्हारे खेत में मैग्नीशियम सल्फेट कितनो डालूं?",
+    "intent": "fertilizer",
+    "source": "fertilizer.csv"
+  },
+  {
+    "text": "म्हारे खेत री मिट्टी में सोडियम ज्यादा है",
+    "intent": "soil",
+    "source": "soil.csv"
+  },
+  {
+    "text": "मेरे खेत में फसल के बाद खाद कब डालें?",
+    "intent": "fertilizer",
+    "source": "fertilizer.csv"
+  },
+  {
+    "text": "थ्रेशर मशीन किराए पर कैसे मिलेगी",
+    "intent": "machinery",
+    "source": "machinery.csv"
+  },
+  {
+    "text": "चने का सबसे अच्छा बीज कौन सा है",
+    "intent": "seed",
+    "source": "seed.csv"
+  },
+  {
+    "text": "मेरे खेत में मिट्टी बहुत भारी है, जुताई मुश्किल है",
+    "intent": "soil",
+    "source": "soil.json"
+  },
+  {
+    "text": "म्हारे खेत में पानी नहीं है 10 दिन से बारिश नहीं हुई",
+    "intent": "emergency",
+    "source": "emergency.csv"
+  },
+  {
+    "text": "fenugreek seed sowing method kya hai",
+    "intent": "seed",
+    "source": "seed.csv"
+  },
+  {
+    "text": "आज प्याज का मंडी भाव क्या है",
+    "intent": "market",
+    "source": "market.csv"
+  },
+  {
+    "text": "खेत में आग लग गई है अभी",
+    "intent": "emergency",
+    "source": "emergency.csv"
+  },
+  {
+    "text": "मेरी मक्का में चारकोल रॉट रोग है, उपाय बताओ",
+    "intent": "disease",
+    "source": "disease.json"
+  },
+  {
+    "text": "गेहूं की नई किस्म कौन सी है 2024 में",
+    "intent": "seed",
+    "source": "seed.csv"
+  },
+  {
+    "text": "मेरी सरसों में पाउडरी मिल्ड्यू हो गई है",
+    "intent": "disease",
+    "source": "disease.csv"
+  },
+  {
+    "text": "मूंगफली का आज का भाव बताओ",
+    "intent": "market",
+    "source": "market.csv"
+  },
+  {
+    "text": "cotton mein boll rot ho rahi hai kya karein?",
+    "intent": "disease",
+    "source": "disease.csv"
+  },
+  {
+    "text": "tomorrow rain probability in my district",
+    "intent": "weather",
+    "source": "weather.csv"
+  },
+  {
+    "text": "कल बारिश होगी क्या",
+    "intent": "weather",
+    "source": "weather.csv"
+  },
+  {
+    "text": "अपनी राय कैसे दें इस ऐप के बारे में",
+    "intent": "general",
+    "source": "general.csv"
+  },
+  {
+    "text": "मेरे खेत में पिछले साल मूंगफली थी, अब क्या बोऊं?",
+    "intent": "crop",
+    "source": "crop.json"
+  },
+  {
+    "text": "marwari mein baat karna hai mujhe",
+    "intent": "general",
+    "source": "general.csv"
+  },
+  {
+    "text": "राजस्थान में बागवानी पर सब्सिडी मिलती है क्या",
+    "intent": "government",
+    "source": "government.csv"
+  },
+  {
+    "text": "राम राम जी शुभ प्रभात",
+    "intent": "greeting",
+    "source": "greeting.csv"
+  },
+  {
+    "text": "bajra mein rust disease ka attack ho gaya hai",
+    "intent": "disease",
+    "source": "disease.csv"
+  },
+  {
+    "text": "भाई म्हारे खेत में कौन सी फसल बोवां जो जल्दी तैयार हो जावे?",
+    "intent": "crop",
+    "source": "crop.csv"
+  },
+  {
+    "text": "jeera price today in rajasthan",
+    "intent": "market",
+    "source": "market.csv"
+  },
+  {
+    "text": "hey there",
+    "intent": "greeting",
+    "source": "greeting.csv"
+  },
+  {
+    "text": "मेरे खेत की मिट्टी बलुई है कौन सी फसल अच्छी रहेगी?",
+    "intent": "crop",
+    "source": "crop.csv"
+  },
+  {
+    "text": "सरसों की बुवाई के लिए बीज दर क्या है",
+    "intent": "seed",
+    "source": "seed.csv"
+  },
+  {
+    "text": "टमाटर का बीज कहां से खरीदें",
+    "intent": "seed",
+    "source": "seed.csv"
+  },
+  {
+    "text": "फसल में खाद की कमी से पौधे मर रहे हैं तुरंत बताओ",
+    "intent": "emergency",
+    "source": "emergency.csv"
+  },
+  {
+    "text": "टपक सिंचाई से कितना पानी बचता है",
+    "intent": "irrigation",
+    "source": "irrigation.csv"
+  },
+  {
+    "text": "मेरे खेत की मिट्टी में पोषक तत्वों की कमी है, क्या करूं?",
+    "intent": "soil",
+    "source": "soil.json"
+  },
+  {
+    "text": "is mahine mein lू chalegi kya",
+    "intent": "weather",
+    "source": "weather.csv"
+  },
+  {
+    "text": "पाला पड़ने से पहले क्या करें",
+    "intent": "weather",
+    "source": "weather.csv"
+  },
+  {
+    "text": "राजस्थान में किसानों को मुफ्त बिजली मिलती है क्या",
+    "intent": "government",
+    "source": "government.csv"
+  },
+  {
+    "text": "भाई म्हारी सरसों री फसल में अल्टरनेरिया ब्लाइट लाग री है",
+    "intent": "disease",
+    "source": "disease.csv"
+  },
+  {
+    "text": "आज मसूर का भाव क्या है",
+    "intent": "market",
+    "source": "market.csv"
+  },
+  {
+    "text": "npk fertilizer ka sahi dose kya hai?",
+    "intent": "fertilizer",
+    "source": "fertilizer.csv"
+  },
+  {
+    "text": "मूंग का भाव इस सीजन में कैसा रहेगा",
+    "intent": "market",
+    "source": "market.csv"
+  },
+  {
+    "text": "पुरानी चैट कैसे देखें",
+    "intent": "general",
+    "source": "general.csv"
+  },
+  {
+    "text": "मेरे खेत में पिछले साल गेहूं था अब क्या बोऊं?",
+    "intent": "crop",
+    "source": "crop.csv"
+  },
+  {
+    "text": "thresher machine rent per quintal kitna hai",
+    "intent": "machinery",
+    "source": "machinery.csv"
+  },
+  {
+    "text": "lightning struck my field and fire started emergency",
+    "intent": "emergency",
+    "source": "emergency.csv"
+  },
+  {
+    "text": "रोटावेटर से खेत कैसे तैयार करें",
+    "intent": "machinery",
+    "source": "machinery.csv"
+  },
+  {
+    "text": "खाद पर सब्सिडी कैसे मिलती है",
+    "intent": "government",
+    "source": "government.csv"
+  },
+  {
+    "text": "kya aaj waqt par barish hogi mere khet ke liye",
+    "intent": "weather",
+    "source": "weather.csv"
+  },
+  {
+    "text": "आज मौसम साफ रहेगा क्या",
+    "intent": "weather",
+    "source": "weather.csv"
+  },
+  {
+    "text": "फसल पर पाला पड़ने से क्या नुकसान होता है",
+    "intent": "weather",
+    "source": "weather.csv"
+  },
+  {
+    "text": "seed quality check karne ka tarika",
+    "intent": "seed",
+    "source": "seed.csv"
+  },
+  {
+    "text": "rice mein false smut disease ho gayi hai",
+    "intent": "disease",
+    "source": "disease.csv"
+  },
+  {
+    "text": "which medicinal crop is profitable in rajasthan?",
+    "intent": "crop",
+    "source": "crop.csv"
+  },
+  {
+    "text": "onion seed sowing time rajasthan mein",
+    "intent": "seed",
+    "source": "seed.csv"
+  },
+  {
+    "text": "gps location on kaise karein app ke liye",
+    "intent": "general",
+    "source": "general.csv"
+  },
+  {
+    "text": "maize hybrid seed variety batao",
+    "intent": "seed",
+    "source": "seed.csv"
+  },
+  {
+    "text": "best tractor brand for small farmers in rajasthan",
+    "intent": "machinery",
+    "source": "machinery.csv"
+  },
+  {
+    "text": "how to improve soil fertility naturally?",
+    "intent": "soil",
+    "source": "soil.csv"
+  },
+  {
+    "text": "ड्रिप इरिगेशन लगाने में कितना खर्च आता है",
+    "intent": "irrigation",
+    "source": "irrigation.csv"
+  },
+  {
+    "text": "गन्ने की फसल में सिंचाई कितनी बार करें",
+    "intent": "irrigation",
+    "source": "irrigation.csv"
+  },
+  {
+    "text": "मेरे खेत में पिछले साल सूरजमुखी था, अब क्या बोऊं?",
+    "intent": "crop",
+    "source": "crop.json"
+  },
+  {
+    "text": "म्हारी मिट्टी में केंचुए कम हैं के करूं?",
+    "intent": "soil",
+    "source": "soil.csv"
+  },
+  {
+    "text": "aaj kitne baje barish hogi",
+    "intent": "weather",
+    "source": "weather.csv"
+  },
+  {
+    "text": "yellow mosaic virus spreading in moong emergency help",
+    "intent": "emergency",
+    "source": "emergency.csv"
+  },
+  {
+    "text": "waterlogging emergency meri fasal dub rahi hai",
+    "intent": "emergency",
+    "source": "emergency.csv"
+  },
+  {
+    "text": "wheat mein powdery mildew disease aa gayi hai",
+    "intent": "disease",
+    "source": "disease.csv"
+  },
+  {
+    "text": "मेरे खेत में पिछले साल मेथी था अब क्या बोऊं?",
+    "intent": "crop",
+    "source": "crop.csv"
+  },
+  {
+    "text": "bhindi mein yellow vein mosaic virus hai kya karein?",
+    "intent": "disease",
+    "source": "disease.csv"
+  },
+  {
+    "text": "mandi mein fasal bechne ke liye registration kaise karein",
+    "intent": "market",
+    "source": "market.csv"
+  },
+  {
+    "text": "आज इसबगोल का भाव क्या है",
+    "intent": "market",
+    "source": "market.csv"
+  },
+  {
+    "text": "नीलगाय ने पूरा खेत उजाड़ दिया",
+    "intent": "emergency",
+    "source": "emergency.csv"
+  },
+  {
+    "text": "wind speed kitni hai aaj",
+    "intent": "weather",
+    "source": "weather.csv"
+  },
+  {
+    "text": "good morning bhai pranam",
+    "intent": "greeting",
+    "source": "greeting.csv"
+  },
+  {
+    "text": "drip irrigation mein fertilizer kaise dete hain",
+    "intent": "irrigation",
+    "source": "irrigation.csv"
+  },
+  {
+    "text": "मेरे खेत में मिट्टी का कटाव हो रहा है कैसे रोकूं?",
+    "intent": "soil",
+    "source": "soil.csv"
+  },
+  {
+    "text": "seed drill se gehu ki buwai kaise karein",
+    "intent": "machinery",
+    "source": "machinery.csv"
+  },
+  {
+    "text": "म्हारी मिट्टी में जीवाणुओं की संख्या कैसे बढ़ाऊं?",
+    "intent": "soil",
+    "source": "soil.csv"
+  },
+  {
+    "text": "kisan id kaise banayein is app mein",
+    "intent": "general",
+    "source": "general.csv"
+  },
+  {
+    "text": "seed ko nami se bachane ka tarika kya hai",
+    "intent": "seed",
+    "source": "seed.csv"
+  },
+  {
+    "text": "आज शाम को मौसम कैसा रहेगा",
+    "intent": "weather",
+    "source": "weather.csv"
+  },
+  {
+    "text": "नया अकाउंट बनाने में दिक्कत आ रही है",
+    "intent": "general",
+    "source": "general.csv"
+  },
+  {
+    "text": "मौसम के हिसाब से सिंचाई कब करें",
+    "intent": "weather",
+    "source": "weather.csv"
+  },
+  {
+    "text": "sign up kaise karein pragati ai mein",
+    "intent": "general",
+    "source": "general.csv"
+  },
+  {
+    "text": "म्हारे खेत में पानी नहीं है फसल मर जाएगी",
+    "intent": "emergency",
+    "source": "emergency.csv"
+  },
+  {
+    "text": "tractor driving licence kaise banwayein",
+    "intent": "machinery",
+    "source": "machinery.csv"
+  },
+  {
+    "text": "रबी फसलों में सिंचाई कितनी बार करनी चाहिए",
+    "intent": "irrigation",
+    "source": "irrigation.csv"
+  },
+  {
+    "text": "mandi bhav online kaise check karein",
+    "intent": "market",
+    "source": "market.csv"
+  },
+  {
+    "text": "म्हारे खेत में खाद की मात्रा मिट्टी जांच के आधार पर बताओ",
+    "intent": "fertilizer",
+    "source": "fertilizer.csv"
+  },
+  {
+    "text": "pm kisan next installment release date kya hai",
+    "intent": "government",
+    "source": "government.csv"
+  },
+  {
+    "text": "soil testing kahan se karwayein rajasthan mein?",
+    "intent": "soil",
+    "source": "soil.csv"
+  },
+  {
+    "text": "म्हारी फसल में psb कल्चर कद डालणो चाहिए?",
+    "intent": "fertilizer",
+    "source": "fertilizer.csv"
+  },
+  {
+    "text": "मेरे खेत में पिछले साल मेथी था, अब क्या बोऊं?",
+    "intent": "crop",
+    "source": "crop.json"
+  },
+  {
+    "text": "kya yeh app chote kisan ke liye bhi hai",
+    "intent": "general",
+    "source": "general.csv"
+  },
+  {
+    "text": "सिंचाई के लिए पाइपलाइन कैसे बिछाएं",
+    "intent": "irrigation",
+    "source": "irrigation.csv"
+  },
+  {
+    "text": "kisan pension yojana rajasthan ke liye apply kaise karein",
+    "intent": "government",
+    "source": "government.csv"
+  },
+  {
+    "text": "मौसम बदलने से फसल पर क्या असर होता है",
+    "intent": "weather",
+    "source": "weather.csv"
+  },
+  {
+    "text": "आप मेरे लिए क्या कर सकते हैं",
+    "intent": "general",
+    "source": "general.csv"
+  },
+  {
+    "text": "म्हारे खेत में पिछले साल चना था, अब कांई बोवां?",
+    "intent": "crop",
+    "source": "crop.json"
+  },
+  {
+    "text": "howdy",
+    "intent": "greeting",
+    "source": "greeting.csv"
+  },
+  {
+    "text": "over fertilization ke kya nuksan hote hain?",
+    "intent": "fertilizer",
+    "source": "fertilizer.csv"
+  },
+  {
+    "text": "गेहूं का बीज कितने दिन तक स्टोर कर सकते हैं",
+    "intent": "seed",
+    "source": "seed.csv"
+  },
+  {
+    "text": "bug report kaise karein is app mein",
+    "intent": "general",
+    "source": "general.csv"
+  },
+  {
+    "text": "टमाटर में drip se paani dena chahiye ya nahi",
+    "intent": "irrigation",
+    "source": "irrigation.csv"
+  },
+  {
+    "text": "लेजर लैंड लेवलर मशीन क्या होती है",
+    "intent": "machinery",
+    "source": "machinery.csv"
+  },
+  {
+    "text": "sab patte achanak peele ho gaye emergency kya karein",
+    "intent": "emergency",
+    "source": "emergency.csv"
+  },
+  {
+    "text": "बारिश का पूर्वानुमान सही है क्या",
+    "intent": "weather",
+    "source": "weather.csv"
+  },
+  {
+    "text": "gehu ki buwai ka sahi samay kab hai",
+    "intent": "seed",
+    "source": "seed.csv"
+  },
+  {
+    "text": "म्हारी फसल में तना सड़न बहुत तेजी से फैल रही है",
+    "intent": "emergency",
+    "source": "emergency.csv"
+  },
+  {
+    "text": "मेरे जिले में आज बारिश होगी क्या",
+    "intent": "weather",
+    "source": "weather.csv"
+  },
+  {
+    "text": "nearest soil testing lab kahan hai?",
+    "intent": "soil",
+    "source": "soil.csv"
+  },
+  {
+    "text": "भाई म्हारी मक्का री फसल में तना सड़न लाग री है",
+    "intent": "disease",
+    "source": "disease.csv"
+  },
+  {
+    "text": "apna khet app mein kaise add karein",
+    "intent": "general",
+    "source": "general.csv"
+  },
+  {
+    "text": "म्हारे खेत में जैव उर्वरक कद डालणो चाहिए?",
+    "intent": "fertilizer",
+    "source": "fertilizer.csv"
+  },
+  {
+    "text": "hello bhai good afternoon kaise ho",
+    "intent": "greeting",
+    "source": "greeting.csv"
+  },
+  {
+    "text": "राम राम भाई jai shri ram",
+    "intent": "greeting",
+    "source": "greeting.csv"
+  },
+  {
+    "text": "म्हारी फसल में अचानक सब पत्ते पीले हो गए",
+    "intent": "emergency",
+    "source": "emergency.csv"
+  },
+  {
+    "text": "good evening bhai jai shri ram",
+    "intent": "greeting",
+    "source": "greeting.csv"
+  },
+  {
+    "text": "hailstorm ki koi warning hai kya aaj",
+    "intent": "weather",
+    "source": "weather.csv"
+  },
+  {
+    "text": "थ्रेशर मशीन का किराया कितना है",
+    "intent": "machinery",
+    "source": "machinery.csv"
+  },
+  {
+    "text": "temperature drop hoga kya kal raat",
+    "intent": "weather",
+    "source": "weather.csv"
+  },
+  {
+    "text": "weather update for farming today",
+    "intent": "weather",
+    "source": "weather.csv"
+  },
+  {
+    "text": "mustard mein sclerotinia stem rot ho gayi hai",
+    "intent": "disease",
+    "source": "disease.csv"
+  },
+  {
+    "text": "इस हफ्ते गर्मी कितनी रहेगी",
+    "intent": "weather",
+    "source": "weather.csv"
+  },
+  {
+    "text": "मेरे टमाटर में बैक्टीरियल विल्ट आ गई है",
+    "intent": "disease",
+    "source": "disease.csv"
+  },
+  {
+    "text": "fasal bima yojana mein premium kitna bharna padta hai",
+    "intent": "government",
+    "source": "government.csv"
+  },
+  {
+    "text": "इस ऐप में क्या क्या मिलता है",
+    "intent": "general",
+    "source": "general.csv"
+  },
+  {
+    "text": "kaunsi fasal mein paani ki bachat hoti hai?",
+    "intent": "crop",
+    "source": "crop.csv"
+  },
+  {
+    "text": "chilli mein thrips ka attack ho gaya hai kya karein?",
+    "intent": "disease",
+    "source": "disease.csv"
+  },
+  {
+    "text": "म्हारी सोयाबीन री फसल में dap कितनो डालूं?",
+    "intent": "fertilizer",
+    "source": "fertilizer.csv"
+  },
+  {
+    "text": "saline soil ko kaise sudharen?",
+    "intent": "soil",
+    "source": "soil.csv"
+  },
+  {
+    "text": "नमस्ते भाई शुभ प्रभात",
+    "intent": "greeting",
+    "source": "greeting.csv"
+  },
+  {
+    "text": "मेरी मिट्टी में फास्फोरस की कमी है, क्या करूं?",
+    "intent": "soil",
+    "source": "soil.json"
+  },
+  {
+    "text": "kal ka mausam kaisa rahega",
+    "intent": "weather",
+    "source": "weather.csv"
+  },
+  {
+    "text": "rajasthan agriculture department schemes 2024",
+    "intent": "government",
+    "source": "government.csv"
+  },
+  {
+    "text": "बीज को कीड़ों से कैसे बचाएं",
+    "intent": "seed",
+    "source": "seed.csv"
+  },
+  {
+    "text": "bajra mein ergot disease ka attack hai",
+    "intent": "disease",
+    "source": "disease.csv"
+  },
+  {
+    "text": "गर्मी में फसल को ज्यादा पानी चाहिए क्या",
+    "intent": "irrigation",
+    "source": "irrigation.csv"
+  },
+  {
+    "text": "मेरी मूंग में पाउडरी मिल्ड्यू रोग है, दवाई बताओ",
+    "intent": "disease",
+    "source": "disease.json"
+  },
+  {
+    "text": "बीज की गुणवत्ता कैसे जांचें",
+    "intent": "seed",
+    "source": "seed.csv"
+  },
+  {
+    "text": "रीपर मशीन से फसल कटाई कैसे करें",
+    "intent": "machinery",
+    "source": "machinery.csv"
+  },
+  {
+    "text": "which crop is best for rabi season in rajasthan?",
+    "intent": "crop",
+    "source": "crop.csv"
+  },
+  {
+    "text": "ऐप में साइन अप कैसे करें",
+    "intent": "general",
+    "source": "general.csv"
+  },
+  {
+    "text": "म्हारे खेत री मिट्टी में जिंक सल्फेट डालने से के फायदो होसी?",
+    "intent": "soil",
+    "source": "soil.csv"
+  },
+  {
+    "text": "good afternoon bhai khet ka kya haal hai",
+    "intent": "greeting",
+    "source": "greeting.csv"
+  },
+  {
+    "text": "good morning ji jai hind",
+    "intent": "greeting",
+    "source": "greeting.csv"
+  },
+  {
+    "text": "मेरी सोयाबीन में चारकोल रॉट रोग है",
+    "intent": "disease",
+    "source": "disease.csv"
+  },
+  {
+    "text": "सिंचाई का शेड्यूल कैसे बनाएं",
+    "intent": "irrigation",
+    "source": "irrigation.csv"
+  },
+  {
+    "text": "tomato mein damping off ho rahi hai seedlings mar rahi hain",
+    "intent": "disease",
+    "source": "disease.csv"
+  },
+  {
+    "text": "kal ka mausam spray ke liye sahi rahega kya",
+    "intent": "weather",
+    "source": "weather.csv"
+  },
+  {
+    "text": "नमस्ते जी आज सिंचाई करनी है",
+    "intent": "greeting",
+    "source": "greeting.csv"
+  },
+  {
+    "text": "rice mein fertilizer dose kya hona chahiye?",
+    "intent": "fertilizer",
+    "source": "fertilizer.csv"
+  },
+  {
+    "text": "फसल में जड़ गलन हो रही है पौधे गिर रहे हैं",
+    "intent": "emergency",
+    "source": "emergency.csv"
+  },
+  {
+    "text": "मानसून की वापसी कब होगी",
+    "intent": "weather",
+    "source": "weather.csv"
+  },
+  {
+    "text": "jai hind bhai kisan ki baat karni thi",
+    "intent": "greeting",
+    "source": "greeting.csv"
+  },
+  {
+    "text": "harvester machine kiraye par kahan milegi",
+    "intent": "machinery",
+    "source": "machinery.csv"
+  },
+  {
+    "text": "मेरी पूरी मूंग की फसल में पीला मोजेक वायरस फैल गया",
+    "intent": "emergency",
+    "source": "emergency.csv"
+  },
+  {
+    "text": "मेरे पास सिंचाई की सुविधा नहीं है कौन सी फसल बोऊं?",
+    "intent": "crop",
+    "source": "crop.csv"
+  },
+  {
+    "text": "मृदा स्वास्थ्य कार्ड कहां से मिलेगा",
+    "intent": "government",
+    "source": "government.csv"
+  },
+  {
+    "text": "म्हारी मिट्टी में मोलिब्डेनम री कमी है",
+    "intent": "soil",
+    "source": "soil.csv"
+  },
+  {
+    "text": "tractor servicing kitne ghante ke baad karwayein",
+    "intent": "machinery",
+    "source": "machinery.csv"
+  },
+  {
+    "text": "मेरी फसल में खाद की कमी से क्या होता है?",
+    "intent": "fertilizer",
+    "source": "fertilizer.csv"
+  },
+  {
+    "text": "सिंचाई के लिए पानी का सही उपयोग कैसे करें",
+    "intent": "irrigation",
+    "source": "irrigation.csv"
+  },
+  {
+    "text": "आज धूल भरी आंधी आएगी क्या",
+    "intent": "weather",
+    "source": "weather.csv"
+  },
+  {
+    "text": "आज रात ठंड ज्यादा रहेगी क्या",
+    "intent": "weather",
+    "source": "weather.csv"
+  },
+  {
+    "text": "ferrous sulphate spray kaise karein?",
+    "intent": "fertilizer",
+    "source": "fertilizer.csv"
+  },
+  {
+    "text": "moong seed sowing time rajasthan mein kab hai",
+    "intent": "seed",
+    "source": "seed.csv"
+  },
+  {
+    "text": "मेरे खेत में दोमट मिट्टी है कौन सी फसल उगाऊं?",
+    "intent": "crop",
+    "source": "crop.csv"
+  },
+  {
+    "text": "soil biodiversity kaise badhayein?",
+    "intent": "soil",
+    "source": "soil.csv"
+  },
+  {
+    "text": "mustard msp 2024-25 kya hai",
+    "intent": "market",
+    "source": "market.csv"
+  },
+  {
+    "text": "soil test report app mein kaise dekhein",
+    "intent": "general",
+    "source": "general.csv"
+  },
+  {
+    "text": "म्हारी फसल में खाद ज्यादा डालने से के नुकसान होसी?",
+    "intent": "fertilizer",
+    "source": "fertilizer.csv"
+  },
+  {
+    "text": "cotton mein leaf curl virus ka attack hai",
+    "intent": "disease",
+    "source": "disease.csv"
+  },
+  {
+    "text": "crop rotation ke baare mein batao",
+    "intent": "crop",
+    "source": "crop.csv"
+  },
+  {
+    "text": "which crop gives best yield in less rainfall?",
+    "intent": "crop",
+    "source": "crop.csv"
+  },
+  {
+    "text": "स्प्रेयर मशीन कैसे चलाएं",
+    "intent": "machinery",
+    "source": "machinery.csv"
+  },
+  {
+    "text": "म्हारे खेत री मिट्टी में ऑर्गेनिक कार्बन कम है",
+    "intent": "soil",
+    "source": "soil.csv"
+  },
+  {
+    "text": "jowar mein anthracnose disease ka attack hai",
+    "intent": "disease",
+    "source": "disease.csv"
+  },
+  {
+    "text": "धनिया का बीज कब बोएं",
+    "intent": "seed",
+    "source": "seed.csv"
+  },
+  {
+    "text": "groundnut mein stem rot disease ka attack hai",
+    "intent": "disease",
+    "source": "disease.csv"
+  },
+  {
+    "text": "जंगली सूअर ने फसल नष्ट कर दी रात को",
+    "intent": "emergency",
+    "source": "emergency.csv"
+  },
+  {
+    "text": "म्हारी मिट्टी में जिंक री कमी है, जिंक सल्फेट कितनो डालूं?",
+    "intent": "fertilizer",
+    "source": "fertilizer.json"
+  },
+  {
+    "text": "कैमरे से फसल की जांच कैसे करें",
+    "intent": "general",
+    "source": "general.csv"
+  },
+  {
+    "text": "पीएम किसान सम्मान निधि में रजिस्ट्रेशन कैसे करें",
+    "intent": "government",
+    "source": "government.csv"
+  },
+  {
+    "text": "मेरे खेत में पिछले साल मक्का था अब क्या बोऊं?",
+    "intent": "crop",
+    "source": "crop.csv"
+  },
+  {
+    "text": "मेरी सोयाबीन में फाइटोफ्थोरा रूट रॉट है",
+    "intent": "disease",
+    "source": "disease.csv"
+  },
+  {
+    "text": "तूफान आने वाला है क्या",
+    "intent": "weather",
+    "source": "weather.csv"
+  }
+]

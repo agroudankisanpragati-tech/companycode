@@ -9,8 +9,8 @@ const getApiUrl = () => `${process.env.OPENAI_BASE_URL || 'https://api.openai.co
 const getHeaders = () => ({
     'Content-Type': 'application/json',
     'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
-    'HTTP-Referer': 'http://localhost:3000',
-    'X-Title': 'Kisan Pragati',
+    'HTTP-Referer': process.env.FRONTEND_URL || 'http://localhost:3000',
+    'X-Title': 'AgroDhan Kisan Pragati',
 });
 // Calculate soil health score from extracted data and benchmark
 function calculateSoilHealthScore(data, standard) {

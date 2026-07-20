@@ -1,8 +1,10 @@
 "use client";
-import React, { useEffect, useState } from 'react';
+import React, { lazy, Suspense, useEffect, useState } from 'react';
 import { FaMapMarkerAlt, FaSearch, FaThermometerHalf, FaClock, FaTint, FaWind, FaRegCalendarAlt, FaRedoAlt } from 'react-icons/fa';
 import { fetchWeather, fetchWeatherByLocation, searchLocations } from '../../services/weather';
 import WeatherCard from '../../components/WeatherCard';
+
+const VoiceButton = lazy(() => import('@/components/VoiceButton'));
 
 type LocationSuggestion = {
     name: string;
@@ -176,6 +178,16 @@ export default function WeatherWidget() {
                         <p className="text-xs font-medium uppercase tracking-[0.18em] text-emerald-600">Live weather controls</p>
                         <span className="block font-semibold text-lg leading-tight">Search, switch units, refresh</span>
                     </div>
+                    {!loading && data && (
+                        <Suspense fallback={null}>
+                            <VoiceButton
+                                mode="speak"
+                                speakText={`${location} mein abhi ${summaryLabel}. Humidity ${Math.round(summaryHumidity)} percent, wind ${Math.round(summaryWind)} km per hour.`}
+                                pageContext="weather"
+                                showLabel
+                            />
+                        </Suspense>
+                    )}
                 </div>
 
                 <div className="flex flex-wrap gap-3">

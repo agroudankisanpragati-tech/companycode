@@ -1,0 +1,186 @@
+{
+  "status": "READY",
+  "timestamp": "2026-07-15T14:40:15.101441+00:00",
+  "elapsed_ms": 7919.12,
+  "total_checks": 25,
+  "passed": 21,
+  "warnings": 4,
+  "errors": 0,
+  "checks": [
+    {
+      "name": "python_version",
+      "passed": true,
+      "message": "Python 3.13 — OK",
+      "critical": false,
+      "status": "PASS"
+    },
+    {
+      "name": "env_file",
+      "passed": true,
+      "message": "C:\\Users\\mohit\\OneDrive\\Desktop\\New folder (2)\\companycode\\Ai\\.env",
+      "critical": false,
+      "status": "PASS"
+    },
+    {
+      "name": "logs_dir",
+      "passed": true,
+      "message": "C:\\Users\\mohit\\OneDrive\\Desktop\\New folder (2)\\companycode\\Ai\\pragati_ai_controller\\logs",
+      "critical": false,
+      "status": "PASS"
+    },
+    {
+      "name": "outputs_dir",
+      "passed": true,
+      "message": "C:\\Users\\mohit\\OneDrive\\Desktop\\New folder (2)\\companycode\\Ai\\pragati_ai_controller\\outputs",
+      "critical": false,
+      "status": "PASS"
+    },
+    {
+      "name": "memory_dir",
+      "passed": true,
+      "message": "C:\\Users\\mohit\\OneDrive\\Desktop\\New folder (2)\\companycode\\Ai\\pragati_ai_controller\\outputs\\memory",
+      "critical": false,
+      "status": "PASS"
+    },
+    {
+      "name": "configs_dir",
+      "passed": true,
+      "message": "C:\\Users\\mohit\\OneDrive\\Desktop\\New folder (2)\\companycode\\Ai\\pragati_ai_controller\\configs",
+      "critical": false,
+      "status": "PASS"
+    },
+    {
+      "name": "yolo_weights",
+      "passed": true,
+      "message": "C:\\Users\\mohit\\OneDrive\\Desktop\\New folder (2)\\companycode\\Ai\\weights\\checkpoints\\best.pt",
+      "critical": false,
+      "status": "PASS"
+    },
+    {
+      "name": "intent_model",
+      "passed": true,
+      "message": "intent_classifier.pkl + tfidf_vectorizer.pkl found",
+      "critical": false,
+      "status": "PASS"
+    },
+    {
+      "name": "root_agent",
+      "passed": true,
+      "message": "Root Agent ready | intent_engine=loaded knowledge_router=loaded openai_fallback=disabled",
+      "critical": false,
+      "status": "PASS"
+    },
+    {
+      "name": "voice_model",
+      "passed": true,
+      "message": "piper.exe + 1 voice model(s) found",
+      "critical": false,
+      "status": "PASS"
+    },
+    {
+      "name": "stt_model",
+      "passed": false,
+      "message": "No STT model in C:\\Users\\mohit\\OneDrive\\Desktop\\New folder (2)\\companycode\\Ai\\speech_to_text\\models\\faster_whisper — will auto-download on first use",
+      "critical": false,
+      "status": "WARN"
+    },
+    {
+      "name": "knowledge_base",
+      "passed": true,
+      "message": "Knowledge base directory found: C:\\Users\\mohit\\OneDrive\\Desktop\\New folder (2)\\companycode\\Ai\\knowledge_base",
+      "critical": false,
+      "status": "PASS"
+    },
+    {
+      "name": "dataset_index",
+      "passed": true,
+      "message": "C:\\Users\\mohit\\OneDrive\\Desktop\\New folder (2)\\companycode\\Ai\\outputs\\dataset_index.json",
+      "critical": false,
+      "status": "PASS"
+    },
+    {
+      "name": "mongodb",
+      "passed": false,
+      "message": "pymongo not installed",
+      "critical": false,
+      "status": "WARN"
+    },
+    {
+      "name": "import_torch",
+      "passed": true,
+      "message": "torch available",
+      "critical": false,
+      "status": "PASS"
+    },
+    {
+      "name": "import_ultralytics",
+      "passed": true,
+      "message": "ultralytics available",
+      "critical": false,
+      "status": "PASS"
+    },
+    {
+      "name": "import_faster_whisper",
+      "passed": false,
+      "message": "faster_whisper not installed — pip install faster_whisper",
+      "critical": false,
+      "status": "WARN"
+    },
+    {
+      "name": "import_sklearn",
+      "passed": true,
+      "message": "sklearn available",
+      "critical": false,
+      "status": "PASS"
+    },
+    {
+      "name": "import_numpy",
+      "passed": true,
+      "message": "numpy available",
+      "critical": false,
+      "status": "PASS"
+    },
+    {
+      "name": "import_cv2",
+      "passed": true,
+      "message": "cv2 available",
+      "critical": false,
+      "status": "PASS"
+    },
+    {
+      "name": "import_fastapi",
+      "passed": true,
+      "message": "fastapi available",
+      "critical": false,
+      "status": "PASS"
+    },
+    {
+      "name": "import_uvicorn",
+      "passed": true,
+      "message": "uvicorn available",
+      "critical": false,
+      "status": "PASS"
+    },
+    {
+      "name": "import_pydantic",
+      "passed": true,
+      "message": "pydantic available",
+      "critical": false,
+      "status": "PASS"
+    },
+    {
+      "name": "import_pymongo",
+      "passed": false,
+      "message": "pymongo not installed — pip install pymongo",
+      "critical": false,
+      "status": "WARN"
+    },
+    {
+      "name": "bridge_config",
+      "passed": true,
+      "message": "Bridge configured on 0.0.0.0:8001",
+      "critical": false,
+      "status": "PASS"
+    }
+  ]
+}

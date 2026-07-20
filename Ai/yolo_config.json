@@ -1,0 +1,50 @@
+{
+  "supported_crops": [
+    "Black_gram",
+    "green_gram",
+    "corn_maize",
+    "Tomato",
+    "Pearl_Millet _Bajra",
+    "wheat"
+  ],
+
+  "crop_display_names": {
+    "Black_gram": "Black Gram (Urad Dal)",
+    "green_gram": "Green Gram (Moong Dal)",
+    "corn_maize": "Corn / Maize",
+    "Tomato": "Tomato",
+    "Pearl_Millet _Bajra": "Pearl Millet (Bajra)",
+    "wheat": "Wheat"
+  },
+
+  "crop_aliases": {
+    "urad": "Black_gram",
+    "urad dal": "Black_gram",
+    "black gram": "Black_gram",
+    "blackgram": "Black_gram",
+
+    "moong": "green_gram",
+    "moong dal": "green_gram",
+    "mung": "green_gram",
+    "green gram": "green_gram",
+    "greengram": "green_gram",
+
+    "maize": "corn_maize",
+    "corn": "corn_maize",
+    "makka": "corn_maize",
+
+    "tamatar": "Tomato",
+    "tomato": "Tomato",
+
+    "bajra": "Pearl_Millet _Bajra",
+    "bajri": "Pearl_Millet _Bajra",
+    "pearl millet": "Pearl_Millet _Bajra",
+    "pearlmillet": "Pearl_Millet _Bajra",
+
+    "gehu": "wheat",
+    "gehun": "wheat",
+    "gehum": "wheat",
+    "gahu": "wheat",
+    "wheat": "wheat"
+  }
+}

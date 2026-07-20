@@ -18,8 +18,10 @@ import {
   FaRobot,
   FaDatabase,
   FaMicroscope,
+  FaBug,
   FaFilm,
   FaNewspaper,
+  FaMapMarkerAlt,
 } from 'react-icons/fa';
 import {
   API_BASE,
@@ -64,6 +66,8 @@ const navItems = [
   { href: '/dashboard', label: 'Dashboard', icon: FaChartLine },
   { href: '/crop-knowledge-base', label: 'Crop Knowledge Base', icon: FaDatabase },
   { href: '/disease-knowledge-base', label: 'Disease Knowledge Base', icon: FaMicroscope },
+  { href: '/pest-knowledge-base', label: 'Pest Knowledge Base', icon: FaBug },
+  { href: '/disease-pest-knowledge', label: 'Disease & Pest Mgmt', icon: FaDatabase },
   { href: '/create-scheme', label: 'Govt Schemes', icon: FaLeaf },
   { href: '/create-gallery', label: 'Gallery', icon: FaPhotoVideo },
   { href: '/users', label: 'Users', icon: FaUsers },
@@ -72,6 +76,7 @@ const navItems = [
   { href: '/shopkeeper-verification', label: 'Verification Center', icon: FaUserShield },
   { href: '/registered-shops', label: 'Registered Shops', icon: FaWarehouse },
   { href: '/settings', label: 'Settings', icon: FaCog },
+  { href: '/kvk-management', label: 'KVK Management', icon: FaMapMarkerAlt },
 ];
 
 const statCards = [

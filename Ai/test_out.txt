@@ -1,0 +1,19 @@
+2026-07-15 20:12:22 | INFO     | akp.router.module_manager | Loaded module disease_ai           <- knowledge_base.disease_ai
+2026-07-15 20:12:22 | INFO     | akp.router.module_manager | Loaded module crop_ai              <- knowledge_base.crop_ai
+2026-07-15 20:12:22 | INFO     | akp.router.module_manager | Loaded module soil_analysis        <- knowledge_base.soil_analysis
+2026-07-15 20:12:22 | INFO     | akp.router.module_manager | Loaded module weather              <- knowledge_base.weather
+2026-07-15 20:12:22 | INFO     | akp.router.module_manager | Loaded module market               <- knowledge_base.market
+2026-07-15 20:12:22 | INFO     | akp.router.module_manager | Loaded module government_schemes   <- knowledge_base.government_schemes
+2026-07-15 20:12:22 | INFO     | akp.router.module_manager | Loaded module fertilizer           <- knowledge_base.fertilizer
+2026-07-15 20:12:22 | INFO     | akp.router.module_manager | Loaded module irrigation           <- knowledge_base.irrigation
+2026-07-15 20:12:22 | INFO     | akp.router.module_manager | Loaded module seed                 <- knowledge_base.seed
+2026-07-15 20:12:22 | INFO     | akp.router.module_manager | Loaded module machinery            <- knowledge_base.machinery
+2026-07-15 20:12:22 | INFO     | akp.router.module_manager | Loaded module general_ai           <- knowledge_base.general_ai
+2026-07-15 20:12:22 | INFO     | akp.router.module_manager | Loaded module greeting             <- knowledge_base.greeting
+2026-07-15 20:12:22 | INFO     | akp.router.module_manager | Loaded module emergency            <- knowledge_base.emergency
+2026-07-15 20:12:22 | INFO     | akp.router.module_manager | Module loading complete — loaded=13  failed=0  total=13
+2026-07-15 20:12:22 | INFO     | akp.router.core | KnowledgeRouter initialised — version=1.0.0  modules=13
+2026-07-15 20:12:22 | INFO     | akp.router.dispatcher | dispatch | intent=greeting        conf=0.9000 module=greeting             fallback=False
+2026-07-15 20:12:22 | INFO     | akp.router.formatter | format_success | intent=greeting        module=greeting             session=
+greeting status: success
+msg: Hello! How can I help you with your farming today?

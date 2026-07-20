@@ -29,8 +29,19 @@ import diseaseRoutes from './routes/disease';
 import farmerStoriesRoutes from './routes/farmerStories';
 import shopkeeperRoutes from './routes/shopkeeper';
 import adminShopkeeperRoutes from './routes/adminShopkeeper';
+import pestKnowledgeRoutes from './routes/pestKnowledge';
+import diseasePestSolutionsRoutes from './routes/diseasePestSolutions';
+import kvkRoutes from './routes/kvk';
+import languageDictionaryRoutes from './routes/languageDictionary';
+import languageEngineRoutes from './routes/languageEngine';
+import memoryEngineRoutes from './routes/memoryEngine';
+import voiceEngineRoutes from './routes/voiceEngine';
+import pragatiAIRoutes from './routes/pragatiAI';
 import { ensureBootstrapAdmin } from './utils/bootstrapAdmin';
 import { bilingualErrorHandler, requestTimeout } from './middleware/errorHandler';
+import { languageContextMiddleware } from './middleware/languageContext';
+import healthRoutes from './routes/health';
+import { logger } from './utils/logger';
 
 dotenv.config({ override: true });
 
@@ -81,6 +92,15 @@ app.use(express.urlencoded({ limit: '10mb', extended: true }));
 app.use(requestTimeout(30000));
 app.use('/uploads', express.static(uploadsDir));
 
+// Request logger
+app.use((req, _res, next) => {
+  logger.debug(`${req.method} ${req.path}`, { ip: req.ip, ua: req.headers['user-agent']?.slice(0, 60) });
+  next();
+});
+
+// Language context — auto-attaches langCode + pageContext to every request
+app.use(languageContextMiddleware);
+
 // Rate limiters
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
@@ -129,11 +149,17 @@ app.use('/api/disease', diseaseRoutes);
 app.use('/api/farmer-stories', farmerStoriesRoutes);
 app.use('/api/shopkeeper', shopkeeperRoutes);
 app.use('/api/admin/shopkeeper', adminShopkeeperRoutes);
+app.use('/api/admin/pest-knowledge', pestKnowledgeRoutes);
+app.use('/api/disease-pest-solutions', diseasePestSolutionsRoutes);
+app.use('/api/kvk', kvkRoutes);
+app.use('/api/language-dictionary', languageDictionaryRoutes);
+app.use('/api/language-engine', languageEngineRoutes);
+app.use('/api/memory-engine', memoryEngineRoutes);
+app.use('/api/voice-engine', voiceEngineRoutes);
+app.use('/api/pragati-ai', pragatiAIRoutes);
 
 // Health Check
-app.get('/api/health', (req, res) => {
-  res.json({ status: 'OK', message: 'Kisan Unnati Backend is running' });
-});
+app.use('/api/health', healthRoutes);
 
 // Error Handler
 app.use(bilingualErrorHandler);
@@ -143,12 +169,12 @@ const startServer = async () => {
   await ensureBootstrapAdmin();
 
   const server = app.listen(PORT, () => {
-    console.log(`🌾 Kisan Unnati Backend running on port ${PORT}`);
+    logger.info('Kisan Unnati Backend started', { port: PORT, env: process.env.NODE_ENV || 'development' });
   });
 
   server.on('error', (err: NodeJS.ErrnoException) => {
     if (err.code === 'EADDRINUSE') {
-      console.error(`❌ Port ${PORT} is already in use. Stop the existing process and restart.`);
+      logger.error(`Port ${PORT} is already in use`, { port: PORT });
       process.exit(1);
     } else {
       throw err;

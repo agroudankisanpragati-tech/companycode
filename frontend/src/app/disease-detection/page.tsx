@@ -1,109 +1,164 @@
 'use client';
 
-import { useState, useRef, useCallback, useEffect, lazy, Suspense } from 'react';
+import { useState, useRef, useEffect, useCallback, lazy, Suspense } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
-import { FaMicroscope, FaUpload, FaCamera, FaHistory, FaLeaf, FaExclamationTriangle, FaCheckCircle, FaSpinner, FaTimes } from 'react-icons/fa';
-import AILanguageSelector from '@/components/AILanguageSelector';
+import {
+  FaMicroscope, FaHistory, FaSpinner, FaLock, FaFileAlt,
+  FaSearch, FaFilter, FaRedo, FaWifi, FaLeaf, FaArrowRight,
+} from 'react-icons/fa';
 
-const VoicePlayer = lazy(() => import('@/components/VoicePlayer'));
+import ImageUploader from '@/components/disease/ImageUploader';
+import CropVoiceInput from '@/components/disease/CropVoiceInput';
+import LoadingOverlay from '@/components/disease/LoadingOverlay';
+import ResultLayout from '@/components/disease/ResultLayout';
+import ErrorCard from '@/components/disease/ErrorCard';
+import OfflineBanner from '@/components/disease/OfflineBanner';
+import { ToastContainer, useToast } from '@/hooks/useToast';
+import { useDisease } from '@/hooks/useDisease';
+import { useOffline } from '@/hooks/useOffline';
+import { useLanguage } from '@/context/LanguageContext';
+import { resolveVoiceLang } from '@/services/languageEngine';
+import { useReportCache } from '@/hooks/useReportCache';
+import { useNotification } from '@/hooks/useNotification';
+import { usePageContext } from '@/hooks/usePageContext';
 
-const API_BASE = '/api';
+import { ScanResult, HistoryItem } from '@/components/disease/types';
 
-function authHeaders(): Record<string, string> {
-  const token = typeof window !== 'undefined' ? localStorage.getItem('authToken') : null;
-  return token ? { Authorization: `Bearer ${token}` } : {};
+const DiseaseReport = lazy(() => import('@/components/disease/DiseaseReport'));
+const DiseaseHistoryCard = lazy(() => import('@/components/disease/DiseaseHistoryCard'));
+
+type Tab = 'scan' | 'history' | 'report';
+
+// ── Step indicator ────────────────────────────────────────────────────────────
+function StepBadge({ n, label, active, done }: { n: number; label: string; active: boolean; done: boolean }) {
+  return (
+    <div className={`flex items-center gap-2 ${active ? 'opacity-100' : done ? 'opacity-60' : 'opacity-30'}`}>
+      <div className={`flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full text-xs font-extrabold transition-all ${
+        done ? 'bg-emerald-500 text-white' : active ? 'bg-rose-600 text-white ring-4 ring-rose-200' : 'bg-gray-200 text-gray-500'
+      }`}>
+        {done ? '✓' : n}
+      </div>
+      <span className={`text-xs font-semibold hidden sm:block ${active ? 'text-rose-700' : done ? 'text-emerald-700' : 'text-gray-400'}`}>
+        {label}
+      </span>
+    </div>
+  );
 }
 
-type ScanResult = {
-  _id?: string;
-  cropName: string;
-  cropNameHindi?: string;
-  diseaseName: string;
-  diseaseNameHindi?: string;
-  diseaseType: string;
-  severityLevel: string;
-  symptoms: string;
-  symptomsHindi?: string;
-  organicTreatment?: string;
-  organicTreatmentHindi?: string;
-  chemicalTreatment?: string;
-  chemicalTreatmentHindi?: string;
-  treatment: string;
-  prevention: string;
-  preventionHindi?: string;
-  description: string;
-  descriptionHindi?: string;
-  recommendedActions?: string;
-  recommendedActionsHindi?: string;
-  confidenceScore?: number;
-  imageUrl?: string;
-  source?: string;
-  similarityScore?: number;
-};
+function StepDivider() {
+  return <div className="flex-1 h-px bg-gray-200 mx-1 hidden sm:block" />;
+}
 
-type HistoryItem = ScanResult & { createdAt: string; feedback?: string };
+// ── Auth gate ─────────────────────────────────────────────────────────────────
+function AuthGate({ onLogin }: { onLogin: () => void }) {
+  return (
+    <div className="flex items-center gap-3 rounded-2xl border border-amber-200 bg-amber-50 px-5 py-4 text-sm text-amber-800">
+      <FaLock className="flex-shrink-0 text-amber-500" size={16} />
+      <span>
+        Please{' '}
+        <button onClick={onLogin} className="font-bold underline underline-offset-2">login</button>
+        {' '}to scan diseases and view your history.
+      </span>
+    </div>
+  );
+}
 
-const severityColor = (s: string) => {
-  if (s === 'critical') return 'bg-red-100 text-red-800 border-red-200';
-  if (s === 'high') return 'bg-orange-100 text-orange-800 border-orange-200';
-  if (s === 'medium') return 'bg-amber-100 text-amber-800 border-amber-200';
-  return 'bg-green-100 text-green-800 border-green-200';
-};
-
-const sourceLabel = (s?: string) => {
-  if (s === 'cache') return { text: '📊 Cached Result', cls: 'bg-blue-100 text-blue-700' };
-  if (s === 'knowledge_base') return { text: '📚 Knowledge Base', cls: 'bg-purple-100 text-purple-700' };
-  return { text: '🤖 AI Analysis', cls: 'bg-emerald-100 text-emerald-700' };
-};
+// ── Scan step tracker ─────────────────────────────────────────────────────────
+function ScanSteps({ hasImage, hasCrop }: { hasImage: boolean; hasCrop: boolean }) {
+  return (
+    <div className="flex items-center gap-1 rounded-2xl border border-gray-100 bg-white px-4 py-3 shadow-sm">
+      <StepBadge n={1} label="Upload Photo" active={!hasImage} done={hasImage} />
+      <StepDivider />
+      <StepBadge n={2} label="Crop Name" active={hasImage && !hasCrop} done={hasCrop} />
+      <StepDivider />
+      <StepBadge n={3} label="Scan" active={hasImage} done={false} />
+    </div>
+  );
+}
 
 export default function DiseaseDetectionPage() {
   const { isAuthenticated, user } = useAuth();
   const router = useRouter();
-  const fileRef = useRef<HTMLInputElement>(null);
-  const cameraRef = useRef<HTMLInputElement>(null);
-  const videoRef = useRef<HTMLVideoElement>(null);
+  const offline = useOffline();
+  const { scan: apiScan, fetchHistory, submitFeedback } = useDisease();
+  const { toasts, toast, dismiss } = useToast();
+  const { langCode } = useLanguage();
+  const { notify } = useNotification();
+  const reportCache = useReportCache('disease');
+  // Voice lang always derived from global language context
+  const voiceLang = resolveVoiceLang(langCode);
 
-  const [tab, setTab] = useState<'scan' | 'history'>('scan');
+  const [tab, setTab] = useState<Tab>('scan');
+
+  // Image state
   const [preview, setPreview] = useState<string | null>(null);
   const [file, setFile] = useState<File | null>(null);
-  const [cropHint, setCropHint] = useState('');
-  const [scanning, setScanning] = useState(false);
-  const [result, setResult] = useState<ScanResult | null>(null);
-  const [error, setError] = useState('');
-  const [feedback, setFeedback] = useState<'helpful' | 'not_helpful' | null>(null);
-  const [history, setHistory] = useState<HistoryItem[]>([]);
-  const [histLoading, setHistLoading] = useState(false);
   const [cameraOpen, setCameraOpen] = useState(false);
   const [stream, setStream] = useState<MediaStream | null>(null);
-  // multi-language
-  const [baseResult, setBaseResult] = useState<ScanResult | null>(null);
-  const [displayLang, setDisplayLang] = useState('en');
+  const videoRef = useRef<HTMLVideoElement>(null);
 
-  useEffect(() => {
-    if (tab === 'history' && isAuthenticated) loadHistory();
-  }, [tab, isAuthenticated]);
+  // Crop / Language — now driven by global LanguageContext
+  const [cropDisplay, setCropDisplay] = useState('');
+  const [cropEnglish, setCropEnglish] = useState('');
+  // voiceLangCode for CropVoiceInput still local (crop-specific picker)
+  const [voiceLangCode, setVoiceLangCode] = useState(langCode);
+
+  // Scan state
+  const [scanning, setScanning] = useState(false);
+  const [scanStep, setScanStep] = useState(0);
+  const [result, setResult] = useState<ScanResult | null>(null);
+  const [baseResult, setBaseResult] = useState<ScanResult | null>(null);
+  const [error, setError] = useState('');
+  const [feedback, setFeedback] = useState<'helpful' | 'not_helpful' | null>(null);
+  const [feedbackComment, setFeedbackComment] = useState('');
+  const [feedbackCorrectDisease, setFeedbackCorrectDisease] = useState('');
+  const [showReport, setShowReport] = useState(false);
+
+  // History
+  const [history, setHistory] = useState<HistoryItem[]>([]);
+  const [histLoading, setHistLoading] = useState(false);
+  const [histSearch, setHistSearch] = useState('');
+  const [histFilter, setHistFilter] = useState('');
+  const [histPage, setHistPage] = useState(1);
+  const [histTotal, setHistTotal] = useState(0);
+
+  // Register live page context with Pragati AI — AFTER all useState declarations
+  usePageContext({
+    pageContext: 'disease',
+    diseaseResult: result ? {
+      diseaseName: result.diseaseName,
+      cropName: result.cropName,
+      confidence: result.confidenceScore,
+      severity: result.severityLevel,
+      causes: result.causes,
+      organicSolution: result.organicSolution,
+      chemicalSolution: result.chemicalSolution,
+      prevention: result.prevention,
+    } : undefined,
+  });
 
   useEffect(() => () => { stream?.getTracks().forEach(t => t.stop()); }, [stream]);
 
-  const loadHistory = async () => {
+  useEffect(() => {
+    if (tab === 'history' && isAuthenticated) loadHistory(1);
+  }, [tab, isAuthenticated]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const loadHistory = useCallback(async (page = 1) => {
     setHistLoading(true);
     try {
-      const res = await fetch(`${API_BASE}/disease/history`, { headers: authHeaders() });
-      const json = await res.json();
-      if (res.ok) setHistory(json.data || []);
-    } catch { /* silent */ }
-    setHistLoading(false);
-  };
+      const json = await fetchHistory(page, 20);
+      setHistory(json.data || []);
+      setHistTotal(json.total || 0);
+      setHistPage(page);
+    } catch {
+      toast.error('Failed to load history');
+    } finally {
+      setHistLoading(false);
+    }
+  }, [fetchHistory, toast]);
 
-  const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const f = e.target.files?.[0];
-    if (!f) return;
-    setFile(f);
-    setPreview(URL.createObjectURL(f));
-    setResult(null); setError(''); setFeedback(null);
-  };
-
+  // Camera
   const openCamera = async () => {
     try {
       const s = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
@@ -111,8 +166,14 @@ export default function DiseaseDetectionPage() {
       setCameraOpen(true);
       setTimeout(() => { if (videoRef.current) videoRef.current.srcObject = s; }, 100);
     } catch {
-      setError('Camera access denied. Please use file upload instead.');
+      toast.error('Camera access denied. Please use gallery upload.');
     }
+  };
+
+  const closeCamera = () => {
+    stream?.getTracks().forEach(t => t.stop());
+    setStream(null);
+    setCameraOpen(false);
   };
 
   const capturePhoto = () => {
@@ -127,426 +188,402 @@ export default function DiseaseDetectionPage() {
       setFile(f);
       setPreview(URL.createObjectURL(f));
       setResult(null); setError(''); setFeedback(null);
-    }, 'image/jpeg', 0.9);
-    stream?.getTracks().forEach(t => t.stop());
-    setStream(null); setCameraOpen(false);
+      toast.success('Photo captured!');
+    }, 'image/jpeg', 0.85);
+    closeCamera();
+  };
+
+  const handleFile = (f: File, prev: string) => {
+    setFile(f); setPreview(prev);
+    setResult(null); setError(''); setFeedback(null);
+  };
+
+  const removeImage = () => {
+    setFile(null); setPreview(null); setResult(null); setError(''); setFeedback(null);
   };
 
   const scan = async () => {
     if (!isAuthenticated) { router.push('/auth/login'); return; }
-    if (!file) { setError('Please upload or capture a crop image first.'); return; }
-    setScanning(true); setError(''); setResult(null);
+    if (!file) { toast.warning('Please upload or capture a crop image first.'); return; }
+    if (offline) { toast.error('No internet connection. Please connect and try again.'); return; }
+
+    setScanning(true); setError(''); setResult(null); setScanStep(0);
+
     try {
-      const fd = new FormData();
-      fd.append('image', file);
-      if (cropHint.trim()) fd.append('cropName', cropHint.trim());
-      const res = await fetch(`${API_BASE}/disease/scan`, {
-        method: 'POST',
-        headers: authHeaders(),
-        body: fd,
-      });
-      const json = await res.json();
-      if (!res.ok) throw new Error(json.error || 'Scan failed');
-      const scanResult = { ...json.data, source: json.source, similarityScore: json.similarityScore };
-      setBaseResult(scanResult);
-      setResult(scanResult);
-      setDisplayLang('en');
+      const data = await apiScan(file, cropEnglish, (s: number) => setScanStep(s));
+      setBaseResult(data);
+      setResult(data);
+      toast.success('✅ Prediction completed!');
     } catch (e: any) {
-      setError(e.message || 'Disease scan failed. Please try again.');
+      if (e.name === 'AbortError') return;
+      const msg = e.message || 'Disease scan failed. Please try again.';
+      setError(msg);
+      toast.error(msg);
     } finally {
       setScanning(false);
+      setScanStep(0);
     }
   };
 
-  const submitFeedback = async (type: 'helpful' | 'not_helpful') => {
+  const handleFeedback = async (type: 'helpful' | 'not_helpful', comment?: string, correctDisease?: string) => {
     if (!result?._id) return;
     try {
-      await fetch(`${API_BASE}/disease/feedback`, {
-        method: 'POST',
-        headers: { ...authHeaders(), 'Content-Type': 'application/json' },
-        body: JSON.stringify({ recommendationId: result._id, feedback: type }),
-      });
+      await submitFeedback(result._id, type, comment, correctDisease);
       setFeedback(type);
-    } catch { /* silent */ }
+      toast.success(type === 'helpful' ? '👍 Thank you!' : '📝 Feedback recorded.');
+    } catch {
+      toast.error('Failed to submit feedback');
+    }
   };
 
   const reset = () => {
     setFile(null); setPreview(null); setResult(null); setBaseResult(null);
-    setError(''); setCropHint(''); setFeedback(null); setDisplayLang('en');
+    setError(''); setCropDisplay(''); setCropEnglish(''); setFeedback(null); setFeedbackComment(''); setFeedbackCorrectDisease(''); setShowReport(false);
   };
 
   const handleTranslated = (lang: string, data: Record<string, any>) => {
-    setDisplayLang(lang);
-    if (lang === 'en') {
-      setResult(baseResult);
-    } else {
-      setResult((prev) => prev ? { ...prev, ...data } : prev);
-    }
+    if (lang === 'en') setResult(baseResult);
+    else setResult(prev => prev ? { ...prev, ...data } : prev);
   };
 
+  const filteredHistory = history.filter(item => {
+    const matchSearch = !histSearch ||
+      item.diseaseName?.toLowerCase().includes(histSearch.toLowerCase()) ||
+      item.cropName?.toLowerCase().includes(histSearch.toLowerCase());
+    const matchFilter = !histFilter || item.severityLevel?.toLowerCase() === histFilter;
+    return matchSearch && matchFilter;
+  });
+
+  const TABS: { key: Tab; label: string; icon: React.ReactNode }[] = [
+    { key: 'scan',    label: 'Scan Disease', icon: <FaMicroscope size={13} /> },
+    { key: 'history', label: 'History',      icon: <FaHistory size={13} /> },
+    ...(result ? [{ key: 'report' as Tab, label: 'Report', icon: <FaFileAlt size={13} /> }] : []),
+  ];
+
   return (
-    <main className="min-h-screen bg-gradient-to-b from-rose-50 via-white to-amber-50">
-      <div className="mx-auto max-w-4xl px-4 py-8 md:px-6">
+    <>
+      <OfflineBanner />
+      <ToastContainer toasts={toasts} onDismiss={dismiss} />
 
-        {/* Header */}
-        <div className="mb-8 text-center">
-          <span className="inline-flex items-center gap-2 rounded-full bg-rose-100 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-rose-700">
-            <FaMicroscope /> AI Disease Detection
-          </span>
-          <h1 className="mt-3 text-3xl font-extrabold tracking-tight text-slate-900 md:text-4xl">
-            Crop Disease Scanner
-          </h1>
-          <p className="mt-2 text-slate-500">Upload a crop photo — get instant disease diagnosis, treatment & prevention.</p>
-        </div>
+      <main className={`min-h-screen bg-gradient-to-br from-rose-50 via-white to-orange-50/40 ${offline ? 'pt-10' : ''}`}>
 
-        {/* Tabs */}
-        <div className="mb-6 flex gap-2 rounded-2xl border border-gray-200 bg-white p-1 shadow-sm">
-          {[
-            { key: 'scan', label: 'Scan Disease', icon: FaMicroscope },
-            { key: 'history', label: 'Scan History', icon: FaHistory },
-          ].map(({ key, label, icon: Icon }) => (
-            <button
-              key={key}
-              onClick={() => setTab(key as any)}
-              className={`flex flex-1 items-center justify-center gap-2 rounded-xl py-2.5 text-sm font-semibold transition ${
-                tab === key ? 'bg-rose-600 text-white shadow' : 'text-slate-600 hover:bg-rose-50'
-              }`}
-            >
-              <Icon size={14} /> {label}
-            </button>
-          ))}
-        </div>
-
-        {/* SCAN TAB */}
-        {tab === 'scan' && (
-          <div className="space-y-5">
-            {!isAuthenticated && (
-              <div className="rounded-2xl border border-amber-200 bg-amber-50 px-5 py-4 text-sm text-amber-800">
-                Please <button onClick={() => router.push('/auth/login')} className="font-bold underline">login</button> to scan diseases and view your history.
+        {/* ── Premium Hero Header ── */}
+        <div className="bg-gradient-to-r from-rose-700 via-rose-600 to-orange-500 px-4 py-8 sm:py-10 relative overflow-hidden">
+          <div className="pointer-events-none absolute -top-12 -right-12 h-48 w-48 rounded-full bg-white/10 blur-3xl" />
+          <div className="pointer-events-none absolute bottom-0 left-1/4 h-32 w-32 rounded-full bg-orange-300/20 blur-2xl" />
+          <div className="mx-auto max-w-4xl relative">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+              <div className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-2xl bg-white/20 backdrop-blur border border-white/30 shadow-lg">
+                <FaMicroscope className="text-white" size={24} />
               </div>
-            )}
-
-            {error && (
-              <div className="flex items-start gap-3 rounded-2xl border border-red-200 bg-red-50 px-5 py-4 text-sm text-red-700">
-                <FaExclamationTriangle className="mt-0.5 flex-shrink-0" />
-                <span>{error}</span>
+              <div className="flex-1">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="rounded-full bg-white/20 px-3 py-0.5 text-[10px] font-bold uppercase tracking-widest text-white/90">
+                    AI Powered
+                  </span>
+                  {offline && (
+                    <span className="rounded-full bg-amber-400/30 border border-amber-300/40 px-3 py-0.5 text-[10px] font-bold text-amber-100 flex items-center gap-1">
+                      <FaWifi size={8} /> Offline
+                    </span>
+                  )}
+                </div>
+                <h1 className="text-2xl sm:text-3xl font-extrabold text-white leading-tight">
+                  Crop Disease Scanner
+                </h1>
+                <p className="mt-1 text-sm text-rose-100 max-w-md">
+                  Upload a crop photo — get instant AI diagnosis, treatment &amp; prevention in your language.
+                </p>
               </div>
-            )}
-
-            {/* Upload area */}
-            {!result && (
-              <div className="rounded-3xl border-2 border-dashed border-rose-200 bg-white p-6">
-                {preview ? (
-                  <div className="relative">
-                    <img src={preview} alt="preview" className="mx-auto max-h-72 rounded-2xl object-contain shadow" />
-                    <button onClick={reset} className="absolute right-2 top-2 rounded-full bg-white/90 p-1.5 text-slate-500 shadow hover:text-red-500">
-                      <FaTimes size={14} />
-                    </button>
-                  </div>
-                ) : (
-                  <div className="flex flex-col items-center gap-3 py-8 text-center">
-                    <div className="rounded-2xl bg-rose-100 p-4">
-                      <FaMicroscope className="text-3xl text-rose-500" />
-                    </div>
-                    <p className="text-sm font-medium text-slate-600">Upload a clear photo of the affected crop</p>
-                    <p className="text-xs text-slate-400">Leaves, stems, roots, or fruits • JPG / PNG • Max 10MB</p>
-                  </div>
-                )}
-
-                <div className="mt-4 flex flex-wrap gap-3 justify-center">
-                  <button onClick={() => fileRef.current?.click()} className="flex items-center gap-2 rounded-xl border border-rose-200 bg-rose-50 px-5 py-2.5 text-sm font-semibold text-rose-700 hover:bg-rose-100 transition">
-                    <FaUpload size={13} /> Upload Image
-                  </button>
-                  <button onClick={openCamera} className="flex items-center gap-2 rounded-xl border border-emerald-200 bg-emerald-50 px-5 py-2.5 text-sm font-semibold text-emerald-700 hover:bg-emerald-100 transition">
-                    <FaCamera size={13} /> Use Camera
-                  </button>
-                  <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={onFileChange} />
+              <div className="hidden sm:flex flex-col items-end gap-1 text-right">
+                <div className="flex items-center gap-1.5 text-xs text-rose-100">
+                  <FaLeaf size={10} /> Supports 20+ Indian Languages
+                </div>
+                <div className="flex items-center gap-1.5 text-xs text-rose-100">
+                  <FaMicroscope size={10} /> 3-Layer AI Detection
                 </div>
               </div>
-            )}
+            </div>
+          </div>
+        </div>
 
-            {/* Camera Modal */}
-            {cameraOpen && (
-              <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
-                <div className="w-full max-w-lg rounded-3xl bg-white p-5 shadow-2xl">
-                  <h3 className="mb-3 text-lg font-bold text-slate-800">Capture Crop Photo</h3>
-                  <video ref={videoRef} autoPlay playsInline className="w-full rounded-2xl bg-black" />
-                  <div className="mt-4 flex gap-3">
-                    <button onClick={() => { stream?.getTracks().forEach(t => t.stop()); setStream(null); setCameraOpen(false); }} className="flex-1 rounded-xl border border-gray-200 py-2.5 text-sm font-semibold text-slate-600 hover:bg-gray-50">Cancel</button>
-                    <button onClick={capturePhoto} className="flex-1 rounded-xl bg-rose-600 py-2.5 text-sm font-semibold text-white hover:bg-rose-700">📸 Capture</button>
-                  </div>
-                </div>
-              </div>
-            )}
+        <div className="mx-auto max-w-4xl px-4 py-6 md:px-6">
 
-            {/* Crop hint + scan button */}
-            {!result && (
-              <div className="rounded-3xl border border-gray-200 bg-white p-5 shadow-sm">
-                <label className="mb-1 block text-sm font-medium text-slate-700">
-                  Crop Name (optional — improves accuracy)
-                </label>
-                <input
-                  className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm text-slate-800 placeholder-slate-400 focus:border-rose-400 focus:outline-none focus:ring-2 focus:ring-rose-100"
-                  placeholder="e.g. Wheat, Rice, Tomato, Cotton..."
-                  value={cropHint}
-                  onChange={e => setCropHint(e.target.value)}
-                />
-                <button
-                  onClick={scan}
-                  disabled={!file || scanning}
-                  className="mt-4 w-full rounded-2xl bg-rose-600 py-3 text-sm font-bold text-white shadow hover:bg-rose-700 disabled:opacity-50 disabled:cursor-not-allowed transition flex items-center justify-center gap-2"
-                >
-                  {scanning ? <><FaSpinner className="animate-spin" /> Analyzing Image...</> : <><FaMicroscope /> Scan for Disease</>}
-                </button>
-              </div>
-            )}
+          {/* ── Tab Bar ── */}
+          <div className="mb-6 flex gap-1.5 rounded-2xl border border-gray-200 bg-white p-1.5 shadow-sm">
+            {TABS.map(({ key, label, icon }) => (
+              <button
+                key={key}
+                onClick={() => setTab(key)}
+                className={`flex flex-1 items-center justify-center gap-2 rounded-xl py-3 text-sm font-bold transition-all ${
+                  tab === key
+                    ? 'bg-gradient-to-r from-rose-600 to-orange-500 text-white shadow-md shadow-rose-200/50'
+                    : 'text-slate-500 hover:bg-rose-50 hover:text-rose-600'
+                }`}
+              >
+                {icon} {label}
+              </button>
+            ))}
+          </div>
 
-            {/* Result */}
-            {result && (
-              <div className="space-y-4">
-                {/* Result header */}
-                <div className="rounded-3xl border border-gray-200 bg-white p-6 shadow-sm">
-                  <div className="flex flex-wrap items-start justify-between gap-3">
-                    <div>
-                      <div className="flex flex-wrap items-center gap-2 mb-1">
-                        <span className={`rounded-full border px-3 py-1 text-xs font-bold uppercase ${severityColor(result.severityLevel)}`}>
-                          {result.severityLevel} severity
-                        </span>
-                        <span className={`rounded-full px-3 py-1 text-xs font-semibold ${sourceLabel(result.source).cls}`}>
-                          {sourceLabel(result.source).text}
-                        </span>
-                        {result.similarityScore && (
-                          <span className="rounded-full bg-sky-100 px-3 py-1 text-xs font-semibold text-sky-700">
-                            {result.similarityScore}% Match
-                          </span>
-                        )}
-                        {result.confidenceScore && (
-                          <span className="rounded-full bg-violet-100 px-3 py-1 text-xs font-semibold text-violet-700">
-                            {result.confidenceScore}% Confidence
-                          </span>
-                        )}
+          {/* ── SCAN TAB ── */}
+          {tab === 'scan' && (
+            <div className="space-y-4">
+
+              {!isAuthenticated && (
+                <AuthGate onLogin={() => router.push('/auth/login')} />
+              )}
+
+              {error && !scanning && (
+                <ErrorCard message={error} onRetry={file ? scan : undefined} />
+              )}
+
+              {!result && !scanning && (
+                <>
+                  {/* Step tracker */}
+                  <ScanSteps hasImage={!!file} hasCrop={!!cropEnglish} />
+
+                  {/* Two-column layout on desktop */}
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+
+                    {/* Left: Upload */}
+                    <div className="rounded-3xl border border-gray-200 bg-white p-5 shadow-sm">
+                      <div className="flex items-center gap-2 mb-4">
+                        <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-rose-100 text-rose-600 flex-shrink-0">
+                          <span className="text-sm">📷</span>
+                        </div>
+                        <div>
+                          <h2 className="text-sm font-bold text-slate-800">Upload Crop Photo</h2>
+                          <p className="text-[11px] text-slate-400">Camera · Gallery · Drag &amp; Drop</p>
+                        </div>
                       </div>
-                      <h2 className="text-2xl font-extrabold text-slate-900">{result.diseaseName}</h2>
-                      {result.diseaseNameHindi && <p className="text-base font-semibold text-orange-700">{result.diseaseNameHindi}</p>}
-                      <p className="text-sm text-slate-500">{result.cropName}{result.cropNameHindi ? ` / ${result.cropNameHindi}` : ''} · {result.diseaseType}</p>
-                    </div>
-                    {result.imageUrl && (
-                      <img src={`http://localhost:4000${result.imageUrl}`} alt="scanned" className="h-20 w-20 rounded-2xl object-cover shadow border" onError={e => { (e.target as HTMLImageElement).style.display = 'none'; }} />
-                    )}
-                  </div>
-                  <p className="mt-4 text-sm leading-relaxed text-slate-600">{result.description}</p>
-                  {result.descriptionHindi && <p className="mt-1 text-sm leading-relaxed text-slate-500 italic">{result.descriptionHindi}</p>}
-                  {/* Speak full result */}
-                  <Suspense fallback={null}>
-                    <VoicePlayer
-                      text={`Disease: ${result.diseaseName}. Treatment: ${result.organicTreatment || result.treatment}. Prevention: ${result.prevention}`}
-                      lang="en-IN"
-                      autoDetect={false}
-                      label="Speak Result"
-                      className="mt-3"
-                    />
-                  </Suspense>
-                </div>
-
-                {/* Symptoms */}
-                {result.symptoms && (
-                  <div className="rounded-2xl border border-amber-100 bg-amber-50 p-5">
-                    <h3 className="mb-2 flex items-center gap-2 font-bold text-amber-800"><FaExclamationTriangle size={14} /> Symptoms / लक्षण</h3>
-                    <p className="whitespace-pre-line text-sm text-amber-900">{result.symptoms}</p>
-                    {result.symptomsHindi && <p className="mt-1 whitespace-pre-line text-sm text-amber-800 italic">{result.symptomsHindi}</p>}
-                  </div>
-                )}
-
-                {/* Organic Treatment */}
-                {result.organicTreatment && (
-                  <div className="rounded-2xl border border-green-100 bg-green-50 p-5">
-                    <h3 className="mb-2 font-bold text-green-800">🌿 Organic Treatment / जैविक उपचार</h3>
-                    <p className="whitespace-pre-line text-sm text-green-900">{result.organicTreatment}</p>
-                    {result.organicTreatmentHindi && <p className="mt-1 whitespace-pre-line text-sm text-green-800 italic">{result.organicTreatmentHindi}</p>}
-                  </div>
-                )}
-
-                {/* Chemical Treatment */}
-                {result.chemicalTreatment && (
-                  <div className="rounded-2xl border border-blue-100 bg-blue-50 p-5">
-                    <h3 className="mb-2 font-bold text-blue-800">💊 Chemical Treatment / रासायनिक उपचार</h3>
-                    <p className="whitespace-pre-line text-sm text-blue-900">{result.chemicalTreatment}</p>
-                    {result.chemicalTreatmentHindi && <p className="mt-1 whitespace-pre-line text-sm text-blue-800 italic">{result.chemicalTreatmentHindi}</p>}
-                  </div>
-                )}
-
-                {/* Combined treatment fallback */}
-                {!result.organicTreatment && !result.chemicalTreatment && result.treatment && (
-                  <div className="rounded-2xl border border-blue-100 bg-blue-50 p-5">
-                    <h3 className="mb-2 font-bold text-blue-800">💊 Treatment / उपचार</h3>
-                    <p className="whitespace-pre-line text-sm text-blue-900">{result.treatment}</p>
-                  </div>
-                )}
-
-                {/* Recommended Actions */}
-                {result.recommendedActions && (
-                  <div className="rounded-2xl border border-orange-100 bg-orange-50 p-5">
-                    <h3 className="mb-2 font-bold text-orange-800">⚡ Recommended Actions / तत्काल कार्रवाई</h3>
-                    <p className="whitespace-pre-line text-sm text-orange-900">{result.recommendedActions}</p>
-                    {result.recommendedActionsHindi && <p className="mt-1 whitespace-pre-line text-sm text-orange-800 italic">{result.recommendedActionsHindi}</p>}
-                  </div>
-                )}
-
-                {/* Prevention */}
-                {result.prevention && (
-                  <div className="rounded-2xl border border-green-100 bg-green-50 p-5">
-                    <h3 className="mb-2 flex items-center gap-2 font-bold text-green-800"><FaLeaf size={14} /> Prevention / रोकथाम</h3>
-                    <p className="whitespace-pre-line text-sm text-green-900">{result.prevention}</p>
-                    {result.preventionHindi && <p className="mt-1 whitespace-pre-line text-sm text-green-800 italic">{result.preventionHindi}</p>}
-                    <Suspense fallback={null}>
-                      <VoicePlayer
-                        text={result.preventionHindi || result.prevention}
-                        lang={result.preventionHindi ? 'hi-IN' : 'en-IN'}
-                        autoDetect={false}
-                        label="सुनें Prevention"
-                        className="mt-2"
+                      <ImageUploader
+                        preview={preview}
+                        onFile={handleFile}
+                        onRemove={removeImage}
+                        videoRef={videoRef}
+                        cameraOpen={cameraOpen}
+                        onOpenCamera={openCamera}
+                        onCapture={capturePhoto}
+                        onCloseCamera={closeCamera}
                       />
-                    </Suspense>
-                  </div>
-                )}
+                    </div>
 
-                {/* Language Selector */}
-                {result._id && (
-                  <AILanguageSelector
-                    recordId={result._id}
-                    module="disease"
-                    englishData={baseResult as any}
+                    {/* Right: Crop + Language */}
+                    <div className="rounded-3xl border border-gray-200 bg-white p-5 shadow-sm">
+                      <div className="flex items-center gap-2 mb-4">
+                        <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-100 text-emerald-600 flex-shrink-0">
+                          <span className="text-sm">🌾</span>
+                        </div>
+                        <div>
+                          <h2 className="text-sm font-bold text-slate-800">Crop &amp; Language</h2>
+                          <p className="text-[11px] text-slate-400">Type or speak · 20+ languages</p>
+                        </div>
+                      </div>
+                      <CropVoiceInput
+                        value={cropDisplay}
+                        onChange={(display, english) => { setCropDisplay(display); setCropEnglish(english); }}
+                        selectedLangCode={voiceLangCode}
+                        onLangChange={code => { setVoiceLangCode(code); }}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Scan CTA */}
+                  <button
+                    onClick={scan}
+                    disabled={!file || scanning || offline || !isAuthenticated}
+                    className="w-full rounded-2xl bg-gradient-to-r from-rose-600 to-orange-500 py-5 text-lg font-extrabold text-white shadow-xl shadow-rose-200 hover:shadow-rose-300 hover:scale-[1.01] active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed disabled:scale-100 disabled:shadow-none transition-all flex items-center justify-center gap-3"
+                  >
+                    <FaMicroscope size={20} />
+                    {!isAuthenticated
+                      ? 'Login to Scan'
+                      : offline
+                      ? 'No Internet — Cannot Scan'
+                      : !file
+                      ? 'Upload a Photo to Scan'
+                      : 'Scan for Disease'
+                    }
+                    {file && isAuthenticated && !offline && <FaArrowRight size={16} />}
+                  </button>
+                </>
+              )}
+
+              {/* Loading */}
+              {scanning && <LoadingOverlay step={scanStep} />}
+
+              {/* Result */}
+              {result && !scanning && (
+                <>
+                  <div className="flex flex-wrap gap-2">
+                    <button
+                      onClick={() => setShowReport(true)}
+                      className="flex items-center gap-2 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-2.5 text-sm font-bold text-emerald-700 hover:bg-emerald-100 transition"
+                    >
+                      <FaFileAlt size={12} /> Generate Report
+                    </button>
+                    <button
+                      onClick={reset}
+                      className="flex items-center gap-2 rounded-xl border border-rose-200 bg-rose-50 px-4 py-2.5 text-sm font-bold text-rose-700 hover:bg-rose-100 transition"
+                    >
+                      <FaRedo size={12} /> Scan Again
+                    </button>
+                  </div>
+
+                  <ResultLayout
+                    result={result}
+                    baseResult={baseResult!}
+                    uploadedPreview={preview}
+                    voiceLang={voiceLang}
                     onTranslated={handleTranslated}
+                    onReset={reset}
+                    onFeedback={handleFeedback}
+                    feedback={feedback}
+                    feedbackComment={feedbackComment}
+                    feedbackCorrectDisease={feedbackCorrectDisease}
+                    onFeedbackCommentChange={setFeedbackComment}
+                    onFeedbackCorrectDiseaseChange={setFeedbackCorrectDisease}
                   />
-                )}
+                </>
+              )}
+            </div>
+          )}
 
-                {/* Feedback */}
-                <div className="rounded-2xl border border-gray-100 bg-white p-4 flex flex-wrap items-center justify-between gap-3">
-                  <p className="text-sm font-medium text-slate-700">Was this diagnosis helpful?</p>
-                  <div className="flex gap-2">
-                    <button onClick={() => submitFeedback('helpful')} disabled={!!feedback}
-                      className={`rounded-full px-4 py-2 text-sm font-semibold transition ${feedback === 'helpful' ? 'bg-emerald-600 text-white' : 'border border-emerald-200 text-emerald-700 hover:bg-emerald-50'}`}>
-                      👍 Yes
-                    </button>
-                    <button onClick={() => submitFeedback('not_helpful')} disabled={!!feedback}
-                      className={`rounded-full px-4 py-2 text-sm font-semibold transition ${feedback === 'not_helpful' ? 'bg-red-500 text-white' : 'border border-red-200 text-red-600 hover:bg-red-50'}`}>
-                      👎 No
+          {/* ── HISTORY TAB ── */}
+          {tab === 'history' && (
+            <div>
+              {!isAuthenticated ? (
+                <div className="rounded-3xl border border-amber-200 bg-amber-50 py-16 text-center shadow-sm">
+                  <p className="text-4xl mb-3">🔒</p>
+                  <p className="font-bold text-slate-700 text-lg mb-1">Login Required</p>
+                  <p className="text-sm text-amber-700">
+                    Please{' '}
+                    <button onClick={() => router.push('/auth/login')} className="font-bold underline">login</button>
+                    {' '}to view your scan history.
+                  </p>
+                </div>
+              ) : (
+                <>
+                  <div className="mb-4 flex flex-wrap gap-2">
+                    <div className="flex flex-1 min-w-[180px] items-center gap-2 rounded-xl border border-gray-200 bg-white px-3 py-2.5 shadow-sm">
+                      <FaSearch size={12} className="text-slate-400 flex-shrink-0" />
+                      <input
+                        type="text"
+                        placeholder="Search crop or disease..."
+                        value={histSearch}
+                        onChange={e => setHistSearch(e.target.value)}
+                        className="flex-1 text-sm outline-none bg-transparent text-slate-700 placeholder-slate-400"
+                      />
+                    </div>
+                    <div className="flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-3 py-2.5 shadow-sm">
+                      <FaFilter size={11} className="text-slate-400" />
+                      <select
+                        value={histFilter}
+                        onChange={e => setHistFilter(e.target.value)}
+                        className="text-sm outline-none bg-transparent text-slate-700"
+                      >
+                        <option value="">All Severity</option>
+                        <option value="critical">Critical</option>
+                        <option value="high">High</option>
+                        <option value="medium">Medium</option>
+                        <option value="low">Low</option>
+                      </select>
+                    </div>
+                    <button
+                      onClick={() => loadHistory(1)}
+                      className="flex items-center gap-1.5 rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm font-semibold text-slate-600 hover:bg-gray-50 shadow-sm transition"
+                    >
+                      <FaRedo size={11} /> Refresh
                     </button>
                   </div>
-                </div>
 
-                <button onClick={reset} className="w-full rounded-2xl border border-rose-200 py-3 text-sm font-semibold text-rose-700 hover:bg-rose-50 transition">
-                  ← Scan Another Crop
-                </button>
+                  {histLoading ? (
+                    <div className="py-16 text-center text-slate-400">
+                      <FaSpinner className="mx-auto animate-spin text-3xl mb-3 text-rose-400" />
+                      <p className="text-sm">Loading your scan history...</p>
+                    </div>
+                  ) : filteredHistory.length === 0 ? (
+                    <div className="rounded-3xl border border-gray-200 bg-white py-16 text-center shadow-sm">
+                      <p className="text-5xl mb-4">🔬</p>
+                      <p className="font-bold text-slate-700 text-lg">
+                        {histSearch || histFilter ? 'No matching scans' : 'No scans yet'}
+                      </p>
+                      <p className="text-sm text-slate-400 mt-1">
+                        {histSearch || histFilter ? 'Try different search terms' : 'Upload a crop photo to get started.'}
+                      </p>
+                      {!histSearch && !histFilter && (
+                        <button
+                          onClick={() => setTab('scan')}
+                          className="mt-5 rounded-full bg-gradient-to-r from-rose-600 to-orange-500 px-8 py-3 text-sm font-bold text-white shadow-lg hover:shadow-xl transition"
+                        >
+                          Start Scanning
+                        </button>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="space-y-3">
+                      <p className="text-xs font-semibold text-slate-400 uppercase tracking-wide px-1">
+                        {filteredHistory.length} of {histTotal} scan{histTotal !== 1 ? 's' : ''}
+                      </p>
+                      <Suspense fallback={<div className="py-8 text-center text-slate-400"><FaSpinner className="mx-auto animate-spin" /></div>}>
+                        {filteredHistory.map((item, i) => (
+                          <DiseaseHistoryCard key={item._id || i} item={item} />
+                        ))}
+                      </Suspense>
+
+                      {histTotal > 20 && (
+                        <div className="flex items-center justify-center gap-3 pt-2">
+                          <button
+                            disabled={histPage <= 1}
+                            onClick={() => loadHistory(histPage - 1)}
+                            className="rounded-xl border border-gray-200 px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-gray-50 disabled:opacity-40 transition"
+                          >
+                            ← Prev
+                          </button>
+                          <span className="text-sm text-slate-500">Page {histPage}</span>
+                          <button
+                            disabled={histPage * 20 >= histTotal}
+                            onClick={() => loadHistory(histPage + 1)}
+                            className="rounded-xl border border-gray-200 px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-gray-50 disabled:opacity-40 transition"
+                          >
+                            Next →
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
+          )}
+
+          {/* ── REPORT TAB ── */}
+          {tab === 'report' && result && (
+            <div>
+              <div className="rounded-2xl border border-emerald-200 bg-emerald-50 px-5 py-4 text-sm text-emerald-800 mb-4">
+                <p className="font-bold">📄 AI Disease Report Ready</p>
+                <p className="mt-1 text-xs">Click below to view, print or save as PDF.</p>
               </div>
-            )}
-          </div>
-        )}
+              <button
+                onClick={() => setShowReport(true)}
+                className="w-full rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-500 py-5 text-lg font-extrabold text-white shadow-xl hover:scale-[1.01] transition-all flex items-center justify-center gap-3"
+              >
+                <FaFileAlt size={20} /> Open Full Report
+              </button>
+            </div>
+          )}
 
-        {/* HISTORY TAB */}
-        {tab === 'history' && (
-          <div>
-            {!isAuthenticated ? (
-              <div className="rounded-2xl border border-amber-200 bg-amber-50 px-5 py-8 text-center text-sm text-amber-800">
-                Please <button onClick={() => router.push('/auth/login')} className="font-bold underline">login</button> to view your scan history.
-              </div>
-            ) : histLoading ? (
-              <div className="py-16 text-center text-slate-400"><FaSpinner className="mx-auto animate-spin text-2xl mb-2" /><p>Loading history...</p></div>
-            ) : history.length === 0 ? (
-              <div className="rounded-3xl border border-gray-200 bg-white py-16 text-center">
-                <FaMicroscope className="mx-auto text-4xl text-slate-300 mb-3" />
-                <p className="text-slate-500">No scans yet. Upload a crop photo to get started.</p>
-                <button onClick={() => setTab('scan')} className="mt-4 rounded-full bg-rose-600 px-6 py-2 text-sm font-semibold text-white hover:bg-rose-700">Start Scanning</button>
-              </div>
-            ) : (
-              <div className="space-y-4">
-                {history.map((item, i) => (
-                  <DiseaseHistoryCard key={item._id || i} item={item} />
-                ))}
-              </div>
-            )}
-          </div>
-        )}
-      </div>
-    </main>
-  );
-}
-
-function DiseaseHistoryCard({ item }: { item: HistoryItem }) {
-  const [expanded, setExpanded] = useState(false);
-  const [display, setDisplay] = useState<HistoryItem>(item);
-
-  const handleTranslated = (lang: string, data: Record<string, any>) => {
-    setDisplay(lang === 'en' ? item : { ...item, ...data });
-  };
-
-  return (
-    <article className="rounded-2xl border border-gray-200 bg-white shadow-sm overflow-hidden">
-      <button
-        className="w-full flex flex-wrap items-start justify-between gap-2 p-5 text-left"
-        onClick={() => setExpanded((e) => !e)}
-      >
-        <div>
-          <h3 className="font-bold text-slate-900">{display.diseaseName}</h3>
-          <p className="text-xs text-slate-500">{display.cropName} · {display.diseaseType}</p>
         </div>
-        <div className="flex items-center gap-2">
-          <span className={`rounded-full border px-2.5 py-0.5 text-xs font-semibold ${severityColor(item.severityLevel)}`}>{item.severityLevel}</span>
-          <span className="text-xs text-slate-400">{new Date(item.createdAt).toLocaleDateString('en-IN')}</span>
-          <span className="text-xs text-slate-400">{expanded ? '▲' : '▼'}</span>
-        </div>
-      </button>
+      </main>
 
-      {expanded && (
-        <div className="border-t border-gray-100 px-5 pb-5 space-y-3">
-          {display.description && <p className="text-sm text-slate-600 leading-relaxed">{display.description}</p>}
-          {display.symptoms && (
-            <div className="rounded-xl bg-amber-50 border border-amber-100 p-3">
-              <div className="text-xs font-bold text-amber-700 mb-1">Symptoms</div>
-              <p className="text-xs text-amber-900 whitespace-pre-line">{display.symptoms}</p>
-            </div>
-          )}
-          {display.organicTreatment && (
-            <div className="rounded-xl bg-green-50 border border-green-100 p-3">
-              <div className="text-xs font-bold text-green-700 mb-1">🌿 Organic Treatment</div>
-              <p className="text-xs text-green-900 whitespace-pre-line">{display.organicTreatment}</p>
-            </div>
-          )}
-          {display.chemicalTreatment && (
-            <div className="rounded-xl bg-blue-50 border border-blue-100 p-3">
-              <div className="text-xs font-bold text-blue-700 mb-1">💊 Chemical Treatment</div>
-              <p className="text-xs text-blue-900 whitespace-pre-line">{display.chemicalTreatment}</p>
-            </div>
-          )}
-          {!display.organicTreatment && !display.chemicalTreatment && display.treatment && (
-            <div className="rounded-xl bg-blue-50 border border-blue-100 p-3">
-              <div className="text-xs font-bold text-blue-700 mb-1">💊 Treatment</div>
-              <p className="text-xs text-blue-900 whitespace-pre-line">{display.treatment}</p>
-            </div>
-          )}
-          {display.prevention && (
-            <div className="rounded-xl bg-green-50 border border-green-100 p-3">
-              <div className="text-xs font-bold text-green-700 mb-1">🛡️ Prevention</div>
-              <p className="text-xs text-green-900 whitespace-pre-line">{display.prevention}</p>
-            </div>
-          )}
-          {item.feedback && (
-            <span className={`inline-block rounded-full px-2.5 py-0.5 text-xs font-semibold ${
-              item.feedback === 'helpful' ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'
-            }`}>
-              {item.feedback === 'helpful' ? '👍 Helpful' : '👎 Not Helpful'}
-            </span>
-          )}
-          {item._id && (
-            <AILanguageSelector
-              recordId={item._id}
-              module="disease"
-              englishData={item as any}
-              onTranslated={handleTranslated}
-            />
-          )}
-        </div>
+      {showReport && result && (
+        <Suspense fallback={null}>
+          <DiseaseReport
+            result={result}
+            uploadedPreview={preview}
+            onClose={() => setShowReport(false)}
+          />
+        </Suspense>
       )}
-    </article>
+    </>
   );
 }

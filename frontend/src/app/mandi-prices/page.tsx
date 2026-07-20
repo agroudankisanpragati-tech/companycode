@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { mandiApi, MandiPrice } from '@/services/mandibav';
+import { usePageContext } from '@/hooks/usePageContext';
 
 export default function MandiPricesPage() {
     const [commodity, setCommodity] = useState('');
@@ -10,6 +11,20 @@ export default function MandiPricesPage() {
     const [results, setResults] = useState<MandiPrice[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+
+    // Register top market result with Root AI
+    const topResult = results[0];
+    usePageContext({
+        pageContext: 'market',
+        marketData: topResult ? {
+            commodity: topResult.commodity,
+            market: topResult.market,
+            state: topResult.state,
+            modalPrice: topResult.modalPrice,
+            minPrice: topResult.minPrice,
+            maxPrice: topResult.maxPrice,
+        } : undefined,
+    });
 
     const search = async (e?: React.FormEvent) => {
         e?.preventDefault();

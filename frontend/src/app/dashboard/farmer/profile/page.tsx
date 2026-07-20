@@ -1,28 +1,42 @@
-"use client";
+'use client';
 
-import { useEffect } from 'react';
+import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 import ProtectedRoute from '@/components/ProtectedRoute';
-import FarmerProfileModal from '@/components/farmer/FarmerProfileModal';
+import FarmerSidebar from '@/components/FarmerSidebar';
+import FarmerFooter from '@/components/FarmerFooter';
+import FarmerProfilePage from '@/components/farmer/FarmerProfilePage';
 
-function ProfilePageContent() {
+function ProfileContent() {
+  const { user, isLoading, isAuthenticated } = useAuth();
   const router = useRouter();
 
-  // If someone lands directly on /dashboard/farmer/profile, redirect back
-  // to dashboard and let the dashboard handle the modal
-  // We render the modal here as an overlay over whatever is behind
+  useEffect(() => {
+    if (isLoading) return;
+    if (!isAuthenticated) router.replace('/auth/login');
+    else if (user?.role !== 'farmer') router.replace('/auth/role-select');
+  }, [isLoading, isAuthenticated, user, router]);
+
+  if (isLoading || !isAuthenticated) return null;
+
   return (
-    <FarmerProfileModal
-      open={true}
-      onClose={() => router.push('/dashboard/farmer')}
-    />
+    <div className="flex min-h-screen bg-gradient-to-br from-green-50 to-blue-50">
+      <FarmerSidebar />
+      <div className="flex-1 flex flex-col min-w-0">
+        <main className="flex-1">
+          <FarmerProfilePage />
+        </main>
+        <FarmerFooter />
+      </div>
+    </div>
   );
 }
 
 export default function Page() {
   return (
     <ProtectedRoute>
-      <ProfilePageContent />
+      <ProfileContent />
     </ProtectedRoute>
   );
 }

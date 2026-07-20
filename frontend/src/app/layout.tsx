@@ -6,6 +6,9 @@ import { AIAssistantProvider } from "@/context/AIAssistantContext";
 import { LanguageProvider } from "@/context/LanguageContext";
 import AIAssistantWidget from "@/components/AIAssistantWidget";
 import LanguagePopupMount from "@/components/LanguagePopupMount";
+import GlobalOfflineBanner from "@/components/GlobalOfflineBanner";
+import { AccessibilityProvider } from "@/context/AccessibilityContext";
+import { VoiceEngineProvider } from "@/components/VoiceEngineProvider";
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -104,15 +107,20 @@ export default function RootLayout({
       <body className="bg-white text-gray-900">
         <AuthProvider>
           <LanguageProvider>
-            <LocationProvider>
-              <AIAssistantProvider>
-                <main id="top" className="min-h-screen">
-                  {children}
-                </main>
-                <AIAssistantWidget />
-                <LanguagePopupMount />
-              </AIAssistantProvider>
-            </LocationProvider>
+            <AccessibilityProvider>
+              <LocationProvider>
+                <AIAssistantProvider>
+                  <VoiceEngineProvider>
+                  <GlobalOfflineBanner />
+                  <main id="top" className="min-h-screen">
+                    {children}
+                  </main>
+                  <AIAssistantWidget />
+                  <LanguagePopupMount />
+                  </VoiceEngineProvider>
+                </AIAssistantProvider>
+              </LocationProvider>
+            </AccessibilityProvider>
           </LanguageProvider>
         </AuthProvider>
       </body>

@@ -6,9 +6,12 @@ import Image from 'next/image';
 import { FaBell, FaCloud, FaHome, FaArrowLeft, FaSearch, FaMapMarkerAlt } from 'react-icons/fa';
 import { useRouter } from 'next/navigation';
 import WeatherWidget from './WeatherWidget';
+import { usePageContext } from '@/hooks/usePageContext';
 
 export default function Page() {
     const router = useRouter();
+    // Register weather page context with Root AI (no live data needed — WeatherWidget owns it)
+    usePageContext({ pageContext: 'weather' });
 
     const handleGoBack = () => {
         try {

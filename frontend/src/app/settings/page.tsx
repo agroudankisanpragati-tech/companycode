@@ -13,8 +13,11 @@ import {
   FaCog, FaRobot, FaBell, FaGlobe, FaPalette, FaShieldAlt,
   FaLock, FaStore, FaFileAlt, FaQuestionCircle, FaInfoCircle,
   FaChevronDown, FaChevronUp, FaCheck, FaTrash, FaDownload,
-  FaExchangeAlt, FaSignOutAlt,
+  FaExchangeAlt, FaSignOutAlt, FaUniversalAccess,
 } from 'react-icons/fa';
+import { useLanguage } from '@/context/LanguageContext';
+import { useAccessibility } from '@/context/AccessibilityContext';
+import { LANGUAGES as ALL_LANGUAGES } from '@/i18n/languages';
 
 // ─── tiny helpers ────────────────────────────────────────────────────────────
 
@@ -86,13 +89,17 @@ function RadioGroup({ value, onChange, options }: { value: string; onChange: (v:
   );
 }
 
-const LANGUAGES = ['Hindi', 'English', 'Marathi', 'Gujarati', 'Punjabi', 'Tamil', 'Telugu', 'Bengali'];
+// Language options built from centralized registry
+const LANG_OPTIONS = ALL_LANGUAGES.map(l => ({ code: l.code, label: `${l.flag} ${l.nativeName} — ${l.name}` }));
 
 // ─── main page ───────────────────────────────────────────────────────────────
 
 export default function SettingsPage() {
   const { user, isAuthenticated, isLoading, logout } = useAuth();
   const router = useRouter();
+
+  const { langCode, setLanguage } = useLanguage();
+  const { largeText, toggleLargeText } = useAccessibility();
 
   const [s, setS] = useState<UserSettings>(DEFAULT_SETTINGS);
   const [loading, setLoading] = useState(true);
@@ -299,11 +306,31 @@ export default function SettingsPage() {
 
           {/* ── Language ── */}
           <Card title="Language" icon={<FaGlobe />}>
-            <Row label="Application Language">
-              <Select value={s.appLanguage} onChange={v => patch({ appLanguage: v })} options={LANGUAGES} />
+            <Row label="Application Language" sub="Changes UI, voice input and voice output language">
+              <select
+                value={langCode}
+                onChange={async e => {
+                  await setLanguage(e.target.value);
+                  const found = ALL_LANGUAGES.find(l => l.code === e.target.value);
+                  showToast(`Language changed to ${found?.nativeName || e.target.value} ✓`);
+                }}
+                className="border border-gray-200 rounded-lg px-3 py-1.5 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-emerald-400 bg-white max-w-[220px]"
+                aria-label="Select application language"
+              >
+                <optgroup label="National Languages">
+                  {LANG_OPTIONS.filter(l => !ALL_LANGUAGES.find(a => a.code === l.code)?.isDialect).map(l => (
+                    <option key={l.code} value={l.code}>{l.label}</option>
+                  ))}
+                </optgroup>
+                <optgroup label="Rajasthan Dialects">
+                  {LANG_OPTIONS.filter(l => ALL_LANGUAGES.find(a => a.code === l.code)?.isDialect).map(l => (
+                    <option key={l.code} value={l.code}>{l.label}</option>
+                  ))}
+                </optgroup>
+              </select>
             </Row>
-            <Row label="Voice Assistant Language">
-              <Select value={s.voiceLanguage} onChange={v => patch({ voiceLanguage: v })} options={LANGUAGES} />
+            <Row label="Voice Assistant Language" sub="Voice AI speaks in the selected language/dialect">
+              <Select value={s.voiceLanguage} onChange={v => patch({ voiceLanguage: v })} options={['Hindi', 'English', 'Marathi', 'Gujarati', 'Punjabi', 'Tamil', 'Telugu', 'Bengali']} />
             </Row>
           </Card>
 
@@ -325,10 +352,29 @@ export default function SettingsPage() {
               <Row label="Compact View" sub="Denser layout with smaller cards">
                 <Toggle on={s.interfaceDensity === 'compact'} onChange={v => patch({ interfaceDensity: v ? 'compact' : 'comfortable' })} />
               </Row>
-              <Row label="Large Text Mode" sub="Increases font size for accessibility">
-                <Toggle on={s.fontSize === 'large'} onChange={v => patch({ fontSize: v ? 'large' : 'medium' })} />
+              <Row label="Large Text Mode" sub="Increases font size for better readability">
+                <Toggle on={largeText} onChange={() => { toggleLargeText(); patch({ fontSize: !largeText ? 'large' : 'medium' }); }} />
               </Row>
             </div>
+          </Card>
+
+          {/* ── Accessibility ── */}
+          <Card title="Accessibility" icon={<FaUniversalAccess />}>
+            <Row label="Large Text Mode" sub="Increases all text sizes for easier reading">
+              <Toggle on={largeText} onChange={toggleLargeText} />
+            </Row>
+            <Row label="Touch-Friendly Controls" sub="Larger tap targets for touch screens">
+              <Toggle on={true} onChange={() => {}} />
+            </Row>
+            <Row label="Keyboard Navigation" sub="Full keyboard support with visible focus rings">
+              <Toggle on={true} onChange={() => {}} />
+            </Row>
+            <Row label="Screen Reader Support" sub="ARIA labels and live regions enabled">
+              <Toggle on={true} onChange={() => {}} />
+            </Row>
+            <Row label="Reduce Motion" sub="Respects system prefers-reduced-motion setting">
+              <Toggle on={true} onChange={() => {}} />
+            </Row>
           </Card>
 
           {/* ── Privacy ── */}

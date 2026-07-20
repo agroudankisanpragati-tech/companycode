@@ -1,0 +1,1381 @@
+text,intent,source
+सर्दी में कोहरा कब तक रहेगा,weather,weather.csv
+सीड ड्रिल मशीन से बुवाई कैसे करें,machinery,machinery.csv
+"टमाटर के पत्ते पीले पड़ रहे हैं, कोई दवाई बताओ",disease,disease.json
+animal attack emergency meri fasal bachao,emergency,emergency.csv
+प्याज में सिंचाई का सही समय बताओ,irrigation,irrigation.csv
+म्हारी उड़द री फसल में पत्ती मोड़क रोग लाग री है,disease,disease.csv
+seed storage ka sahi tarika kya hai,seed,seed.csv
+"मेरे खेत की मिट्टी में नमक ज्यादा है, कौन सी फसल उगाऊं?",crop,crop.json
+मूंगफली की जड़ें सड़ रही हैं कौन सी दवाई डालूं?,disease,disease.csv
+किसान क्रेडिट कार्ड की लिमिट कितनी होती है,government,government.csv
+खम्मा घणी जी प्रणाम,greeting,greeting.csv
+बीज को नमी से कैसे बचाएं,seed,seed.csv
+बाजरे की बुवाई के लिए बीज दर क्या है,seed,seed.csv
+मेरे बैंगन के पत्तों पर भूरे धब्बे हैं,disease,disease.csv
+मेरी फसल में वर्मीकम्पोस्ट कब और कितना डालें?,fertilizer,fertilizer.csv
+rotavator aur cultivator mein kya difference hai,machinery,machinery.csv
+guar ka aaj ka rate kya hai,market,market.csv
+भाई म्हारे खेत में कौन सी फसल बोवां जो रबी में अच्छी हो?,crop,crop.csv
+"मेरे खेत की मिट्टी बलुई है, कौन सी फसल अच्छी रहेगी?",crop,crop.json
+jai shri ram bhai sarson ki baat karni thi,greeting,greeting.csv
+मेरे खेत में मिट्टी की जांच रिपोर्ट में ec ज्यादा है,soil,soil.csv
+gehu ka bhav is hafte kitna badha,market,market.csv
+आज जोधपुर मंडी में सरसों का भाव,market,market.csv
+प्रोफाइल फोटो कैसे लगाएं,general,general.csv
+मेरे खेत में npk 12-32-16 कब डालें?,fertilizer,fertilizer.csv
+tiddi dal ne mera poora khet kha liya,emergency,emergency.csv
+my entire wheat crop is dying please help,emergency,emergency.csv
+आप कौन हैं,general,general.csv
+otp nahi aa raha hai kya karein,general,general.csv
+बीज उपचार के लिए इमिडाक्लोप्रिड कैसे उपयोग करें,seed,seed.csv
+aaj kitni thand hai bahar,weather,weather.csv
+kya aaj fungicide spray kar sakte hain,weather,weather.csv
+soil colour se kya pata chalta hai?,soil,soil.csv
+प्याज का बीज कब बोना चाहिए,seed,seed.csv
+bajra mandi rate today rajasthan,market,market.csv
+best cash crop for rajasthan farmers?,crop,crop.csv
+मेरे खेत में नाइट्रोजन की कमी है पत्ते पीले हो रहे हैं,soil,soil.csv
+soil sample kaise collect karein testing ke liye?,soil,soil.csv
+"मेरे खेत में पिछले साल ज्वार था, अब क्या बोऊं?",crop,crop.json
+which crop is best for black cotton soil?,crop,crop.csv
+bolkar sawaal poochne ka tarika kya hai,general,general.csv
+रात को सिंचाई करना सही है क्या,irrigation,irrigation.csv
+zinc sulphate ka dose per acre kya hai?,fertilizer,fertilizer.csv
+kota mandi mein aaj soybean ka rate kya hai,market,market.csv
+rain forecast for next 3 days in rajasthan,weather,weather.csv
+gps लोकेशन कैसे ऑन करें,general,general.csv
+मेरी गाजर की फसल में पत्ती धब्बा रोग है,disease,disease.csv
+paani ki kami se fasal ka rang peela kyun ho jata hai,irrigation,irrigation.csv
+मेरे गांव में सॉइल हेल्थ कार्ड कैंप कब लगेगा,government,government.csv
+pest infestation bahut bada hai poori fasal khatam ho rahi hai,emergency,emergency.csv
+बीज पर सरकारी सब्सिडी मिलती है क्या,seed,seed.csv
+seed subsidy ke liye kahan apply karein,government,government.csv
+seed kharidne ke liye kahan jaana chahiye,seed,seed.csv
+मेरी अरहर में फाइटोफ्थोरा ब्लाइट है,disease,disease.csv
+कृषि यंत्र पर 50 प्रतिशत सब्सिडी मिलती है क्या,machinery,machinery.csv
+namaste bhai gehu ki variety batao,greeting,greeting.csv
+सरकारी बीज पर सब्सिडी कैसे मिलती है,government,government.csv
+प्रणाम जी,greeting,greeting.csv
+"बाजरे में माहू कीड़ा लग गया है, उपाय बताओ",disease,disease.json
+मेरी फसल में पोटाश की कमी है कितना डालूं?,fertilizer,fertilizer.csv
+certified seed aur normal seed mein kya difference hai,seed,seed.csv
+भाई म्हारे खेत में कौन सी फसल बोवां जो जैविक खेती में अच्छी हो?,crop,crop.csv
+sos meri fasal mar rahi hai,emergency,emergency.csv
+push notification kaise on karein,general,general.csv
+how to check if crop needs water or not,irrigation,irrigation.csv
+नहर से खेत तक पानी कैसे लाएं,irrigation,irrigation.csv
+bajra ki kheti kab karni chahiye?,crop,crop.csv
+"मेरे खेत में पिछले साल मसूर था, अब क्या बोऊं?",crop,crop.json
+खम्मा घणी सा आज खेत में पानी देना है,greeting,greeting.csv
+मेरे खेत में मिट्टी परीक्षण कब करवाना चाहिए?,soil,soil.csv
+sandy soil mein paani jaldi nikal jaata hai kya karein?,soil,soil.csv
+फसल बीमा का प्रीमियम कितना है गेहूं के लिए,government,government.csv
+पीएम किसान की किस्त कब आती है,government,government.csv
+यह ai कितना सटीक जवाब देता है,general,general.csv
+नमस्ते जी pm kisan ka paisa aaya kya,greeting,greeting.csv
+मेरी फसल मर रही है अभी तुरंत कुछ बताओ,emergency,emergency.csv
+सिंचाई के बाद खाद कब डालें,irrigation,irrigation.csv
+aap kya kaam karte ho,general,general.csv
+"मेरे खेत में पिछले साल अजवाइन था, अब क्या बोऊं?",crop,crop.json
+मूंगफली की बुवाई का सही समय बताओ,crop,crop.csv
+मेरे खेत में पिछले साल मूंग था अब क्या बोऊं?,crop,crop.csv
+"म्हारे खेत री मिट्टी में लवणता ज्यादा है, के करूं?",soil,soil.json
+आज धनिया का भाव क्या है,market,market.csv
+rajasthan kisan yojana 2024 list batao,government,government.csv
+अगले 7 दिन का मौसम बताओ,weather,weather.csv
+बैंगन में सिंचाई का सही तरीका बताओ,irrigation,irrigation.csv
+कृषि यंत्र पर सब्सिडी के लिए आवेदन कैसे करें,machinery,machinery.csv
+राजस्थान में आज का तापमान क्या है,weather,weather.csv
+यह ऐप किस कंपनी ने बनाया है,general,general.csv
+म्हारी मिट्टी में ऑर्गेनिक मैटर बढ़ाने के लिए के करूं?,soil,soil.csv
+ड्रोन स्प्रेयर से दवाई कैसे छिड़कें,machinery,machinery.csv
+sulphur fertilizer kab dena chahiye aur kitna?,fertilizer,fertilizer.csv
+water efficient crops for rajasthan desert area,irrigation,irrigation.csv
+स्प्रेयर पंप काम नहीं कर रहा क्या करूं,machinery,machinery.csv
+म्हारी अरहर री फसल में स्टेरिलिटी मोजेक लाग री है,disease,disease.csv
+rotavator se khet taiyar karne ka tarika,machinery,machinery.csv
+wrong answer aaya to kaise report karein,general,general.csv
+magnesium sulphate ka dose per acre kya hai?,fertilizer,fertilizer.csv
+paani dene ke baad fasal mein kya change aata hai,irrigation,irrigation.csv
+मेरे खेत में पानी की अच्छी सुविधा है कौन सी फसल ज्यादा फायदेमंद है?,crop,crop.csv
+मेरे खेत में पानी की कमी है ड्रिप से कौन सी फसल उगाऊं?,crop,crop.csv
+best crop rotation for wheat in rajasthan?,crop,crop.csv
+मेरे खेत में बुवाई के समय कौन सी खाद डालें?,fertilizer,fertilizer.csv
+मेरी मक्का में चारकोल रॉट रोग है उपाय बताओ,disease,disease.csv
+म्हारे खेत में वर्मीकम्पोस्ट कितनो डालूं?,fertilizer,fertilizer.csv
+आज ग्वार का भाव बढ़ा है क्या,market,market.csv
+"मेरे खेत में पिछले साल उड़द था, अब क्या बोऊं?",crop,crop.json
+"मेरे खेत में पिछले साल तिल था, अब क्या बोऊं?",crop,crop.json
+groundnut mein fertilizer dose kya hona chahiye?,fertilizer,fertilizer.csv
+खेती के लिए कौन सा ट्रैक्टर अच्छा है,machinery,machinery.csv
+drip tape kaise install karte hain,irrigation,irrigation.csv
+मेरी मिट्टी बहुत अम्लीय है कैसे सुधारूं?,soil,soil.csv
+म्हारी कपास री फसल में npk कद डालणो चाहिए?,fertilizer,fertilizer.csv
+भाई म्हारी सरसों री फसल में सफेद रतुआ लाग री है,disease,disease.csv
+किसान क्रेडिट कार्ड का ब्याज माफ होता है क्या,government,government.csv
+free bijli yojana for farmers in rajasthan,government,government.csv
+इस महीने कितनी बारिश होगी,weather,weather.csv
+मेरे गांव के पास कौन सी मंडी है,market,market.csv
+मेरे खेत में पानी की बर्बादी कैसे रोकें,irrigation,irrigation.csv
+बीज अंकुरण कम हो रहा है क्या करूं,seed,seed.csv
+मेरे खेत में मिट्टी परीक्षण रिपोर्ट कैसे पढ़ें?,soil,soil.csv
+"मेरे खेत में पिछले साल गेहूं था, अब क्या बोऊं?",crop,crop.json
+under irrigation se fasal mein kya problem hoti hai,irrigation,irrigation.csv
+moong ka best variety seed batao,seed,seed.csv
+aaj ka temperature kitna hai,weather,weather.csv
+play store पर यह ऐप कैसे खोजें,general,general.csv
+pm kisan mein aadhar link karna zaroori hai kya,government,government.csv
+ट्रैक्टर का क्लच खराब हो गया है,machinery,machinery.csv
+app ke baare mein apni rai kaise dein,general,general.csv
+haryanvi mein bhi kaam karta hai kya yeh app,general,general.csv
+धनिया की खेती कब और कैसे करें?,crop,crop.csv
+उड़द की बुवाई का सही समय बताओ,crop,crop.csv
+mandi bhav gir raha hai kya is hafte,market,market.csv
+मेरे खेत में मिट्टी की जल धारण क्षमता कैसे बढ़ाऊं?,soil,soil.csv
+green manure se soil fertility kaise badhti hai?,soil,soil.csv
+good morning bhai kisan yojana ke baare mein batao,greeting,greeting.csv
+स्प्रेयर मशीन की सफाई कैसे करें,machinery,machinery.csv
+म्हारी मिट्टी में पोटाश री कमी है के करूं?,soil,soil.csv
+मंडी भाव में उतार चढ़ाव क्यों होता है,market,market.csv
+onion mein stemphylium blight disease hai,disease,disease.csv
+फव्वारा सिंचाई कैसे काम करती है,irrigation,irrigation.csv
+म्हारी मिट्टी में ph 8 से ज्यादा है के करूं?,soil,soil.csv
+भाई म्हारी चावल री फसल में नेक ब्लास्ट लाग री है,disease,disease.csv
+मेरी मूंग में सर्कोस्पोरा पत्ती धब्बा रोग है,disease,disease.csv
+पाले से गेहूं की फसल को कैसे बचाएं,weather,weather.csv
+crop insurance claim karne ka tarika kya hai,government,government.csv
+म्हारी मिट्टी रो ph कितनो होणो चाहिए?,soil,soil.csv
+hello pragati bhai mujhe kuch janna hai,greeting,greeting.csv
+which crop is best for crop rotation after wheat?,crop,crop.csv
+kcc loan kaise milega mujhe,government,government.csv
+vanakkam,greeting,greeting.csv
+farm loan maafi ki koi yojana hai kya rajasthan mein,government,government.csv
+मेरी फसल में माइक्रोन्यूट्रिएंट खाद कब डालें?,fertilizer,fertilizer.csv
+soil moisture kaise check karein?,soil,soil.csv
+pm kisan yojana app mein kaise dekhein,general,general.csv
+मेथी का बीज कब और कैसे बोएं,seed,seed.csv
+मेरे खेत में खाद डालने का सही तरीका क्या है?,fertilizer,fertilizer.csv
+खेत में पानी की निकासी कैसे करें,irrigation,irrigation.csv
+आज कितनी गर्मी पड़ेगी,weather,weather.csv
+आज मेथी का भाव क्या है,market,market.csv
+मेरे खेत में ssp और dap में कौन सा बेहतर है?,fertilizer,fertilizer.csv
+फसल बीमा में नुकसान का सर्वे कब होगा,government,government.csv
+jai hind jai bharat,greeting,greeting.csv
+कम पानी में कौन सी फसल उगाई जा सकती है?,crop,crop.csv
+मेरे खेत में खाद की अधिक मात्रा से क्या नुकसान होता है?,fertilizer,fertilizer.csv
+basal dose fertilizer kya hota hai?,fertilizer,fertilizer.csv
+चने की फसल में पानी कितनी बार देना है,irrigation,irrigation.csv
+कल मूंग का भाव क्या था,market,market.csv
+मेरे खेत में सरसों के लिए खाद की सिफारिश बताओ,fertilizer,fertilizer.csv
+राम राम काका,greeting,greeting.csv
+"groundnut mein tikka disease ho gayi hai, kya karein?",disease,disease.json
+farm machinery rent kahan se milegi mere gaon mein,machinery,machinery.csv
+bore well se kitna paani nikal sakta hoon,irrigation,irrigation.csv
+kal barish hogi to beej bona band karna chahiye kya,weather,weather.csv
+हार्वेस्टर मशीन का किराया कितना है प्रति बीघा,machinery,machinery.csv
+soybean mein pod borer ka attack ho gaya hai,disease,disease.csv
+canal water band ho gaya emergency irrigation kaise karein,emergency,emergency.csv
+seed drill machine rent per bigha kitna hai,machinery,machinery.csv
+आंधी आने वाली है क्या आज,weather,weather.csv
+मेथी की बुवाई का सही समय बताओ,crop,crop.csv
+ऐप में राजस्थानी भाषा कैसे चुनें,general,general.csv
+सरसों का भाव पिछले महीने से कितना बदला,market,market.csv
+hi bhai khamma ghani sa,greeting,greeting.csv
+germination rate kam hai kya karein,seed,seed.csv
+meri personal jankari kahan jaati hai,general,general.csv
+मेरे खेत में वर्मीकम्पोस्ट डालने से क्या फायदा होगा?,soil,soil.csv
+म्हारे खेत री मिट्टी में लाइम डालने से के होसी?,soil,soil.csv
+मल्टी क्रॉप थ्रेशर क्या होता है,machinery,machinery.csv
+crop loss survey kab hoga mere khet ka,government,government.csv
+pm kisan ka paisa kab aayega mere account mein,government,government.csv
+मेरे खेत में पिछले साल अजवाइन था अब क्या बोऊं?,crop,crop.csv
+भाई म्हारे खेत में कौन सी फसल बोवां जो कम खर्च में ज्यादा पैदावार दे?,crop,crop.csv
+मेरे खेत में मिट्टी की संरचना कैसे सुधारें?,soil,soil.csv
+ड्रिप इरिगेशन और स्प्रिंकलर में कौन सा बेहतर है,irrigation,irrigation.csv
+सरसों की बुवाई कब करनी चाहिए?,crop,crop.csv
+खरीफ फसल में पानी की जरूरत कब होती है,irrigation,irrigation.csv
+म्हारे खेत में अमोनियम सल्फेट कद डालणो चाहिए?,fertilizer,fertilizer.csv
+groundnut seed kahan milega mere paas,seed,seed.csv
+crop insurance claim rejected kya karein,government,government.csv
+"मेरे खेत में हल्की मिट्टी है, कौन सी फसल उगाऊं?",crop,crop.json
+सरकारी सब्सिडी पर स्प्रिंकलर सेट कैसे मिलेगा,government,government.csv
+chilli seed best variety batao,seed,seed.csv
+फसल में कीड़े इतने हो गए हैं कि दिखाई नहीं देती,emergency,emergency.csv
+म्हारी फसल में कल से अचानक पत्ते मुड़ने लगे हैं,emergency,emergency.csv
+ऐप में फसल डायरी कैसे देखें,general,general.csv
+bajra seed rate per bigha kitna hona chahiye,seed,seed.csv
+मेरे खेत में मिट्टी की जांच के लिए कहां जाऊं?,soil,soil.csv
+soybean seed variety rajasthan ke liye,seed,seed.csv
+waterlogged soil kaise sudharen?,soil,soil.csv
+आज अजमेर मंडी में सरसों का रेट,market,market.csv
+मेरी मिट्टी में माइक्रोन्यूट्रिएंट्स की कमी है क्या करूं?,soil,soil.csv
+नीलगाय और सूअर ने मिलकर पूरी फसल बर्बाद कर दी,emergency,emergency.csv
+bikaner mandi moong price today,market,market.csv
+आज तिल का भाव क्या है,market,market.csv
+मंडी में फसल बेचने का सही समय कब है,market,market.csv
+औषधीय फसलें कौन सी हैं जो मुझे ज्यादा मुनाफा दें?,crop,crop.csv
+मेरी फसल बेचने के लिए सबसे अच्छी मंडी कौन सी है,market,market.csv
+नहर का पानी बंद हो गया फसल सूख रही है,emergency,emergency.csv
+आज कपास का भाव क्या है,market,market.csv
+over irrigation se mitti kharab hoti hai kya,irrigation,irrigation.csv
+मेरी धनिया की फसल में स्टेम रॉट हो गई है,disease,disease.csv
+gehu ka bhav msp se upar hai kya aaj,market,market.csv
+calcium nitrate fertilizer kab dena chahiye?,fertilizer,fertilizer.csv
+"मेरे खेत में मिट्टी का कटाव हो रहा है, कैसे रोकूं?",soil,soil.json
+गुआर का भाव आज कितना है,market,market.csv
+wheat mein loose smut disease aa gayi hai,disease,disease.csv
+ssp single super phosphate ka dose kya hai?,fertilizer,fertilizer.csv
+soil hardpan kaise todein?,soil,soil.csv
+imidacloprid seed treatment kaise karein,seed,seed.csv
+fertilizer subsidy ke liye kya karna padta hai,government,government.csv
+yesterday mustard price in mandi,market,market.csv
+म्हारी फसल में ssp खाद कद डालणो चाहिए?,fertilizer,fertilizer.csv
+मेरी मेथी में पाउडरी मिल्ड्यू हो गई है,disease,disease.csv
+मेरी गेहूं में पीला रतुआ बहुत तेजी से फैल रहा है,emergency,emergency.csv
+मेरे खेत की मिट्टी में पोषक तत्वों की कमी है क्या करूं?,soil,soil.csv
+aadhar se login ho sakta hai kya,general,general.csv
+मानसून कब आएगा इस साल,weather,weather.csv
+jeera seed best variety rajasthan mein,seed,seed.csv
+khamma ghani bhaisa,greeting,greeting.csv
+आज बिजली गिरने का खतरा है क्या,weather,weather.csv
+tomato seed kahan se kharidein,seed,seed.csv
+msp क्या है गेहूं का इस साल,market,market.csv
+कल दोपहर को मौसम कैसा रहेगा,weather,weather.csv
+खम्मा घणी सा राम राम,greeting,greeting.csv
+rice mein brown plant hopper ka attack ho gaya hai,disease,disease.csv
+गेहूं बोने का सही समय क्या है?,crop,crop.csv
+नई हाइब्रिड सरसों की किस्म कौन सी है,seed,seed.csv
+mustard price trend last month kya raha,market,market.csv
+"मेरे खेत में पिछले साल सौंफ था, अब क्या बोऊं?",crop,crop.json
+urad bean best seed variety batao,seed,seed.csv
+"मेरे खेत में पिछले साल सरसों थी, अब क्या बोऊं?",crop,crop.json
+jai shri ram bhai mausam ke baare mein poochna tha,greeting,greeting.csv
+चैट हिस्ट्री कैसे डिलीट करें,general,general.csv
+बरसात के बाद सिंचाई करनी चाहिए या नहीं,irrigation,irrigation.csv
+म्हारी मिर्च री फसल में लीफ कर्ल वायरस लाग री है,disease,disease.csv
+ram ram sa bhai khad ke baare mein poochna tha,greeting,greeting.csv
+black soil ki khasiyat kya hoti hai?,soil,soil.csv
+good morning bhai khamma ghani,greeting,greeting.csv
+म्हारे खेत में सब कुछ खत्म हो गया मदद करो,emergency,emergency.csv
+namaste ji fasal bima ke baare mein batao,greeting,greeting.csv
+greenhouse subsidy rajasthan apply process,government,government.csv
+सरकारी सब्सिडी पर ड्रिप इरिगेशन कैसे लगाएं,government,government.csv
+maize price today in rajasthan,market,market.csv
+best time to sell sarson in mandi,market,market.csv
+तिल की खेती कब और कैसे करें?,crop,crop.csv
+fasal barbad ho gayi hai turant koi upay batao bhai,emergency,emergency.csv
+post harvest fertilizer application kab karein?,fertilizer,fertilizer.csv
+jai shri ram bhai good morning,greeting,greeting.csv
+mic se ai se kaise baat karein,general,general.csv
+मेरे खेत में काली मिट्टी है इसमें कौन सी फसल अच्छी होगी?,soil,soil.csv
+मेरे लिए कौन सी फसल सही रहेगी,general,general.csv
+राजस्थान में किसान पेंशन योजना है क्या,government,government.csv
+मेरी मिट्टी की जांच कैसे करवाऊं?,soil,soil.csv
+आज जीरे का मंडी भाव क्या है,market,market.csv
+भाई म्हारे बाजरे में हरित बाली रोग आ गयो है,disease,disease.csv
+मेरी मक्का में फॉल आर्मीवर्म का भयंकर हमला है,emergency,emergency.csv
+मंडी में आज सबसे ज्यादा भाव किस फसल का है,market,market.csv
+tractor clutch kharab ho gaya hai kya karein,machinery,machinery.csv
+राजस्थान में सोलर पंप पर सब्सिडी मिलती है क्या,government,government.csv
+ग्रीष्मकाल में सब्जियों को कितना पानी चाहिए,irrigation,irrigation.csv
+mere khet ke liye crop suggest karo,general,general.csv
+मेरे खेत में धान के लिए खाद की मात्रा बताओ,fertilizer,fertilizer.csv
+आज मंडी में गेहूं का भाव क्या है,market,market.csv
+potash fertilizer kab aur kitna dena chahiye?,fertilizer,fertilizer.csv
+तुरंत मदद चाहिए,emergency,emergency.csv
+मेरी उड़द की फसल में पीला मोजेक वायरस है,disease,disease.csv
+म्हारे खेत री मिट्टी में फास्फोरस री कमी है,soil,soil.csv
+namaste bhai good morning,greeting,greeting.csv
+म्हारे खेत में काली मिट्टी है कांई बोवां?,crop,crop.csv
+अलसी की खेती कब और कैसे करें?,crop,crop.csv
+नमस्ते भाई मेरे खेत में कीड़े लग गए हैं,greeting,greeting.csv
+कपास की बुवाई का सही समय और तरीका बताओ,crop,crop.csv
+म्हारी रेतीली मिट्टी में नमी कैसे बनाए रखूं?,soil,soil.csv
+सिंचाई के लिए तालाब का पानी इस्तेमाल कर सकते हैं,irrigation,irrigation.csv
+clay soil mein drainage kaise improve karein?,soil,soil.csv
+आज चने का भाव क्या चल रहा है,market,market.csv
+canal water schedule kab aayega meri tehsil mein,irrigation,irrigation.csv
+"wheat mein rust disease aa gayi hai, spray kya karein?",disease,disease.json
+इस हफ्ते गेहूं का भाव बढ़ा है क्या,market,market.csv
+aaj mandi mein sabse achha bhav kis fasal ka hai,market,market.csv
+micronutrient fertilizer kab aur kaise dena chahiye?,fertilizer,fertilizer.csv
+cotton hybrid seed best variety rajasthan,seed,seed.csv
+सीड ड्रिल मशीन का किराया कितना है,machinery,machinery.csv
+राजस्थान कृषि विभाग की योजनाओं की जानकारी दो,government,government.csv
+सौंफ की खेती कब और कैसे करें?,crop,crop.csv
+मराठी में बात कर सकते हो क्या,general,general.csv
+जीरे का सबसे अच्छा बीज कौन सा है,seed,seed.csv
+today wheat price in rajasthan mandi,market,market.csv
+आज अलवर मंडी में क्या भाव है,market,market.csv
+म्हारे खेत री मिट्टी में नमी कम है के करूं?,soil,soil.csv
+मेरी मिर्च में फाइटोफ्थोरा ब्लाइट है क्या करूं?,disease,disease.csv
+लू चलने से फसल को कैसे बचाएं,weather,weather.csv
+aaj barish hogi to harvesting ruk jayegi kya,weather,weather.csv
+मूंगफली में सिंचाई कब करें,irrigation,irrigation.csv
+मिर्च के फल सड़ रहे हैं कौन सी बीमारी है?,disease,disease.csv
+बीज उपचार के लिए थीरम का उपयोग कैसे करें,seed,seed.csv
+fertilizer application method kya hona chahiye?,fertilizer,fertilizer.csv
+"म्हारे खेत री मिट्टी में सल्फर री कमी है, के डालूं?",soil,soil.json
+app mein available languages kaun kaun si hain,general,general.csv
+मेरे खेत में पिछले साल अरहर थी अब क्या बोऊं?,crop,crop.csv
+rotavator kaise use karte hain,machinery,machinery.csv
+क्या इस ऐप में कोई सब्सक्रिप्शन है,general,general.csv
+kitne hp ka tractor mujhe chahiye mere khet ke liye,machinery,machinery.csv
+मेरे खेत में पिछले साल जौ था अब क्या बोऊं?,crop,crop.csv
+आज बादल छाए रहेंगे क्या,weather,weather.csv
+neem coated urea kya hota hai aur kab dena chahiye?,fertilizer,fertilizer.csv
+मेरे खेत में मिट्टी का रंग काला क्यों है?,soil,soil.csv
+germination test karne ka tarika kya hai,seed,seed.csv
+गेहूं का भाव msp से ज्यादा है क्या आज,market,market.csv
+मेरी फसल बाढ़ में खराब हुई मुआवजा कैसे मिलेगा,government,government.csv
+फसल में पानी कम देने से क्या होता है,irrigation,irrigation.csv
+jai hind bhai good evening,greeting,greeting.csv
+मेरी गेहूं में करनाल बंट रोग आ गया है,disease,disease.csv
+पाला पड़ने की संभावना है क्या इस हफ्ते,weather,weather.csv
+"मेरे खेत में नाइट्रोजन की कमी है, पत्ते पीले हो रहे हैं",soil,soil.json
+app ka menu kahan hai,general,general.csv
+खम्मा घणी भाई फसल बीमा पूछना था,greeting,greeting.csv
+क्या यह ऐप सभी किसानों के लिए है,general,general.csv
+pragati ai se kheti mein kya badlaav aayega,general,general.csv
+tomato ka aaj ka market rate kya hai,market,market.csv
+drip irrigation mein filter kaise saaf karein,irrigation,irrigation.csv
+khet mein aag lag gayi hai turant help chahiye,emergency,emergency.csv
+म्हारी फसल में बोरोन री कमी है के डालूं?,fertilizer,fertilizer.csv
+मेरे खेत में पिछले साल कपास था अब क्या बोऊं?,crop,crop.csv
+सिंचाई के लिए सरकारी योजना कौन सी है,irrigation,irrigation.csv
+internet nahi hai to app chalega kya,general,general.csv
+micronutrient deficiency kaise pahchanen aur theek karein?,soil,soil.csv
+solar pump machine khet mein kaise lagayein,machinery,machinery.csv
+beej kharidne se pehle kya check karein,seed,seed.csv
+मेरी जमीन काली मिट्टी की है कौन सी फसल उगाऊं?,crop,crop.csv
+hi bhai pranam ji,greeting,greeting.csv
+thiram se seed treatment kaise karein,seed,seed.csv
+drone sprayer se pesticide spray kaise karein,machinery,machinery.csv
+कम बारिश में सिंचाई कैसे करें,irrigation,irrigation.csv
+sprinkler set subsidy rajasthan apply kaise karein,government,government.csv
+फसल बीमा क्लेम रिजेक्ट हो गया क्या करूं,government,government.csv
+मेरी गेहूं में ब्राउन रस्ट रोग आ गया है,disease,disease.csv
+भाई म्हारी चना री फसल में जड़ सड़न लाग री है,disease,disease.csv
+hi ji jai hind jai bharat,greeting,greeting.csv
+suprabhat ji,greeting,greeting.csv
+नमस्ते जी jai hind,greeting,greeting.csv
+मूंगफली का बीज कहां से मिलेगा,seed,seed.csv
+tomato ke patte curl ho rahe hain kya bimari hai?,disease,disease.csv
+"म्हारे खेत री मिट्टी चिकनी है, पाणी नहीं सोखती",soil,soil.json
+मेरे खेत के लिए कौन सी मशीन सही रहेगी,machinery,machinery.csv
+मौसम की जानकारी कहां से मिलेगी,weather,weather.csv
+म्हारी मक्का री फसल में यूरिया कद डालणो चाहिए?,fertilizer,fertilizer.csv
+खेत का नक्शा कैसे जोड़ें,general,general.csv
+virus fasal mein fail gaya hai emergency pesticide batao,emergency,emergency.csv
+government scheme application status check online,government,government.csv
+sprayer machine price kitni hai market mein,machinery,machinery.csv
+जौ की बुवाई का सही समय बताओ,crop,crop.csv
+heat wave alert hai kya mere area mein,weather,weather.csv
+irrigation ke liye government loan kaise milega,irrigation,irrigation.csv
+lू चलने से फसल को कैसे बचाएं,weather,weather.json
+drip irrigation kaise lagaye khet mein,irrigation,irrigation.csv
+government yojana ke liye documents kya chahiye,government,government.csv
+भाई म्हारे खेत में कौन सी फसल बोवां जो गर्मी में भी हो जावे?,crop,crop.csv
+seed packet mein kya kya information hoti hai,seed,seed.csv
+बारिश के बाद खाद डालना सही है क्या,weather,weather.csv
+टमाटर के पत्ते पीले पड़ रहे हैं कोई दवाई बताओ,disease,disease.csv
+कस्टम हायरिंग सेंटर क्या होता है,machinery,machinery.csv
+किसान क्रेडिट कार्ड से खाद बीज खरीद सकते हैं क्या,government,government.csv
+कपास में गुलाबी सुंडी का बहुत बड़ा हमला है,emergency,emergency.csv
+बोरवेल बंद हो गया फसल को पानी नहीं मिल रहा,emergency,emergency.csv
+krishi yantra mela kab lagega rajasthan mein,machinery,machinery.csv
+gram seed variety rajasthan ke liye best kaunsi hai,seed,seed.csv
+क्या ऐप हरियाणवी में भी काम करता है,general,general.csv
+aaj wind chill kitna hai,weather,weather.csv
+"मेरे खेत में पिछले साल जीरा था, अब क्या बोऊं?",crop,crop.json
+drip irrigation subsidy ke liye apply kaise karein,government,government.csv
+मेरी मक्का में तना छेदक कीड़ा लग गया है,disease,disease.csv
+मेरी फसल में नैनो यूरिया का छिड़काव कब करें?,fertilizer,fertilizer.csv
+"sandy soil mein paani jaldi nikal jaata hai, kya karein?",soil,soil.json
+khamma ghani sa bhai khet mein kya chal raha hai,greeting,greeting.csv
+आलू की फसल रात भर में काली पड़ गई,emergency,emergency.csv
+aaj raat minimum temperature kitna hoga,weather,weather.csv
+reaper machine se fasal katai kaise karein,machinery,machinery.csv
+"tomato mein damping off ho rahi hai, seedlings mar rahi hain",disease,disease.json
+फसल बीमा योजना में ऑनलाइन आवेदन कैसे करें,government,government.csv
+"म्हारी गेहूं री फसल में लूज स्मट लाग री है, के करूं?",disease,disease.json
+कल का तापमान कितना रहेगा,weather,weather.csv
+आज हवा की गति कितनी है,weather,weather.csv
+good night bhai,greeting,greeting.csv
+how to switch language to english in app,general,general.csv
+cold wave alert rajasthan mein hai kya,weather,weather.csv
+"chilli mein thrips ka attack ho gaya hai, kya karein?",disease,disease.json
+jai shri ram bhai aaj ka din shubh ho,greeting,greeting.csv
+jai hind bhai aaj ka mausam kaisa rahega,greeting,greeting.csv
+seed sowing se pehle khet taiyar karne ka tarika,seed,seed.csv
+humidity kitni hai aaj khet mein spray ke liye,weather,weather.csv
+vermicompost ka dose per bigha kya hona chahiye?,fertilizer,fertilizer.csv
+मेरे खेत में मिट्टी का ph कम करने के लिए क्या डालें?,soil,soil.csv
+मेरी मूंग की फसल में पत्ती मोड़क रोग है,disease,disease.csv
+jai mata di,greeting,greeting.csv
+kharif mein kaunsi dal ki fasal best hai?,crop,crop.csv
+धान की रोपाई के बाद कितना पानी दें,irrigation,irrigation.csv
+कम पानी में कौन सी फसल उगाएं,irrigation,irrigation.csv
+मेरे खेत में पिछले साल ज्वार था अब क्या बोऊं?,crop,crop.csv
+पानी बचाने के लिए कौन सी सिंचाई विधि अच्छी है,irrigation,irrigation.csv
+आज दवाई छिड़काव करना सही है क्या,weather,weather.csv
+fertilizer deficiency emergency paudhe mar rahe hain,emergency,emergency.csv
+app baar baar crash ho raha hai,general,general.csv
+ram ram bhai khamma ghani sa,greeting,greeting.csv
+म्हारी मिट्टी री उर्वरता कैसे बढ़ाऊं?,soil,soil.csv
+बीज की बुवाई गहराई कितनी होनी चाहिए,seed,seed.csv
+"म्हारे खेत में रेतीली मिट्टी है, कांई बोवां?",crop,crop.json
+soil erosion rokne ke liye kya karein?,soil,soil.csv
+seed treatment ke liye kya use karein,seed,seed.csv
+मेरी फसल का सही दाम कैसे पता करूं,market,market.csv
+मेरे खेत का सॉइल हेल्थ कार्ड नहीं बना है क्या करूं,government,government.csv
+म्हारे खेत में फेरस सल्फेट कद डालणो चाहिए?,fertilizer,fertilizer.csv
+gehu ka beej kitne saal tak store kar sakte hain,seed,seed.csv
+"म्हारी फसल में बोरोन री कमी है, के डालूं?",fertilizer,fertilizer.json
+seed storage mein keede na lage iske liye kya karein,seed,seed.csv
+kcc ke liye eligibility kya hai,government,government.csv
+मेरे खेत में सिंचाई नहर से पानी मिलता है कौन सी फसल बोऊं?,crop,crop.csv
+harvester machine booking kab karni chahiye,machinery,machinery.csv
+स्प्रेयर नोजल बंद हो गई है क्या करूं,machinery,machinery.csv
+मेरे खेत में टमाटर की फसल में फंगस लग गई है,disease,disease.csv
+मेरे खेत में dap की मात्रा कितनी डालूं?,fertilizer,fertilizer.csv
+प्याज के पत्ते मुड़ रहे हैं और पीले हो रहे हैं,disease,disease.csv
+ट्रैक्टर खरीदने के लिए लोन कैसे मिलेगा,machinery,machinery.csv
+chittorgarh mandi maize rate today,market,market.csv
+मेरी अरहर में विल्ट रोग आ गया है क्या करूं?,disease,disease.csv
+hello bhai shubh prabhat,greeting,greeting.csv
+टमाटर की पूरी फसल में लेट ब्लाइट फैल गई है,emergency,emergency.csv
+namaste ji jai shri ram,greeting,greeting.csv
+राम राम भाई प्रणाम,greeting,greeting.csv
+kal subah pala padne ki sambhavna hai kya,weather,weather.csv
+ट्रैक्टर की बैटरी खराब हो गई है,machinery,machinery.csv
+paani ki kami mein gehu ki kheti ho sakti hai kya,irrigation,irrigation.csv
+which crop is best for drip irrigation?,crop,crop.csv
+स्प्रेयर मशीन खरीदने में कितना खर्च आएगा,machinery,machinery.csv
+किसान सम्मान निधि का पैसा नहीं आया शिकायत कहां करें,government,government.csv
+light mode kaise enable karein app mein,general,general.csv
+भाई म्हारे खेत में कौन सी फसल बोवां जो मेडिसिनल हो?,crop,crop.csv
+pranam bhai,greeting,greeting.csv
+मेरे खेत के लिए कितने hp का ट्रैक्टर चाहिए,machinery,machinery.csv
+इस हफ्ते बारिश का अनुमान है क्या,weather,weather.csv
+आज चित्तौड़गढ़ मंडी में मक्का का भाव,market,market.csv
+मेरे खेत में आग लगी है फसल जल रही है,emergency,emergency.csv
+"म्हारे खेत में पिछले साल बाजरा था, अब कांई बोवां?",crop,crop.json
+म्हारे खेत में फर्टिगेशन से कौन सी खाद दे सकते हैं?,fertilizer,fertilizer.csv
+भाई म्हारे खेत में कौन सी फसल बोवां जो बाजार में अच्छे दाम मिलें?,crop,crop.csv
+मंडी भाव ऑनलाइन कैसे देखें,market,market.csv
+ट्रैक्टर का डीजल ज्यादा खर्च हो रहा है क्यों,machinery,machinery.csv
+क्या आज बाहर काम करना सुरक्षित है,weather,weather.csv
+what is the best irrigation method for sandy soil,irrigation,irrigation.csv
+kcc banwane ke liye kahan jaana padega,government,government.csv
+बारिश कब होगी इस महीने,weather,weather.csv
+कंबाइन हार्वेस्टर का किराया कितना है,machinery,machinery.csv
+is hafte mausam kaisa rahega kheti ke liye,weather,weather.csv
+मेरे बोरवेल का पानी खारा है क्या करूं,irrigation,irrigation.csv
+tomato mein mosaic virus ke symptoms dikh rahe hain,disease,disease.csv
+pm किसान योजना की जानकारी दो,government,government.csv
+राम राम ताऊ जी,greeting,greeting.csv
+best mandi to sell wheat in rajasthan,market,market.csv
+ग्वार का उन्नत बीज कौन सा है,seed,seed.csv
+combine harvester charges per bigha rajasthan mein,machinery,machinery.csv
+मेरे खेत में कपास के लिए खाद की सिफारिश बताओ,fertilizer,fertilizer.csv
+"मेरे खेत में ऊसर जमीन है, कौन सी फसल उगाऊं?",crop,crop.json
+"मेरी मिट्टी में कैल्शियम की कमी है, क्या करूं?",soil,soil.json
+manganese sulphate ka dose kya hai?,fertilizer,fertilizer.csv
+good evening bhai aaj mandi mein kya bhav hai,greeting,greeting.csv
+hailstorm destroyed everything compensation kaise milega,emergency,emergency.csv
+मेरी मक्का में मेडिस लीफ ब्लाइट रोग है,disease,disease.csv
+सरसों का आज का रेट बताओ,market,market.csv
+sesame price today rajasthan mandi,market,market.csv
+ईसबगोल की खेती कब और कैसे करें?,crop,crop.csv
+fenugreek seed price today mandi,market,market.csv
+iron deficiency in soil kaise pahchanen?,soil,soil.csv
+groundnut mein tikka disease ho gayi hai kya karein?,disease,disease.csv
+ऐप की सेटिंग कैसे खोलें,general,general.csv
+saari pattiyaan ek raat mein gir gayi kya hua,emergency,emergency.csv
+heavy clay soil ko kaise halka karein?,soil,soil.csv
+मेरे खेत में पिछले साल तिल था अब क्या बोऊं?,crop,crop.csv
+soil health card camp kab lagega mere gaon mein,government,government.csv
+मौसम विभाग का अलर्ट क्या है आज,weather,weather.csv
+stem rot emergency fasal gir rahi hai turant upay batao,emergency,emergency.csv
+soil microbes kaise badhayein?,soil,soil.csv
+borewell band ho gaya fasal ko paani nahi mil raha,emergency,emergency.csv
+मूंग की खेती कब और कैसे करें?,crop,crop.csv
+jaipur mandi mein aaj gehu ka bhav,market,market.csv
+मेरी कपास में बोल वीविल का प्रकोप है,disease,disease.csv
+चना बोने का सही समय और तरीका बताओ,crop,crop.csv
+म्हारी फसल में पोटेशियम सल्फेट कद डालणो चाहिए?,fertilizer,fertilizer.csv
+भाई म्हारे खेत में कौन सी फसल बोवां जो सूखे में भी हो जावे?,crop,crop.csv
+पीएम किसान में मोबाइल नंबर कैसे बदलें,government,government.csv
+krishi yantra subsidy ke liye apply kaise karein,machinery,machinery.csv
+jai shri krishna,greeting,greeting.csv
+coriander seed sowing time kya hai,seed,seed.csv
+जीरे की खेती कब और कैसे करें?,crop,crop.csv
+मेरी मक्का में डाउनी मिल्ड्यू रोग है,disease,disease.csv
+फसल बीमा का पैसा कब मिलेगा,government,government.csv
+मेरे खेत की मिट्टी में नमक की मात्रा ज्यादा है,soil,soil.csv
+म्हारी मिट्टी में ह्यूमस कैसे बढ़ाऊं?,soil,soil.csv
+सरकारी योजनाओं की लिस्ट कहां है,general,general.csv
+crop is completely yellow and dying urgent help needed,emergency,emergency.csv
+flood damaged crop compensation kaise milega,government,government.csv
+मंडी में भाव गिर रहा है क्या इस हफ्ते,market,market.csv
+कृषि यंत्र किराए पर कहां मिलेंगे,machinery,machinery.csv
+मेरे खेत की मिट्टी में पानी जल्दी सूख जाता है,irrigation,irrigation.csv
+fall armyworm ne poori maize fasal kha li hai,emergency,emergency.csv
+मेरे खेत में पिछले साल मूंगफली थी अब क्या बोऊं?,crop,crop.csv
+म्हारे खेत में पिछले साल चना था अब कांई बोवां?,crop,crop.csv
+root rot emergency hai meri fasal bachao,emergency,emergency.csv
+new agriculture scheme rajasthan 2024 kya hai,government,government.csv
+म्हारी मिट्टी में सल्फर री कमी है के उपाय करूं?,soil,soil.csv
+ओलावृष्टि से पूरी फसल नष्ट हो गई मुआवजा कैसे मिलेगा,emergency,emergency.csv
+गेहूं का msp कितना है 2024 में,market,market.csv
+म्हारी मिट्टी में जिंक री कमी है जिंक सल्फेट कितनो डालूं?,fertilizer,fertilizer.csv
+म्हारी गेहूं री फसल में लूज स्मट लाग री है के करूं?,disease,disease.csv
+aphid attack bahut bada hai sarson mein turant spray batao,emergency,emergency.csv
+rabi crops ke liye certified seed kahan milega,seed,seed.csv
+"मेरी मिट्टी बहुत अम्लीय है, कैसे सुधारूं?",soil,soil.json
+फसल पीली पड़ रही है और मर रही है तुरंत बताओ,emergency,emergency.csv
+किसान आईडी कैसे बनाएं,general,general.csv
+hello bhai jai bajrang bali,greeting,greeting.csv
+किसान क्रेडिट कार्ड से कितना लोन मिलता है,government,government.csv
+chana mein botrytis grey mold disease hai,disease,disease.csv
+रबी फसलों के लिए उन्नत बीज कौन से हैं,seed,seed.csv
+mandi commission charge kitna hota hai,market,market.csv
+"मेरे खेत में पिछले साल जौ था, अब क्या बोऊं?",crop,crop.json
+म्हारे खेत री मिट्टी में बोरोन री कमी है,soil,soil.csv
+कृषि यंत्र मेले में कौन सी मशीनें मिलती हैं,machinery,machinery.csv
+pm kisan last date for registration kya hai,government,government.csv
+jai hind bhai khamma ghani,greeting,greeting.csv
+is saal sardi jaldi aayegi kya,weather,weather.csv
+battery sprayer vs petrol sprayer kaunsa better hai,machinery,machinery.csv
+सूखे से फसल मर रही है पानी नहीं है,emergency,emergency.csv
+mujhe is app ki jankari do,general,general.csv
+मेरे नजदीक कौन सी मंडी है,market,market.csv
+hi bhai jai shri krishna,greeting,greeting.csv
+मेरे खेत में पानी जमा हो जाता है क्या करूं,irrigation,irrigation.csv
+मेरी फसल को तुरंत बचाना है क्या करूं,emergency,emergency.csv
+khet mein paani bhar gaya hai kya karein,irrigation,irrigation.csv
+राजस्थान में नई कृषि योजना 2024 कौन सी है,government,government.csv
+कौन सी बीज कंपनी सबसे अच्छी है,seed,seed.csv
+म्हारी मिट्टी में नाइट्रोजन री कमी है पत्ते पीले हो रहे हैं,soil,soil.csv
+power tiller vs tractor kaunsa sasta padega,machinery,machinery.csv
+khamma ghani ji namaskar,greeting,greeting.csv
+tomato mein root knot nematode ka attack hai,disease,disease.csv
+pink bollworm emergency in cotton crop please help,emergency,emergency.csv
+new wheat variety 2024 rajasthan ke liye,seed,seed.csv
+भाई म्हारे खेत में कौन सी फसल बोवां जो कम पाणी में हो जावे?,crop,crop.csv
+"म्हारी फसल में सल्फर री कमी है, के डालूं?",fertilizer,fertilizer.json
+camera se fasal ki jaanch kaise karein,general,general.csv
+मेरे खेत की मिट्टी बहुत सख्त हो गई है कैसे सुधारूं?,soil,soil.csv
+"rice mein blast disease ho gayi hai, kya spray karein?",disease,disease.json
+soil health card kaise banwayein,government,government.csv
+बाजरे का उन्नत बीज कौन सा है राजस्थान में,seed,seed.csv
+म्हारे खेत री मिट्टी में जिप्सम डालने से के फायदो होसी?,soil,soil.csv
+मेरे खेत में हरी खाद कैसे डालें?,soil,soil.csv
+मसूर की बुवाई का सही समय बताओ,crop,crop.csv
+मेरी मूंगफली में टिक्का रोग के लिए क्या स्प्रे करूं?,disease,disease.csv
+फसल की तस्वीर खींचकर कैसे भेजें,general,general.csv
+म्हारे खेत में रेतीली मिट्टी है कांई बोवां?,crop,crop.csv
+is week barish hogi kya mere gaon mein,weather,weather.csv
+virus outbreak ho gaya hai khet mein kya karein,emergency,emergency.csv
+wild boar attacked my crop last night total loss,emergency,emergency.csv
+फसल में फंगस इतनी तेजी से फैल रही है कि रोक नहीं पा रहा,emergency,emergency.csv
+ओले पड़ने से पूरी फसल नष्ट हो गई,emergency,emergency.csv
+म्हारी सरसों में npk खाद कितनी डालूं?,fertilizer,fertilizer.csv
+मेरे खेत में मिट्टी में जैव विविधता कैसे बढ़ाऊं?,soil,soil.csv
+cold wave se fasal ko kaise bachayein,weather,weather.csv
+मक्का में पानी की जरूरत कब होती है,irrigation,irrigation.csv
+emergency fertilizer recommendation chahiye abhi,emergency,emergency.csv
+borewell ka paani khaara hai kya use kar sakte hain,irrigation,irrigation.csv
+राम राम जी आज बुवाई करनी है,greeting,greeting.csv
+कल्टीवेटर से खेत जोतने का तरीका बताओ,machinery,machinery.csv
+कम पानी में अधिक उत्पादन कैसे लें,irrigation,irrigation.csv
+सरसों के लिए कौन सा हाइब्रिड बीज अच्छा है,seed,seed.csv
+मेरे खेत में मिट्टी की उर्वरता बनाए रखने के लिए क्या करूं?,soil,soil.csv
+मंडी में भाव बढ़ेगा या घटेगा इस हफ्ते,market,market.csv
+"मेरी फसल में मैग्नीशियम की कमी है, क्या करूं?",fertilizer,fertilizer.json
+sprayer nozzle band ho gayi hai kaise theek karein,machinery,machinery.csv
+is mahine mein kitni barish hogi,weather,weather.csv
+"bhindi mein yellow vein mosaic virus hai, kya karein?",disease,disease.json
+mandi mein fasal kaise bechein step by step,market,market.csv
+pest attack bahut zyada ho gaya hai turant spray batao,emergency,emergency.csv
+hi pragati ai aaj kya kaam aayega,greeting,greeting.csv
+सरकारी योजना का स्टेटस ऑनलाइन कैसे चेक करें,government,government.csv
+हेल्पलाइन नंबर क्या है,general,general.csv
+मेरे खेत के लिए कौन सा बीज सही रहेगा,seed,seed.csv
+disease spreading very fast in my field help me now,emergency,emergency.csv
+मेरे खेत में मिट्टी में पानी जमा रहता है क्या करूं?,soil,soil.csv
+best seed company in india for wheat,seed,seed.csv
+मिर्च का अच्छा बीज कौन सा है,seed,seed.csv
+multi crop thresher kya hota hai aur kaise use karein,machinery,machinery.csv
+tell me about this app features,general,general.csv
+मेरे खेत में जिंक सल्फेट कब और कैसे डालें?,fertilizer,fertilizer.csv
+mustard mein fertilizer schedule kya hona chahiye?,fertilizer,fertilizer.csv
+"मुझे अच्छा मुनाफा चाहिए, कौन सी फसल बोऊं?",crop,crop.json
+ठंड कब से शुरू होगी इस साल,weather,weather.csv
+what is the weather like tomorrow morning,weather,weather.csv
+best crop for sandy soil in rajasthan?,crop,crop.csv
+fungus spreading uncontrollably in my field emergency,emergency,emergency.csv
+is app mein koi paid subscription hai kya,general,general.csv
+मेरे खेत में मिट्टी परीक्षण की रिपोर्ट में oc कम है,soil,soil.csv
+मेरे खेत में जैविक खाद कितनी डालें?,fertilizer,fertilizer.csv
+guar gum price today mandi mein,market,market.csv
+ऐप में अपना खेत कैसे जोड़ें,general,general.csv
+everything is lost in my field sos please help,emergency,emergency.csv
+आज श्रीगंगानगर मंडी में नरमा का भाव,market,market.csv
+किसान कर्ज माफी योजना राजस्थान में है क्या,government,government.csv
+"मेरे खेत में पिछले साल मूंग था, अब क्या बोऊं?",crop,crop.json
+बीज को घर पर कैसे स्टोर करें,seed,seed.csv
+ओलावृष्टि की चेतावनी है क्या,weather,weather.csv
+high ec soil mein kya karein?,soil,soil.csv
+"cotton mein boll rot ho rahi hai, kya karein?",disease,disease.json
+म्हारे खेत री मिट्टी में मैंगनीज री कमी है,soil,soil.csv
+मेरे खेत में पिछले साल धनिया था अब क्या बोऊं?,crop,crop.csv
+soil moisture check karne ka tarika kya hai,irrigation,irrigation.csv
+मेरी फसल में आयरन की कमी है क्या डालूं?,fertilizer,fertilizer.csv
+म्हारी गेहूं री फसल में खाद री मात्रा बताओ,fertilizer,fertilizer.csv
+jai hind bhai jai shri ram,greeting,greeting.csv
+root rot se paudhe gir rahe hain emergency hai,emergency,emergency.csv
+kharif season mein kaunsi fasal best hai?,crop,crop.csv
+कल सुबह तापमान कितना रहेगा,weather,weather.csv
+aaj bajra ka mandi bhav kya hai,market,market.csv
+मंडी में ऑनलाइन बिक्री कैसे करें,market,market.csv
+कपास का हाइब्रिड बीज कौन सा अच्छा है,seed,seed.csv
+मेरे खेत में मिट्टी में कार्बनिक पदार्थ कैसे बढ़ाऊं?,soil,soil.csv
+मेरे खेत में बाढ़ सिंचाई से पानी बर्बाद होता है,irrigation,irrigation.csv
+रोटावेटर की गहराई कितनी रखें,machinery,machinery.csv
+मेरे खेत में बैंगन की फसल में लिटिल लीफ रोग है,disease,disease.csv
+nano urea spray kaise karein aur kitni matra mein?,fertilizer,fertilizer.csv
+soil structure improve karne ke liye kya karein?,soil,soil.csv
+बाजरे में कितने पानी की जरूरत होती है,irrigation,irrigation.csv
+मूंग का बीज कब बोएं राजस्थान में,seed,seed.csv
+मेरे खेत में पानी की लाइन नहीं है क्या करूं,irrigation,irrigation.csv
+npk deficiency ke symptoms kya hote hain?,soil,soil.csv
+गेहूं में पहली सिंचाई कब करें,irrigation,irrigation.csv
+"मेरे खेत में पिछले साल ईसबगोल था, अब क्या बोऊं?",crop,crop.json
+gehu ka certified seed kahan milega,seed,seed.csv
+khamma ghani bhai jai shri ram,greeting,greeting.csv
+pm kisan correction kaise karein online,government,government.csv
+hello bhai radhe radhe,greeting,greeting.csv
+आज उड़द का भाव क्या है,market,market.csv
+सरसों की फसल को कितना पानी चाहिए,irrigation,irrigation.csv
+भाई म्हारे खेत में कौन सी औषधीय फसल बोवां?,crop,crop.csv
+ग्रीष्मकालीन फसलें कौन सी हैं?,crop,crop.csv
+kaunsi fasal mein sabse zyada munafa hai?,crop,crop.csv
+moong price forecast this season kya hai,market,market.csv
+tractor mein diesel zyada kyun lag raha hai,machinery,machinery.csv
+kaunsi fasal mein sabse kam paani lagta hai?,crop,crop.csv
+today weather forecast for my village,weather,weather.csv
+आज बाजरे का भाव क्या है मंडी में,market,market.csv
+rotavator chain toot gayi hai kaise theek karein,machinery,machinery.csv
+मेथी की कटाई कब करनी चाहिए?,crop,crop.csv
+मेरी पूरी फसल खराब हो गई,emergency,emergency.csv
+apni fasal ka sahi rate kaise pata karein,market,market.csv
+neelgai ne mera poora khet barbad kar diya,emergency,emergency.csv
+guar seed variety rajasthan ke liye best,seed,seed.csv
+animals destroyed my crop overnight total loss,emergency,emergency.csv
+मेरा ट्रैक्टर खराब हो गया है क्या करूं,machinery,machinery.csv
+can you help me with farming,general,general.csv
+cotton mein fusarium wilt disease aa gayi hai,disease,disease.csv
+all leaves turned yellow suddenly urgent help needed,emergency,emergency.csv
+barish ka pani fasal ke liye achha hai kya,weather,weather.csv
+बाढ़ आ गई है खेत में पानी भर गया,emergency,emergency.csv
+मेरे बोरवेल में पानी कम हो गया है,irrigation,irrigation.csv
+"म्हारे खेत री मिट्टी में जिंक री कमी है, के करूं?",soil,soil.json
+disease photo kaise bhejein ai ko,general,general.csv
+म्हारे खेत री मिट्टी चिकनी है पाणी नहीं सोखती,soil,soil.csv
+म्हारे खेत री मिट्टी में जिंक री कमी है के करूं?,soil,soil.csv
+wheat crop insurance premium kitna hoga,government,government.csv
+मेरे खेत में पिछले साल सूरजमुखी था अब क्या बोऊं?,crop,crop.csv
+"मेरी मिट्टी में माइक्रोन्यूट्रिएंट्स की कमी है, क्या करूं?",soil,soil.json
+नमस्ते दादा जी,greeting,greeting.csv
+आज बीकानेर मंडी में मूंग का भाव,market,market.csv
+pmfby online registration process kya hai,government,government.csv
+मेरे खेत में मैंगनीज सल्फेट कब और कितना डालें?,fertilizer,fertilizer.csv
+मेरे खेत की मिट्टी में नमक ज्यादा है कौन सी फसल उगाऊं?,crop,crop.csv
+मेरे खेत में मिट्टी में सूक्ष्म जीवाणु कैसे बढ़ाऊं?,soil,soil.csv
+राजस्थान में मिनी ट्रैक्टर पर सब्सिडी है क्या,government,government.csv
+tractor subsidy rajasthan mein kaise milegi,machinery,machinery.csv
+aaj ka mandi rate app mein kahan hai,general,general.csv
+मेरी प्याज की फसल में पर्पल ब्लॉच रोग है,disease,disease.csv
+म्हारी फसल में गोबर खाद कद डालणो चाहिए?,fertilizer,fertilizer.csv
+ट्रैक्टर का टायर पंचर हो गया है,machinery,machinery.csv
+shubh prabhat bhai sahab,greeting,greeting.csv
+म्हारी फसल में रात को जानवर घुस गए सब खा गए,emergency,emergency.csv
+namaste pragati bhai kaise ho,greeting,greeting.csv
+मुझे अच्छा मुनाफा चाहिए कौन सी फसल बोऊं?,crop,crop.csv
+मेरी मिट्टी का ph बहुत ज्यादा है कैसे कम करूं?,soil,soil.csv
+tractor battery kharab ho gayi hai kya karein,machinery,machinery.csv
+जड़ें सड़ रही हैं पूरी फसल गिर रही है,emergency,emergency.csv
+drip irrigation subsidy rajasthan mein milti hai kya,irrigation,irrigation.csv
+इस ऐप में कितने सेक्शन हैं,general,general.csv
+मेरी मक्का में फॉल आर्मीवर्म कीड़ा लग गया है,disease,disease.csv
+किसान क्रेडिट कार्ड बनवाने में कितना समय लगता है,government,government.csv
+which company developed pragati ai,general,general.csv
+mandi bhav mein utaar chadhav kyun hota hai,market,market.csv
+बारिश का मौसम कब तक रहेगा,weather,weather.csv
+म्हारे खेत में बाजरे के लिए खाद की मात्रा बताओ,fertilizer,fertilizer.csv
+ajmer mandi sarson rate today,market,market.csv
+म्हारी फसल में dap कद डालणो चाहिए?,fertilizer,fertilizer.csv
+frost warning kya hai aaj raat ke liye,weather,weather.csv
+म्हारे खेत री मिट्टी में कॉपर री कमी है,soil,soil.csv
+new hybrid mustard variety 2024 kaunsi hai,seed,seed.csv
+मेरी फसल पीली पड़ रही है पानी की कमी से,irrigation,irrigation.csv
+jowar ki harvesting kab karni chahiye?,crop,crop.csv
+कपास में पानी देने का सही तरीका क्या है,irrigation,irrigation.csv
+pm kisan complaint kaise darj karein,government,government.csv
+cotton mein fertilizer schedule kya hona chahiye?,fertilizer,fertilizer.csv
+मंडी में फसल बेचने पर कमीशन कितना लगता है,market,market.csv
+tomato mein septoria leaf spot disease hai,disease,disease.csv
+मेरे खेत में पिछले साल उड़द था अब क्या बोऊं?,crop,crop.csv
+ammonium sulphate fertilizer kab dena chahiye?,fertilizer,fertilizer.csv
+आज का मंडी भाव कहां देखें,general,general.csv
+ऐप में लाइट मोड कैसे करें,general,general.csv
+ट्रैक्टर का इंजन ऑयल कब बदलें,machinery,machinery.csv
+म्हारे खेत में नीम कोटेड यूरिया कद डालणो चाहिए?,fertilizer,fertilizer.csv
+जैविक बीज कहां से मिलेगा,seed,seed.csv
+क्या आज ओले पड़ेंगे,weather,weather.csv
+online mandi se fasal kaise bechein,market,market.csv
+नमस्ते जी आज खाद डालनी है,greeting,greeting.csv
+भाई म्हारी गेहूं री फसल में पीला रतुआ लाग रयो है,disease,disease.csv
+नमस्ते जी मेरी फसल में बीमारी लग गई है,greeting,greeting.csv
+बीज बोने से पहले खेत कैसे तैयार करें,seed,seed.csv
+आज सोयाबीन का भाव क्या है,market,market.csv
+मेरे खेत में मिट्टी की परत सख्त हो गई है,soil,soil.csv
+soil test kitne saal mein ek baar karwana chahiye?,soil,soil.csv
+मेरे खेत में पिछले साल ईसबगोल था अब क्या बोऊं?,crop,crop.csv
+जवाब गलत आया तो क्या करूं,general,general.csv
+म्हारी मिट्टी में पानी सोखने की क्षमता कम है,soil,soil.csv
+ड्रिप सिस्टम में पाइप बंद हो गई है क्या करूं,irrigation,irrigation.csv
+drought se meri fasal khatam ho rahi hai,emergency,emergency.csv
+बीज की नमी कितनी होनी चाहिए भंडारण के लिए,seed,seed.csv
+"म्हारी मिट्टी में नाइट्रोजन री कमी है, पत्ते पीले हो रहे हैं",soil,soil.json
+good evening ji jai hind,greeting,greeting.csv
+which crop is best for loamy soil?,crop,crop.csv
+म्हारे खेत में खाद कम डालने से के होसी?,fertilizer,fertilizer.csv
+वायरस फैल गया है पूरे खेत में तुरंत उपाय बताओ,emergency,emergency.csv
+"chana mein wilt disease aa gayi hai, upay batao",disease,disease.json
+सरकारी लोन पर ब्याज दर कितनी है,government,government.csv
+helpline number kya hai pragati ai ka,general,general.csv
+ऐप का नया वर्जन कब आएगा,general,general.csv
+"मेरे खेत में काली मिट्टी है, इसमें कौन सी फसल अच्छी होगी?",soil,soil.json
+kcc se khad aur beej kharid sakte hain kya,government,government.csv
+"chilli mein bacterial wilt ho gayi hai, upay batao",disease,disease.json
+hailstorm se meri poori fasal barbad ho gayi,emergency,emergency.csv
+soil health card kya hota hai aur kaise milega?,soil,soil.csv
+drip irrigation se kitne percent paani bachta hai,irrigation,irrigation.csv
+गेहूं में पानी कब देना चाहिए,irrigation,irrigation.csv
+म्हारी कपास री फसल में गुलाबी सुंडी लाग री है,disease,disease.csv
+"मेरी फसल में पोटाश की कमी है, कितना डालूं?",fertilizer,fertilizer.json
+गर्मी में सब्जियों को दिन में कितनी बार पानी दें,irrigation,irrigation.csv
+गेहूं की बुवाई में बीज दर कितनी रखें,seed,seed.csv
+play store mein pragati ai kaise dhundhein,general,general.csv
+मंडी में बिक्री के लिए रजिस्ट्रेशन कैसे करें,market,market.csv
+किसान सम्मान निधि में आधार लिंक कैसे करें,government,government.csv
+म्हारी फसल में कौन सी खाद सबसे पहले डालणो चाहिए?,fertilizer,fertilizer.csv
+flood irrigation aur drip irrigation mein kya fark hai,irrigation,irrigation.csv
+फसल में वायरस फैल गया है तुरंत दवाई बताओ,emergency,emergency.csv
+पीएम किसान योजना में बैंक खाता कैसे जोड़ें,government,government.csv
+kcc loan ki interest rate kya hai,government,government.csv
+बीज उपचार कैसे करें बुवाई से पहले,seed,seed.csv
+सरसों का msp 2024-25 में कितना है,market,market.csv
+बूंद बूंद सिंचाई के बारे में बताओ,irrigation,irrigation.csv
+मेरी फसल में कीड़ा लग गया है क्या करूं?,disease,disease.csv
+yeh app kaise kaam karta hai,general,general.csv
+बीज उपचार से क्या फायदा होता है,seed,seed.csv
+mandi mein achha bhav kaise milega apni fasal ka,market,market.csv
+trichoderma se seed treatment kaise karein,seed,seed.csv
+आज तापमान 40 डिग्री से ज्यादा जाएगा क्या,weather,weather.csv
+मिट्टी परीक्षण रिपोर्ट कैसे देखें,general,general.csv
+fasal ki tasveer kheenchkar kaise bhejein,general,general.csv
+ram ram bhai aaj harvesting karni hai,greeting,greeting.csv
+मिर्च में एन्थ्रेक्नोज रोग के लिए कौन सी दवाई डालें?,disease,disease.csv
+"मेरी मिट्टी का ph बहुत ज्यादा है, कैसे कम करूं?",soil,soil.json
+"मेरे खेत में मिट्टी में पानी जमा रहता है, क्या करूं?",soil,soil.json
+"मेरे खेत में पानी की अच्छी सुविधा है, कौन सी फसल ज्यादा फायदेमंद है?",crop,crop.json
+long term soil fertility kaise maintain karein?,soil,soil.csv
+नहर का पानी कब मिलेगा इस हफ्ते,irrigation,irrigation.csv
+which crop gives maximum profit in rajasthan?,crop,crop.csv
+मौसम के हिसाब से कौन सी फसल लगाएं,weather,weather.csv
+radhe radhe,greeting,greeting.csv
+gehu ki aavak aaj mandi mein kitni hai,market,market.csv
+"म्हारी टमाटर री फसल में अर्ली ब्लाइट लाग री है, के करूं?",disease,disease.json
+seed sowing depth kitni honi chahiye,seed,seed.csv
+new account banane mein problem aa rahi hai,general,general.csv
+आज धूप निकलेगी क्या,weather,weather.csv
+रोटावेटर और कल्टीवेटर में क्या फर्क है,machinery,machinery.csv
+aaj aasman saaf hai ya badal hai,weather,weather.csv
+onion mein purple blotch disease ka attack hai,disease,disease.csv
+solar pump yojana rajasthan mein kaise milega,government,government.csv
+आज मौसम कैसा रहेगा,weather,weather.csv
+मेरी फसल में अमोनियम सल्फेट का क्या फायदा है?,fertilizer,fertilizer.csv
+aaj pesticide spray ke liye mausam theek hai kya,weather,weather.csv
+best crop for saline soil in rajasthan?,crop,crop.csv
+sprinkler se paani dene ka sahi time kya hai,irrigation,irrigation.csv
+सरकारी योजना में आवेदन की अंतिम तारीख क्या है,government,government.csv
+app ki setting kaise open karein,general,general.csv
+"मेरे आलू में लेट ब्लाइट आ गई है, तुरंत उपाय बताओ",disease,disease.json
+मेरे खेत में ऊसर जमीन है कौन सी फसल उगाऊं?,crop,crop.csv
+bajra msp 2024 kya hai,market,market.csv
+sarson ka seed rate per bigha kitna hona chahiye,seed,seed.csv
+मेरे टमाटर में फ्यूजेरियम विल्ट आ गई है,disease,disease.csv
+मेरी मूंगफली में एस्परजिलस क्राउन रॉट है,disease,disease.csv
+seed bank se beej kaise milega,seed,seed.csv
+hello bhai aaj khet mein jaana hai,greeting,greeting.csv
+"मूंगफली की जड़ें सड़ रही हैं, कौन सी दवाई डालूं?",disease,disease.json
+ज्यादा पानी देने से फसल को नुकसान होता है क्या,irrigation,irrigation.csv
+मेरे खेत में पिछले साल सौंफ था अब क्या बोऊं?,crop,crop.csv
+massive pest attack on my crop urgent pesticide needed,emergency,emergency.csv
+kcc interest subvention scheme kya hai,government,government.csv
+pmfby ke liye bank mein jaana padega kya,government,government.csv
+thresher machine maintenance kaise karein,machinery,machinery.csv
+ऐप में कितनी भाषाएं उपलब्ध हैं,general,general.csv
+fasal peeli pad rahi hai aur mar rahi hai sos,emergency,emergency.csv
+मेरे खेत में पिछले साल अलसी था अब क्या बोऊं?,crop,crop.csv
+namaskar ji kaise hain aap,greeting,greeting.csv
+म्हारी मूंगफली री फसल में कॉलर रॉट लाग री है,disease,disease.csv
+good morning ji khamma ghani,greeting,greeting.csv
+"मेरे खेत की मिट्टी बहुत सख्त हो गई है, कैसे सुधारूं?",soil,soil.json
+paani dene ke baad khad dena chahiye ya pehle,irrigation,irrigation.csv
+सोयाबीन का बीज कहां से मिलेगा,seed,seed.csv
+tractor loan kaise milega bank se,machinery,machinery.csv
+मेरी मूंग में पाउडरी मिल्ड्यू रोग है दवाई बताओ,disease,disease.csv
+good evening ji aaj ki fasal kaisi rahi,greeting,greeting.csv
+सिंचाई के लिए सोलर पंप पर सब्सिडी मिलती है क्या,irrigation,irrigation.csv
+fertilizer deficiency symptoms kya hote hain?,fertilizer,fertilizer.csv
+mausam vibhag ne kya bataya aaj ke liye,weather,weather.csv
+leaf curl virus emergency meri fasal barbad ho rahi hai,emergency,emergency.csv
+jai bajrang bali,greeting,greeting.csv
+राजस्थान में ग्रीनहाउस पर सब्सिडी मिलती है क्या,government,government.csv
+फसल बीमा के लिए कौन सी फसलें कवर होती हैं,government,government.csv
+आलू में पानी देने का तरीका बताओ,irrigation,irrigation.csv
+मंडी में आज कितनी आवक है गेहूं की,market,market.csv
+cotton price today in rajasthan mandi,market,market.csv
+emergency irrigation chahiye abhi fasal sukh rahi hai,emergency,emergency.csv
+बाढ़ के पानी में खेत डूब गया फसल बचाने का उपाय बताओ,emergency,emergency.csv
+राजस्थान में इस मौसम में कौन सी फसल बोनी चाहिए?,crop,crop.csv
+फसल में पानी देने का सही तरीका क्या है,irrigation,irrigation.csv
+fasal diary feature kahan hai app mein,general,general.csv
+मेरे खेत में गोबर की खाद कितनी डालें?,fertilizer,fertilizer.csv
+म्हारे खेत में ओले पड़े और सब कुछ बर्बाद हो गया,emergency,emergency.csv
+pm kisan beneficiary status kaise check karein,government,government.csv
+horticulture subsidy rajasthan mein kaise milegi,government,government.csv
+weather alert for hailstorm in my area,weather,weather.csv
+बाजरे में सिंचाई का सही समय क्या है,irrigation,irrigation.csv
+namaste bhai soil test karwana hai,greeting,greeting.csv
+बीज बैंक क्या होता है,seed,seed.csv
+tractor engine oil change kab karna chahiye,machinery,machinery.csv
+मेरी फसल में राइजोबियम कल्चर कब और कैसे लगाएं?,fertilizer,fertilizer.csv
+chilli mein bacterial wilt ho gayi hai upay batao,disease,disease.csv
+narma cotton price today sriganganagar mandi,market,market.csv
+मेरी फसल खराब हो गई बीमा क्लेम कैसे करें,government,government.csv
+म्हारी सरसों में माहू इतना ज्यादा हो गया है कि फसल दिख नहीं रही,emergency,emergency.csv
+khamma ghani bhai mujhe madad chahiye,greeting,greeting.csv
+मेरी फसल में मैग्नीशियम की कमी है क्या करूं?,fertilizer,fertilizer.csv
+aaj spray karna sahi rahega ya nahi mausam ke hisab se,weather,weather.csv
+मक्का का हाइब्रिड बीज कौन सा लगाएं,seed,seed.csv
+मंडी में फसल का सही दाम कैसे मिलेगा,market,market.csv
+म्हारी फसल में अचानक सफेद मक्खी का हमला हो गया,emergency,emergency.csv
+मेरी जानकारी किसके साथ शेयर होती है,general,general.csv
+potato crop turned black overnight what to do urgent,emergency,emergency.csv
+ram ram bhai jai hind,greeting,greeting.csv
+"मेरे खेत में पिछले साल धनिया था, अब क्या बोऊं?",crop,crop.json
+ट्रैक्टर पर सरकारी सब्सिडी कैसे मिलती है,machinery,machinery.csv
+hello sir good morning,greeting,greeting.csv
+बैटरी स्प्रेयर और पेट्रोल स्प्रेयर में कौन सा अच्छा है,machinery,machinery.csv
+"मेरी मिट्टी में लोहे की कमी है, पत्ते पीले हो रहे हैं",soil,soil.json
+acidic soil mein chuna dalne se kya hota hai?,soil,soil.csv
+hi there pragati,greeting,greeting.csv
+cultivator teeth kahan milenge replacement ke liye,machinery,machinery.csv
+म्हारी चना री फसल में राइजोबियम कल्चर कद लगाऊं?,fertilizer,fertilizer.csv
+म्हारी फसल में सल्फर री कमी है के डालूं?,fertilizer,fertilizer.csv
+इसबगोल का बीज कहां से मिलेगा,seed,seed.csv
+ram ram bhai fasal kaisi hai is baar,greeting,greeting.csv
+moong dal ka aaj ka rate batao,market,market.csv
+namaste ji khamma ghani sa,greeting,greeting.csv
+नमस्ते जी शुभ संध्या,greeting,greeting.csv
+jai shri ram bhai beej kahan milega,greeting,greeting.csv
+ऐप में बग रिपोर्ट कैसे करें,general,general.csv
+paani ki bachat ke liye kya karna chahiye khet mein,irrigation,irrigation.csv
+chat history delete kaise karein,general,general.csv
+मेरे खेत में मिट्टी बहुत भारी है जुताई मुश्किल है,soil,soil.csv
+rotavator depth setting kaise karein,machinery,machinery.csv
+kharif season ke liye best seeds kaunse hain,seed,seed.csv
+which crop needs less water in rajasthan?,crop,crop.csv
+म्हारी सारी फसल बर्बाद हो गई बचाओ,emergency,emergency.csv
+wheat mein flag smut disease aa gayi hai,disease,disease.csv
+pm kisan yojana mein kitna paisa milta hai,government,government.csv
+मेरे खेत में मूंगफली के लिए खाद की मात्रा बताओ,fertilizer,fertilizer.csv
+farm machinery loan kaise milega,machinery,machinery.csv
+बोलकर सवाल पूछने का तरीका बताओ,general,general.csv
+pm kisan eligibility criteria kya hai,government,government.csv
+fertilizer timing kya honi chahiye for best results?,fertilizer,fertilizer.csv
+fire in my field crop is burning help immediately,emergency,emergency.csv
+सिंचाई के लिए सोलर पंप कैसे लगाएं,irrigation,irrigation.csv
+खम्मा घणी भाई प्रणाम जी,greeting,greeting.csv
+immediate crop rescue needed please help me now,emergency,emergency.csv
+म्हारे खेत में आलू के लिए खाद की मात्रा बताओ,fertilizer,fertilizer.csv
+pm kisan mein bank account update kaise karein,government,government.csv
+"मेरे खेत में सिंचाई नहर से पानी मिलता है, कौन सी फसल बोऊं?",crop,crop.json
+chote kisan ke liye sabse sasta tractor kaunsa hai,machinery,machinery.csv
+hybrid seed aur normal seed mein kya fark hai,seed,seed.csv
+government se khet ke liye paisa kaise milega,government,government.csv
+म्हारी टमाटर री फसल में अर्ली ब्लाइट लाग री है के करूं?,disease,disease.csv
+guar price increase hua kya aaj,market,market.csv
+हार्वेस्टर मशीन कब बुक करें,machinery,machinery.csv
+water holding capacity of soil kaise badhayein?,soil,soil.csv
+अरहर की खेती कब करनी चाहिए?,crop,crop.csv
+10 din se baarish nahi hui fasal mar rahi hai,emergency,emergency.csv
+इस ऐप से खेती में कितना फायदा होगा,general,general.csv
+seed drill machine ka kya kaam hota hai,machinery,machinery.csv
+खम्मा घणी भाई आज मंडी जाना है,greeting,greeting.csv
+मेरे खेत में कैल्शियम खाद कब और कितना डालें?,fertilizer,fertilizer.csv
+बिना इंटरनेट के ऐप चलेगा क्या,general,general.csv
+pm kisan mobile number update kaise karein,government,government.csv
+urea ki matra per bigha kitni honi chahiye?,fertilizer,fertilizer.csv
+"म्हारी मिट्टी में पोटाश री कमी है, के करूं?",soil,soil.json
+सुबह पानी देना अच्छा है या शाम को,irrigation,irrigation.csv
+मेरे खेत में पिछले साल सोयाबीन था अब क्या बोऊं?,crop,crop.csv
+आज मक्का का रेट क्या है,market,market.csv
+"म्हारी मिट्टी में केंचुए कम हैं, के करूं?",soil,soil.json
+मेरे खेत में सूखा पड़ गया है फसल बचाओ,emergency,emergency.csv
+म्हारी फसल में कैल्शियम नाइट्रेट कद डालणो चाहिए?,fertilizer,fertilizer.csv
+भाई म्हारी मक्का री फसल में पत्ती झुलसा लाग री है,disease,disease.csv
+kem cho bhai,greeting,greeting.csv
+म्हारे खेत में पिछले साल बाजरा था अब कांई बोवां?,crop,crop.csv
+how to lower soil ph naturally?,soil,soil.csv
+मेरी मिर्च के फलों पर काले धब्बे आ गए हैं,disease,disease.csv
+मिनी ट्रैक्टर और बड़े ट्रैक्टर में कौन सा अच्छा है,machinery,machinery.csv
+मेरे खेत में नमी कितनी होनी चाहिए,irrigation,irrigation.csv
+irrigation pump ki maintenance kaise karein,irrigation,irrigation.csv
+khet mein paani bhar gaya fasal bachane ka upay batao,emergency,emergency.csv
+गेहूं में यूरिया कब और कितना डालें?,fertilizer,fertilizer.csv
+बारिश के बाद खेत में काम कब करें,weather,weather.csv
+बारिश में बीज बोना सही है क्या,weather,weather.csv
+मेरी फसल में पानी की जरूरत है अभी,irrigation,irrigation.csv
+kharab beej ki pehchaan kaise karein,seed,seed.csv
+भाई म्हारी कपास री फसल में जड़ सड़न लाग री है,disease,disease.csv
+बीज बोने का सही समय क्या है,seed,seed.csv
+sprayer machine ki safai kaise karein,machinery,machinery.csv
+मेरे खेत में मिट्टी की उर्वरता जांचने के लिए क्या करूं?,soil,soil.csv
+mini tractor vs big tractor kaunsa better hai,machinery,machinery.csv
+मेरी फसल में टॉप ड्रेसिंग कब करें?,fertilizer,fertilizer.csv
+isabgol seed kahan milega rajasthan mein,seed,seed.csv
+राम राम सा भाई आज बारिश होगी क्या,greeting,greeting.csv
+how much water does mustard crop need per week,irrigation,irrigation.csv
+ओलावृष्टि से फसल बचाने के उपाय बताओ,weather,weather.csv
+म्हारे खेत में भयंकर कीड़ा लग गयो है,emergency,emergency.csv
+"मेरी मिर्च में फाइटोफ्थोरा ब्लाइट है, क्या करूं?",disease,disease.json
+nearest mandi from my village kahan hai,market,market.csv
+नमस्ते भाई राम राम सा,greeting,greeting.csv
+पावर वीडर से खरपतवार कैसे हटाएं,machinery,machinery.csv
+नमस्ते भाई खेत कैसा है,greeting,greeting.csv
+बीज खरीदते समय क्या देखना चाहिए,seed,seed.csv
+मेरे खेत में sop खाद कब और कितना डालें?,fertilizer,fertilizer.csv
+baler machine se straw bale kaise banayein,machinery,machinery.csv
+ज्यादा सिंचाई से जड़ें सड़ जाती हैं क्या,irrigation,irrigation.csv
+मेरी मिट्टी में लोहे की कमी है पत्ते पीले हो रहे हैं,soil,soil.csv
+गर्म हवा लू कब तक रहेगी,weather,weather.csv
+namaste bhai jai hind,greeting,greeting.csv
+मेरे आलू में लेट ब्लाइट आ गई है तुरंत उपाय बताओ,disease,disease.csv
+मक्का की बुवाई का सही समय क्या है?,crop,crop.csv
+potassium sulphate vs mop kya fark hai?,fertilizer,fertilizer.csv
+सोलर पंप मशीन कैसे लगाएं खेत में,machinery,machinery.csv
+soybean mein yellow mosaic virus ho gaya hai,disease,disease.csv
+canal water kab band hoga is season mein,irrigation,irrigation.csv
+मेरे पास कम पानी है कौन सी फसल लगाऊं,irrigation,irrigation.csv
+सरसों के पत्तों पर काले धब्बे आ गए हैं,disease,disease.csv
+power weeder se kharpatwar hatane ka tarika,machinery,machinery.csv
+"मेरी अरहर में विल्ट रोग आ गया है, क्या करूं?",disease,disease.json
+बेलर मशीन से पुआल कैसे बनाएं,machinery,machinery.csv
+बीज उपचार के लिए ट्राइकोडर्मा कैसे उपयोग करें,seed,seed.csv
+chana mein wilt disease aa gayi hai upay batao,disease,disease.csv
+sprinkler system ke fayde kya hain,irrigation,irrigation.csv
+पीएम किसान में गलत जानकारी सुधार कैसे करें,government,government.csv
+isabgol price today rajasthan mandi,market,market.csv
+sprayer pump band ho gaya hai kya karein,machinery,machinery.csv
+thresher se gehu nikalne ka tarika kya hai,machinery,machinery.csv
+राजस्थान में किसानों के लिए कौन कौन सी योजनाएं हैं,government,government.csv
+मिर्च में कितने दिन में एक बार पानी देना चाहिए,irrigation,irrigation.csv
+dap aur urea mein kya fark hai?,fertilizer,fertilizer.csv
+"मेरे खेत में पानी की कमी है, ड्रिप से कौन सी फसल उगाऊं?",crop,crop.json
+जय जवान जय किसान,greeting,greeting.csv
+मौसम खराब है तो कटाई कब करें,weather,weather.csv
+good morning bhai aaj spray karna hai,greeting,greeting.csv
+मेरी प्याज में डैम्पिंग ऑफ हो रही है,disease,disease.csv
+म्हारे खेत में पोटाश कद डालणो चाहिए?,fertilizer,fertilizer.csv
+urad dal price today in mandi,market,market.csv
+मेरे खेत में पिछले साल सरसों थी अब क्या बोऊं?,crop,crop.csv
+combine harvester rent per bigha kitna hai,machinery,machinery.csv
+इस सीजन में सूखे की संभावना है क्या,weather,weather.csv
+water logging se fasal kaise bachayein,irrigation,irrigation.csv
+50 percent subsidy on farm machinery rajasthan mein,machinery,machinery.csv
+पावर टिलर और ट्रैक्टर में क्या फर्क है,machinery,machinery.csv
+मेरे खेत में सल्फर खाद कब डालें?,fertilizer,fertilizer.csv
+yellow rust spreading fast in wheat emergency spray batao,emergency,emergency.csv
+soybean ki kheti kab karni chahiye?,crop,crop.csv
+म्हारे खेत री मिट्टी में क्लोरीन री कमी है,soil,soil.csv
+aaj barish ke baad khet mein jaana chahiye kya,weather,weather.csv
+म्हारी बाजरा री फसल में डाउनी मिल्ड्यू लाग री है,disease,disease.csv
+फसल बीमा योजना में नाम कैसे दर्ज करें,government,government.csv
+soil health card mein kya kya jankari hoti hai,government,government.csv
+म्हारी फसल में जैविक खाद कद डालणो चाहिए?,fertilizer,fertilizer.csv
+सिंचाई के लिए नहर का पानी कब आएगा,irrigation,irrigation.csv
+अजवाइन की खेती कब और कैसे करें?,crop,crop.csv
+late blight spreading rapidly in tomato field emergency,emergency,emergency.csv
+उड़द का सबसे अच्छा बीज कौन सा है,seed,seed.csv
+म्हारे खेत री मिट्टी में लवणता ज्यादा है के करूं?,soil,soil.csv
+सरकारी बीज भंडार से बीज कैसे खरीदें,seed,seed.csv
+tractor repair kahan karwayein,machinery,machinery.csv
+थ्रेशर से गेहूं निकालने का तरीका बताओ,machinery,machinery.csv
+मेरे खेत में मिट्टी परीक्षण के लिए सैंपल कैसे लें?,soil,soil.csv
+profile photo kaise lagayein app mein,general,general.csv
+flood aa gaya hai khet mein kya karein,emergency,emergency.csv
+good morning ji aaj ka din shubh ho,greeting,greeting.csv
+खरीफ सीजन में कौन सी फसल बोनी चाहिए?,crop,crop.csv
+मेरे खेत में पिछले साल मसूर था अब क्या बोऊं?,crop,crop.csv
+pm fasal bima yojana ke liye kya documents chahiye,government,government.csv
+खरीफ फसलों के लिए कौन से बीज अच्छे हैं,seed,seed.csv
+आज लू चलेगी क्या,weather,weather.csv
+"फसल चक्र के बारे में बताओ, क्या बोना चाहिए?",crop,crop.json
+म्हारे खेत री मिट्टी में सल्फर री कमी है के डालूं?,soil,soil.csv
+म्हारी मिट्टी में मैग्नीशियम री कमी है,soil,soil.csv
+आज हनुमानगढ़ मंडी में गेहूं का भाव,market,market.csv
+purani chat kaise dekhein app mein,general,general.csv
+fym farmyard manure ka dose per bigha kya hai?,fertilizer,fertilizer.csv
+नमस्ते भाई ट्रैक्टर के बारे में पूछना था,greeting,greeting.csv
+biofertilizer kab aur kaise use karein?,fertilizer,fertilizer.csv
+खेती के लिए सरकारी लोन कैसे मिलेगा,government,government.csv
+pragati ai ka customer care number kya hai,general,general.csv
+इस हफ्ते ओले पड़ेंगे क्या,weather,weather.csv
+rice mein tungro virus disease ho gayi hai,disease,disease.csv
+"मेरी फसल में कीड़ा लग गया है, क्या करूं?",disease,disease.json
+आज तेज हवा चलेगी क्या,weather,weather.csv
+बीमारी बहुत तेजी से फैल रही है पूरे खेत में,emergency,emergency.csv
+म्हारी बाजरा री फसल में स्मट रोग लाग री है,disease,disease.csv
+कृषि यंत्र पर सब्सिडी कैसे मिलती है,government,government.csv
+organic farming mein kaunsi fasal best hai?,crop,crop.csv
+पीएम किसान योजना के लिए पात्रता क्या है,government,government.csv
+मेरी मिट्टी में कैल्शियम की कमी है क्या करूं?,soil,soil.csv
+compost se soil organic matter kaise badhta hai?,soil,soil.csv
+पीएम किसान में मेरा नाम है या नहीं कैसे पता करें,government,government.csv
+खम्मा घणी सा good morning bhai,greeting,greeting.csv
+kitne sections hain is app mein,general,general.csv
+प्रमाणित बीज और साधारण बीज में क्या अंतर है,seed,seed.csv
+hello ji aaj ka temperature kitna hai,greeting,greeting.csv
+fasal achanak sukh rahi hai emergency hai,emergency,emergency.csv
+organic seed kahan se kharidein rajasthan mein,seed,seed.csv
+hanumangarh mandi gehu price today,market,market.csv
+मेरी फसल में पत्तियों पर खाद का छिड़काव कब करें?,fertilizer,fertilizer.csv
+आलू की फसल में अर्ली ब्लाइट दिख रही है,disease,disease.csv
+rice mein sheath blight disease ho gayi hai,disease,disease.csv
+ट्रैक्टर चलाने का लाइसेंस कैसे बनवाएं,machinery,machinery.csv
+फसल चक्र के बारे में बताओ क्या बोना चाहिए?,crop,crop.csv
+cotton mein whitefly bahut zyada ho gayi hai,disease,disease.csv
+बीज खराब हो गया है कैसे पता करें,seed,seed.csv
+कल्टीवेटर के दांत टूट गए हैं कहां से मिलेंगे,machinery,machinery.csv
+tractor subsidy ke liye apply kaise karein,government,government.csv
+मेरे खेत में टिड्डी दल आ गया है,emergency,emergency.csv
+"म्हारी मिट्टी में ph 8 से ज्यादा है, के करूं?",soil,soil.json
+aaj subah ka temperature kitna tha,weather,weather.csv
+apna naam aur jila app mein kaise badlein,general,general.csv
+पीएम किसान की अगली किस्त कब आएगी,government,government.csv
+मेरी फसल में नीम कोटेड यूरिया का क्या फायदा है?,fertilizer,fertilizer.csv
+app ka naya version kab aayega,general,general.csv
+फसल बीमा के लिए बैंक में जाना जरूरी है क्या,government,government.csv
+बीज का अंकुरण परीक्षण कैसे करें,seed,seed.csv
+paani dene ke sahi tarike kya kya hain,irrigation,irrigation.csv
+mustard mein aphid ka bahut zyada attack hai,disease,disease.csv
+मेरे खेत में पिछले साल जीरा था अब क्या बोऊं?,crop,crop.csv
+khet ka naksha app mein kaise add karein,general,general.csv
+"मिर्च के फल सड़ रहे हैं, कौन सी बीमारी है?",disease,disease.json
+सिंचाई के बाद खेत में जुताई करनी चाहिए क्या,irrigation,irrigation.csv
+माइक से बात कैसे करें,general,general.csv
+बाजरे में माहू कीड़ा लग गया है उपाय बताओ,disease,disease.csv
+मिर्च के पत्तों पर सफेद धब्बे आ गए हैं,disease,disease.csv
+organic fertilizer kab aur kaise dena chahiye?,fertilizer,fertilizer.csv
+rice mein blast disease ho gayi hai kya spray karein?,disease,disease.csv
+masoor dal price today in mandi,market,market.csv
+"मेरे खेत में पिछले साल मक्का था, अब क्या बोऊं?",crop,crop.json
+म्हारे खेत में बिजली गिरी और आग लग गई,emergency,emergency.csv
+mustard sowing seed rate per hectare,seed,seed.csv
+मंडी में फसल बेचने का तरीका क्या है,market,market.csv
+sarson ka bhav aaj badhega ya ghategaa,market,market.csv
+"मेरे पास सिंचाई की सुविधा नहीं है, कौन सी फसल बोऊं?",crop,crop.json
+"मेरे खेत में दोमट मिट्टी है, कौन सी फसल उगाऊं?",crop,crop.json
+agriculture loan interest rate government bank mein,government,government.csv
+seed moisture content for storage kitna hona chahiye,seed,seed.csv
+"मेरे खेत में पिछले साल कपास था, अब क्या बोऊं?",crop,crop.json
+मेरी फसल में खाद डालने का सही समय क्या है?,fertilizer,fertilizer.csv
+सरकारी योजना का लाभ लेने के लिए क्या करना होगा,government,government.csv
+मेरे खेत में ड्रिप से खाद कैसे दें?,fertilizer,fertilizer.csv
+whitefly ka bada attack ho gaya hai turant kya karein,emergency,emergency.csv
+groundnut price aaj ki mandi mein,market,market.csv
+vermicompost se soil health kaise improve hoti hai?,soil,soil.csv
+किसान क्रेडिट कार्ड के लिए कौन से कागज चाहिए,government,government.csv
+tractor tyre puncture repair kaise karein,machinery,machinery.csv
+आधार से लॉगिन हो सकता है क्या,general,general.csv
+irrigation schedule for wheat in rajasthan,irrigation,irrigation.csv
+जैविक खेती के लिए कौन सी फसल सबसे अच्छी है?,crop,crop.csv
+राजस्थान में पानी की कमी में खेती कैसे करें,irrigation,irrigation.csv
+drought emergency mera khet sukh raha hai,emergency,emergency.csv
+मेरी मिट्टी में फास्फोरस की कमी है क्या करूं?,soil,soil.csv
+aaj ka max temperature kitna hoga,weather,weather.csv
+foliar spray fertilizer kab aur kaise karein?,fertilizer,fertilizer.csv
+कल सरसों का भाव क्या था मंडी में,market,market.csv
+मेरी मिट्टी में जैविक पदार्थ कैसे बढ़ाऊं?,soil,soil.csv
+sprinkler irrigation ke liye kitna pressure chahiye,irrigation,irrigation.csv
+no rain for 15 days crop dying emergency irrigation needed,emergency,emergency.csv
+ai kitna accurate hai is app mein,general,general.csv
+आज का मौसम खेती के लिए कैसा है,weather,weather.csv
+cotton ki buwai kab karni chahiye?,crop,crop.csv
+seed treatment se fasal ko kya fayda hota hai,seed,seed.csv
+"मेरी जमीन काली मिट्टी की है, कौन सी फसल उगाऊं?",crop,crop.json
+मेरी धनिया में बैक्टीरियल लीफ स्पॉट है,disease,disease.csv
+seed subsidy government se kaise milegi,seed,seed.csv
+custom hiring centre se machine kaise milegi,machinery,machinery.csv
+सोयाबीन में पत्ती धब्बा रोग आ गया है,disease,disease.csv
+पुश नोटिफिकेशन कैसे चालू करें,general,general.csv
+laser land leveller machine kaise kaam karti hai,machinery,machinery.csv
+organic matter badhane ke liye kya karein?,soil,soil.csv
+म्हारे खेत में नैनो यूरिया कैसे इस्तेमाल करूं?,fertilizer,fertilizer.csv
+soil organic carbon kaise badhayein?,soil,soil.csv
+म्हारी फसल में रात भर में सब पत्ते गिर गए,emergency,emergency.csv
+ट्रैक्टर की सर्विसिंग कब करानी चाहिए,machinery,machinery.csv
+aaj ki humidity kitni hai,weather,weather.csv
+म्हारे खेत री मिट्टी में पानी रुकता नहीं है,soil,soil.csv
+top dressing fertilizer kab dena chahiye?,fertilizer,fertilizer.csv
+ऐप क्रैश हो रहा है बार बार,general,general.csv
+मेरे बैंगन में जड़ गांठ सूत्रकृमि का प्रकोप है,disease,disease.csv
+hi bhai drip irrigation ke baare mein batao,greeting,greeting.csv
+मूंग की फसल में पानी कब देना है,irrigation,irrigation.csv
+"मेरे खेत में पिछले साल सोयाबीन था, अब क्या बोऊं?",crop,crop.json
+bajra mein downy mildew disease ho gayi hai,disease,disease.csv
+"म्हारे खेत में काली मिट्टी है, कांई बोवां?",crop,crop.json
+रोटावेटर की चेन टूट गई है कैसे ठीक करें,machinery,machinery.csv
+फसल में पानी देने का सबसे सस्ता तरीका कौन सा है,irrigation,irrigation.csv
+power weeder kya hota hai aur kaise use karein,machinery,machinery.csv
+ram ram bhai aaj khet mein kya karein,greeting,greeting.csv
+थ्रेशर मशीन की देखभाल कैसे करें,machinery,machinery.csv
+इस सीजन में बारिश कम होगी क्या,weather,weather.csv
+मेरे बैंगन में फोमोप्सिस ब्लाइट रोग है,disease,disease.csv
+fertigation kya hota hai aur kaise karein?,fertilizer,fertilizer.csv
+सिंचाई के लिए बिजली कब मिलेगी,irrigation,irrigation.csv
+soil ph kaise check karein ghar par?,soil,soil.csv
+ऐप का मेनू कैसे खोलें,general,general.csv
+minimum support price for mustard 2024,market,market.csv
+फसल अचानक सूख रही है क्या करूं,emergency,emergency.csv
+"म्हारे खेत री मिट्टी में नमी कम है, के करूं?",soil,soil.json
+म्हारी फसल में यूरिया का पत्तियों पर छिड़काव कद करूं?,fertilizer,fertilizer.csv
+coriander seed price today rajasthan mandi,market,market.csv
+kisan credit card ke liye apply kaise karein,government,government.csv
+अपना नाम और जिला कैसे बदलें,general,general.csv
+soybean price today in rajasthan mandi,market,market.csv
+potassium deficiency mein patte ke kinare kyon jalte hain?,soil,soil.csv
+खम्मा घणी दादा,greeting,greeting.csv
+सूरजमुखी की खेती कब और कैसे करें?,crop,crop.csv
+मेरी गेहूं की फसल में झुलसा रोग आ गया है,disease,disease.csv
+pragati ai ke baare mein batao,general,general.csv
+"मेरे खेत में पिछले साल अरहर थी, अब क्या बोऊं?",crop,crop.json
+wheat mein rust disease aa gayi hai spray kya karein?,disease,disease.csv
+रबी सीजन में कौन सी फसल ज्यादा फायदेमंद है?,crop,crop.csv
+weather forecast for next week rajasthan,weather,weather.csv
+फसल की बीमारी की फोटो कैसे भेजें,general,general.csv
+बीज की पैकेट पर क्या जानकारी देखें,seed,seed.csv
+मेरे खेत में हल्की मिट्टी है कौन सी फसल उगाऊं?,crop,crop.csv
+राम राम भाई बीज के बारे में पूछना था,greeting,greeting.csv
+"मेरे खेत में पिछले साल अलसी था, अब क्या बोऊं?",crop,crop.json
+"मेरी फसल में आयरन की कमी है, क्या डालूं?",fertilizer,fertilizer.json
+otp नहीं आ रहा है क्या करूं,general,general.csv
+"tomato ke patte curl ho rahe hain, kya bimari hai?",disease,disease.json
+कृषि यंत्र बैंक से लोन पर मिलते हैं क्या,machinery,machinery.csv
+गेहूं का सबसे अच्छा बीज कौन सा है,seed,seed.csv
+cultivator se khet jotne ka sahi tarika kya hai,machinery,machinery.csv
+मेरे खेत में पानी की कमी है क्या करूं,irrigation,irrigation.csv
+"म्हारी मिट्टी में सल्फर री कमी है, के उपाय करूं?",soil,soil.json
+mini tractor subsidy rajasthan 2024,government,government.csv
+म्हारे खेत में मैग्नीशियम सल्फेट कितनो डालूं?,fertilizer,fertilizer.csv
+म्हारे खेत री मिट्टी में सोडियम ज्यादा है,soil,soil.csv
+मेरे खेत में फसल के बाद खाद कब डालें?,fertilizer,fertilizer.csv
+थ्रेशर मशीन किराए पर कैसे मिलेगी,machinery,machinery.csv
+चने का सबसे अच्छा बीज कौन सा है,seed,seed.csv
+"मेरे खेत में मिट्टी बहुत भारी है, जुताई मुश्किल है",soil,soil.json
+म्हारे खेत में पानी नहीं है 10 दिन से बारिश नहीं हुई,emergency,emergency.csv
+fenugreek seed sowing method kya hai,seed,seed.csv
+आज प्याज का मंडी भाव क्या है,market,market.csv
+खेत में आग लग गई है अभी,emergency,emergency.csv
+"मेरी मक्का में चारकोल रॉट रोग है, उपाय बताओ",disease,disease.json
+गेहूं की नई किस्म कौन सी है 2024 में,seed,seed.csv
+मेरी सरसों में पाउडरी मिल्ड्यू हो गई है,disease,disease.csv
+मूंगफली का आज का भाव बताओ,market,market.csv
+cotton mein boll rot ho rahi hai kya karein?,disease,disease.csv
+tomorrow rain probability in my district,weather,weather.csv
+कल बारिश होगी क्या,weather,weather.csv
+अपनी राय कैसे दें इस ऐप के बारे में,general,general.csv
+"मेरे खेत में पिछले साल मूंगफली थी, अब क्या बोऊं?",crop,crop.json
+marwari mein baat karna hai mujhe,general,general.csv
+राजस्थान में बागवानी पर सब्सिडी मिलती है क्या,government,government.csv
+राम राम जी शुभ प्रभात,greeting,greeting.csv
+bajra mein rust disease ka attack ho gaya hai,disease,disease.csv
+भाई म्हारे खेत में कौन सी फसल बोवां जो जल्दी तैयार हो जावे?,crop,crop.csv
+jeera price today in rajasthan,market,market.csv
+hey there,greeting,greeting.csv
+मेरे खेत की मिट्टी बलुई है कौन सी फसल अच्छी रहेगी?,crop,crop.csv
+सरसों की बुवाई के लिए बीज दर क्या है,seed,seed.csv
+टमाटर का बीज कहां से खरीदें,seed,seed.csv
+फसल में खाद की कमी से पौधे मर रहे हैं तुरंत बताओ,emergency,emergency.csv
+टपक सिंचाई से कितना पानी बचता है,irrigation,irrigation.csv
+"मेरे खेत की मिट्टी में पोषक तत्वों की कमी है, क्या करूं?",soil,soil.json
+is mahine mein lू chalegi kya,weather,weather.csv
+पाला पड़ने से पहले क्या करें,weather,weather.csv
+राजस्थान में किसानों को मुफ्त बिजली मिलती है क्या,government,government.csv
+भाई म्हारी सरसों री फसल में अल्टरनेरिया ब्लाइट लाग री है,disease,disease.csv
+आज मसूर का भाव क्या है,market,market.csv
+npk fertilizer ka sahi dose kya hai?,fertilizer,fertilizer.csv
+मूंग का भाव इस सीजन में कैसा रहेगा,market,market.csv
+पुरानी चैट कैसे देखें,general,general.csv
+मेरे खेत में पिछले साल गेहूं था अब क्या बोऊं?,crop,crop.csv
+thresher machine rent per quintal kitna hai,machinery,machinery.csv
+lightning struck my field and fire started emergency,emergency,emergency.csv
+रोटावेटर से खेत कैसे तैयार करें,machinery,machinery.csv
+खाद पर सब्सिडी कैसे मिलती है,government,government.csv
+kya aaj waqt par barish hogi mere khet ke liye,weather,weather.csv
+आज मौसम साफ रहेगा क्या,weather,weather.csv
+फसल पर पाला पड़ने से क्या नुकसान होता है,weather,weather.csv
+seed quality check karne ka tarika,seed,seed.csv
+rice mein false smut disease ho gayi hai,disease,disease.csv
+which medicinal crop is profitable in rajasthan?,crop,crop.csv
+onion seed sowing time rajasthan mein,seed,seed.csv
+gps location on kaise karein app ke liye,general,general.csv
+maize hybrid seed variety batao,seed,seed.csv
+best tractor brand for small farmers in rajasthan,machinery,machinery.csv
+how to improve soil fertility naturally?,soil,soil.csv
+ड्रिप इरिगेशन लगाने में कितना खर्च आता है,irrigation,irrigation.csv
+गन्ने की फसल में सिंचाई कितनी बार करें,irrigation,irrigation.csv
+"मेरे खेत में पिछले साल सूरजमुखी था, अब क्या बोऊं?",crop,crop.json
+म्हारी मिट्टी में केंचुए कम हैं के करूं?,soil,soil.csv
+aaj kitne baje barish hogi,weather,weather.csv
+yellow mosaic virus spreading in moong emergency help,emergency,emergency.csv
+waterlogging emergency meri fasal dub rahi hai,emergency,emergency.csv
+wheat mein powdery mildew disease aa gayi hai,disease,disease.csv
+मेरे खेत में पिछले साल मेथी था अब क्या बोऊं?,crop,crop.csv
+bhindi mein yellow vein mosaic virus hai kya karein?,disease,disease.csv
+mandi mein fasal bechne ke liye registration kaise karein,market,market.csv
+आज इसबगोल का भाव क्या है,market,market.csv
+नीलगाय ने पूरा खेत उजाड़ दिया,emergency,emergency.csv
+wind speed kitni hai aaj,weather,weather.csv
+good morning bhai pranam,greeting,greeting.csv
+drip irrigation mein fertilizer kaise dete hain,irrigation,irrigation.csv
+मेरे खेत में मिट्टी का कटाव हो रहा है कैसे रोकूं?,soil,soil.csv
+seed drill se gehu ki buwai kaise karein,machinery,machinery.csv
+म्हारी मिट्टी में जीवाणुओं की संख्या कैसे बढ़ाऊं?,soil,soil.csv
+kisan id kaise banayein is app mein,general,general.csv
+seed ko nami se bachane ka tarika kya hai,seed,seed.csv
+आज शाम को मौसम कैसा रहेगा,weather,weather.csv
+नया अकाउंट बनाने में दिक्कत आ रही है,general,general.csv
+मौसम के हिसाब से सिंचाई कब करें,weather,weather.csv
+sign up kaise karein pragati ai mein,general,general.csv
+म्हारे खेत में पानी नहीं है फसल मर जाएगी,emergency,emergency.csv
+tractor driving licence kaise banwayein,machinery,machinery.csv
+रबी फसलों में सिंचाई कितनी बार करनी चाहिए,irrigation,irrigation.csv
+mandi bhav online kaise check karein,market,market.csv
+म्हारे खेत में खाद की मात्रा मिट्टी जांच के आधार पर बताओ,fertilizer,fertilizer.csv
+pm kisan next installment release date kya hai,government,government.csv
+soil testing kahan se karwayein rajasthan mein?,soil,soil.csv
+म्हारी फसल में psb कल्चर कद डालणो चाहिए?,fertilizer,fertilizer.csv
+"मेरे खेत में पिछले साल मेथी था, अब क्या बोऊं?",crop,crop.json
+kya yeh app chote kisan ke liye bhi hai,general,general.csv
+सिंचाई के लिए पाइपलाइन कैसे बिछाएं,irrigation,irrigation.csv
+kisan pension yojana rajasthan ke liye apply kaise karein,government,government.csv
+मौसम बदलने से फसल पर क्या असर होता है,weather,weather.csv
+आप मेरे लिए क्या कर सकते हैं,general,general.csv
+"म्हारे खेत में पिछले साल चना था, अब कांई बोवां?",crop,crop.json
+howdy,greeting,greeting.csv
+over fertilization ke kya nuksan hote hain?,fertilizer,fertilizer.csv
+गेहूं का बीज कितने दिन तक स्टोर कर सकते हैं,seed,seed.csv
+bug report kaise karein is app mein,general,general.csv
+टमाटर में drip se paani dena chahiye ya nahi,irrigation,irrigation.csv
+लेजर लैंड लेवलर मशीन क्या होती है,machinery,machinery.csv
+sab patte achanak peele ho gaye emergency kya karein,emergency,emergency.csv
+बारिश का पूर्वानुमान सही है क्या,weather,weather.csv
+gehu ki buwai ka sahi samay kab hai,seed,seed.csv
+म्हारी फसल में तना सड़न बहुत तेजी से फैल रही है,emergency,emergency.csv
+मेरे जिले में आज बारिश होगी क्या,weather,weather.csv
+nearest soil testing lab kahan hai?,soil,soil.csv
+भाई म्हारी मक्का री फसल में तना सड़न लाग री है,disease,disease.csv
+apna khet app mein kaise add karein,general,general.csv
+म्हारे खेत में जैव उर्वरक कद डालणो चाहिए?,fertilizer,fertilizer.csv
+hello bhai good afternoon kaise ho,greeting,greeting.csv
+राम राम भाई jai shri ram,greeting,greeting.csv
+म्हारी फसल में अचानक सब पत्ते पीले हो गए,emergency,emergency.csv
+good evening bhai jai shri ram,greeting,greeting.csv
+hailstorm ki koi warning hai kya aaj,weather,weather.csv
+थ्रेशर मशीन का किराया कितना है,machinery,machinery.csv
+temperature drop hoga kya kal raat,weather,weather.csv
+weather update for farming today,weather,weather.csv
+mustard mein sclerotinia stem rot ho gayi hai,disease,disease.csv
+इस हफ्ते गर्मी कितनी रहेगी,weather,weather.csv
+मेरे टमाटर में बैक्टीरियल विल्ट आ गई है,disease,disease.csv
+fasal bima yojana mein premium kitna bharna padta hai,government,government.csv
+इस ऐप में क्या क्या मिलता है,general,general.csv
+kaunsi fasal mein paani ki bachat hoti hai?,crop,crop.csv
+chilli mein thrips ka attack ho gaya hai kya karein?,disease,disease.csv
+म्हारी सोयाबीन री फसल में dap कितनो डालूं?,fertilizer,fertilizer.csv
+saline soil ko kaise sudharen?,soil,soil.csv
+नमस्ते भाई शुभ प्रभात,greeting,greeting.csv
+"मेरी मिट्टी में फास्फोरस की कमी है, क्या करूं?",soil,soil.json
+kal ka mausam kaisa rahega,weather,weather.csv
+rajasthan agriculture department schemes 2024,government,government.csv
+बीज को कीड़ों से कैसे बचाएं,seed,seed.csv
+bajra mein ergot disease ka attack hai,disease,disease.csv
+गर्मी में फसल को ज्यादा पानी चाहिए क्या,irrigation,irrigation.csv
+"मेरी मूंग में पाउडरी मिल्ड्यू रोग है, दवाई बताओ",disease,disease.json
+बीज की गुणवत्ता कैसे जांचें,seed,seed.csv
+रीपर मशीन से फसल कटाई कैसे करें,machinery,machinery.csv
+which crop is best for rabi season in rajasthan?,crop,crop.csv
+ऐप में साइन अप कैसे करें,general,general.csv
+म्हारे खेत री मिट्टी में जिंक सल्फेट डालने से के फायदो होसी?,soil,soil.csv
+good afternoon bhai khet ka kya haal hai,greeting,greeting.csv
+good morning ji jai hind,greeting,greeting.csv
+मेरी सोयाबीन में चारकोल रॉट रोग है,disease,disease.csv
+सिंचाई का शेड्यूल कैसे बनाएं,irrigation,irrigation.csv
+tomato mein damping off ho rahi hai seedlings mar rahi hain,disease,disease.csv
+kal ka mausam spray ke liye sahi rahega kya,weather,weather.csv
+नमस्ते जी आज सिंचाई करनी है,greeting,greeting.csv
+rice mein fertilizer dose kya hona chahiye?,fertilizer,fertilizer.csv
+फसल में जड़ गलन हो रही है पौधे गिर रहे हैं,emergency,emergency.csv
+मानसून की वापसी कब होगी,weather,weather.csv
+jai hind bhai kisan ki baat karni thi,greeting,greeting.csv
+harvester machine kiraye par kahan milegi,machinery,machinery.csv
+मेरी पूरी मूंग की फसल में पीला मोजेक वायरस फैल गया,emergency,emergency.csv
+मेरे पास सिंचाई की सुविधा नहीं है कौन सी फसल बोऊं?,crop,crop.csv
+मृदा स्वास्थ्य कार्ड कहां से मिलेगा,government,government.csv
+म्हारी मिट्टी में मोलिब्डेनम री कमी है,soil,soil.csv
+tractor servicing kitne ghante ke baad karwayein,machinery,machinery.csv
+मेरी फसल में खाद की कमी से क्या होता है?,fertilizer,fertilizer.csv
+सिंचाई के लिए पानी का सही उपयोग कैसे करें,irrigation,irrigation.csv
+आज धूल भरी आंधी आएगी क्या,weather,weather.csv
+आज रात ठंड ज्यादा रहेगी क्या,weather,weather.csv
+ferrous sulphate spray kaise karein?,fertilizer,fertilizer.csv
+moong seed sowing time rajasthan mein kab hai,seed,seed.csv
+मेरे खेत में दोमट मिट्टी है कौन सी फसल उगाऊं?,crop,crop.csv
+soil biodiversity kaise badhayein?,soil,soil.csv
+mustard msp 2024-25 kya hai,market,market.csv
+soil test report app mein kaise dekhein,general,general.csv
+म्हारी फसल में खाद ज्यादा डालने से के नुकसान होसी?,fertilizer,fertilizer.csv
+cotton mein leaf curl virus ka attack hai,disease,disease.csv
+crop rotation ke baare mein batao,crop,crop.csv
+which crop gives best yield in less rainfall?,crop,crop.csv
+स्प्रेयर मशीन कैसे चलाएं,machinery,machinery.csv
+म्हारे खेत री मिट्टी में ऑर्गेनिक कार्बन कम है,soil,soil.csv
+jowar mein anthracnose disease ka attack hai,disease,disease.csv
+धनिया का बीज कब बोएं,seed,seed.csv
+groundnut mein stem rot disease ka attack hai,disease,disease.csv
+जंगली सूअर ने फसल नष्ट कर दी रात को,emergency,emergency.csv
+"म्हारी मिट्टी में जिंक री कमी है, जिंक सल्फेट कितनो डालूं?",fertilizer,fertilizer.json
+कैमरे से फसल की जांच कैसे करें,general,general.csv
+पीएम किसान सम्मान निधि में रजिस्ट्रेशन कैसे करें,government,government.csv
+मेरे खेत में पिछले साल मक्का था अब क्या बोऊं?,crop,crop.csv
+मेरी सोयाबीन में फाइटोफ्थोरा रूट रॉट है,disease,disease.csv
+तूफान आने वाला है क्या,weather,weather.csv

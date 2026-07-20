@@ -38,9 +38,19 @@ function getHeaders() {
   return {
     'Content-Type': 'application/json',
     Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
-    'HTTP-Referer': 'http://localhost:3000',
-    'X-Title': 'Kisan Pragati',
+    'HTTP-Referer': process.env.FRONTEND_URL || 'http://localhost:3000',
+    'X-Title': 'AgroDhan Kisan Pragati',
   };
+}
+
+function extractJson(content: string): Record<string, any> {
+  // Strip markdown code fences if present
+  const cleaned = content.replace(/^```[a-z]*\n?/i, '').replace(/\n?```$/i, '').trim();
+  // Find first { ... } block
+  const start = cleaned.indexOf('{');
+  const end = cleaned.lastIndexOf('}');
+  if (start === -1 || end === -1) throw new Error('No JSON object found in translation response');
+  return JSON.parse(cleaned.slice(start, end + 1));
 }
 
 /**
@@ -92,7 +102,6 @@ ${JSON.stringify(fieldsToTranslate, null, 2)}`;
       messages: [{ role: 'user', content: prompt }],
       temperature: 0.1,
       max_tokens: 4000,
-      response_format: { type: 'json_object' },
     }),
   });
 
@@ -105,7 +114,7 @@ ${JSON.stringify(fieldsToTranslate, null, 2)}`;
   const content = resp.choices?.[0]?.message?.content;
   if (!content) throw new Error('Empty translation response');
 
-  const translated = JSON.parse(content);
+  const translated = extractJson(content);
   return { ...passthrough, ...translated };
 }
 
@@ -146,7 +155,6 @@ ${JSON.stringify(data, null, 2)}`;
       messages: [{ role: 'user', content: prompt }],
       temperature: 0.1,
       max_tokens: 6000,
-      response_format: { type: 'json_object' },
     }),
   });
 
@@ -159,7 +167,7 @@ ${JSON.stringify(data, null, 2)}`;
   const content = resp.choices?.[0]?.message?.content;
   if (!content) throw new Error('Empty translation response');
 
-  return JSON.parse(content);
+  return extractJson(content);
 }
 
 export const SUPPORTED_LANGUAGES = Object.keys(LANGUAGE_NAMES);

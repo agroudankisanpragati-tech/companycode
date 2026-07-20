@@ -1,4 +1,4 @@
-import type { Overview, AdminUser, Recommendation, Listing, SessionUser, GovtScheme, GalleryItem, UserSummary, UserPagination, CropKnowledge, CropKnowledgeSummary, DiseaseRecord, DiseaseKnowledgeSummary, FarmerStory, FarmerStorySummary, BlogPost } from './admin-types';
+import type { Overview, AdminUser, Recommendation, Listing, SessionUser, GovtScheme, GalleryItem, UserSummary, UserPagination, CropKnowledge, CropKnowledgeSummary, DiseaseRecord, DiseaseKnowledgeSummary, PestRecord, PestKnowledgeSummary, FarmerStory, FarmerStorySummary, BlogPost, DPKRecord, DPKListResponse } from './admin-types';
 
 // In development the Next.js rewrite proxy forwards /api/* → http://localhost:4000/api/*
 // In production NEXT_PUBLIC_API_URL points to the live backend.
@@ -329,4 +329,250 @@ export const uploadBlogCover = async (token: string, file: File): Promise<string
   );
   return res.data.coverImage;
 };
+
+// ─── Pest Knowledge Base API ─────────────────────────────────────────────────
+
+export type PestKnowledgeResponse = {
+  success: boolean;
+  data: PestRecord[];
+  pagination: { total: number; page: number; limit: number; pages: number };
+  summary: PestKnowledgeSummary;
+};
+
+export const fetchPestRecords = (
+  token: string,
+  params: { page?: number; limit?: number; search?: string } = {}
+) => {
+  const q = new URLSearchParams();
+  if (params.page) q.set('page', String(params.page));
+  if (params.limit) q.set('limit', String(params.limit));
+  if (params.search) q.set('search', params.search);
+  const qs = q.toString();
+  return requestJson<PestKnowledgeResponse>(`/admin/pest-knowledge${qs ? '?' + qs : ''}`, token);
+};
+
+export const createPestRecord = (token: string, formData: FormData) =>
+  requestFormData<{ success: boolean; data: PestRecord }>('/admin/pest-knowledge', token, formData);
+
+export const updatePestRecord = (token: string, id: string, formData: FormData) =>
+  fetch(`${API_BASE}/admin/pest-knowledge/${id}`, {
+    method: 'PUT',
+    headers: { Authorization: `Bearer ${token}` },
+    body: formData,
+  }).then(r => r.json());
+
+export const deletePestRecord = (token: string, id: string) =>
+  requestJson<{ success: boolean; message: string }>(`/admin/pest-knowledge/${id}`, token, { method: 'DELETE' });
+
+// ─── KVK Management API ──────────────────────────────────────────────────────
+
+import type { KVKRecord, KVKListResponse } from './admin-types';
+
+// ─── Language Dictionary API ────────────────────────────────────────────────────────────────
+
+import type { DictionaryEntry, DictionaryListResponse, ReviewQueueResponse } from './admin-types';
+
+export const fetchDictionaryEntries = (
+  token: string,
+  params: { page?: number; limit?: number; search?: string; category?: string; approved?: string } = {}
+) => {
+  const q = new URLSearchParams();
+  if (params.page)     q.set('page',     String(params.page));
+  if (params.limit)    q.set('limit',    String(params.limit));
+  if (params.search)   q.set('search',   params.search);
+  if (params.category) q.set('category', params.category);
+  if (params.approved !== undefined) q.set('approved', params.approved);
+  const qs = q.toString();
+  return requestJson<DictionaryListResponse>(`/language-engine/dictionary${qs ? '?' + qs : ''}`, token);
+};
+
+export const createDictionaryEntry = (token: string, data: Partial<DictionaryEntry>) =>
+  requestJson<{ success: boolean; data: DictionaryEntry }>('/language-engine/dictionary', token, {
+    method: 'POST',
+    body: JSON.stringify(data),
+  });
+
+export const updateDictionaryEntry = (token: string, id: string, data: Partial<DictionaryEntry>) =>
+  requestJson<{ success: boolean; data: DictionaryEntry }>(`/language-engine/dictionary/${id}`, token, {
+    method: 'PUT',
+    body: JSON.stringify(data),
+  });
+
+export const deleteDictionaryEntry = (token: string, id: string) =>
+  requestJson<{ success: boolean; message: string }>(`/language-engine/dictionary/${id}`, token, { method: 'DELETE' });
+
+export const fetchReviewQueue = (
+  token: string,
+  params: { page?: number; limit?: number; status?: string } = {}
+) => {
+  const q = new URLSearchParams();
+  if (params.page)   q.set('page',   String(params.page));
+  if (params.limit)  q.set('limit',  String(params.limit));
+  if (params.status) q.set('status', params.status);
+  const qs = q.toString();
+  return requestJson<ReviewQueueResponse>(`/language-engine/review-queue${qs ? '?' + qs : ''}`, token);
+};
+
+export const approveQueueItem = (
+  token: string,
+  id: string,
+  data: { english: string; hindi: string; category: string; reviewNote?: string } & Record<string, string>
+) =>
+  requestJson<{ success: boolean; data: DictionaryEntry }>(`/language-engine/review-queue/${id}/approve`, token, {
+    method: 'POST',
+    body: JSON.stringify(data),
+  });
+
+export const rejectQueueItem = (token: string, id: string, reviewNote?: string) =>
+  requestJson<{ success: boolean; message: string }>(`/language-engine/review-queue/${id}/reject`, token, {
+    method: 'POST',
+    body: JSON.stringify({ reviewNote }),
+  });
+
+export const mergeQueueItem = (token: string, id: string, targetId: string, reviewNote?: string) =>
+  requestJson<{ success: boolean; data: DictionaryEntry }>(`/language-engine/review-queue/${id}/merge`, token, {
+    method: 'POST',
+    body: JSON.stringify({ targetId, reviewNote }),
+  });
+
+
+export const fetchKVKList = (
+  token: string,
+  params: { page?: number; limit?: number; search?: string; state?: string; district?: string; isActive?: string } = {}
+) => {
+  const q = new URLSearchParams();
+  if (params.page)     q.set('page',     String(params.page));
+  if (params.limit)    q.set('limit',    String(params.limit));
+  if (params.search)   q.set('search',   params.search);
+  if (params.state)    q.set('state',    params.state);
+  if (params.district) q.set('district', params.district);
+  if (params.isActive !== undefined) q.set('isActive', params.isActive);
+  const qs = q.toString();
+  return requestJson<KVKListResponse>(`/kvk/admin${qs ? '?' + qs : ''}`, token);
+};
+
+export const fetchKVKById = (token: string, id: string) =>
+  requestJson<{ success: boolean; data: KVKRecord }>(`/kvk/admin/${id}`, token);
+
+export const createKVK = (token: string, formData: FormData) =>
+  requestFormData<{ success: boolean; data: KVKRecord }>('/kvk/admin', token, formData);
+
+export const updateKVK = (token: string, id: string, formData: FormData) =>
+  requestFormData<{ success: boolean; data: KVKRecord }>(`/kvk/admin/${id}`, token, formData, 'PUT');
+
+export const toggleKVKStatus = (token: string, id: string) =>
+  requestJson<{ success: boolean; data: KVKRecord }>(`/kvk/admin/${id}/toggle`, token, { method: 'PATCH' });
+
+export const deleteKVK = (token: string, id: string) =>
+  requestJson<{ success: boolean; message: string }>(`/kvk/admin/${id}`, token, { method: 'DELETE' });
+
+// ─── Disease & Pest Knowledge Management API ──────────────────────────────────
+
+import type { DKRecord, DKListResponse } from './admin-types';
+
+export const fetchDKRecords = (
+  token: string,
+  params: { page?: number; limit?: number; search?: string; category?: string; severity?: string; status?: string; cropName?: string } = {}
+) => {
+  const q = new URLSearchParams();
+  if (params.page)     q.set('page',     String(params.page));
+  if (params.limit)    q.set('limit',    String(params.limit));
+  if (params.search)   q.set('search',   params.search);
+  if (params.category) q.set('category', params.category);
+  if (params.severity) q.set('severity', params.severity);
+  if (params.status)   q.set('status',   params.status);
+  if (params.cropName) q.set('cropName', params.cropName);
+  const qs = q.toString();
+  return requestJson<DKListResponse>(`/disease/admin/disease-pest-knowledge${qs ? '?' + qs : ''}`, token);
+};
+
+export const fetchDKRecord = (token: string, id: string) =>
+  requestJson<{ success: boolean; data: DKRecord }>(`/disease/admin/disease-pest-knowledge/${id}`, token);
+
+export const createDKRecord = (token: string, formData: FormData) =>
+  requestFormData<{ success: boolean; data: DKRecord; existingId?: string }>('/disease/admin/disease-pest-knowledge', token, formData);
+
+export const updateDKRecord = (token: string, id: string, formData: FormData) =>
+  requestFormData<{ success: boolean; data: DKRecord }>(`/disease/admin/disease-pest-knowledge/${id}`, token, formData, 'PUT');
+
+export const deleteDKRecord = (token: string, id: string) =>
+  requestJson<{ success: boolean; message: string }>(`/disease/admin/disease-pest-knowledge/${id}`, token, { method: 'DELETE' });
+
+export const bulkDeleteDKRecords = (token: string, ids: string[]) =>
+  requestJson<{ success: boolean; deleted: number }>('/disease/admin/disease-pest-knowledge/bulk-delete', token, {
+    method: 'POST',
+    body: JSON.stringify({ ids }),
+  });
+
+export const duplicateDKRecord = (token: string, id: string) =>
+  requestJson<{ success: boolean; data: DKRecord }>(`/disease/admin/disease-pest-knowledge/${id}/duplicate`, token, { method: 'POST' });
+
+export const exportDKRecords = (token: string, params: { cropName?: string; status?: string } = {}) => {
+  const q = new URLSearchParams();
+  if (params.cropName) q.set('cropName', params.cropName);
+  if (params.status)   q.set('status',   params.status);
+  const qs = q.toString();
+  return requestJson<any>(`/disease/admin/disease-pest-knowledge/export/json${qs ? '?' + qs : ''}`, token);
+};
+
+export const importDKRecords = (token: string, data: any[]) =>
+  requestJson<{ success: boolean; created: number; updated: number; errors: number; total: number }>(
+    '/disease/admin/disease-pest-knowledge/import/json', token,
+    { method: 'POST', body: JSON.stringify({ data }) }
+  );
+
+
+// --- Disease & Pest Solutions (Unified) API ----------------------------------
+
+const DPK_BASE = '/disease/admin/disease-pest-knowledge';
+
+export const fetchDPKRecords = (
+  token: string,
+  params: { page?: number; limit?: number; search?: string; category?: string; severity?: string; status?: string; cropName?: string } = {}
+): Promise<DPKListResponse> => {
+  const q = new URLSearchParams();
+  if (params.page)     q.set('page',     String(params.page));
+  if (params.limit)    q.set('limit',    String(params.limit));
+  if (params.search)   q.set('search',   params.search);
+  if (params.category) q.set('category', params.category);
+  if (params.severity) q.set('severity', params.severity);
+  if (params.status)   q.set('status',   params.status);
+  if (params.cropName) q.set('cropName', params.cropName);
+  const qs = q.toString();
+  return requestJson<DPKListResponse>(`${DPK_BASE}${qs ? '?' + qs : ''}`, token);
+};
+
+export const fetchDPKRecord = (token: string, id: string) =>
+  requestJson<{ success: boolean; data: DPKRecord }>(`${DPK_BASE}/${id}`, token);
+
+export const createDPKRecord = (token: string, formData: FormData) =>
+  requestFormData<{ success: boolean; data: DPKRecord; existingId?: string }>(`${DPK_BASE}`, token, formData);
+
+export const updateDPKRecord = (token: string, id: string, formData: FormData) =>
+  requestFormData<{ success: boolean; data: DPKRecord }>(`${DPK_BASE}/${id}`, token, formData, 'PUT');
+
+export const deleteDPKRecord = (token: string, id: string) =>
+  requestJson<{ success: boolean; message: string }>(`${DPK_BASE}/${id}`, token, { method: 'DELETE' });
+
+export const bulkDeleteDPKRecords = (token: string, ids: string[]) =>
+  requestJson<{ success: boolean; deleted: number }>(`${DPK_BASE}/bulk-delete`, token, {
+    method: 'POST',
+    body: JSON.stringify({ ids }),
+  });
+
+export const duplicateDPKRecord = (token: string, id: string) =>
+  requestJson<{ success: boolean; data: DPKRecord }>(`${DPK_BASE}/${id}/duplicate`, token, { method: 'POST' });
+
+export const exportDPKJson = (token: string, params: { cropName?: string; status?: string } = {}) => {
+  const q = new URLSearchParams();
+  if (params.cropName) q.set('cropName', params.cropName);
+  if (params.status)   q.set('status',   params.status);
+  const qs = q.toString();
+  return requestJson<any>(`${DPK_BASE}/export/json${qs ? '?' + qs : ''}`, token);
+};
+
+export const importDPKJson = (token: string, records: any[]) =>
+  requestJson<{ success: boolean; created: number; updated: number; errors: number }>(
+    `${DPK_BASE}/import/json`, token, { method: 'POST', body: JSON.stringify({ data: records }) }
+  );
 

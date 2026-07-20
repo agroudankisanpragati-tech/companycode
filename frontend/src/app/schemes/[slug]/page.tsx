@@ -2,6 +2,7 @@ import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { fetchSchemeBySlug } from '@/services/schemes';
+import SchemePageContext from '@/components/SchemePageContext';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || 'http://localhost:4000';
 
@@ -41,6 +42,15 @@ export default async function SchemeDetailPage({ params }: Props) {
             ) : (
                 <article className="section-container pb-16">
                     <div className="overflow-hidden rounded-[2rem] border border-green-100 bg-white shadow-sm">
+                        {/* Register open scheme with Root AI */}
+                        <SchemePageContext
+                          title={scheme.title}
+                          department={scheme.department}
+                          summary={scheme.summary}
+                          benefits={scheme.benefits}
+                          eligibility={scheme.eligibility}
+                          applicationProcess={scheme.applicationProcess}
+                        />
                         {/* Cover */}
                         <div className="relative h-56 bg-gradient-to-r from-amber-200 via-lime-200 to-emerald-200 md:h-72 overflow-hidden">
                             {scheme.coverImage || scheme.images?.[0] ? (

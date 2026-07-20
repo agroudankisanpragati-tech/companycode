@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { fetchPublishedSchemes, GovtScheme, SchemeType } from '@/services/schemes';
+import { usePageContext } from '@/hooks/usePageContext';
 
 const INDIAN_STATES = [
     'Andhra Pradesh','Arunachal Pradesh','Assam','Bihar','Chhattisgarh',
@@ -29,6 +30,9 @@ export default function SchemesPage() {
     const [debouncedSearch, setDebouncedSearch] = useState('');
     const [activeType, setActiveType] = useState<'' | SchemeType>('');
     const [selectedState, setSelectedState] = useState('');
+
+    // Register government page context with Root AI
+    usePageContext({ pageContext: 'government' });
 
     // Debounce search
     useEffect(() => {
