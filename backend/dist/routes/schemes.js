@@ -1,4 +1,37 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -174,10 +207,22 @@ router.post('/admin/fetch-from-api', auth_1.authenticate, auth_1.requireAdmin, a
         return res.status(500).json({ error: 'Failed to fetch schemes from API' });
     }
 });
+// ─── Public / Admin: Force Seed 10 Real Government Schemes ──────────────────
+router.post('/seed-force', async (req, res) => {
+    try {
+        const { ensureSeededSchemes } = await Promise.resolve().then(() => __importStar(require('../utils/seedSchemes')));
+        await ensureSeededSchemes(true);
+        const count = await GovtScheme_1.GovtScheme.countDocuments();
+        return res.json({ success: true, message: `Successfully seeded ${count} real government schemes in MongoDB!`, count });
+    }
+    catch (error) {
+        return res.status(500).json({ success: false, error: error.message });
+    }
+});
 // ─── Admin: create scheme (JSON body) ────────────────────────────────────────
 router.post('/admin', auth_1.authenticate, auth_1.requireAdmin, async (req, res) => {
     try {
-        const { title, summary, description, department, audience, benefits, eligibility, requiredDocuments, applicationProcess, applicationLink, officialLink, coverImage, images, videos, tags, keywords, schemeType, state, status, } = req.body;
+        const { title, summary, description, department, audience, benefits, eligibility, requiredDocuments, requiredDocumentsList, estimatedProcessingDays, popularityScore, eligibilityRules, applicationProcess, applicationLink, officialLink, coverImage, images, videos, tags, keywords, schemeType, state, status, } = req.body;
         if (!title || !summary || !description || !department || !audience) {
             return res.status(400).json({ error: 'Title, summary, description, department, and audience are required' });
         }
@@ -197,6 +242,18 @@ router.post('/admin', auth_1.authenticate, auth_1.requireAdmin, async (req, res)
             benefits: sanitizeList(benefits),
             eligibility: eligibility?.trim(),
             requiredDocuments: sanitizeList(requiredDocuments),
+            requiredDocumentsList: sanitizeList(requiredDocumentsList),
+            estimatedProcessingDays: estimatedProcessingDays !== undefined && estimatedProcessingDays !== '' ? Number(estimatedProcessingDays) : undefined,
+            popularityScore: popularityScore !== undefined && popularityScore !== '' ? Number(popularityScore) : 50,
+            eligibilityRules: eligibilityRules ? {
+                minAge: eligibilityRules.minAge !== undefined && eligibilityRules.minAge !== '' ? Number(eligibilityRules.minAge) : undefined,
+                maxAge: eligibilityRules.maxAge !== undefined && eligibilityRules.maxAge !== '' ? Number(eligibilityRules.maxAge) : undefined,
+                maxIncome: eligibilityRules.maxIncome !== undefined && eligibilityRules.maxIncome !== '' ? Number(eligibilityRules.maxIncome) : undefined,
+                genders: sanitizeList(eligibilityRules.genders),
+                occupations: sanitizeList(eligibilityRules.occupations),
+                categories: sanitizeList(eligibilityRules.categories),
+                states: sanitizeList(eligibilityRules.states),
+            } : undefined,
             applicationProcess: applicationProcess?.trim(),
             applicationLink: applicationLink?.trim(),
             officialLink: officialLink?.trim(),
@@ -236,7 +293,7 @@ router.patch('/admin/:id', auth_1.authenticate, auth_1.requireAdmin, async (req,
         const existing = await GovtScheme_1.GovtScheme.findById(req.params.id);
         if (!existing)
             return res.status(404).json({ error: 'Government scheme not found' });
-        const { title, summary, description, department, audience, benefits, eligibility, requiredDocuments, applicationProcess, applicationLink, officialLink, coverImage, images, videos, tags, keywords, schemeType, state, status, } = req.body;
+        const { title, summary, description, department, audience, benefits, eligibility, requiredDocuments, requiredDocumentsList, estimatedProcessingDays, popularityScore, eligibilityRules, applicationProcess, applicationLink, officialLink, coverImage, images, videos, tags, keywords, schemeType, state, status, } = req.body;
         if (title?.trim() && title.trim() !== existing.title) {
             existing.slug = await generateUniqueSlug(title.trim(), existing._id.toString());
             existing.title = title.trim();
@@ -255,6 +312,23 @@ router.patch('/admin/:id', auth_1.authenticate, auth_1.requireAdmin, async (req,
             existing.eligibility = eligibility.trim() || undefined;
         if (Array.isArray(requiredDocuments))
             existing.requiredDocuments = sanitizeList(requiredDocuments);
+        if (Array.isArray(requiredDocumentsList))
+            existing.requiredDocumentsList = sanitizeList(requiredDocumentsList);
+        if (estimatedProcessingDays !== undefined)
+            existing.estimatedProcessingDays = estimatedProcessingDays === '' ? undefined : Number(estimatedProcessingDays);
+        if (popularityScore !== undefined)
+            existing.popularityScore = popularityScore === '' ? undefined : Number(popularityScore);
+        if (eligibilityRules) {
+            existing.eligibilityRules = {
+                minAge: eligibilityRules.minAge !== undefined && eligibilityRules.minAge !== '' ? Number(eligibilityRules.minAge) : undefined,
+                maxAge: eligibilityRules.maxAge !== undefined && eligibilityRules.maxAge !== '' ? Number(eligibilityRules.maxAge) : undefined,
+                maxIncome: eligibilityRules.maxIncome !== undefined && eligibilityRules.maxIncome !== '' ? Number(eligibilityRules.maxIncome) : undefined,
+                genders: Array.isArray(eligibilityRules.genders) ? sanitizeList(eligibilityRules.genders) : existing.eligibilityRules?.genders || [],
+                occupations: Array.isArray(eligibilityRules.occupations) ? sanitizeList(eligibilityRules.occupations) : existing.eligibilityRules?.occupations || [],
+                categories: Array.isArray(eligibilityRules.categories) ? sanitizeList(eligibilityRules.categories) : existing.eligibilityRules?.categories || [],
+                states: Array.isArray(eligibilityRules.states) ? sanitizeList(eligibilityRules.states) : existing.eligibilityRules?.states || [],
+            };
+        }
         if (typeof applicationProcess === 'string')
             existing.applicationProcess = applicationProcess.trim() || undefined;
         if (typeof applicationLink === 'string')
@@ -305,6 +379,264 @@ router.delete('/admin/:id', auth_1.authenticate, auth_1.requireAdmin, async (req
     }
     catch (error) {
         return res.status(500).json({ error: 'Failed to delete government scheme' });
+    }
+});
+// ─── AI Seva Mitra: Eligibility Matching Engine ───────────────────────────────
+router.post('/match', async (req, res) => {
+    try {
+        const { age, income, occupation, gender, category, state, land } = req.body;
+        const userAge = parseInt(age, 10) || 0;
+        const userIncome = parseFloat(income) || 0;
+        const userLand = parseFloat(land) || 0;
+        const userState = (state || '').trim().toLowerCase();
+        const userGender = (gender || '').trim().toLowerCase();
+        const userCategory = (category || '').trim().toLowerCase();
+        const rawOccupation = (occupation || '').trim().toLowerCase();
+        // Hybrid Occupation Normalization
+        let userOccupation = 'any';
+        if (/kisan|farm|crop|agri|खेती|किसान|कृषक/i.test(rawOccupation)) {
+            userOccupation = 'farmer';
+        }
+        else if (/labor|work|mazdoor|मजदूर|मजदूरी|श्रमिक/i.test(rawOccupation)) {
+            userOccupation = 'agricultural-laborer';
+        }
+        else if (/business|self|dokan|shop|दुकान|उद्यमी/i.test(rawOccupation)) {
+            userOccupation = 'self-employed';
+        }
+        else if (/student|padh|छात्र|पढ़ाई/i.test(rawOccupation)) {
+            userOccupation = 'student';
+        }
+        else if (/unemployed|bero|बेरोजगार/i.test(rawOccupation)) {
+            userOccupation = 'unemployed';
+        }
+        const query = { status: 'published' };
+        const allSchemes = await GovtScheme_1.GovtScheme.find(query).lean();
+        const matched = allSchemes.map((scheme) => {
+            const rules = scheme.eligibilityRules;
+            let eligible = true;
+            const reasons = [];
+            if (rules) {
+                // Type / State Match
+                if (scheme.schemeType === 'state' && scheme.state) {
+                    if (scheme.state.toLowerCase() !== userState && userState !== 'any') {
+                        eligible = false;
+                        reasons.push(`यह केवल ${scheme.state} राज्य के निवासियों के लिए है।`);
+                    }
+                }
+                // Age Match
+                if (rules.minAge !== undefined && userAge < rules.minAge) {
+                    eligible = false;
+                    reasons.push(`न्यूनतम आयु सीमा ${rules.minAge} वर्ष है (आपकी आयु: ${userAge} वर्ष)।`);
+                }
+                if (rules.maxAge !== undefined && userAge > rules.maxAge) {
+                    eligible = false;
+                    reasons.push(`अधिकतम आयु सीमा ${rules.maxAge} वर्ष है (आपकी आयु: ${userAge} वर्ष)।`);
+                }
+                // Income Match
+                if (rules.maxIncome !== undefined && userIncome > rules.maxIncome) {
+                    eligible = false;
+                    reasons.push(`पारिवारिक वार्षिक आय सीमा ₹${rules.maxIncome} है (आपकी आय: ₹${userIncome})।`);
+                }
+                // Land Holdings Match
+                if (rules.maxLandHectares !== undefined && userLand > rules.maxLandHectares) {
+                    eligible = false;
+                    reasons.push(`कृषि भूमि सीमा अधिकतम ${rules.maxLandHectares} हेक्टेयर है (आपकी भूमि: ${userLand} हेक्टेयर)।`);
+                }
+                // Gender Match
+                if (userGender && rules.genders && rules.genders.length > 0 && !rules.genders.includes('any')) {
+                    const normalizedGenders = rules.genders.map(g => g.toLowerCase());
+                    if (!normalizedGenders.includes(userGender) && userGender !== 'any') {
+                        eligible = false;
+                        reasons.push(`यह योजना केवल ${rules.genders.join('/')} के लिए है।`);
+                    }
+                }
+                // Occupation Match
+                if (rules.occupations && rules.occupations.length > 0 && !rules.occupations.includes('any')) {
+                    const normalizedOccupations = rules.occupations.map(o => o.toLowerCase());
+                    if (!normalizedOccupations.includes(userOccupation) && userOccupation !== 'any') {
+                        eligible = false;
+                        reasons.push(`यह योजना ${rules.occupations.join('/')} व्यवसाय के लिए है।`);
+                    }
+                }
+                // Category Match
+                if (rules.categories && rules.categories.length > 0 && !rules.categories.includes('any')) {
+                    const normalizedCategories = rules.categories.map(c => c.toLowerCase());
+                    if (!normalizedCategories.includes(userCategory) && userCategory !== 'any') {
+                        eligible = false;
+                        reasons.push(`यह योजना केवल ${rules.categories.join(', ')} वर्गों के लिए है।`);
+                    }
+                }
+            }
+            let confidence = 100;
+            if (!eligible) {
+                confidence = Math.max(10, 100 - (reasons.length * 30));
+            }
+            return {
+                ...scheme,
+                eligible,
+                confidence,
+                reasons,
+                normalizedOccupation: userOccupation
+            };
+        });
+        const sortedMatched = matched.sort((a, b) => {
+            if (a.eligible && !b.eligible)
+                return -1;
+            if (!a.eligible && b.eligible)
+                return 1;
+            const scoreA = (a.confidence * 0.6) + ((a.popularityScore || 50) * 0.4);
+            const scoreB = (b.confidence * 0.6) + ((b.popularityScore || 50) * 0.4);
+            return scoreB - scoreA;
+        });
+        res.json({ success: true, data: sortedMatched });
+    }
+    catch (err) {
+        res.status(500).json({ success: false, error: err.message });
+    }
+});
+// ─── AI Seva Mitra: Jan Aadhaar Profile Mock ──────────────────────────────────
+router.post('/janaadhaar-mock', async (req, res) => {
+    try {
+        const { id } = req.body;
+        if (!id)
+            return res.status(400).json({ success: false, error: 'Jan Aadhaar or SSO ID is required' });
+        let profile = {
+            name: 'रोहित कुमार (Rohit Kumar)',
+            age: 38,
+            gender: 'male',
+            income: 120000,
+            occupation: 'किसान (Farmer)',
+            category: 'OBC',
+            district: 'Jaipur',
+            state: 'Rajasthan',
+            familyMembersCount: 4,
+            landOwnedHectares: 1.2,
+            disability: false
+        };
+        if (id.startsWith('2') || id.toLowerCase().includes('kamla')) {
+            profile = {
+                name: 'कमला देवी (Kamla Devi)',
+                age: 45,
+                gender: 'female',
+                income: 8000,
+                occupation: 'कोई नहीं / बेरोजगार (Unemployed)',
+                category: 'SC',
+                district: 'Bhilwara',
+                state: 'Rajasthan',
+                familyMembersCount: 5,
+                landOwnedHectares: 0,
+                disability: false
+            };
+        }
+        else if (id.startsWith('3') || id.toLowerCase().includes('ram')) {
+            profile = {
+                name: 'रामलाल गुर्जर (Ramlal Gurjar)',
+                age: 62,
+                gender: 'male',
+                income: 45000,
+                occupation: 'मजदूर (Agricultural Labourer)',
+                category: 'ST',
+                district: 'Jodhpur',
+                state: 'Rajasthan',
+                familyMembersCount: 3,
+                landOwnedHectares: 0.2,
+                disability: true
+            };
+        }
+        res.json({ success: true, profile });
+    }
+    catch (err) {
+        res.status(500).json({ success: false, error: err.message });
+    }
+});
+// ─── AI Seva Mitra: Document OCR Mock ─────────────────────────────────────────
+router.post('/ocr-mock', schemeUpload_1.schemeUpload.single('document'), async (req, res) => {
+    try {
+        if (!req.file)
+            return res.status(400).json({ success: false, error: 'No file uploaded' });
+        const filename = req.file.originalname.toLowerCase();
+        await new Promise((resolve) => setTimeout(resolve, 1500));
+        let extracted = {
+            docType: 'Aadhaar Card',
+            name: 'कमला देवी (Kamla Devi)',
+            uniqueId: 'XXXX-XXXX-8940',
+            dob: '15/08/1981',
+            gender: 'female',
+            address: 'ग्राम पो. मांडलगढ़, जिला भीलवाड़ा, राजस्थान',
+            state: 'Rajasthan',
+            valid: true
+        };
+        if (filename.includes('janaadhaar') || filename.includes('jan')) {
+            extracted = {
+                docType: 'Jan Aadhaar Card',
+                name: 'कमला देवी (Kamla Devi)',
+                uniqueId: 'XXXX-XXXX-9023-A',
+                dob: '15/08/1981',
+                gender: 'female',
+                address: 'भीलवाड़ा, राजस्थान',
+                state: 'Rajasthan',
+                valid: true
+            };
+        }
+        else if (filename.includes('income') || filename.includes('aay')) {
+            extracted = {
+                docType: 'Income Certificate',
+                name: 'कमला देवी (Kamla Devi)',
+                uniqueId: 'INC-2026-897',
+                dob: 'N/A',
+                gender: 'female',
+                address: 'भीलवाड़ा, राजस्थान',
+                state: 'Rajasthan',
+                valid: true
+            };
+        }
+        res.json({ success: true, extracted });
+    }
+    catch (err) {
+        res.status(500).json({ success: false, error: err.message });
+    }
+});
+// ─── AI Seva Mitra: Proactive Campaign Mock ───────────────────────────────────
+router.post('/proactive-campaign', async (req, res) => {
+    try {
+        const { schemeTitle } = req.body;
+        if (!schemeTitle)
+            return res.status(400).json({ success: false, error: 'Scheme Title is required' });
+        const users = [
+            { name: 'रामलाल गुर्जर', phone: '982XXXXX12', district: 'Jodhpur' },
+            { name: 'रोहित कुमार', phone: '941XXXXX67', district: 'Jaipur' },
+            { name: 'मदन लाल यादव', phone: '810XXXXX40', district: 'Bikaner' }
+        ];
+        const logs = users.map(u => ({
+            recipientName: u.name,
+            phone: u.phone,
+            message: `राम राम ${u.name} जी! राजस्थान सरकार द्वारा नई योजना '${schemeTitle}' शुरू की गई है। आपके प्रोफ़ाइल के अनुसार आप इसके पात्र हो सकते हैं। आवेदन करने के लिए रिप्लाई करें या ई-मित्र पर जाएं।`,
+            status: 'sent',
+            timestamp: new Date().toISOString()
+        }));
+        res.json({ success: true, matchedCount: users.length, logs });
+    }
+    catch (err) {
+        res.status(500).json({ success: false, error: err.message });
+    }
+});
+// ─── AI Seva Mitra: Govt AI Insights Chatbot Mock ──────────────────────────────
+router.post('/ai-insights', async (req, res) => {
+    try {
+        const { query } = req.body;
+        if (!query)
+            return res.status(400).json({ success: false, error: 'Query is required' });
+        let responseText = `आपकी खोज: "${query}"। हमारे AI एनालिटिक्स के अनुसार, जोधपुर और बीकानेर जिलों में कृषि योजनाओं की जागरूकता सबसे कम (४२%) दर्ज की गई है। इन जिलों में विशेष प्रचार शिविर (e-Mitra awareness drives) आयोजित करने की आवश्यकता है।`;
+        if (query.includes('least') || query.includes('कम')) {
+            responseText = `विश्लेषण रिपोर्ट: राजस्थान महिला निधि योजना के आवेदन जोधपुर मंडल में सबसे कम पाए गए हैं। इसका कारण जागरूकता का अभाव और स्वयं सहायता समूहों (SHGs) के बीच कम संपर्क दर है। विभाग को आगामी महीने में २० विशेष शिविर लगाने की सलाह दी जाती है।`;
+        }
+        else if (query.includes('popular') || query.includes('ज्यादा')) {
+            responseText = `योजना रिपोर्ट: वर्तमान में राजस्थान फसल तारबंदी योजना (Crop Fencing Subsidy) ९५% लोकप्रियता स्कोर के साथ सबसे अधिक उपयोग की जाने वाली योजना है। जयपुर और भीलवाड़ा जिलों में कुल ७८% बजट वितरित किया जा चुका है।`;
+        }
+        res.json({ success: true, reply: responseText });
+    }
+    catch (err) {
+        res.status(500).json({ success: false, error: err.message });
     }
 });
 exports.default = router;

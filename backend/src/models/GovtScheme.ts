@@ -13,6 +13,19 @@ export interface IGovtScheme extends Document {
     benefits: string[];
     eligibility?: string;
     requiredDocuments?: string[];
+    requiredDocumentsList?: string[];
+    estimatedProcessingDays?: number;
+    popularityScore?: number;
+    eligibilityRules?: {
+        minAge?: number;
+        maxAge?: number;
+        maxIncome?: number;
+        maxLandHectares?: number;
+        genders?: string[];
+        occupations?: string[];
+        categories?: string[];
+        states?: string[];
+    };
     applicationProcess?: string;
     applicationLink?: string;
     officialLink?: string;
@@ -42,6 +55,19 @@ const govtSchemeSchema = new Schema<IGovtScheme>(
         benefits: [{ type: String, trim: true }],
         eligibility: { type: String, trim: true },
         requiredDocuments: [{ type: String, trim: true }],
+        requiredDocumentsList: [{ type: String, trim: true }],
+        estimatedProcessingDays: { type: Number },
+        popularityScore: { type: Number, default: 50 },
+        eligibilityRules: {
+            minAge: { type: Number },
+            maxAge: { type: Number },
+            maxIncome: { type: Number },
+            maxLandHectares: { type: Number },
+            genders: [{ type: String, trim: true, lowercase: true }],
+            occupations: [{ type: String, trim: true, lowercase: true }],
+            categories: [{ type: String, trim: true, lowercase: true }],
+            states: [{ type: String, trim: true }]
+        },
         applicationProcess: { type: String, trim: true },
         applicationLink: { type: String, trim: true },
         officialLink: { type: String, trim: true },

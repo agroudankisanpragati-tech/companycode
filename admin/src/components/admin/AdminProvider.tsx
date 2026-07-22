@@ -194,22 +194,6 @@ function AdminChrome({ children }: { children: React.ReactNode }) {
       <header className="border-b border-white/10 px-4 py-4 md:px-8">
         <div className="mx-auto flex max-w-7xl items-center justify-between">
           <p className="text-base font-semibold tracking-wide text-white">Kisan Unnati Admin</p>
-          <nav className="hidden items-center gap-1 md:flex">
-            {navItems.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={`flex items-center gap-1.5 rounded-xl px-3 py-2 text-xs font-semibold transition ${
-                  pathname === item.href
-                    ? 'bg-white/10 text-white'
-                    : 'text-slate-400 hover:bg-white/5 hover:text-white'
-                }`}
-              >
-                <item.icon size={12} />
-                {item.label}
-              </Link>
-            ))}
-          </nav>
           <button
             type="button"
             onClick={() => {
@@ -223,8 +207,34 @@ function AdminChrome({ children }: { children: React.ReactNode }) {
         </div>
       </header>
 
-      <main className="flex-1 mx-auto max-w-7xl px-4 py-8 md:px-8">
-        {children}
+      <main className="flex-1 mx-auto max-w-7xl px-4 py-8 md:px-8 space-y-6 flex flex-col">
+        {/* Workspace Directory Grid */}
+        <section className="glass-panel rounded-3xl p-5">
+          <div className="mb-3.5">
+            <h3 className="text-xs font-bold tracking-[0.2em] uppercase text-slate-400">Admin Workspace Directory</h3>
+            <p className="text-[11px] text-slate-500 mt-0.5">Quick access shortcuts to dashboard sections (optimal for mobile & desktop navigation).</p>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2.5">
+            {navItems.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`flex items-center gap-2 rounded-xl p-2.5 border transition text-xs font-semibold ${
+                  pathname === item.href
+                    ? 'border-cyan-500/30 bg-cyan-500/10 text-white'
+                    : 'border-white/5 bg-slate-900/40 text-slate-350 hover:border-white/15 hover:bg-white/5 hover:text-white'
+                }`}
+              >
+                <item.icon className={`shrink-0 ${pathname === item.href ? 'text-cyan-400' : 'text-slate-450'}`} size={13} />
+                <span className="truncate">{item.label}</span>
+              </Link>
+            ))}
+          </div>
+        </section>
+
+        <div className="flex-1">
+          {children}
+        </div>
       </main>
 
       <footer className="border-t border-white/10 px-4 py-4 text-center text-sm text-slate-400 md:px-8">

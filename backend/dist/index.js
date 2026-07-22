@@ -43,6 +43,7 @@ const memoryEngine_1 = __importDefault(require("./routes/memoryEngine"));
 const voiceEngine_1 = __importDefault(require("./routes/voiceEngine"));
 const pragatiAI_1 = __importDefault(require("./routes/pragatiAI"));
 const bootstrapAdmin_1 = require("./utils/bootstrapAdmin");
+const seedSchemes_1 = require("./utils/seedSchemes");
 const errorHandler_1 = require("./middleware/errorHandler");
 const languageContext_1 = require("./middleware/languageContext");
 const health_1 = __importDefault(require("./routes/health"));
@@ -154,6 +155,7 @@ app.use(errorHandler_1.bilingualErrorHandler);
 const startServer = async () => {
     await (0, database_1.connectDB)();
     await (0, bootstrapAdmin_1.ensureBootstrapAdmin)();
+    await (0, seedSchemes_1.ensureSeededSchemes)();
     const server = app.listen(PORT, () => {
         logger_1.logger.info('Kisan Unnati Backend started', { port: PORT, env: process.env.NODE_ENV || 'development' });
     });

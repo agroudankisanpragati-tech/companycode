@@ -11,6 +11,19 @@ export interface IGovtScheme extends Document {
     benefits: string[];
     eligibility?: string;
     requiredDocuments?: string[];
+    requiredDocumentsList?: string[];
+    estimatedProcessingDays?: number;
+    popularityScore?: number;
+    eligibilityRules?: {
+        minAge?: number;
+        maxAge?: number;
+        maxIncome?: number;
+        maxLandHectares?: number;
+        genders?: string[];
+        occupations?: string[];
+        categories?: string[];
+        states?: string[];
+    };
     applicationProcess?: string;
     applicationLink?: string;
     officialLink?: string;
