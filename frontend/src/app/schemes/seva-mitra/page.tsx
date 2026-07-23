@@ -20,7 +20,8 @@ import {
     FaCheck,
     FaChevronRight,
     FaWaveSquare,
-    FaFemale
+    FaFemale,
+    FaBars
 } from 'react-icons/fa';
 
 // ─── CONSTANTS & OPTIONS ──────────────────────────────────────────────────────
@@ -82,6 +83,7 @@ const CATEGORIES = [
 
 export default function SevaMitraPage() {
     const [activeOption, setActiveOption] = useState<'discovery' | 'document_ocr'>('discovery');
+    const [sidebarOpen, setSidebarOpen] = useState(true);
     usePageContext({ pageContext: 'government' });
 
     const API_BASE = process.env.NEXT_PUBLIC_API_URL || '/api';
@@ -96,6 +98,7 @@ export default function SevaMitraPage() {
     const [voiceGender, setVoiceGender] = useState<'female' | 'male'>('female');
 
     const recognitionRef = useRef<any>(null);
+    const handleVoiceResultRef = useRef<(text: string) => void>(() => {});
 
     // Dynamic Voice List Loader
     useEffect(() => {
@@ -199,36 +202,84 @@ export default function SevaMitraPage() {
         stateName: 'Rajasthan',
         district: 'Jaipur',
         category: 'obc',
-        land: '1.5'
+        land: '1.5',
+        phone: ''
     });
+
+    // isFirstTime: true=new user, false=returning, null=not answered yet
+    const [isFirstTime, setIsFirstTime] = useState<boolean | null>(null);
+    const [phoneInput, setPhoneInput] = useState('');
+    const [phoneError, setPhoneError] = useState('');
 
     const [janaadhaarInput, setJanaadhaarInput] = useState('');
     const [verifyingJanaadhaar, setVerifyingJanaadhaar] = useState(false);
     const [janaadhaarError, setJanaadhaarError] = useState('');
 
-    const getDialectResponse = (stepIndex: number, name: string = '') => {
-        const lang = profile.language;
-        if (lang === 'marwari') {
-            switch (stepIndex) {
-                case 1: return `राम राम सा! भाषा 'मारवाड़ी' चुनी गई है। अब आपनो नाम बताओ सा?`;
-                case 2: return `घणो कोड सा ${name}! अब आपनो काम या धंधो चुनो सा:`;
-                case 3: return `घणो चोखो सा ${name}! अब आपनी उमर बताओ सा:`;
-                case 4: return `मेहरबानी करके आपनी सालाना कमाई बताओ सा:`;
-                case 5: return `आखिरी काम: आपनो जिलो, जात (Category) और ज़मीन बताओ सा:`;
-                case 6: return `राम राम सा! थारे सारू योजनाएं खोजी जा रही है, थोड़ा धीरज राखो सा...`;
-                default: return `थारी पात्रता योजनाएं दाईं तरफ मिल जासी सा।`;
-            }
-        }
-        switch (stepIndex) {
-            case 1: return `राम राम सा! भाषा 'हिंदी' चुनी गई है। अब कृपया अपना शुभ नाम दर्ज करें या बोलकर बताएं?`;
-            case 2: return `धन्यवाद ${name} जी! अब अपना काम या व्यवसाय चुनें:`;
-            case 3: return `बहुत बढ़िया ${name || ''} जी! अब अपनी उम्र चुनें:`;
-            case 4: return `कृपया अपनी सालाना पारिवारिक आय का दायरा चुनें:`;
-            case 5: return `अंतिम चरण: अपना राज्य, जिला, श्रेणी एवं भूमि विवरण चुनें और सबमिट करें:`;
-            case 6: return `धन्यवाद ${name || ''} जी! डेटाबेस से आपकी योग्य योजनाएं खोजी जा रही हैं...`;
-            default: return `आपकी पात्र योजनाएं दाईं ओर उपलब्ध हैं।`;
-        }
+    // Language code → speech recognition lang tag
+    const SPEECH_LANG_MAP: Record<string, string> = {
+        hi: 'hi-IN', en: 'en-IN', marwari: 'hi-IN', punjabi: 'pa-IN',
+        haryanvi: 'hi-IN', marathi: 'mr-IN', gujarati: 'gu-IN',
+        sanskrit: 'hi-IN', te: 'te-IN', ta: 'ta-IN', kn: 'kn-IN',
+        ml: 'ml-IN', bn: 'bn-IN', or: 'or-IN', as: 'as-IN', ur: 'ur-IN',
     };
+
+    // Fallback static responses
+    const getFallbackResponse = (stepIndex: number | string, name: string = '', lang: string): string => {
+        const isMw = lang === 'marwari';
+        const isEn = lang === 'en';
+        const t = (hi: string, mw: string, en: string) => isEn ? en : isMw ? mw : hi;
+        const map: Record<string | number, string> = {
+            1:   t('क्या आप पहली बार आए हैं?', 'क्या आप पहली बार आया सा?', 'Is this your first visit?'),
+            '1b': t('अपना 10 अंक का मोबाइल नंबर दर्ज करें:', 'आपनो 10 अंक को मोबाइल नंबर दाओ सा:', 'Enter your 10-digit mobile number:'),
+            2:   t('आपका नाम क्या है?', 'आपनो नाम बताओ सा?', 'What is your name?'),
+            3:   t(`धन्यवाद ${name} जी! अपना व्यवसाय चुनें:`, `घणो खम्मा ${name} सा! धंधो चुनो:`, `Thanks ${name}! Select your occupation:`),
+            4:   t(`उम्र चुनें ${name} जी:`, `उमर बताओ ${name} सा:`, `Select age group ${name}:`),
+            5:   t('सालाना आय चुनें:', 'सालाना कमाई बताओ सा:', 'Select annual income:'),
+            6:   t('राज्य, जिला, श्रेणी और भूमि चुनें:', 'जिलो, जात और ज़मीन बताओ सा:', 'Select state, district, category & land:'),
+            61:  t(`अपना मोबाइल नंबर दें ताकि आपकी जानकारी सेव हो सके:`, `मोबाइल नंबर दाओ सा ताकि आपनी जानकारी सेव हो जावे:`, 'Share your mobile number to save your profile:'),
+            7:   t(`योग्य योजनाएं खोजी जा रही हैं ${name} जी...`, `योजनाएं खोजी जा रही है ${name} सा...`, `Searching eligible schemes for ${name}...`),
+        };
+        return map[stepIndex] || t('आपकी पात्र योजनाएं नीचे उपलब्ध हैं।', 'थारी पात्रता योजनाएं दाईं तरफ मिल जासी सा।', 'Your eligible schemes are shown below.');
+    };
+
+    // Fetch AI response from backend (OpenAI powered, multilingual)
+    const fetchAIResponse = useCallback(async (
+        step: number | string,
+        currentProfile: typeof profile,
+        userInput?: string
+    ): Promise<string> => {
+        try {
+            const res = await fetch(`${API_BASE}/schemes/seva-mitra-chat`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ step, profile: currentProfile, userInput }),
+            });
+            const data = await res.json();
+            if (data.success && data.reply) return data.reply;
+        } catch { /* fall through to fallback */ }
+        return getFallbackResponse(step, currentProfile.name, currentProfile.language);
+    }, [API_BASE]);
+
+    // Save profile to backend by phone
+    const saveProfileByPhone = useCallback(async (phone: string, currentProfile: typeof profile) => {
+        try {
+            await fetch(`${API_BASE}/schemes/seva-mitra-profile/save`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ phone, profile: { ...currentProfile, phone } }),
+            });
+        } catch { /* silent */ }
+    }, [API_BASE]);
+
+    // Load saved profile by phone (returning user)
+    const loadProfileByPhone = useCallback(async (phone: string): Promise<typeof profile | null> => {
+        try {
+            const res = await fetch(`${API_BASE}/schemes/seva-mitra-profile/${phone}`);
+            const data = await res.json();
+            if (data.success && data.found && data.profile) return data.profile;
+        } catch { /* silent */ }
+        return null;
+    }, [API_BASE]);
 
     const handleJanaadhaarVerify = async () => {
         if (!janaadhaarInput.trim()) return;
@@ -390,7 +441,7 @@ export default function SevaMitraPage() {
     const [modalScheme, setModalScheme] = useState<any | null>(null);
     const [selectedDetailTab, setSelectedDetailTab] = useState<'overview' | 'eligibility' | 'benefits' | 'process'>('overview');
 
-    // Speech Recognition Setup
+    // Speech Recognition Setup — recreate only when language changes
     useEffect(() => {
         if (typeof window !== 'undefined') {
             const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
@@ -398,7 +449,7 @@ export default function SevaMitraPage() {
                 const rec = new SpeechRecognition();
                 rec.continuous = false;
                 rec.interimResults = true;
-                rec.lang = 'hi-IN';
+                rec.lang = SPEECH_LANG_MAP[profile.language] || 'hi-IN';
 
                 rec.onstart = () => {
                     setIsListening(true);
@@ -419,7 +470,8 @@ export default function SevaMitraPage() {
                     if (final) {
                         setIsListening(false);
                         setInterimText('');
-                        handleTextOrVoiceSubmit(final);
+                        // Use ref so we always call the latest handler (no stale closure)
+                        handleVoiceResultRef.current(final);
                     }
                 };
 
@@ -428,7 +480,7 @@ export default function SevaMitraPage() {
                 recognitionRef.current = rec;
             }
         }
-    }, []);
+    }, [profile.language]);
 
     // Query Database for Eligible Schemes
     const fetchEligibleSchemes = useCallback(async (userProfile = profile) => {
@@ -454,9 +506,11 @@ export default function SevaMitraPage() {
                 const eligibleOnly = (data.data || []).filter((s: any) => s.eligible);
                 setMatchedSchemes(eligibleOnly);
 
-                const speakMsg = userProfile.language === 'marwari'
-                    ? `राम राम सा! विश्लेषण पूरा हो गया है। थारे सारू ${eligibleOnly.length} योजनाएं मिली है सा।`
-                    : `राम राम सा! डेटाबेस का विश्लेषण पूर्ण हुआ। आपके लिए ${eligibleOnly.length} पात्र योजनाएं पाई गई हैं।`;
+                const speakMsg = userProfile.language === 'en'
+                    ? `Analysis complete! Found ${eligibleOnly.length} eligible schemes for you.`
+                    : userProfile.language === 'marwari'
+                    ? `राम राम सा! थारे सारू ${eligibleOnly.length} योजनाएं मिली है सा।`
+                    : `विश्लेषण पूर्ण हुआ। आपके लिए ${eligibleOnly.length} पात्र योजनाएं पाई गई हैं।`;
                 speakText(speakMsg);
             }
         } catch (err) {
@@ -467,80 +521,148 @@ export default function SevaMitraPage() {
     }, [API_BASE, profile, speakText]);
 
     // Step Submit Logic
-    const handleStepSubmit = (stepIndex: number, rawVal: string, displayLabel: string) => {
+    const handleStepSubmit = async (stepIndex: number | string, rawVal: string, displayLabel: string) => {
         const text = rawVal.trim();
-        if (!text && stepIndex < 5) return;
+        if (!text && stepIndex !== 5) return;
 
         setChatHistory(prev => [...prev, { sender: 'user', text: displayLabel }]);
         setChatLoading(true);
 
-        let aiReply = '';
         const currentProf = { ...profile };
+        let nextStep: number | string = typeof stepIndex === 'number' ? stepIndex + 1 : 2;
 
         switch (stepIndex) {
             case 0:
                 currentProf.language = text;
                 setProfile(currentProf);
                 updateStep(1);
-                aiReply = getDialectResponse(1, '');
+                nextStep = 1;
                 break;
 
             case 1:
+                // Yes = first time, No = returning
+                if (text === 'yes') {
+                    setIsFirstTime(true);
+                    updateStep(2);
+                    nextStep = 2;
+                } else {
+                    setIsFirstTime(false);
+                    updateStep(-1); // special: waiting for phone
+                    nextStep = '1b';
+                }
+                break;
+
+            case -1:
+            case '1b': {
+                // Returning user entered phone
+                const phone = text.replace(/\D/g, '').slice(0, 10);
+                if (!/^[6-9]\d{9}$/.test(phone)) {
+                    setPhoneError(currentProf.language === 'en' ? 'Invalid mobile number.' : 'अमान्य मोबाइल नंबर।');
+                    setChatLoading(false);
+                    return;
+                }
+                setPhoneError('');
+                const saved = await loadProfileByPhone(phone);
+                if (saved) {
+                    const restoredProfile = { ...saved, language: currentProf.language };
+                    setProfile(restoredProfile);
+                    const welcomeBack = currentProf.language === 'en'
+                        ? `Welcome back ${saved.name}! Your saved profile has been loaded. Searching eligible schemes...`
+                        : currentProf.language === 'marwari'
+                        ? `राम राम सा ${saved.name} जी! आपरी पुरानी जानकारी मिल गई सा। योजनाएं खोजी जा रही है...`
+                        : `स्वागत है ${saved.name} जी! आपकी सेव की गई जानकारी मिल गई। योग्य योजनाएं खोजी जा रही हैं...`;
+                    setChatHistory(prev => [...prev, { sender: 'ai', text: welcomeBack }]);
+                    setChatLoading(false);
+                    updateStep(7);
+                    speakText(welcomeBack);
+                    fetchEligibleSchemes(restoredProfile);
+                    return;
+                } else {
+                    setIsFirstTime(true);
+                    updateStep(2);
+                    nextStep = 2;
+                    const notFound = currentProf.language === 'en'
+                        ? `No saved profile found for this number. Let's create your profile!`
+                        : currentProf.language === 'marwari'
+                        ? `इस नंबर पर कोई जानकारी नहीं मिली सा। नई प्रोफाइल बनाते हैं।`
+                        : `इस नंबर पर कोई प्रोफाइल नहीं मिली। नई प्रोफाइल बनाते हैं!`;
+                    setChatHistory(prev => [...prev, { sender: 'ai', text: notFound }]);
+                    setChatLoading(false);
+                    speakText(notFound);
+                    const namePrompt = await fetchAIResponse(2, currentProf);
+                    setChatHistory(prev => [...prev, { sender: 'ai', text: namePrompt }]);
+                    speakText(namePrompt);
+                    return;
+                }
+            }
+
+            case 2: {
                 const userName = text.replace(/(?:मेरा नाम|name is|म्हारो नाम|हूँ|हू)/gi, '').trim() || text;
                 currentProf.name = userName;
                 setProfile(currentProf);
-                updateStep(2);
-                aiReply = getDialectResponse(2, userName);
+                updateStep(3);
+                nextStep = 3;
                 break;
-
-            case 2:
+            }
+            case 3: {
                 let occ = text;
                 if (/kisan|farm|crop|agri|खेती|किसान|कृषक/i.test(text)) occ = 'farmer';
                 else if (/labor|work|mazdoor|मजदूर|मजदूरी|श्रमिक/i.test(text)) occ = 'agricultural-laborer';
                 else if (/business|self|dokan|shop|दुकान|उद्यमी/i.test(text)) occ = 'self-employed';
                 else if (/student|padh|छात्र|पढ़ाई/i.test(text)) occ = 'student';
                 else if (/unemployed|bero|बेरोजगार/i.test(text)) occ = 'unemployed';
-
                 currentProf.occupation = occ;
                 setProfile(currentProf);
-                updateStep(3);
-                aiReply = getDialectResponse(3, currentProf.name);
+                updateStep(4);
+                nextStep = 4;
                 break;
-
-            case 3:
+            }
+            case 4:
                 currentProf.ageGroup = text;
                 setProfile(currentProf);
-                updateStep(4);
-                aiReply = getDialectResponse(4, currentProf.name);
+                updateStep(5);
+                nextStep = 5;
                 break;
-
-            case 4:
+            case 5:
                 currentProf.incomeRange = text;
                 setProfile(currentProf);
-                updateStep(5);
-                aiReply = getDialectResponse(5, currentProf.name);
-                break;
-
-            case 5:
                 updateStep(6);
-                aiReply = getDialectResponse(6, currentProf.name);
+                nextStep = 6;
+                break;
+            case 6:
+                // State/district/category/land submitted — ask for mobile
+                updateStep(61);
+                nextStep = 61;
+                break;
+            case 61: {
+                // Mobile number submitted — save profile and search schemes
+                const phone = text.replace(/\D/g, '').slice(0, 10);
+                if (!/^[6-9]\d{9}$/.test(phone)) {
+                    setPhoneError(profile.language === 'en' ? 'Invalid mobile number.' : 'अमान्य मोबाइल नंबर।');
+                    setChatLoading(false);
+                    return;
+                }
+                setPhoneError('');
+                currentProf.phone = phone;
+                setProfile(currentProf);
+                await saveProfileByPhone(phone, currentProf);
+                updateStep(7);
+                nextStep = 7;
                 fetchEligibleSchemes(currentProf);
                 break;
-
+            }
             default:
-                aiReply = currentProf.language === 'marwari'
-                    ? `थारी पात्रता योजनाएं दाईं तरफ मिल जासी सा।`
-                    : `आपकी पात्र योजनाएं दाईं ओर उपलब्ध हैं। किसी भी योजना पर क्लिक करके बोलकर विवरण सुनें।`;
                 break;
         }
 
+        const aiReply = await fetchAIResponse(nextStep, currentProf);
         setChatHistory(prev => [...prev, { sender: 'ai', text: aiReply }]);
         setChatLoading(false);
         speakText(aiReply);
     };
 
     // Text or Voice Submit Handler
-    const handleTextOrVoiceSubmit = (textOverride?: string) => {
+    const handleTextOrVoiceSubmit = async (textOverride?: string) => {
         const text = (textOverride || chatInput).trim();
         if (!text) return;
 
@@ -548,10 +670,16 @@ export default function SevaMitraPage() {
         if (isApplying) {
             handleApplyStepSubmit(applyStep, text);
         } else {
-            const activeStep = chatStepRef.current;
-            handleStepSubmit(activeStep, text, text);
+            // step -1 is the returning-user phone input, maps to case '1b'
+            const activeStep = chatStepRef.current === -1 ? '1b' : chatStepRef.current;
+            await handleStepSubmit(activeStep, text, text);
         }
     };
+
+    // Keep voice result ref always pointing to latest handler
+    useEffect(() => {
+        handleVoiceResultRef.current = handleTextOrVoiceSubmit;
+    });
 
     // Toggle Mic Listening
     const toggleListening = () => {
@@ -575,6 +703,9 @@ export default function SevaMitraPage() {
     // Reset Flow
     const handleReset = () => {
         updateStep(0);
+        setIsFirstTime(null);
+        setPhoneInput('');
+        setPhoneError('');
         setProfile({
             language: 'hi',
             name: '',
@@ -585,7 +716,8 @@ export default function SevaMitraPage() {
             stateName: 'Rajasthan',
             district: 'Jaipur',
             category: 'obc',
-            land: '1.5'
+            land: '1.5',
+            phone: ''
         });
         const init = 'राम राम सा! मैं आपकी AI सेवा मित्र हूँ। कृपया अपनी पसंदीदा भाषा चुनें:';
         setChatHistory([{ sender: 'ai', text: init }]);
@@ -653,86 +785,72 @@ export default function SevaMitraPage() {
         }
     };
 
+    // Sidebar nav items — add more here later
+    const NAV_ITEMS = [
+        { id: 'discovery' as const, icon: <FaRobot size={16} />, label: 'AI Chatbot', sublabel: 'सेवा मित्र' },
+        { id: 'document_ocr' as const, icon: <FaFileUpload size={16} />, label: 'Document OCR', sublabel: 'दस्तावेज़ जाँच' },
+    ];
+
     return (
-        <main className="min-h-screen bg-slate-950 text-slate-100 font-sans selection:bg-emerald-500">
-            {/* Custom Dark Glass Header */}
-            <header className="sticky top-0 z-50 w-full border-b border-slate-900 bg-slate-950/80 backdrop-blur-xl shadow-lg">
-                <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                    <div className="flex h-16 items-center justify-between">
-                        {/* Logo / Brand */}
-                        <div className="flex items-center gap-3">
-                            <Link href="/" className="flex items-center gap-2">
-                                <span className="text-xl font-extrabold bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent tracking-tight font-sans">
-                                    AGROUDAN
-                                </span>
-                            </Link>
-                            <span className="h-5 w-[1px] bg-slate-800" />
-                            <div className="flex items-center gap-1.5 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-0.5 rounded-full">
-                                <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                                <span className="text-[10px] font-black text-emerald-400 uppercase tracking-widest font-sans">
-                                    AI Seva Mitra
-                                </span>
-                            </div>
-                        </div>
+        <main className="flex h-screen bg-slate-950 text-slate-100 font-sans selection:bg-emerald-500 overflow-hidden">
 
-                        {/* Navigation Links */}
-                        <div className="flex items-center gap-4">
-                            <Link href="/" className="text-xs font-semibold text-slate-400 hover:text-white transition">
-                                Home
-                            </Link>
-                            <Link href="/crop-advisory" className="text-xs font-semibold text-slate-400 hover:text-white transition">
-                                Crop Advisory
-                            </Link>
-                            <Link href="/disease-detection" className="text-xs font-semibold text-slate-400 hover:text-white transition font-sans">
-                                Disease Detection
-                            </Link>
-                            <Link href="/mandi-prices" className="text-xs font-semibold text-slate-400 hover:text-white transition">
-                                Mandi Prices
-                            </Link>
-                        </div>
-                    </div>
-                </div>
-            </header>
-
-            {/* ──────────────────────────────────────────────────────────────────
-                SUB-HEADER OPTION TABS
-                ────────────────────────────────────────────────────────────────── */}
-            <header className="sticky top-16 z-30 bg-slate-900/90 backdrop-blur-xl border-b border-slate-800">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-14">
-                    <div className="flex items-center gap-2">
-                        <span className="h-2.5 w-2.5 rounded-full bg-emerald-500 animate-pulse" />
-                        <span className="text-xs font-black text-emerald-400 uppercase tracking-widest">
-                            Rajasthan AI Seva Mitra
+            {/* ── LEFT SIDEBAR ── */}
+            <aside className={`flex-shrink-0 flex flex-col bg-slate-900 border-r border-slate-800 transition-all duration-300 ${sidebarOpen ? 'w-52' : 'w-14'}`}>
+                {/* Sidebar top: logo + toggle */}
+                <div className="flex items-center justify-between px-3 py-4 border-b border-slate-800">
+                    {sidebarOpen && (
+                        <span className="text-[10px] font-black text-emerald-400 uppercase tracking-widest leading-tight">
+                            Rajasthan<br />AI Seva Mitra
                         </span>
-                    </div>
-
-                    <div className="flex bg-slate-800 p-1 rounded-xl border border-slate-700">
-                        <button
-                            onClick={() => setActiveOption('discovery')}
-                            className={`flex items-center gap-2 px-4 py-1.5 rounded-lg text-xs font-bold transition ${activeOption === 'discovery' ? 'bg-emerald-500 text-slate-950 shadow-md' : 'text-slate-400 hover:text-white'}`}
-                        >
-                            <FaMobileAlt /> 1) AI Chatbot Assistant
-                        </button>
-
-                        <button
-                            onClick={() => setActiveOption('document_ocr')}
-                            className={`flex items-center gap-2 px-4 py-1.5 rounded-lg text-xs font-bold transition ${activeOption === 'document_ocr' ? 'bg-emerald-500 text-slate-950 shadow-md' : 'text-slate-400 hover:text-white'}`}
-                        >
-                            <FaFileAlt /> 2) ऑफ़लाइन दस्तावेज़ जाँच (Scanner)
-                        </button>
-                    </div>
+                    )}
+                    <button
+                        onClick={() => setSidebarOpen(o => !o)}
+                        className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition flex-shrink-0"
+                    >
+                        <FaBars size={14} />
+                    </button>
                 </div>
-            </header>
 
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+                {/* Nav items */}
+                <nav className="flex-1 py-3 space-y-1 px-2">
+                    {NAV_ITEMS.map(item => (
+                        <button
+                            key={item.id}
+                            onClick={() => setActiveOption(item.id)}
+                            className={`w-full flex items-center gap-3 px-2 py-2.5 rounded-xl transition text-left ${
+                                activeOption === item.id
+                                    ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+                                    : 'text-slate-400 hover:bg-slate-800 hover:text-white border border-transparent'
+                            }`}
+                        >
+                            <span className="flex-shrink-0">{item.icon}</span>
+                            {sidebarOpen && (
+                                <span className="flex flex-col min-w-0">
+                                    <span className="text-[11px] font-bold truncate">{item.label}</span>
+                                    <span className="text-[9px] opacity-60 truncate">{item.sublabel}</span>
+                                </span>
+                            )}
+                        </button>
+                    ))}
+                </nav>
 
-                {/* ──────────────────────────────────────────────────────────────
-                    OPTION 1: CENTERED SMARTPHONE CHATBOT UI
-                    ────────────────────────────────────────────────────────────── */}
+                {/* Sidebar bottom: version */}
+                <div className="px-3 py-3 border-t border-slate-800">
+                    {sidebarOpen
+                        ? <span className="text-[9px] text-slate-600 font-mono">v1.0 · e-Mitra AI</span>
+                        : <span className="text-[9px] text-slate-600 font-mono">v1</span>
+                    }
+                </div>
+            </aside>
+
+            {/* ── MAIN CONTENT AREA ── */}
+            <div className="flex-1 flex flex-col overflow-hidden">
+
+                {/* ── OPTION 1: AI CHATBOT ── */}
                 {activeOption === 'discovery' && (
-                    <div className="max-w-lg mx-auto py-2">
-                        {/* CENTERED SMARTPHONE DEVICE CONTAINER */}
-                        <div className="border-[6px] border-slate-800 bg-slate-950 rounded-[44px] shadow-2xl overflow-hidden relative border-opacity-90 flex flex-col h-[660px]">
+                    <div className="flex-1 flex items-center justify-center p-4 overflow-hidden">
+                        {/* CHATBOT DEVICE CONTAINER — fills available height */}
+                        <div className="border-[6px] border-slate-800 bg-slate-950 rounded-[32px] shadow-2xl overflow-hidden flex flex-col w-full max-w-2xl" style={{ height: 'calc(100vh - 2rem)' }}>
 
                             {/* Phone Notch Header */}
                             <div className="bg-slate-900 px-4 py-3 border-b border-slate-800 flex items-center justify-between flex-shrink-0">
@@ -746,7 +864,7 @@ export default function SevaMitraPage() {
                                             {isSpeaking && <FaWaveSquare className="text-pink-400 text-[10px] animate-pulse" />}
                                         </h3>
                                         <span className="text-[10px] text-pink-400 font-semibold">
-                                            {isApplying ? `आवेदन: चरण ${applyStep + 1}` : chatStep < 6 ? `चरण ${chatStep + 1} / 6` : 'पात्र योजनाएं'}
+                                            {isApplying ? `आवेदन: चरण ${applyStep + 1}` : chatStep === 7 ? 'पात्र योजनाएं' : chatStep < 0 ? 'मोबाइल से खोजें' : `चरण ${chatStep + 1} / 8`}
                                         </span>
                                     </div>
                                 </div>
@@ -780,46 +898,11 @@ export default function SevaMitraPage() {
                             </div>
 
                             {/* PHONE SCREEN INNER CONTENT */}
-                            {chatStep < 6 || isApplying ? (
+                            {chatStep !== 7 || isApplying ? (
                                 /* CHATBOT CONVERSATION VIEW (STEPS 0 TO 5) */
                                 <div className="flex-1 flex flex-col justify-between p-4 overflow-hidden">
                                     {/* Messages Area */}
                                     <div className="flex-1 overflow-y-auto space-y-3 pr-1 scrollbar-thin">
-                                        {/* Jan Aadhaar Quick Verification Widget */}
-                                        {!isApplying && (
-                                            <div className="bg-gradient-to-br from-cyan-950/45 to-slate-900 border border-cyan-500/20 rounded-2xl p-3.5 mb-3.5 space-y-3 shadow-md">
-                                                <div className="flex items-center gap-2">
-                                                    <span className="h-1.5 w-1.5 rounded-full bg-cyan-400 animate-pulse" />
-                                                    <p className="text-[10px] font-bold text-cyan-300 uppercase tracking-wider font-sans">
-                                                        {profile.language === 'marwari' ? 'जन आधार / SSO से झटपट खोजो' : 'जन आधार / SSO से त्वरित खोजें'}
-                                                    </p>
-                                                </div>
-                                                <p className="text-[10px] text-slate-400 font-sans leading-relaxed">
-                                                    {profile.language === 'marwari' 
-                                                        ? 'टाइपिंग से बचण सारू आपनो जन आधार नम्बर नाखो सा।' 
-                                                        : 'टाइपिंग से बचने के लिए अपना जन आधार या SSO आईडी डालें।'}
-                                                </p>
-                                                <div className="flex gap-1.5">
-                                                    <input
-                                                        type="text"
-                                                        value={janaadhaarInput}
-                                                        onChange={(e) => setJanaadhaarInput(e.target.value)}
-                                                        placeholder="e.g. 1 (रोहित), 2 (कमला), 3 (रामलाल)"
-                                                        className="flex-1 bg-slate-950 border border-slate-700 rounded-xl px-2.5 py-1.5 text-xs text-white placeholder-slate-650 focus:outline-none focus:border-cyan-500 font-sans"
-                                                    />
-                                                    <button
-                                                        onClick={handleJanaadhaarVerify}
-                                                        disabled={verifyingJanaadhaar}
-                                                        className="bg-cyan-600 hover:bg-cyan-500 text-white font-bold text-xs px-3 rounded-xl transition flex items-center gap-1.5 disabled:opacity-50 shrink-0 font-sans"
-                                                    >
-                                                        {verifyingJanaadhaar ? '...' : 'खोजें'}
-                                                    </button>
-                                                </div>
-                                                {janaadhaarError && (
-                                                    <p className="text-[10px] text-red-400 mt-1 font-sans">{janaadhaarError}</p>
-                                                )}
-                                            </div>
-                                        )}
 
                                         {chatHistory.map((m, i) => (
                                             <div key={i} className={`flex ${m.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
@@ -855,13 +938,31 @@ export default function SevaMitraPage() {
                                         </div>
                                     )}
 
-                                    {/* STEP 2: OCCUPATIONS */}
-                                    {chatStep === 2 && (
+                                    {/* STEP 1: FIRST TIME? YES / NO */}
+                                    {chatStep === 1 && (
+                                        <div className="py-2 grid grid-cols-2 gap-2">
+                                            <button
+                                                onClick={() => handleStepSubmit(1, 'yes', profile.language === 'en' ? '✅ Yes, First Time' : '✅ हाँ, पहली बार')}
+                                                className="bg-emerald-500/20 hover:bg-emerald-500 text-emerald-300 hover:text-slate-950 border border-emerald-500/40 text-xs font-bold py-3 px-3 rounded-xl transition"
+                                            >
+                                                {profile.language === 'en' ? '✅ Yes, First Time' : '✅ हाँ, पहली बार'}
+                                            </button>
+                                            <button
+                                                onClick={() => handleStepSubmit(1, 'no', profile.language === 'en' ? '❌ No, Returning' : '❌ नहीं, पहले आया हूँ')}
+                                                className="bg-cyan-500/20 hover:bg-cyan-500 text-cyan-300 hover:text-slate-950 border border-cyan-500/40 text-xs font-bold py-3 px-3 rounded-xl transition"
+                                            >
+                                                {profile.language === 'en' ? '❌ No, Returning' : '❌ नहीं, पहले आया हूँ'}
+                                            </button>
+                                        </div>
+                                    )}
+
+                                    {/* STEP 3: OCCUPATIONS */}
+                                    {chatStep === 3 && (
                                         <div className="py-2 grid grid-cols-1 gap-1.5 max-h-40 overflow-y-auto pr-1 scrollbar-thin">
                                             {OCCUPATIONS.map((o) => (
                                                 <button
                                                     key={o.value}
-                                                    onClick={() => handleStepSubmit(2, o.value, o.label)}
+                                                    onClick={() => handleStepSubmit(3, o.value, o.label)}
                                                     className="bg-slate-900 hover:bg-pink-500 text-slate-300 hover:text-slate-950 border border-slate-700 hover:border-pink-500 text-[11px] font-bold py-2 px-3 rounded-xl transition text-left flex items-center justify-between"
                                                 >
                                                     <span>{o.label}</span>
@@ -871,13 +972,13 @@ export default function SevaMitraPage() {
                                         </div>
                                     )}
 
-                                    {/* STEP 3: AGE GROUPS */}
-                                    {chatStep === 3 && (
+                                    {/* STEP 4: AGE GROUPS */}
+                                    {chatStep === 4 && (
                                         <div className="py-2 space-y-1.5">
                                             {AGE_GROUPS.map((a) => (
                                                 <button
                                                     key={a.value}
-                                                    onClick={() => handleStepSubmit(3, a.value, a.label)}
+                                                    onClick={() => handleStepSubmit(4, a.value, a.label)}
                                                     className="w-full bg-slate-900 hover:bg-pink-500 text-slate-300 hover:text-slate-950 border border-slate-700 hover:border-pink-500 text-[11px] font-bold py-2.5 px-3 rounded-xl transition text-left flex items-center justify-between"
                                                 >
                                                     <span>{a.label}</span>
@@ -887,13 +988,13 @@ export default function SevaMitraPage() {
                                         </div>
                                     )}
 
-                                    {/* STEP 4: ANNUAL INCOME */}
-                                    {chatStep === 4 && (
+                                    {/* STEP 5: ANNUAL INCOME */}
+                                    {chatStep === 5 && (
                                         <div className="py-2 space-y-1.5">
                                             {INCOME_RANGES.map((inc) => (
                                                 <button
                                                     key={inc.value}
-                                                    onClick={() => handleStepSubmit(4, inc.value, inc.label)}
+                                                    onClick={() => handleStepSubmit(5, inc.value, inc.label)}
                                                     className="w-full bg-slate-900 hover:bg-pink-500 text-slate-300 hover:text-slate-950 border border-slate-700 hover:border-pink-500 text-[11px] font-bold py-2.5 px-3 rounded-xl transition text-left flex items-center justify-between"
                                                 >
                                                     <span>{inc.label}</span>
@@ -903,8 +1004,8 @@ export default function SevaMitraPage() {
                                         </div>
                                     )}
 
-                                    {/* STEP 5: STATE, DISTRICT, CATEGORY & LAND */}
-                                    {chatStep === 5 && (
+                                    {/* STEP 6: STATE, DISTRICT, CATEGORY & LAND */}
+                                    {chatStep === 6 && (
                                         <div className="py-2 space-y-2 max-h-48 overflow-y-auto pr-1 scrollbar-thin">
                                             <div className="space-y-1">
                                                 <label className="text-[10px] font-bold text-slate-400 uppercase">1. राज्य (State):</label>
@@ -981,16 +1082,18 @@ export default function SevaMitraPage() {
 
                                             <button
                                                 type="button"
-                                                onClick={() => handleStepSubmit(5, profile.district, `राज्य: ${profile.stateName}, जिला: ${profile.district}, श्रेणी: ${profile.category.toUpperCase()}, भूमि: ${profile.land} हेक्टेयर`)}
+                                                onClick={() => handleStepSubmit(6, profile.district, `राज्य: ${profile.stateName}, जिला: ${profile.district}, श्रेणी: ${profile.category.toUpperCase()}, भूमि: ${profile.land} हेक्टेयर`)}
                                                 className="w-full bg-pink-500 hover:bg-pink-400 text-slate-950 font-black text-xs py-2.5 rounded-xl transition shadow mt-2 flex items-center justify-center gap-1.5"
                                             >
-                                                <FaCheck /> {profile.language === 'marwari' ? 'सबमिट करो और योजना खोजो' : 'सबमिट एवं योजनाएं खोजें'}
+                                                <FaCheck /> {profile.language === 'en' ? 'Next → Save Mobile' : profile.language === 'marwari' ? 'आगे जाओ सा' : 'आगे → मोबाइल नंबर'}
                                             </button>
                                         </div>
                                     )}
 
                                     {/* Bottom Mic & Text Input Control Bar */}
-                                    <div className="pt-2 border-t border-slate-800/80 flex items-center gap-2">
+                                    <div className="pt-2 border-t border-slate-800/80 flex flex-col gap-1.5">
+                                        {phoneError && <p className="text-[10px] text-red-400 px-1">{phoneError}</p>}
+                                        <div className="flex items-center gap-2">
                                         <button
                                             type="button"
                                             onClick={toggleListening}
@@ -1006,7 +1109,13 @@ export default function SevaMitraPage() {
                                                 value={chatInput}
                                                 onChange={(e) => setChatInput(e.target.value)}
                                                 onKeyDown={(e) => e.key === 'Enter' && handleTextOrVoiceSubmit()}
-                                                placeholder={isListening ? 'आवाज़ सुनी जा रही है...' : isApplying ? 'विवरण दर्ज करें या बोलें...' : 'बोलें या नाम लिखें...'}
+                                                placeholder={
+                                                    isListening ? 'आवाज़ सुनी जा रही है...' :
+                                                    isApplying ? 'विवरण दर्ज करें या बोलें...' :
+                                                    chatStep === 2 ? (profile.language === 'en' ? 'Type your name...' : profile.language === 'marwari' ? 'आपनो नाम लिखो सा...' : 'अपना नाम लिखें...') :
+                                                    (chatStep === -1 || chatStep === 61) ? (profile.language === 'en' ? '10-digit mobile number...' : '10 अंक का मोबाइल नंबर...') :
+                                                    'बोलें या लिखें...'
+                                                }
                                                 className={`w-full border rounded-xl px-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none transition ${isListening ? 'bg-red-950/30 border-red-500' : 'bg-slate-900 border-slate-700 focus:border-pink-500'}`}
                                             />
                                             {interimText && (
@@ -1021,8 +1130,9 @@ export default function SevaMitraPage() {
                                         </button>
                                     </div>
                                 </div>
+                            </div>
                             ) : (
-                                /* RESULTS VIEW: ELIGIBLE SCHEMES LIST ON PHONE SCREEN (STEP 6) */
+                                /* RESULTS VIEW: ELIGIBLE SCHEMES LIST (STEP 7) */
                                 <div className="flex-1 flex flex-col p-4 overflow-hidden">
                                     <div className="flex items-center justify-between border-b border-slate-800 pb-2 mb-3">
                                         <h4 className="font-black text-white text-xs">आपकी योग्य योजनाएं (Eligible Schemes)</h4>
@@ -1090,7 +1200,7 @@ export default function SevaMitraPage() {
                     OPTION 2: DOCUMENT OCR & ERROR SCANNER
                     ────────────────────────────────────────────────────────────── */}
                 {activeOption === 'document_ocr' && (
-                    <div className="space-y-6 max-w-4xl mx-auto">
+                    <div className="flex-1 overflow-y-auto p-6 space-y-6">
                         <div className="bg-slate-900/80 border border-slate-800 p-5 rounded-2xl">
                             <h1 className="text-xl font-black text-white">ऑफ़लाइन फ़ॉर्म एवं दस्तावेज़ जाँच (OCR Error Scanner)</h1>
                             <p className="text-xs text-slate-400">फॉर्म या आधार कार्ड की फोटो अपलोड करें। AI गलतियां जांचकर रिपोर्ट देगा।</p>
@@ -1160,6 +1270,7 @@ export default function SevaMitraPage() {
                 )}
 
             </div>
+            {/* END MAIN CONTENT AREA */}
 
             {/* ──────────────────────────────────────────────────────────────────
                 SCHEME DETAILS POPUP MODAL (OPENED ON SCHEME CLICK)
@@ -1412,29 +1523,7 @@ export default function SevaMitraPage() {
                 }
             `}} />
 
-            {/* Custom Dark Slate Footer */}
-            <footer className="border-t border-slate-900 bg-slate-950 py-8 px-4 text-center mt-12">
-                <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                    <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-                        <div className="text-left">
-                            <span className="text-sm font-bold bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent font-sans">
-                                एग्रोउड़ान किसान प्रगति
-                            </span>
-                            <p className="text-[11px] text-slate-500 mt-1 max-w-md font-sans">
-                                यह AI सेवा मित्र प्रणाली सरकारी कृषि योजनाओं के नियमों का स्वचालित विश्लेषण कर पात्रता की जांच करती है। आधिकारिक आवेदन करने से पहले सरकारी नियमों की जांच अवश्य करें।
-                            </p>
-                        </div>
-                        <div className="flex flex-wrap gap-4 text-xs text-slate-500 font-sans">
-                            <Link href="/about" className="hover:text-slate-350 transition">About</Link>
-                            <Link href="/contact" className="hover:text-slate-350 transition">Contact</Link>
-                            <Link href="/privacy" className="hover:text-slate-350 transition">Privacy Policy</Link>
-                        </div>
-                    </div>
-                    <div className="mt-6 pt-4 border-t border-slate-900/50 text-center text-[10px] text-slate-650 font-mono">
-                        © {new Date().getFullYear()} Agroudan Kisan Pragati LLP. All rights reserved.
-                    </div>
-                </div>
-            </footer>
+            {/* Footer removed as requested */}
         </main>
     );
 }

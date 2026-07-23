@@ -42,6 +42,7 @@ const languageEngine_1 = __importDefault(require("./routes/languageEngine"));
 const memoryEngine_1 = __importDefault(require("./routes/memoryEngine"));
 const voiceEngine_1 = __importDefault(require("./routes/voiceEngine"));
 const pragatiAI_1 = __importDefault(require("./routes/pragatiAI"));
+const support_1 = __importDefault(require("./routes/support"));
 const bootstrapAdmin_1 = require("./utils/bootstrapAdmin");
 const seedSchemes_1 = require("./utils/seedSchemes");
 const errorHandler_1 = require("./middleware/errorHandler");
@@ -148,6 +149,7 @@ app.use('/api/language-engine', languageEngine_1.default);
 app.use('/api/memory-engine', memoryEngine_1.default);
 app.use('/api/voice-engine', voiceEngine_1.default);
 app.use('/api/pragati-ai', pragatiAI_1.default);
+app.use('/api/support', support_1.default);
 // Health Check
 app.use('/api/health', health_1.default);
 // Error Handler

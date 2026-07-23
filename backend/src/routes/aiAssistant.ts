@@ -4,7 +4,7 @@ import { AuthenticatedRequest, authenticate } from '../middleware/auth';
 import { User } from '../models/User';
 import { SoilMoisture } from '../models/SoilMoisture';
 import { type PageData } from '../services/contextEngine';
-import { runPragatiAIController } from '../services/pragatiAIController';
+import { runPragatiAIController, normalizeLangCode } from '../services/pragatiAIController';
 
 const router = express.Router();
 
@@ -105,7 +105,7 @@ router.post('/chat', authenticate, chatLimiter, async (req: AuthenticatedRequest
       }
     } catch { /* non-critical */ }
 
-    const langCode = selectedLang || req.langCode || 'hi';
+    const langCode = normalizeLangCode(selectedLang || req.langCode || 'hi');
 
     // ── Pragati AI Controller — Root Agent ────────────────────────────────────
     const result = await runPragatiAIController({

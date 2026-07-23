@@ -34,6 +34,41 @@ const sanitizeList = (items: unknown): string[] => {
     return items.filter((i): i is string => typeof i === 'string').map((i) => i.trim()).filter(Boolean).slice(0, 20);
 };
 
+const normalizeOccupation = (rawOccupation: string) => {
+    const normalized = (rawOccupation || '').trim().toLowerCase();
+    if (/kisan|farm|crop|agri|खेती|किसान|कृषक/.test(normalized)) return 'farmer';
+    if (/labor|work|mazdoor|मजदूर|मजदूरी|श्रमिक/.test(normalized)) return 'agricultural-laborer';
+    if (/business|self|dokan|shop|दुकान|उद्यमी/.test(normalized)) return 'self-employed';
+    if (/student|padh|छात्र|पढ़ाई/.test(normalized)) return 'student';
+    if (/unemployed|bero|बेरोज़गार|बेरोजगार/.test(normalized)) return 'unemployed';
+    return 'any';
+};
+
+const normalizeCategory = (rawCategory: string) => {
+    const normalized = (rawCategory || '').trim().toLowerCase();
+    if (/obc/.test(normalized)) return 'obc';
+    if (/sc/.test(normalized)) return 'sc';
+    if (/st/.test(normalized)) return 'st';
+    if (/ews|economic|आर्थिक/.test(normalized)) return 'ews';
+    if (/general/.test(normalized)) return 'general';
+    return normalized || 'any';
+};
+
+const normalizeGender = (rawGender: string) => {
+    const normalized = (rawGender || '').trim().toLowerCase();
+    if (/female|f|महिला|स्त्री/.test(normalized)) return 'female';
+    if (/male|m|पुरुष|नर/.test(normalized)) return 'male';
+    return 'any';
+};
+
+const normalizeStringArray = (items: unknown) => {
+    if (!Array.isArray(items)) return [];
+    return items
+        .filter((item): item is string => typeof item === 'string')
+        .map((item) => item.trim().toLowerCase())
+        .filter(Boolean);
+};
+
 // ─── External API fallback ────────────────────────────────────────────────────
 
 const fetchAndStoreSchemesFromAPI = async (schemeType: SchemeType, state?: string): Promise<void> => {
@@ -392,43 +427,36 @@ router.post('/match', async (req, res) => {
         const userAge = parseInt(age, 10) || 0;
         const userIncome = parseFloat(income) || 0;
         const userLand = parseFloat(land) || 0;
-        const userState = (state || '').trim().toLowerCase();
-        const userGender = (gender || '').trim().toLowerCase();
-        const userCategory = (category || '').trim().toLowerCase();
-        const rawOccupation = (occupation || '').trim().toLowerCase();
-
-        // Hybrid Occupation Normalization
-        let userOccupation = 'any';
-        if (/kisan|farm|crop|agri|खेती|किसान|कृषक/i.test(rawOccupation)) {
-            userOccupation = 'farmer';
-        } else if (/labor|work|mazdoor|मजदूर|मजदूरी|श्रमिक/i.test(rawOccupation)) {
-            userOccupation = 'agricultural-laborer';
-        } else if (/business|self|dokan|shop|दुकान|उद्यमी/i.test(rawOccupation)) {
-            userOccupation = 'self-employed';
-        } else if (/student|padh|छात्र|पढ़ाई/i.test(rawOccupation)) {
-            userOccupation = 'student';
-        } else if (/unemployed|bero|बेरोजगार/i.test(rawOccupation)) {
-            userOccupation = 'unemployed';
-        }
+        const userState = (state || '').trim().toLowerCase() || 'any';
+        const userGender = normalizeGender(gender);
+        const userCategory = normalizeCategory(category);
+        const userOccupation = normalizeOccupation(occupation);
 
         const query: Record<string, any> = { status: 'published' };
-
         const allSchemes = await GovtScheme.find(query).lean();
+
         const matched = allSchemes.map((scheme) => {
             const rules = scheme.eligibilityRules;
             let eligible = true;
             const reasons: string[] = [];
 
+            if (scheme.schemeType === 'state' && scheme.state) {
+                const schemeState = scheme.state.trim().toLowerCase();
+                if (userState !== 'any' && schemeState !== userState) {
+                    eligible = false;
+                    reasons.push(`यह केवल ${scheme.state} राज्य के निवासियों के लिए है।`);
+                }
+            }
+
             if (rules) {
-                // Type / State Match
-                if (scheme.schemeType === 'state' && scheme.state) {
-                    if (scheme.state.toLowerCase() !== userState && userState !== 'any') {
+                const ruleStates = normalizeStringArray(rules.states);
+                if (ruleStates.length > 0 && !ruleStates.includes('any') && userState !== 'any') {
+                    if (!ruleStates.includes(userState)) {
                         eligible = false;
-                        reasons.push(`यह केवल ${scheme.state} राज्य के निवासियों के लिए है।`);
+                        reasons.push(`यह योजना केवल ${ruleStates.join(', ')} राज्यों के लिए है।`);
                     }
                 }
 
-                // Age Match
                 if (rules.minAge !== undefined && userAge < rules.minAge) {
                     eligible = false;
                     reasons.push(`न्यूनतम आयु सीमा ${rules.minAge} वर्ष है (आपकी आयु: ${userAge} वर्ष)।`);
@@ -437,58 +465,48 @@ router.post('/match', async (req, res) => {
                     eligible = false;
                     reasons.push(`अधिकतम आयु सीमा ${rules.maxAge} वर्ष है (आपकी आयु: ${userAge} वर्ष)।`);
                 }
-
-                // Income Match
                 if (rules.maxIncome !== undefined && userIncome > rules.maxIncome) {
                     eligible = false;
                     reasons.push(`पारिवारिक वार्षिक आय सीमा ₹${rules.maxIncome} है (आपकी आय: ₹${userIncome})।`);
                 }
-
-                // Land Holdings Match
                 if (rules.maxLandHectares !== undefined && userLand > rules.maxLandHectares) {
                     eligible = false;
                     reasons.push(`कृषि भूमि सीमा अधिकतम ${rules.maxLandHectares} हेक्टेयर है (आपकी भूमि: ${userLand} हेक्टेयर)।`);
                 }
 
-                // Gender Match
-                if (userGender && rules.genders && rules.genders.length > 0 && !rules.genders.includes('any')) {
-                    const normalizedGenders = rules.genders.map(g => g.toLowerCase());
-                    if (!normalizedGenders.includes(userGender) && userGender !== 'any') {
+                const normalizedGenders = normalizeStringArray(rules.genders);
+                if (normalizedGenders.length > 0 && !normalizedGenders.includes('any') && userGender !== 'any') {
+                    if (!normalizedGenders.includes(userGender)) {
                         eligible = false;
-                        reasons.push(`यह योजना केवल ${rules.genders.join('/')} के लिए है।`);
+                        reasons.push(`यह योजना केवल ${normalizedGenders.join('/')} के लिए है।`);
                     }
                 }
 
-                // Occupation Match
-                if (rules.occupations && rules.occupations.length > 0 && !rules.occupations.includes('any')) {
-                    const normalizedOccupations = rules.occupations.map(o => o.toLowerCase());
-                    if (!normalizedOccupations.includes(userOccupation) && userOccupation !== 'any') {
+                const normalizedOccupations = normalizeStringArray(rules.occupations);
+                if (normalizedOccupations.length > 0 && !normalizedOccupations.includes('any') && userOccupation !== 'any') {
+                    if (!normalizedOccupations.includes(userOccupation)) {
                         eligible = false;
-                        reasons.push(`यह योजना ${rules.occupations.join('/')} व्यवसाय के लिए है।`);
+                        reasons.push(`यह योजना ${normalizedOccupations.join('/')} व्यवसाय के लिए है।`);
                     }
                 }
 
-                // Category Match
-                if (rules.categories && rules.categories.length > 0 && !rules.categories.includes('any')) {
-                    const normalizedCategories = rules.categories.map(c => c.toLowerCase());
-                    if (!normalizedCategories.includes(userCategory) && userCategory !== 'any') {
+                const normalizedCategories = normalizeStringArray(rules.categories);
+                if (normalizedCategories.length > 0 && !normalizedCategories.includes('any') && userCategory !== 'any') {
+                    if (!normalizedCategories.includes(userCategory)) {
                         eligible = false;
-                        reasons.push(`यह योजना केवल ${rules.categories.join(', ')} वर्गों के लिए है।`);
+                        reasons.push(`यह योजना केवल ${normalizedCategories.join(', ')} वर्गों के लिए है।`);
                     }
                 }
             }
 
-            let confidence = 100;
-            if (!eligible) {
-                confidence = Math.max(10, 100 - (reasons.length * 30));
-            }
+            const confidence = eligible ? 100 : Math.max(10, 100 - reasons.length * 30);
 
             return {
                 ...scheme,
                 eligible,
                 confidence,
                 reasons,
-                normalizedOccupation: userOccupation
+                normalizedOccupation: userOccupation,
             };
         });
 
@@ -503,6 +521,42 @@ router.post('/match', async (req, res) => {
         res.json({ success: true, data: sortedMatched });
     } catch (err: any) {
         res.status(500).json({ success: false, error: err.message });
+    }
+});
+
+// ─── AI Seva Mitra: Jan Aadhaar / SSO Integration Placeholder ─────────────────
+
+router.post('/janaadhaar', async (req, res) => {
+    try {
+        const { id } = req.body;
+        if (!id) return res.status(400).json({ success: false, error: 'Jan Aadhaar or SSO ID is required' });
+
+        const apiUrl = process.env.SSO_API_URL?.trim();
+        const apiKey = process.env.SSO_API_KEY?.trim();
+
+        if (!apiUrl) {
+            return res.status(501).json({
+                success: false,
+                error: 'SSO integration not configured.',
+                hint: 'Set SSO_API_URL and SSO_API_KEY in backend environment.',
+            });
+        }
+
+        const headers: Record<string, string> = {
+            'Content-Type': 'application/json',
+        };
+        if (apiKey) headers.Authorization = `Bearer ${apiKey}`;
+
+        const response = await axios.post(apiUrl, { id }, { headers, timeout: 15000 });
+        const profile = response.data?.profile;
+
+        if (!profile) {
+            return res.status(502).json({ success: false, error: 'Invalid SSO response from upstream service.' });
+        }
+
+        res.json({ success: true, profile });
+    } catch (err: any) {
+        res.status(500).json({ success: false, error: err.message || 'SSO lookup failed.' });
     }
 });
 
@@ -611,6 +665,112 @@ router.post('/ocr-mock', schemeUpload.single('document'), async (req, res) => {
         res.json({ success: true, extracted });
     } catch (err: any) {
         res.status(500).json({ success: false, error: err.message });
+    }
+});
+
+// ─── AI Seva Mitra: Save / Load User Profile by Mobile ─────────────────────
+
+const sevaMitraProfiles: Map<string, Record<string, any>> = new Map();
+
+router.post('/seva-mitra-profile/save', async (req, res) => {
+    try {
+        const { phone, profile } = req.body as { phone: string; profile: Record<string, any> };
+        if (!phone || !/^[6-9]\d{9}$/.test(phone.trim())) {
+            return res.status(400).json({ success: false, error: 'Valid 10-digit mobile number required' });
+        }
+        sevaMitraProfiles.set(phone.trim(), { ...profile, phone: phone.trim(), savedAt: new Date().toISOString() });
+        return res.json({ success: true, message: 'Profile saved' });
+    } catch (err: any) {
+        return res.status(500).json({ success: false, error: err.message });
+    }
+});
+
+router.get('/seva-mitra-profile/:phone', async (req, res) => {
+    try {
+        const phone = req.params.phone.trim();
+        const saved = sevaMitraProfiles.get(phone);
+        if (!saved) return res.json({ success: false, found: false });
+        return res.json({ success: true, found: true, profile: saved });
+    } catch (err: any) {
+        return res.status(500).json({ success: false, error: err.message });
+    }
+});
+
+// ─── AI Seva Mitra: Multilingual Chat (OpenAI powered) ──────────────────────
+
+const LANG_NAMES: Record<string, string> = {
+    hi: 'Hindi', en: 'English', marwari: 'Marwari (Rajasthani dialect)',
+    punjabi: 'Punjabi', haryanvi: 'Haryanvi', marathi: 'Marathi',
+    gujarati: 'Gujarati', sanskrit: 'Sanskrit', te: 'Telugu', ta: 'Tamil',
+    kn: 'Kannada', ml: 'Malayalam', bn: 'Bengali', or: 'Odia',
+    as: 'Assamese', ur: 'Urdu', pa: 'Punjabi',
+};
+
+router.post('/seva-mitra-chat', async (req, res) => {
+    try {
+        const { step, profile, userInput } = req.body as {
+            step: number;
+            profile: Record<string, string>;
+            userInput?: string;
+        };
+
+        const apiKey = process.env.OPENAI_API_KEY;
+        if (!apiKey) {
+            return res.status(503).json({ success: false, error: 'AI not configured' });
+        }
+
+        const langCode = (profile?.language || 'hi').toLowerCase();
+        const langName = LANG_NAMES[langCode] || langCode;
+        const name = profile?.name || '';
+
+        const stepPrompts: Record<string | number, string> = {
+            1:   `The user just selected language "${langName}". Greet them warmly in ${langName} and ask: "Are you visiting for the first time?" Give two clear options: Yes (first time) / No (returning user). Use local greeting style.`,
+            '1b': `Ask the user in ${langName} to enter their 10-digit mobile number so you can load their saved profile. Keep it short and friendly.`,
+            2:   `Ask the user in ${langName} to tell you their name. Keep it warm and short. (This is the name collection step — do NOT ask about occupation.)`,
+            3:   `The user's name is "${name}". Greet them by name in ${langName} and ask them to select their occupation/profession. Keep it short.`,
+            4:   `Ask the user "${name}" in ${langName} to select their age group. Keep it short.`,
+            5:   `Ask the user "${name}" in ${langName} to select their annual family income range. Keep it short.`,
+            6:   `Tell the user "${name}" in ${langName} this is almost the last step — ask them to select their state, district, social category, and land details. Keep it short.`,
+            61:  `Ask the user "${name}" in ${langName} to share their 10-digit mobile number so their profile can be saved for future visits. Keep it short and reassuring about privacy.`,
+            7:   `Tell the user "${name}" in ${langName} that you are now searching the database for eligible government schemes based on their profile. Sound enthusiastic and helpful. Keep it short.`,
+        };
+
+        const prompt = stepPrompts[step] || `Respond helpfully in ${langName} to: "${userInput}"`;
+
+        const response = await fetch(
+            `${process.env.OPENAI_BASE_URL || 'https://api.openai.com/v1'}/chat/completions`,
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${apiKey}`,
+                    'HTTP-Referer': process.env.FRONTEND_URL || 'http://localhost:3000',
+                    'X-Title': 'Seva Mitra AI',
+                },
+                body: JSON.stringify({
+                    model: process.env.OPENAI_MODEL || 'openai/gpt-4o-mini',
+                    messages: [{
+                        role: 'system',
+                        content: `You are Seva Mitra, an AI assistant helping Indian citizens discover government schemes. Always respond ONLY in ${langName}. Be warm, concise, and use local cultural greetings where appropriate. Never switch languages.`,
+                    }, {
+                        role: 'user',
+                        content: prompt,
+                    }],
+                    temperature: 0.5,
+                    max_tokens: 200,
+                }),
+            }
+        );
+
+        if (!response.ok) {
+            return res.status(502).json({ success: false, error: 'AI API error' });
+        }
+
+        const data = await response.json() as any;
+        const reply = data.choices?.[0]?.message?.content?.trim() || '';
+        return res.json({ success: true, reply });
+    } catch (err: any) {
+        return res.status(500).json({ success: false, error: err.message });
     }
 });
 

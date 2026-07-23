@@ -92,12 +92,22 @@ RESPONSE FORMAT:
 - Use simple, farmer-friendly language with bullet points and emojis.`;
 
 const LANG_NAMES: Record<string, string> = {
-  en: 'English', hi: 'Hindi', mr: 'Marathi', gu: 'Gujarati', pa: 'Punjabi',
-  bn: 'Bengali', as: 'Assamese', or: 'Odia', te: 'Telugu', ta: 'Tamil',
-  kn: 'Kannada', ml: 'Malayalam', ur: 'Urdu', sa: 'Sanskrit',
-  kok: 'Konkani', ks: 'Kashmiri', mni: 'Manipuri', brx: 'Bodo',
-  doi: 'Dogri', mai: 'Maithili', ne: 'Nepali', sd: 'Sindhi', raj: 'Rajasthani',
+  en: 'English', english: 'English', hi: 'Hindi', hindi: 'Hindi', mr: 'Marathi', marathi: 'Marathi', gu: 'Gujarati', gujarati: 'Gujarati', pa: 'Punjabi', punjabi: 'Punjabi',
+  bn: 'Bengali', bengali: 'Bengali', as: 'Assamese', assamese: 'Assamese', or: 'Odia', odia: 'Odia', te: 'Telugu', telugu: 'Telugu', ta: 'Tamil', tamil: 'Tamil',
+  kn: 'Kannada', kannada: 'Kannada', ml: 'Malayalam', malayalam: 'Malayalam', ur: 'Urdu', urdu: 'Urdu', sa: 'Sanskrit', sanskrit: 'Sanskrit',
+  kok: 'Konkani', kashmiri: 'Kashmiri', ks: 'Kashmiri', mni: 'Manipuri', brx: 'Bodo',
+  doi: 'Dogri', mai: 'Maithili', ne: 'Nepali', sd: 'Sindhi', raj: 'Rajasthani', rajasthani: 'Rajasthani',
+  mwr: 'Marwari', marwari: 'Marwari',
 };
+
+export function normalizeLangCode(rawLangCode: string | undefined | null): string {
+  const code = String(rawLangCode || '').trim().toLowerCase();
+  if (!code || code === 'auto') return 'hi';
+
+  const aliasMap: Record<string, string> = {
+    english: 'en', hindi: 'hi', marwari: 'mwr', sanskrit: 'sa', rajasthani: 'raj', odia: 'or', kannada: 'kn', malayalam: 'ml', urdu: 'ur', gujarati: 'gu', punjabi: 'pa', marathi: 'mr', bengali: 'bn', assamese: 'as', telugu: 'te', tamil: 'ta', nepali: 'ne', dogri: 'doi', kashmiri: 'ks', konkani: 'kok', sindhi: 'sd', bod: 'brx', santali: 'sat', maithili: 'mai', manipuri: 'mni', kokborok: 'brx', 'hi-in': 'hi', 'en-in': 'en', 'sa-in': 'sa', 'mr-in': 'mr', 'mwr-in': 'mwr' };
+  return aliasMap[code] || code;
+}
 
 // ─── LLM fallback (general intent only) ──────────────────────────────────────
 
@@ -108,11 +118,12 @@ async function callLLMFallback(
   llm:          ReturnType<typeof getLLMConfig>,
 ): Promise<{ english: string; hindi: string; native: string } | null> {
   try {
+    const normalizedLangCode = normalizeLangCode(langCode);
     let systemContent = SYSTEM_PROMPT + contextBlock;
-    if (langCode && LANG_NAMES[langCode]) {
-      systemContent += `\n\nLANGUAGE INSTRUCTION (MANDATORY): Write "native" in ${LANG_NAMES[langCode]}, "hindi" in Hindi, "english" in English.`;
+    if (normalizedLangCode && LANG_NAMES[normalizedLangCode]) {
+      systemContent += `\n\nLANGUAGE INSTRUCTION (MANDATORY): Write \"native\" in ${LANG_NAMES[normalizedLangCode]}, \"hindi\" in Hindi, \"english\" in English. Use simple farmer-friendly phrasing in the requested native language.`;
     } else {
-      systemContent += `\n\nLANGUAGE INSTRUCTION: Detect user language for "native". "hindi" in Hindi. "english" in English.`;
+      systemContent += `\n\nLANGUAGE INSTRUCTION: Detect user language for \"native\". \"hindi\" in Hindi. \"english\" in English.`;
     }
 
     const res = await fetch(`${llm.baseUrl}/chat/completions`, {
@@ -176,7 +187,8 @@ export async function runPragatiAIController(
   req: ControllerRequest,
 ): Promise<ControllerResponse> {
   const start = Date.now();
-  const { userId, messages, langCode, pageData, dashboardContext, farmerProfile } = req;
+  const { userId, messages, pageData, dashboardContext, farmerProfile } = req;
+  const langCode = normalizeLangCode(req.langCode);
   const lastUserMsg = [...messages].reverse().find(m => m.role === 'user')?.content || '';
 
   // ── Step 1: Language Engine ───────────────────────────────────────────────

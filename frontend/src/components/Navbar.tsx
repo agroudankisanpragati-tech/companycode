@@ -9,6 +9,7 @@ import LanguageSelector from '@/components/LanguageSelector';
 import { useAuth } from '@/context/AuthContext';
 
 const navLinks = [
+  { href: 'http://localhost:3000/schemes/seva-mitra', label: 'Seva Mitra' },
   { href: '/about', label: 'About' },
   { href: '/ai-assistant', label: 'AI Assistant' },
   { href: '/crop-advisory', label: 'Crop Advisory' },
