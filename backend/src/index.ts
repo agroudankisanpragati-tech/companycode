@@ -37,6 +37,7 @@ import languageEngineRoutes from './routes/languageEngine';
 import memoryEngineRoutes from './routes/memoryEngine';
 import voiceEngineRoutes from './routes/voiceEngine';
 import pragatiAIRoutes from './routes/pragatiAI';
+import supportRoutes from './routes/support';
 import { ensureBootstrapAdmin } from './utils/bootstrapAdmin';
 import { ensureSeededSchemes } from './utils/seedSchemes';
 import { bilingualErrorHandler, requestTimeout } from './middleware/errorHandler';
@@ -158,6 +159,7 @@ app.use('/api/language-engine', languageEngineRoutes);
 app.use('/api/memory-engine', memoryEngineRoutes);
 app.use('/api/voice-engine', voiceEngineRoutes);
 app.use('/api/pragati-ai', pragatiAIRoutes);
+app.use('/api/support', supportRoutes);
 
 // Health Check
 app.use('/api/health', healthRoutes);
