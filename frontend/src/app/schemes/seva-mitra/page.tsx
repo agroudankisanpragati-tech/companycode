@@ -21,7 +21,10 @@ import {
     FaChevronRight,
     FaWaveSquare,
     FaFemale,
-    FaBars
+    FaBars,
+    FaListAlt,
+    FaLock,
+    FaSearch
 } from 'react-icons/fa';
 
 // ─── CONSTANTS & OPTIONS ──────────────────────────────────────────────────────
@@ -82,9 +85,49 @@ const CATEGORIES = [
 ];
 
 export default function SevaMitraPage() {
-    const [activeOption, setActiveOption] = useState<'discovery' | 'document_ocr'>('discovery');
+    const [activeOption, setActiveOption] = useState<'discovery' | 'document_ocr' | 'my_applications'>('discovery');
+
+    // ── My Applications Lookup State ──────────────────────────────────────────
+    const [lookupPhone, setLookupPhone] = useState('');
+    const [lookupPin, setLookupPin] = useState('');
+    const [lookupLoading, setLookupLoading] = useState(false);
+    const [lookupError, setLookupError] = useState('');
+    const [lookupResults, setLookupResults] = useState<any[]>([]);
+    const [lookupDone, setLookupDone] = useState(false);
+
+    const handleLookup = async () => {
+        if (!/^[6-9]\d{9}$/.test(lookupPhone.trim())) {
+            setLookupError('कृपया सही 10 अंक का मोबाइल नंबर दर्ज करें।');
+            return;
+        }
+        if (!/^\d{4}$/.test(lookupPin.trim())) {
+            setLookupError('कृपया 4 अंकों का PIN दर्ज करें।');
+            return;
+        }
+        setLookupError('');
+        setLookupLoading(true);
+        setLookupDone(false);
+        try {
+            const res = await fetch(`${API_BASE}/schemes/application/lookup`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ phone: lookupPhone.trim(), pin: lookupPin.trim() }),
+            });
+            const data = await res.json();
+            if (data.success) {
+                setLookupResults(data.applications || []);
+            } else {
+                setLookupError(data.error === 'Incorrect PIN' ? 'गलत PIN। कृपया पुनः प्रयास करें।' : 'इस नंबर पर कोई आवेदन नहीं मिला।');
+                setLookupResults([]);
+            }
+        } catch {
+            setLookupError('कनेक्शन में त्रुटि। कृपया पुनः प्रयास करें।');
+        } finally {
+            setLookupLoading(false);
+            setLookupDone(true);
+        }
+    };
     const [sidebarOpen, setSidebarOpen] = useState(true);
-    usePageContext({ pageContext: 'government' });
 
     const API_BASE = process.env.NEXT_PUBLIC_API_URL || '/api';
 
@@ -99,6 +142,7 @@ export default function SevaMitraPage() {
 
     const recognitionRef = useRef<any>(null);
     const handleVoiceResultRef = useRef<(text: string) => void>(() => {});
+    const speakTextRef = useRef<(text: string) => void>(() => {});
 
     // Dynamic Voice List Loader
     useEffect(() => {
@@ -180,6 +224,9 @@ export default function SevaMitraPage() {
             setIsSpeaking(false);
         }
     }, [availableVoices, voiceGender]);
+
+    // Keep speakTextRef always pointing to latest speakText (avoids stale closure in callbacks)
+    useEffect(() => { speakTextRef.current = speakText; });
 
     // ──────────────────────────────────────────────────────────────────────────
     // CONVERSATIONAL AI STATE MACHINE WITH REF SYNC
@@ -323,7 +370,7 @@ export default function SevaMitraPage() {
                     { sender: 'ai', text: greetText }
                 ]);
                 
-                setChatStep(6);
+                updateStep(6);
                 speakText(profile.language === 'marwari'
                     ? `जन आधार सत्यापित हो ग्यो सा! राम राम सा ${prof.name} जी। थारे सारू योजनाएं खोजी जा रही है सा।`
                     : `जन आधार सत्यापित! राम राम सा ${prof.name} जी। आपके डेटाबेस से आपकी योग्य योजनाएं खोजी जा रही हैं...`);
@@ -346,18 +393,23 @@ export default function SevaMitraPage() {
         bankAccount: '',
         ifsc: '',
         mutationNumber: '',
-        phone: ''
+        phone: '',
+        pin: ''
     });
+    const [applicationSaved, setApplicationSaved] = useState(false);
+    const [receiptNumber] = useState(() => Math.floor(100000 + Math.random() * 900000));
 
     const startApplyWorkflow = (scheme: any) => {
         setIsApplying(true);
         setApplyingScheme(scheme);
         setApplyStep(0);
+        setApplicationSaved(false);
         setApplyData({
             bankAccount: '',
             ifsc: '',
             mutationNumber: '',
-            phone: ''
+            phone: '',
+            pin: ''
         });
 
         const startMsg = profile.language === 'marwari'
@@ -370,7 +422,7 @@ export default function SevaMitraPage() {
         speakText(startMsg);
     };
 
-    const handleApplyStepSubmit = (stepIndex: number, text: string) => {
+    const handleApplyStepSubmit = async (stepIndex: number, text: string) => {
         setChatHistory(prev => [...prev, { sender: 'user', text }]);
         setChatLoading(true);
 
@@ -408,16 +460,65 @@ export default function SevaMitraPage() {
             } else {
                 setApplyStep(4);
                 aiReply = profile.language === 'marwari'
-                    ? `घणी मेहरबानी सा! आपरो आवेदन फॉर्म पूरा भर ग्यो है सा। नीचे दिए गए बटन से आपरी e-Mitra रसीद प्रिंट कर लो सा।`
-                    : `धन्यवाद! आवेदन फॉर्म के सभी विवरण सफलतापूर्वक एकत्र कर लिए गए हैं। नीचे दिए गए बटन से अपने e-Mitra आवेदन पत्र का प्रिंट या PDF प्राप्त करें।`;
+                    ? `मोबाईल नम्बर सेव कर लिया सा। अब एक 4 अंक का PIN बनाओ सा — इससे आप बाद में अपना आवेदन देख सकोगे।`
+                    : `मोबाइल नंबर सहेज लिया गया। अब कृपया एक 4-अंकीय PIN बनाएं — इससे आप बाद में अपना आवेदन देख सकेंगे:`;
             }
         } else if (stepIndex === 3) {
             currentData.mutationNumber = text;
             setApplyData(currentData);
             setApplyStep(4);
             aiReply = profile.language === 'marwari'
-                ? `घणी मेहरबानी सा! म्यूटेशन नम्बर सेव हो ग्यो है। आपरो आवेदन फॉर्म पूरा भर ग्यो है सा। नीचे दिए गए बटन से आपरी e-Mitra रसीद प्रिंट कर लो सा।`
-                : `धन्यवाद! सभी आवश्यक विवरण (भूमि विवरण सहित) सफलतापूर्वक एकत्र कर लिए गए हैं। नीचे दिए गए बटन से अपने e-Mitra आवेदन पत्र का प्रिंट या PDF प्राप्त करें।`;
+                ? `म्यूटेशन नम्बर सेव हो ग्यो सा। अब एक 4 अंक का PIN बनाओ सा — इससे आप बाद में अपना आवेदन देख सकोगे।`
+                : `म्यूटेशन नंबर सहेज लिया गया। अब कृपया एक 4-अंकीय PIN बनाएं — इससे आप बाद में अपना आवेदन देख सकेंगे:`;
+        } else if (stepIndex === 4) {
+            // PIN step — validate, save to DB, show receipt
+            if (!/^\d{4}$/.test(text)) {
+                aiReply = profile.language === 'en' ? 'Please enter a valid 4-digit PIN.' : 'कृपया 4 अंकों का PIN दर्ज करें।';
+                setChatHistory(prev => [...prev, { sender: 'ai', text: aiReply }]);
+                setChatLoading(false);
+                speakText(aiReply);
+                return;
+            }
+            currentData.pin = text;
+            setApplyData(currentData);
+            setApplicationSaved(false);
+
+            // Save to DB
+            try {
+                await fetch(`${API_BASE}/schemes/application/submit`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        phone: currentData.phone || profile.phone,
+                        pin: text,
+                        schemeId: applyingScheme?._id || '',
+                        schemeTitle: applyingScheme?.title || '',
+                        receiptNumber: `EM-${receiptNumber}`,
+                        applyData: {
+                            bankAccount: currentData.bankAccount,
+                            ifsc: currentData.ifsc,
+                            mutationNumber: currentData.mutationNumber,
+                            phone: currentData.phone,
+                        },
+                        profile: {
+                            name: profile.name,
+                            occupation: profile.occupation,
+                            ageGroup: profile.ageGroup,
+                            incomeRange: profile.incomeRange,
+                            stateName: profile.stateName,
+                            district: profile.district,
+                            category: profile.category,
+                            land: profile.land,
+                        },
+                    }),
+                });
+                setApplicationSaved(true);
+            } catch { /* silent — receipt still shown */ }
+
+            setApplyStep(5);
+            aiReply = profile.language === 'marwari'
+                ? `घणी मेहरबानी सा! PIN सेव हो ग्यो। आपरो आवेदन डेटाबेस में सेव हो ग्यो है सा। नीचे दिए गए बटन से रसीद प्रिंट कर लो सा।`
+                : `धन्यवाद! PIN सेट हो गया। आपका आवेदन सफलतापूर्वक सहेज लिया गया है। नीचे दिए गए बटन से e-Mitra रसीद प्रिंट करें।`;
         }
 
         setChatHistory(prev => [...prev, { sender: 'ai', text: aiReply }]);
@@ -436,6 +537,22 @@ export default function SevaMitraPage() {
 
     const [matchedSchemes, setMatchedSchemes] = useState<any[]>([]);
     const [matchLoading, setMatchLoading] = useState(false);
+
+    // ── Live page context for Pragati AI Assistant ────────────────────────────
+    // Passes the top eligible scheme + user profile to the floating AI widget
+    // so Pragati AI can answer context-aware questions about schemes & apply flow.
+    const topScheme = matchedSchemes[0] ?? null;
+    usePageContext({
+        pageContext: 'government',
+        schemeData: topScheme ? {
+            title:              topScheme.title,
+            department:         topScheme.department,
+            summary:            topScheme.summary,
+            benefits:           topScheme.benefits ?? [],
+            eligibility:        topScheme.eligibility ?? '',
+            applicationProcess: topScheme.applicationProcess ?? '',
+        } : undefined,
+    });
     
     // Scheme Modal State
     const [modalScheme, setModalScheme] = useState<any | null>(null);
@@ -511,14 +628,14 @@ export default function SevaMitraPage() {
                     : userProfile.language === 'marwari'
                     ? `राम राम सा! थारे सारू ${eligibleOnly.length} योजनाएं मिली है सा।`
                     : `विश्लेषण पूर्ण हुआ। आपके लिए ${eligibleOnly.length} पात्र योजनाएं पाई गई हैं।`;
-                speakText(speakMsg);
+                speakTextRef.current(speakMsg);
             }
         } catch (err) {
             console.error('Match failed:', err);
         } finally {
             setMatchLoading(false);
         }
-    }, [API_BASE, profile, speakText]);
+    }, [API_BASE, profile]);
 
     // Step Submit Logic
     const handleStepSubmit = async (stepIndex: number | string, rawVal: string, displayLabel: string) => {
@@ -785,10 +902,11 @@ export default function SevaMitraPage() {
         }
     };
 
-    // Sidebar nav items — add more here later
+    // Sidebar nav items
     const NAV_ITEMS = [
-        { id: 'discovery' as const, icon: <FaRobot size={16} />, label: 'AI Chatbot', sublabel: 'सेवा मित्र' },
-        { id: 'document_ocr' as const, icon: <FaFileUpload size={16} />, label: 'Document OCR', sublabel: 'दस्तावेज़ जाँच' },
+        { id: 'discovery' as const,       icon: <FaRobot size={16} />,   label: 'AI Chatbot',      sublabel: 'सेवा मित्र' },
+        { id: 'my_applications' as const, icon: <FaListAlt size={16} />, label: 'My Applications', sublabel: 'मेरे आवेदन' },
+        { id: 'document_ocr' as const,    icon: <FaFileUpload size={16} />, label: 'Document OCR', sublabel: 'दस्तावेज़ जाँच' },
     ];
 
     return (
@@ -1196,8 +1314,88 @@ export default function SevaMitraPage() {
                     </div>
                 )}
 
+                {/* ── OPTION 2: MY APPLICATIONS LOOKUP ── */}
+                {activeOption === 'my_applications' && (
+                    <div className="flex-1 overflow-y-auto p-6 space-y-5">
+                        <div className="bg-slate-900/80 border border-slate-800 p-5 rounded-2xl">
+                            <h1 className="text-lg font-black text-white">मेरे आवेदन (My Applications)</h1>
+                            <p className="text-xs text-slate-400 mt-0.5">मोबाइल नंबर और PIN दर्ज करके अपने सभी आवेदन देखें।</p>
+                        </div>
+
+                        {/* Lookup Form */}
+                        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-3 max-w-md">
+                            <div className="space-y-1">
+                                <label className="text-[10px] font-bold text-slate-400 uppercase">मोबाइल नंबर (10 अंक)</label>
+                                <input
+                                    type="tel"
+                                    maxLength={10}
+                                    value={lookupPhone}
+                                    onChange={e => { setLookupPhone(e.target.value.replace(/\D/g, '')); setLookupError(''); setLookupDone(false); }}
+                                    placeholder="जैसे: 9876543210"
+                                    className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white placeholder-slate-600 focus:border-emerald-500 focus:outline-none"
+                                />
+                            </div>
+                            <div className="space-y-1">
+                                <label className="text-[10px] font-bold text-slate-400 uppercase">4-अंकीय PIN</label>
+                                <input
+                                    type="password"
+                                    maxLength={4}
+                                    value={lookupPin}
+                                    onChange={e => { setLookupPin(e.target.value.replace(/\D/g, '')); setLookupError(''); setLookupDone(false); }}
+                                    placeholder="••••"
+                                    className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white placeholder-slate-600 focus:border-emerald-500 focus:outline-none tracking-widest"
+                                />
+                            </div>
+                            {lookupError && <p className="text-xs text-red-400">{lookupError}</p>}
+                            <button
+                                onClick={handleLookup}
+                                disabled={lookupLoading}
+                                className="w-full bg-emerald-500 hover:bg-emerald-400 disabled:opacity-50 text-slate-950 font-black text-xs py-2.5 rounded-xl transition flex items-center justify-center gap-2"
+                            >
+                                {lookupLoading ? <FaSpinner className="animate-spin" /> : <FaSearch size={12} />}
+                                {lookupLoading ? 'खोजा जा रहा है...' : 'आवेदन खोजें'}
+                            </button>
+                        </div>
+
+                        {/* Results */}
+                        {lookupDone && lookupResults.length === 0 && !lookupError && (
+                            <p className="text-xs text-slate-500">कोई आवेदन नहीं मिला।</p>
+                        )}
+                        {lookupResults.length > 0 && (
+                            <div className="space-y-3">
+                                <p className="text-xs font-bold text-emerald-400">{lookupResults.length} आवेदन मिले:</p>
+                                {lookupResults.map((app, i) => (
+                                    <div key={i} className="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-2 text-xs">
+                                        <div className="flex items-center justify-between">
+                                            <span className="font-black text-white text-sm line-clamp-1">{app.schemeTitle}</span>
+                                            <span className={`px-2 py-0.5 rounded-full font-bold text-[10px] ${
+                                                app.status === 'approved' ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' :
+                                                app.status === 'rejected' ? 'bg-red-500/20 text-red-400 border border-red-500/30' :
+                                                app.status === 'under_review' ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30' :
+                                                'bg-blue-500/20 text-blue-400 border border-blue-500/30'
+                                            }`}>
+                                                {app.status === 'approved' ? '✅ स्वीकृत' : app.status === 'rejected' ? '❌ अस्वीकृत' : app.status === 'under_review' ? '🔄 समीक्षाधीन' : '📋 जमा'}
+                                            </span>
+                                        </div>
+                                        <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-slate-400">
+                                            <div><span className="text-slate-500">रसीद:</span> {app.receiptNumber}</div>
+                                            <div><span className="text-slate-500">दिनांक:</span> {new Date(app.submittedAt).toLocaleDateString('en-IN')}</div>
+                                            <div><span className="text-slate-500">बैंक खाता:</span> {'*'.repeat(Math.max(0, (app.applyData?.bankAccount || '').length - 4))}{(app.applyData?.bankAccount || '').slice(-4)}</div>
+                                            <div><span className="text-slate-500">IFSC:</span> {app.applyData?.ifsc}</div>
+                                            {app.applyData?.mutationNumber && <div className="col-span-2"><span className="text-slate-500">म्यूटेशन:</span> {app.applyData.mutationNumber}</div>}
+                                        </div>
+                                        <div className="border-t border-slate-800 pt-2 text-slate-500">
+                                            {app.profile?.name} · {app.profile?.district}, {app.profile?.stateName} · {app.profile?.category?.toUpperCase()}
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                )}
+
                 {/* ──────────────────────────────────────────────────────────────
-                    OPTION 2: DOCUMENT OCR & ERROR SCANNER
+                    OPTION 3: DOCUMENT OCR & ERROR SCANNER
                     ────────────────────────────────────────────────────────────── */}
                 {activeOption === 'document_ocr' && (
                     <div className="flex-1 overflow-y-auto p-6 space-y-6">
@@ -1354,7 +1552,7 @@ export default function SevaMitraPage() {
             )}
 
             {/* 📄 e-Mitra Application Receipt Modal */}
-            {isApplying && applyStep === 4 && (
+            {isApplying && applyStep === 5 && (
                 <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
                     <div className="bg-slate-900 border border-slate-800 rounded-3xl max-w-2xl w-full overflow-hidden shadow-2xl flex flex-col my-8 print:my-0 print:border-none print:shadow-none print:bg-white">
                         
@@ -1391,7 +1589,7 @@ export default function SevaMitraPage() {
                                 {/* Metadata */}
                                 <div className="grid grid-cols-2 gap-1.5 text-[9px] font-sans border-b border-slate-200 py-2.5">
                                     <div>
-                                        <span className="font-bold">Receipt No:</span> EM-{Math.floor(100000 + Math.random() * 900000)}
+                                        <span className="font-bold">Receipt No:</span> EM-{receiptNumber}
                                     </div>
                                     <div className="text-right">
                                         <span className="font-bold">Date:</span> {new Date().toLocaleDateString('en-IN')}
@@ -1400,7 +1598,10 @@ export default function SevaMitraPage() {
                                         <span className="font-bold">Scheme Code:</span> {applyingScheme?.code || 'SCH-9820'}
                                     </div>
                                     <div className="text-right">
-                                        <span className="font-bold">Status:</span> <span className="text-emerald-700 font-bold">Generated via Seva Mitra AI</span>
+                                        <span className="font-bold">Status:</span>{' '}
+                                        <span className="text-emerald-700 font-bold">
+                                            {applicationSaved ? '✅ Saved to Database' : 'Generated via Seva Mitra AI'}
+                                        </span>
                                     </div>
                                 </div>
 

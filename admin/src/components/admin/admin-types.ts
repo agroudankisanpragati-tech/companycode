@@ -546,6 +546,44 @@ export type ReviewQueueResponse = {
   pendingCount: number;
 };
 
+export type SchemeApplicationStatus = 'submitted' | 'under_review' | 'approved' | 'rejected';
+
+export type SchemeApplication = {
+  _id: string;
+  phone: string;
+  schemeId: string;
+  schemeTitle: string;
+  receiptNumber: string;
+  status: SchemeApplicationStatus;
+  applyData: {
+    bankAccount?: string;
+    ifsc?: string;
+    mutationNumber?: string;
+    phone?: string;
+  };
+  profile: {
+    name?: string;
+    occupation?: string;
+    ageGroup?: string;
+    incomeRange?: string;
+    stateName?: string;
+    district?: string;
+    category?: string;
+    land?: string;
+  };
+  submittedAt: string;
+  createdAt?: string;
+  updatedAt?: string;
+};
+
+export type SchemeApplicationListResponse = {
+  success: boolean;
+  data: SchemeApplication[];
+  total: number;
+  page: number;
+  pages: number;
+};
+
 // ─── KVK Types ────────────────────────────────────────────────────────────────
 
 export type KVKRecord = {

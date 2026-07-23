@@ -22,6 +22,7 @@ import {
   FaFilm,
   FaNewspaper,
   FaMapMarkerAlt,
+  FaClipboardList,
 } from 'react-icons/fa';
 import {
   API_BASE,
@@ -77,6 +78,7 @@ const navItems = [
   { href: '/registered-shops', label: 'Registered Shops', icon: FaWarehouse },
   { href: '/settings', label: 'Settings', icon: FaCog },
   { href: '/kvk-management', label: 'KVK Management', icon: FaMapMarkerAlt },
+  { href: '/scheme-applications', label: 'Scheme Applications', icon: FaClipboardList },
 ];
 
 const statCards = [

@@ -3,6 +3,10 @@ import axios from 'axios';
 import { GovtScheme, GovtSchemeStatus, SchemeType } from '../models/GovtScheme';
 import { AuthenticatedRequest, authenticate, requireAdmin } from '../middleware/auth';
 import { schemeUpload, getSchemeFileUrl, deleteSchemeFile } from '../utils/schemeUpload';
+import { SevaMitraProfile } from '../models/SevaMitraProfile';
+import { SchemeApplication } from '../models/SchemeApplication';
+import bcrypt from 'bcryptjs';
+import { sendSms, buildReceiptSms } from '../utils/smsNotification';
 
 const router = express.Router();
 
@@ -180,18 +184,6 @@ router.get('/', async (req, res: Response) => {
         return res.json({ success: true, data: schemes, total, page: pageNum, pages: Math.ceil(total / limitNum) });
     } catch (error) {
         return res.status(500).json({ error: 'Failed to fetch government schemes' });
-    }
-});
-
-// ─── Public: scheme detail by slug ───────────────────────────────────────────
-
-router.get('/:slug', async (req, res: Response) => {
-    try {
-        const scheme = await GovtScheme.findOne({ slug: req.params.slug, status: 'published' }).lean();
-        if (!scheme) return res.status(404).json({ error: 'Government scheme not found' });
-        return res.json({ success: true, data: scheme });
-    } catch (error) {
-        return res.status(500).json({ error: 'Failed to fetch government scheme' });
     }
 });
 
@@ -415,6 +407,18 @@ router.delete('/admin/:id', authenticate, requireAdmin, async (req: Authenticate
         return res.json({ success: true, message: 'Government scheme deleted successfully' });
     } catch (error) {
         return res.status(500).json({ error: 'Failed to delete government scheme' });
+    }
+});
+
+// ─── Public: scheme detail by slug ───────────────────────────────────────────
+
+router.get('/:slug', async (req, res: Response) => {
+    try {
+        const scheme = await GovtScheme.findOne({ slug: req.params.slug, status: 'published' }).lean();
+        if (!scheme) return res.status(404).json({ error: 'Government scheme not found' });
+        return res.json({ success: true, data: scheme });
+    } catch (error) {
+        return res.status(500).json({ error: 'Failed to fetch government scheme' });
     }
 });
 
@@ -662,15 +666,17 @@ router.post('/ocr-mock', schemeUpload.single('document'), async (req, res) => {
             };
         }
 
+        // Clean up uploaded temp file after processing
+        deleteSchemeFile(req.file.filename);
+
         res.json({ success: true, extracted });
     } catch (err: any) {
+        if (req.file) deleteSchemeFile(req.file.filename);
         res.status(500).json({ success: false, error: err.message });
     }
 });
 
-// ─── AI Seva Mitra: Save / Load User Profile by Mobile ─────────────────────
-
-const sevaMitraProfiles: Map<string, Record<string, any>> = new Map();
+// ─── AI Seva Mitra: Save / Load User Profile by Mobile (MongoDB) ────────────
 
 router.post('/seva-mitra-profile/save', async (req, res) => {
     try {
@@ -678,7 +684,11 @@ router.post('/seva-mitra-profile/save', async (req, res) => {
         if (!phone || !/^[6-9]\d{9}$/.test(phone.trim())) {
             return res.status(400).json({ success: false, error: 'Valid 10-digit mobile number required' });
         }
-        sevaMitraProfiles.set(phone.trim(), { ...profile, phone: phone.trim(), savedAt: new Date().toISOString() });
+        await SevaMitraProfile.findOneAndUpdate(
+            { phone: phone.trim() },
+            { ...profile, phone: phone.trim(), savedAt: new Date() },
+            { upsert: true, new: true }
+        );
         return res.json({ success: true, message: 'Profile saved' });
     } catch (err: any) {
         return res.status(500).json({ success: false, error: err.message });
@@ -688,7 +698,7 @@ router.post('/seva-mitra-profile/save', async (req, res) => {
 router.get('/seva-mitra-profile/:phone', async (req, res) => {
     try {
         const phone = req.params.phone.trim();
-        const saved = sevaMitraProfiles.get(phone);
+        const saved = await SevaMitraProfile.findOne({ phone }).lean();
         if (!saved) return res.json({ success: false, found: false });
         return res.json({ success: true, found: true, profile: saved });
     } catch (err: any) {
@@ -769,6 +779,150 @@ router.post('/seva-mitra-chat', async (req, res) => {
         const data = await response.json() as any;
         const reply = data.choices?.[0]?.message?.content?.trim() || '';
         return res.json({ success: true, reply });
+    } catch (err: any) {
+        return res.status(500).json({ success: false, error: err.message });
+    }
+});
+
+// ─── Scheme Application: Submit ─────────────────────────────────────────────
+
+router.post('/application/submit', async (req, res) => {
+    try {
+        const { phone, pin, schemeId, schemeTitle, receiptNumber, applyData, profile } = req.body;
+
+        if (!phone || !/^[6-9]\d{9}$/.test(phone.trim())) {
+            return res.status(400).json({ success: false, error: 'Valid 10-digit mobile number required' });
+        }
+        if (!pin || !/^\d{4}$/.test(pin)) {
+            return res.status(400).json({ success: false, error: '4-digit PIN required' });
+        }
+        if (!schemeTitle || !receiptNumber) {
+            return res.status(400).json({ success: false, error: 'schemeTitle and receiptNumber are required' });
+        }
+
+        const pinHash = await bcrypt.hash(pin, 10);
+
+        const application = await SchemeApplication.create({
+            phone: phone.trim(),
+            pinHash,
+            schemeId: schemeId || '',
+            schemeTitle,
+            receiptNumber,
+            applyData,
+            profile,
+            status: 'submitted',
+            submittedAt: new Date(),
+        });
+
+        // Send SMS receipt — fire-and-forget, never blocks the response
+        const smsText = buildReceiptSms({
+            name:          profile?.name || 'आवेदक',
+            schemeTitle,
+            receiptNumber,
+            phone:         phone.trim(),
+        });
+        sendSms(phone.trim(), smsText).catch(() => { /* silent */ });
+
+        return res.status(201).json({ success: true, receiptNumber: application.receiptNumber, smsSent: true });
+    } catch (err: any) {
+        if (err.code === 11000) {
+            return res.status(409).json({ success: false, error: 'Application with this receipt number already exists' });
+        }
+        return res.status(500).json({ success: false, error: err.message });
+    }
+});
+
+// ─── Scheme Application: Admin — list all + update status ──────────────────
+
+router.get('/application/admin/all', authenticate, requireAdmin, async (req: AuthenticatedRequest, res: Response) => {
+    try {
+        const { status, search, page = '1', limit = '50' } = req.query as Record<string, string>;
+        const filter: Record<string, any> = {};
+        if (status && ['submitted', 'under_review', 'approved', 'rejected'].includes(status)) filter.status = status;
+        if (search?.trim()) {
+            filter.$or = [
+                { phone: { $regex: search.trim(), $options: 'i' } },
+                { schemeTitle: { $regex: search.trim(), $options: 'i' } },
+                { receiptNumber: { $regex: search.trim(), $options: 'i' } },
+                { 'profile.name': { $regex: search.trim(), $options: 'i' } },
+            ];
+        }
+        const pageNum  = Math.max(1, parseInt(page, 10) || 1);
+        const limitNum = Math.min(100, Math.max(1, parseInt(limit, 10) || 50));
+        const [applications, total] = await Promise.all([
+            SchemeApplication.find(filter).select('-pinHash').sort({ submittedAt: -1 }).skip((pageNum - 1) * limitNum).limit(limitNum).lean(),
+            SchemeApplication.countDocuments(filter),
+        ]);
+        return res.json({ success: true, data: applications, total, page: pageNum, pages: Math.ceil(total / limitNum) });
+    } catch (err: any) {
+        return res.status(500).json({ success: false, error: err.message });
+    }
+});
+
+router.patch('/application/admin/:id/status', authenticate, requireAdmin, async (req: AuthenticatedRequest, res: Response) => {
+    try {
+        const { status } = req.body as { status: string };
+        if (!['submitted', 'under_review', 'approved', 'rejected'].includes(status)) {
+            return res.status(400).json({ success: false, error: 'Invalid status value' });
+        }
+        const updated = await SchemeApplication.findByIdAndUpdate(
+            req.params.id,
+            { status },
+            { new: true }
+        ).select('-pinHash').lean();
+        if (!updated) return res.status(404).json({ success: false, error: 'Application not found' });
+
+        // Notify applicant of status change via SMS
+        if (updated.phone) {
+            const statusLabels: Record<string, string> = {
+                under_review: 'समीक्षाधीन (Under Review)',
+                approved:     'स्वीकृत ✅ (Approved)',
+                rejected:     'अस्वीकृत ❌ (Rejected)',
+                submitted:    'जमा (Submitted)',
+            };
+            const smsText =
+                `राम राम सा! आपके आवेदन की स्थिति अपडेट हुई है।\n` +
+                `योजना: ${updated.schemeTitle}\n` +
+                `रसीद: ${updated.receiptNumber}\n` +
+                `नई स्थिति: ${statusLabels[status] || status}\n` +
+                `- Rajasthan e-Mitra AI`;
+            const { sendSms } = await import('../utils/smsNotification');
+            sendSms(updated.phone, smsText).catch(() => { /* silent */ });
+        }
+
+        return res.json({ success: true, data: updated });
+    } catch (err: any) {
+        return res.status(500).json({ success: false, error: err.message });
+    }
+});
+
+// ─── Scheme Application: Lookup by Mobile + PIN ───────────────────────────────
+
+router.post('/application/lookup', async (req, res) => {
+    try {
+        const { phone, pin } = req.body;
+
+        if (!phone || !/^[6-9]\d{9}$/.test(phone.trim())) {
+            return res.status(400).json({ success: false, error: 'Valid 10-digit mobile number required' });
+        }
+        if (!pin || !/^\d{4}$/.test(pin)) {
+            return res.status(400).json({ success: false, error: '4-digit PIN required' });
+        }
+
+        const applications = await SchemeApplication.find({ phone: phone.trim() }).lean();
+        if (!applications.length) {
+            return res.status(404).json({ success: false, error: 'No applications found for this mobile number' });
+        }
+
+        // Verify PIN against first application's hash (PIN is per-user, same across all their applications)
+        const pinValid = await bcrypt.compare(pin, applications[0].pinHash);
+        if (!pinValid) {
+            return res.status(401).json({ success: false, error: 'Incorrect PIN' });
+        }
+
+        // Strip pinHash before sending
+        const safeApplications = applications.map(({ pinHash: _, ...rest }) => rest);
+        return res.json({ success: true, applications: safeApplications });
     } catch (err: any) {
         return res.status(500).json({ success: false, error: err.message });
     }

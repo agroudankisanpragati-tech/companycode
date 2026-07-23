@@ -1,4 +1,4 @@
-import type { Overview, AdminUser, Recommendation, Listing, SessionUser, GovtScheme, GalleryItem, UserSummary, UserPagination, CropKnowledge, CropKnowledgeSummary, DiseaseRecord, DiseaseKnowledgeSummary, PestRecord, PestKnowledgeSummary, FarmerStory, FarmerStorySummary, BlogPost, DPKRecord, DPKListResponse } from './admin-types';
+import type { Overview, AdminUser, Recommendation, Listing, SessionUser, GovtScheme, GalleryItem, UserSummary, UserPagination, CropKnowledge, CropKnowledgeSummary, DiseaseRecord, DiseaseKnowledgeSummary, PestRecord, PestKnowledgeSummary, FarmerStory, FarmerStorySummary, BlogPost, DPKRecord, DPKListResponse, SchemeApplication, SchemeApplicationListResponse } from './admin-types';
 
 // In development the Next.js rewrite proxy forwards /api/* → http://localhost:4000/api/*
 // In production NEXT_PUBLIC_API_URL points to the live backend.
@@ -522,7 +522,26 @@ export const importDKRecords = (token: string, data: any[]) =>
   );
 
 
-// --- Disease & Pest Solutions (Unified) API ----------------------------------
+export const fetchSchemeApplications = (
+  token: string,
+  params: { page?: number; limit?: number; status?: string; search?: string } = {}
+) => {
+  const q = new URLSearchParams();
+  if (params.page)   q.set('page',   String(params.page));
+  if (params.limit)  q.set('limit',  String(params.limit));
+  if (params.status) q.set('status', params.status);
+  if (params.search) q.set('search', params.search);
+  const qs = q.toString();
+  return requestJson<SchemeApplicationListResponse>(`/schemes/application/admin/all${qs ? '?' + qs : ''}`, token);
+};
+
+export const updateApplicationStatus = (token: string, id: string, status: string) =>
+  requestJson<{ success: boolean; data: SchemeApplication }>(`/schemes/application/admin/${id}/status`, token, {
+    method: 'PATCH',
+    body: JSON.stringify({ status }),
+  });
+
+// ─── Disease & Pest Solutions (Unified) API ----------------------------------
 
 const DPK_BASE = '/disease/admin/disease-pest-knowledge';
 
