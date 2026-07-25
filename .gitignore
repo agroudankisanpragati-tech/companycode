@@ -1,5 +1,39 @@
+# Dependencies
 **/node_modules/
+
+# Next.js build output
 **/.next/
-**/build_output.txt
+**/dist/
+
+# Environment files — NEVER commit real secrets
+**/.env
+**/.env.local
+**/.env.production
+**/.env.development
+
+# Logs
 *.log
-backend/.env
+**/logs/
+
+# Local MongoDB data
+data/
+
+# Uploaded files
+backend/uploads/
+
+# AI model weights & large binary files
+Ai/weights/
+Ai/voice_models/
+Ai/*.pt
+Ai/outputs/
+Ai/training/
+
+# TypeScript build info cache
+**/tsconfig.tsbuildinfo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Build artifacts
+**/build_output.txt
