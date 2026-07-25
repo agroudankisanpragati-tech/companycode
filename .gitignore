@@ -1,1 +1,10 @@
 backend/.env
+backend/.env
+
+**/node_modules/
+**/.next/
+**/dist/
+**/__pycache__/
+*.pyc
+*.log
+**/logs/

@@ -1,0 +1,16 @@
+{
+    "model": "EfficientNet-B0",
+    "best_validation_accuracy": 83.04,
+    "epochs": 30,
+    "classes": [
+        "Black_gram",
+        "Pearl_Millet _Bajra",
+        "Tomato",
+        "corn_maize",
+        "green_gram",
+        "wheat"
+    ],
+    "total_classes": 6,
+    "train_images": 13353,
+    "validation_images": 3341
+}
