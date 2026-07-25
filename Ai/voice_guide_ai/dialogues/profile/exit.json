@@ -1,0 +1,42 @@
+{
+  "id": "profile_exit_001",
+  "page": "profile",
+  "dialogueType": "exit",
+  "title": "Profile Exit",
+  "version": "1.0.0",
+
+  "text": "धन्यवाद। आपकी प्रोफ़ाइल अब अद्यतन है। आप ऐप की अन्य सुविधाओं का उपयोग कर सकते हैं। मैं अगले पेज पर भी आपका मार्गदर्शन करता रहूँगा।",
+
+  "repeat": {
+    "enabled": false,
+    "afterHours": 0
+  },
+
+  "voice": {
+    "enabled": true,
+    "provider": "offline",
+    "file": "profile_exit_001.mp3",
+    "language": "hi",
+    "speed": 1.0,
+    "volume": 1.0
+  },
+
+  "avatar": {
+    "enabled": true,
+    "animation": "wave",
+    "expression": "smile"
+  },
+
+  "display": {
+    "showSubtitle": true,
+    "showAvatar": true
+  },
+
+  "conditions": {
+    "firstVisit": false,
+    "loggedIn": true,
+    "internetRequired": false
+  },
+
+  "status": "active"
+}

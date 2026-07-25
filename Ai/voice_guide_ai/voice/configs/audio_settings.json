@@ -1,0 +1,46 @@
+{
+  "version": "1.0.0",
+  "generation": {
+    "format": "mp3",
+    "sample_rate": 24000,
+    "bitrate": "128k",
+    "channels": 1,
+    "max_concurrent_workers": 4,
+    "retry_attempts": 3,
+    "retry_delay_seconds": 2,
+    "timeout_seconds": 30
+  },
+  "playback": {
+    "default_volume": 1.0,
+    "min_volume": 0.0,
+    "max_volume": 1.0,
+    "default_speed": 1.0,
+    "min_speed": 0.5,
+    "max_speed": 2.0,
+    "default_pitch": 1.0,
+    "fade_in_ms": 50,
+    "fade_out_ms": 100,
+    "seek_step_seconds": 5
+  },
+  "cache": {
+    "enabled": true,
+    "validate_checksum": true,
+    "max_cache_size_mb": 500,
+    "eviction_policy": "lru",
+    "never_regenerate_existing": true
+  },
+  "subtitle": {
+    "enabled": true,
+    "sync_offset_ms": 0,
+    "highlight_current": true,
+    "multiline": true,
+    "max_chars_per_line": 60,
+    "display_duration_ms": 3000
+  },
+  "paths": {
+    "audio_dir": "voice/audio",
+    "cache_dir": "voice/cache",
+    "metadata_dir": "voice/metadata",
+    "configs_dir": "voice/configs"
+  }
+}

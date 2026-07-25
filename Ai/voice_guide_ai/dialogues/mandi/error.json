@@ -1,0 +1,42 @@
+{
+  "id": "mandi_error_001",
+  "page": "mandi",
+  "dialogueType": "error",
+  "title": "Mandi Error",
+  "version": "1.0.0",
+
+  "text": "क्षमा करें। इस समय मंडी भाव प्राप्त नहीं हो सके। कृपया अपना इंटरनेट कनेक्शन जाँचें और कुछ समय बाद पुनः प्रयास करें।",
+
+  "repeat": {
+    "enabled": false,
+    "afterHours": 0
+  },
+
+  "voice": {
+    "enabled": true,
+    "provider": "offline",
+    "file": "mandi_error_001.mp3",
+    "language": "hi",
+    "speed": 1.0,
+    "volume": 1.0
+  },
+
+  "avatar": {
+    "enabled": true,
+    "animation": "warning",
+    "expression": "warning"
+  },
+
+  "display": {
+    "showSubtitle": true,
+    "showAvatar": true
+  },
+
+  "conditions": {
+    "firstVisit": false,
+    "loggedIn": true,
+    "internetRequired": false
+  },
+
+  "status": "active"
+}

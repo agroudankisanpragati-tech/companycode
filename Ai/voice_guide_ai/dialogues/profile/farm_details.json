@@ -1,0 +1,42 @@
+{
+  "id": "profile_land_001",
+  "page": "profile",
+  "dialogueType": "land_details",
+  "title": "Land Details",
+  "version": "1.0.0",
+
+  "text": "यहाँ अपनी भूमि से संबंधित जानकारी देखें या अपडेट करें। भूमि का सही विवरण बेहतर कृषि विश्लेषण और एआई अनुशंसाओं में सहायता करेगा।",
+
+  "repeat": {
+    "enabled": false,
+    "afterHours": 0
+  },
+
+  "voice": {
+    "enabled": true,
+    "provider": "offline",
+    "file": "profile_land_001.mp3",
+    "language": "hi",
+    "speed": 1.0,
+    "volume": 1.0
+  },
+
+  "avatar": {
+    "enabled": true,
+    "animation": "point",
+    "expression": "neutral"
+  },
+
+  "display": {
+    "showSubtitle": true,
+    "showAvatar": true
+  },
+
+  "conditions": {
+    "firstVisit": false,
+    "loggedIn": true,
+    "internetRequired": false
+  },
+
+  "status": "active"
+}

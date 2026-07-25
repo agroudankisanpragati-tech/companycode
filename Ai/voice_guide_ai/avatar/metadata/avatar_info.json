@@ -1,0 +1,20 @@
+{
+    "avatar_id": "kisan_saathi_v1",
+    "name": "Kisan Saathi",
+    "display_name": "किसान साथी",
+    "version": "1.0.0",
+    "created_at": "2025-01-01T00:00:00Z",
+    "updated_at": "2025-07-23T00:00:00Z",
+    "author": "Pragati AI Team",
+    "description": "Semi-realistic Indian male avatar representing an agriculture expert. Face and shoulders only, transparent background.",
+    "gender": "male",
+    "age_appearance": 27,
+    "profession": "Agriculture Expert",
+    "style": "semi_realistic",
+    "ethnicity": "indian",
+    "total_expressions": 13,
+    "total_animations": 13,
+    "supported_formats": ["webp", "png", "svg"],
+    "license": "proprietary",
+    "tags": ["agriculture", "indian", "male", "professional", "friendly"]
+}

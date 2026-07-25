@@ -1,0 +1,48 @@
+{
+    "version": "1.0.0",
+    "avatar_id": "kisan_saathi_v1",
+    "generated_at": "2025-07-23T00:00:00Z",
+    "expressions": {
+        "neutral":   {"webp": "avatar/expressions/neutral/neutral.webp",     "png": "avatar/expressions/neutral/neutral.png"},
+        "smile":     {"webp": "avatar/expressions/smile/smile.webp",         "png": "avatar/expressions/smile/smile.png"},
+        "happy":     {"webp": "avatar/expressions/happy/happy.webp",         "png": "avatar/expressions/happy/happy.png"},
+        "thinking":  {"webp": "avatar/expressions/thinking/thinking.webp",   "png": "avatar/expressions/thinking/thinking.png"},
+        "listening": {"webp": "avatar/expressions/listening/listening.webp", "png": "avatar/expressions/listening/listening.png"},
+        "speaking":  {"webp": "avatar/expressions/speaking/speaking.webp",   "png": "avatar/expressions/speaking/speaking.png"},
+        "warning":   {"webp": "avatar/expressions/warning/warning.webp",     "png": "avatar/expressions/warning/warning.png"},
+        "error":     {"webp": "avatar/expressions/error/error.webp",         "png": "avatar/expressions/error/error.png"},
+        "success":   {"webp": "avatar/expressions/success/success.webp",     "png": "avatar/expressions/success/success.png"},
+        "goodbye":   {"webp": "avatar/expressions/goodbye/goodbye.webp",     "png": "avatar/expressions/goodbye/goodbye.png"},
+        "confused":  {"webp": "avatar/expressions/confused/confused.webp",   "png": "avatar/expressions/confused/confused.png"},
+        "blink":     {"webp": "avatar/expressions/blink/blink.webp",         "png": "avatar/expressions/blink/blink.png"},
+        "loading":   {"webp": "avatar/expressions/loading/loading.webp",     "png": "avatar/expressions/loading/loading.png"}
+    },
+    "animations": {
+        "idle":       "avatar/animations/idle",
+        "wave":       "avatar/animations/wave",
+        "namaste":    "avatar/animations/namaste",
+        "thinking":   "avatar/animations/thinking",
+        "listening":  "avatar/animations/listening",
+        "speaking":   "avatar/animations/speaking",
+        "success":    "avatar/animations/success",
+        "warning":    "avatar/animations/warning",
+        "error":      "avatar/animations/error",
+        "loading":    "avatar/animations/loading",
+        "goodbye":    "avatar/animations/goodbye",
+        "head_nod":   "avatar/animations/custom",
+        "head_shake": "avatar/animations/custom"
+    },
+    "thumbnails": {
+        "small":   "avatar/thumbnails/small",
+        "medium":  "avatar/thumbnails/medium",
+        "large":   "avatar/thumbnails/large",
+        "preview": "avatar/thumbnails/preview"
+    },
+    "icons": {
+        "web":          "avatar/icons/web",
+        "android":      "avatar/icons/android",
+        "desktop":      "avatar/icons/desktop",
+        "favicon":      "avatar/icons/favicon",
+        "notification": "avatar/icons/notification"
+    }
+}

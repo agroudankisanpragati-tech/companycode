@@ -1,0 +1,19 @@
+{
+  "languages": [
+    {"code": "hi", "name": "Hindi",     "native": "हिन्दी",    "rtl": false, "script": "Devanagari"},
+    {"code": "en", "name": "English",   "native": "English",   "rtl": false, "script": "Latin"},
+    {"code": "gu", "name": "Gujarati",  "native": "ગુજરાતી",  "rtl": false, "script": "Gujarati"},
+    {"code": "pa", "name": "Punjabi",   "native": "ਪੰਜਾਬੀ",   "rtl": false, "script": "Gurmukhi"},
+    {"code": "mr", "name": "Marathi",   "native": "मराठी",     "rtl": false, "script": "Devanagari"},
+    {"code": "ta", "name": "Tamil",     "native": "தமிழ்",     "rtl": false, "script": "Tamil"},
+    {"code": "te", "name": "Telugu",    "native": "తెలుగు",    "rtl": false, "script": "Telugu"},
+    {"code": "kn", "name": "Kannada",   "native": "ಕನ್ನಡ",    "rtl": false, "script": "Kannada"},
+    {"code": "ml", "name": "Malayalam", "native": "മലയാളം",   "rtl": false, "script": "Malayalam"},
+    {"code": "bn", "name": "Bengali",   "native": "বাংলা",     "rtl": false, "script": "Bengali"},
+    {"code": "ur", "name": "Urdu",      "native": "اردو",      "rtl": true,  "script": "Nastaliq"},
+    {"code": "od", "name": "Odia",      "native": "ଓଡ଼ିଆ",    "rtl": false, "script": "Odia"},
+    {"code": "as", "name": "Assamese",  "native": "অসমীয়া",  "rtl": false, "script": "Bengali"}
+  ],
+  "default": "hi",
+  "fallback": "en"
+}

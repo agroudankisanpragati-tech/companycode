@@ -1,0 +1,15 @@
+{
+  "parent": "rj",
+  "parent_fallback": "hi",
+  "dialects": [
+    {"code": "rj/bagri",      "name": "Bagri",      "native": "बागड़ी",     "region": "Hanumangarh, Ganganagar"},
+    {"code": "rj/marwari",    "name": "Marwari",    "native": "मारवाड़ी",   "region": "Jodhpur, Barmer, Jaisalmer"},
+    {"code": "rj/mewari",     "name": "Mewari",     "native": "मेवाड़ी",    "region": "Udaipur, Chittorgarh"},
+    {"code": "rj/dhundhari",  "name": "Dhundhari",  "native": "ढूंढाड़ी",   "region": "Jaipur, Dausa"},
+    {"code": "rj/hadoti",     "name": "Hadoti",     "native": "हाड़ौती",    "region": "Kota, Bundi, Baran"},
+    {"code": "rj/shekhawati", "name": "Shekhawati", "native": "शेखावाटी",  "region": "Sikar, Jhunjhunu, Churu"},
+    {"code": "rj/mewati",     "name": "Mewati",     "native": "मेवाती",     "region": "Alwar, Bharatpur"},
+    {"code": "rj/wagdi",      "name": "Wagdi",      "native": "वागड़ी",     "region": "Dungarpur, Banswara"}
+  ],
+  "fallback_chain": ["hi", "en"]
+}

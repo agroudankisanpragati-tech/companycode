@@ -1,0 +1,42 @@
+{
+  "id": "scheme_application_001",
+  "page": "government_scheme",
+  "dialogueType": "application",
+  "title": "Application Process",
+  "version": "1.0.0",
+
+  "text": "अब आप आवेदन प्रक्रिया शुरू कर सकते हैं। कृपया सभी जानकारी ध्यानपूर्वक भरें और आवश्यक दस्तावेज़ अपलोड करें। आवेदन जमा करने से पहले एक बार सभी विवरण अवश्य जाँच लें।",
+
+  "repeat": {
+    "enabled": false,
+    "afterHours": 0
+  },
+
+  "voice": {
+    "enabled": true,
+    "provider": "offline",
+    "file": "scheme_application_001.mp3",
+    "language": "hi",
+    "speed": 1.0,
+    "volume": 1.0
+  },
+
+  "avatar": {
+    "enabled": true,
+    "animation": "point",
+    "expression": "smile"
+  },
+
+  "display": {
+    "showSubtitle": true,
+    "showAvatar": true
+  },
+
+  "conditions": {
+    "firstVisit": false,
+    "loggedIn": true,
+    "internetRequired": false
+  },
+
+  "status": "active"
+}

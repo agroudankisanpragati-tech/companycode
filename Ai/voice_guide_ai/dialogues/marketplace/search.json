@@ -1,0 +1,35 @@
+{
+    "id":  "market_search_001",
+    "page":  "marketplace",
+    "dialogueType":  "search",
+    "title":  "Marketplace Search",
+    "version":  "1.0.0",
+    "text":  "कृपया खोज के लिए आवश्यक जानकारी दर्ज करें।",
+    "repeat":  {
+                   "enabled":  false,
+                   "afterHours":  0
+               },
+    "voice":  {
+                  "enabled":  true,
+                  "provider":  "offline",
+                  "file":  "market_search_001.mp3",
+                  "language":  "hi",
+                  "speed":  1,
+                  "volume":  1
+              },
+    "avatar":  {
+                   "enabled":  true,
+                   "animation":  "point",
+                   "expression":  "smile"
+               },
+    "display":  {
+                    "showSubtitle":  true,
+                    "showAvatar":  true
+                },
+    "conditions":  {
+                       "firstVisit":  false,
+                       "loggedIn":  true,
+                       "internetRequired":  false
+                   },
+    "status":  "active"
+}

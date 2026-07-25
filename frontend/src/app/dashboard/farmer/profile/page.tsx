@@ -7,10 +7,12 @@ import ProtectedRoute from '@/components/ProtectedRoute';
 import FarmerSidebar from '@/components/FarmerSidebar';
 import FarmerFooter from '@/components/FarmerFooter';
 import FarmerProfilePage from '@/components/farmer/FarmerProfilePage';
+import { useVoiceGuide } from '@/hooks/useVoiceGuide';
 
 function ProfileContent() {
   const { user, isLoading, isAuthenticated } = useAuth();
   const router = useRouter();
+  useVoiceGuide('profile');
 
   useEffect(() => {
     if (isLoading) return;

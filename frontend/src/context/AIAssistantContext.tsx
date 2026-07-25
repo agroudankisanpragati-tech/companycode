@@ -64,10 +64,20 @@ interface AIAssistantContextType {
   setPageData: (data: PageData | null) => void;
 }
 
+export function getAssistantGreeting(): string {
+  return '🌾 Namaste! Main Pragati AI hoon — aapka intelligent krishi sahayak.\n\nMain aapko platform ke har feature ke baare mein guide kar sakta hoon — crop advice, soil health, mandi prices, disease detection, government schemes, aur bahut kuch.\n\nAap kya jaanna chahte hain? 👇';
+}
+
+export function getAssistantBranding() {
+  return {
+    title: 'Pragati AI',
+    subtitle: 'Agroudan Kisan Pragati',
+  };
+}
+
 const GREETING: Message = {
   role: 'assistant',
-  content:
-    '🌾 Namaste! Main Pragati AI hoon — aapka intelligent krishi sahayak.\n\nMain aapko platform ke har feature ke baare mein guide kar sakta hoon — crop advice, soil health, mandi prices, disease detection, government schemes, aur bahut kuch.\n\nAap kya jaanna chahte hain? 👇',
+  content: getAssistantGreeting(),
 };
 
 const AIAssistantContext = createContext<AIAssistantContextType | undefined>(undefined);

@@ -1,0 +1,42 @@
+{
+  "id": "soil_welcome_001",
+  "page": "soil_health",
+  "dialogueType": "welcome",
+  "title": "Soil Health Welcome",
+  "version": "1.0.0",
+
+  "text": "मिट्टी स्वास्थ्य विश्लेषण पेज पर आपका स्वागत है। यहाँ आप अपनी मिट्टी की गुणवत्ता, पोषक तत्वों की स्थिति तथा खेती के लिए आवश्यक सुझाव प्राप्त कर सकते हैं। सही जानकारी देने पर एआई आपकी मिट्टी का विश्लेषण करके बेहतर खेती के लिए मार्गदर्शन करेगा।",
+
+  "repeat": {
+    "enabled": true,
+    "afterHours": 24
+  },
+
+  "voice": {
+    "enabled": true,
+    "provider": "offline",
+    "file": "soil_welcome_001.mp3",
+    "language": "hi",
+    "speed": 1.0,
+    "volume": 1.0
+  },
+
+  "avatar": {
+    "enabled": true,
+    "animation": "wave",
+    "expression": "smile"
+  },
+
+  "display": {
+    "showSubtitle": true,
+    "showAvatar": true
+  },
+
+  "conditions": {
+    "firstVisit": true,
+    "loggedIn": true,
+    "internetRequired": false
+  },
+
+  "status": "active"
+}

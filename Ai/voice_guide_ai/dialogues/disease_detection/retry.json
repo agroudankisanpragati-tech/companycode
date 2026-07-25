@@ -1,0 +1,42 @@
+{
+  "id": "disease_retry_001",
+  "page": "disease_detection",
+  "dialogueType": "retry",
+  "title": "Retry Detection",
+  "version": "1.0.0",
+
+  "text": "कृपया पुनः प्रयास करें। बेहतर परिणाम के लिए फसल की स्पष्ट और अच्छी रोशनी में ली गई तस्वीर का उपयोग करें।",
+
+  "repeat": {
+    "enabled": false,
+    "afterHours": 0
+  },
+
+  "voice": {
+    "enabled": true,
+    "provider": "offline",
+    "file": "disease_retry_001.mp3",
+    "language": "hi",
+    "speed": 1.0,
+    "volume": 1.0
+  },
+
+  "avatar": {
+    "enabled": true,
+    "animation": "point",
+    "expression": "neutral"
+  },
+
+  "display": {
+    "showSubtitle": true,
+    "showAvatar": true
+  },
+
+  "conditions": {
+    "firstVisit": false,
+    "loggedIn": true,
+    "internetRequired": false
+  },
+
+  "status": "active"
+}

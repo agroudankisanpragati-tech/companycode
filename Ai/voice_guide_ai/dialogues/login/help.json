@@ -1,0 +1,42 @@
+{
+  "id": "login_help_001",
+  "page": "login",
+  "dialogueType": "help",
+  "title": "Login Help",
+  "version": "1.0.0",
+
+  "text": "यदि आपको लॉगिन करने में सहायता चाहिए, तो पहले अपना पंजीकृत मोबाइल नंबर दर्ज करें। इसके बाद आपके मोबाइल पर एक ओटीपी भेजा जाएगा। ओटीपी दर्ज करके आप सुरक्षित रूप से अपने खाते में प्रवेश कर सकते हैं।",
+
+  "repeat": {
+    "enabled": false,
+    "afterHours": 0
+  },
+
+  "voice": {
+    "enabled": true,
+    "provider": "offline",
+    "file": "login_help_001.mp3",
+    "language": "hi",
+    "speed": 1.0,
+    "volume": 1.0
+  },
+
+  "avatar": {
+    "enabled": true,
+    "animation": "point",
+    "expression": "smile"
+  },
+
+  "display": {
+    "showSubtitle": true,
+    "showAvatar": true
+  },
+
+  "conditions": {
+    "firstVisit": false,
+    "loggedIn": false,
+    "internetRequired": false
+  },
+
+  "status": "active"
+}

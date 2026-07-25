@@ -1,0 +1,42 @@
+{
+  "id": "mandi_result_001",
+  "page": "mandi",
+  "dialogueType": "result",
+  "title": "Mandi Result",
+  "version": "1.0.0",
+
+  "text": "मंडी भाव सफलतापूर्वक प्राप्त हो गए हैं। आपकी स्क्रीन पर न्यूनतम मूल्य, अधिकतम मूल्य, औसत भाव तथा बाजार की अन्य महत्वपूर्ण जानकारी प्रदर्शित की गई है। कृपया बिक्री का निर्णय लेने से पहले सभी जानकारी ध्यान से देखें।",
+
+  "repeat": {
+    "enabled": false,
+    "afterHours": 0
+  },
+
+  "voice": {
+    "enabled": true,
+    "provider": "offline",
+    "file": "mandi_result_001.mp3",
+    "language": "hi",
+    "speed": 1.0,
+    "volume": 1.0
+  },
+
+  "avatar": {
+    "enabled": true,
+    "animation": "success",
+    "expression": "happy"
+  },
+
+  "display": {
+    "showSubtitle": true,
+    "showAvatar": true
+  },
+
+  "conditions": {
+    "firstVisit": false,
+    "loggedIn": true,
+    "internetRequired": false
+  },
+
+  "status": "active"
+}

@@ -1,0 +1,42 @@
+{
+  "id": "mandi_crop_selection_001",
+  "page": "mandi",
+  "dialogueType": "crop_selection",
+  "title": "Crop Selection",
+  "version": "1.0.0",
+
+  "text": "कृपया जिस फसल का मंडी भाव देखना चाहते हैं, उसका चयन करें। सही फसल चुनने पर संबंधित मंडियों के ताज़ा बाजार भाव प्रदर्शित किए जाएंगे।",
+
+  "repeat": {
+    "enabled": false,
+    "afterHours": 0
+  },
+
+  "voice": {
+    "enabled": true,
+    "provider": "offline",
+    "file": "mandi_crop_selection_001.mp3",
+    "language": "hi",
+    "speed": 1.0,
+    "volume": 1.0
+  },
+
+  "avatar": {
+    "enabled": true,
+    "animation": "point",
+    "expression": "neutral"
+  },
+
+  "display": {
+    "showSubtitle": true,
+    "showAvatar": true
+  },
+
+  "conditions": {
+    "firstVisit": false,
+    "loggedIn": true,
+    "internetRequired": false
+  },
+
+  "status": "active"
+}

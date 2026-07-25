@@ -2,7 +2,7 @@
 
 import { FaWifi, FaRedo, FaImage, FaRobot, FaSearch } from 'react-icons/fa';
 
-type ErrorType = 'error' | 'warning' | 'empty' | 'network' | 'ai' | 'invalid_image';
+type ErrorType = 'error' | 'warning' | 'empty' | 'network' | 'ai' | 'invalid_image' | 'backend' | 'fastapi' | 'crop_verification' | 'voice_guide';
 
 interface Props {
   message: string;
@@ -24,8 +24,8 @@ const CONFIG: Record<ErrorType, {
   network: {
     emoji: '📡',
     icon: <FaWifi size={20} />,
-    title: 'No Internet Connection',
-    titleHindi: 'इंटरनेट कनेक्शन नहीं',
+    title: 'Service Unavailable',
+    titleHindi: 'सेवा उपलब्ध नहीं',
     bg: 'bg-amber-50 dark:bg-amber-950/30',
     border: 'border-amber-200 dark:border-amber-800',
     titleCls: 'text-amber-800 dark:text-amber-300',
@@ -65,6 +65,46 @@ const CONFIG: Record<ErrorType, {
     msgCls: 'text-slate-500 dark:text-slate-400',
     btnCls: 'bg-slate-600 hover:bg-slate-700 dark:bg-slate-700 dark:hover:bg-slate-600',
   },
+  backend: {
+    emoji: '🖥️',
+    title: 'Backend Server Unavailable',
+    titleHindi: 'बैकएंड सर्वर उपलब्ध नहीं',
+    bg: 'bg-red-50 dark:bg-red-950/30',
+    border: 'border-red-200 dark:border-red-800',
+    titleCls: 'text-red-800 dark:text-red-300',
+    msgCls: 'text-red-700 dark:text-red-400',
+    btnCls: 'bg-red-600 hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-600',
+  },
+  fastapi: {
+    emoji: '🤖',
+    title: 'AI Server Not Running',
+    titleHindi: 'AI सर्वर चालू नहीं',
+    bg: 'bg-purple-50 dark:bg-purple-950/30',
+    border: 'border-purple-200 dark:border-purple-800',
+    titleCls: 'text-purple-800 dark:text-purple-300',
+    msgCls: 'text-purple-700 dark:text-purple-400',
+    btnCls: 'bg-purple-600 hover:bg-purple-700 dark:bg-purple-700 dark:hover:bg-purple-600',
+  },
+  crop_verification: {
+    emoji: '🌾',
+    title: 'Crop Verification Failed',
+    titleHindi: 'फसल सत्यापन विफल',
+    bg: 'bg-orange-50 dark:bg-orange-950/30',
+    border: 'border-orange-200 dark:border-orange-800',
+    titleCls: 'text-orange-800 dark:text-orange-300',
+    msgCls: 'text-orange-700 dark:text-orange-400',
+    btnCls: 'bg-orange-600 hover:bg-orange-700 dark:bg-orange-700 dark:hover:bg-orange-600',
+  },
+  voice_guide: {
+    emoji: '🔇',
+    title: 'Voice Guide Unavailable',
+    titleHindi: 'वॉयस गाइड उपलब्ध नहीं',
+    bg: 'bg-slate-50 dark:bg-slate-800/50',
+    border: 'border-slate-200 dark:border-slate-700',
+    titleCls: 'text-slate-700 dark:text-slate-300',
+    msgCls: 'text-slate-500 dark:text-slate-400',
+    btnCls: 'bg-slate-600 hover:bg-slate-700 dark:bg-slate-700 dark:hover:bg-slate-600',
+  },
   error: {
     emoji: '❌',
     title: 'Something Went Wrong',
@@ -91,7 +131,13 @@ const CONFIG: Record<ErrorType, {
 function detectType(message: string, provided: ErrorType): ErrorType {
   if (provided !== 'error') return provided;
   const lower = message.toLowerCase();
-  if (lower.includes('network') || lower.includes('fetch') || lower.includes('internet') || lower.includes('offline')) return 'network';
+  // Accurate backend/service error classification — never show "No Internet" for local service failures
+  if (lower.includes('backend server') || lower.includes('node') || lower.includes('port 4000') || lower.includes('econnrefused')) return 'backend';
+  if (lower.includes('fastapi') || lower.includes('yolo') || lower.includes('ai server') || lower.includes('port 8000')) return 'fastapi';
+  if (lower.includes('crop verification') || lower.includes('uploaded image belongs') || lower.includes('verify crop')) return 'crop_verification';
+  if (lower.includes('voice guide')) return 'voice_guide';
+  // Only classify as network if the message explicitly says internet/offline — NOT for connection refused
+  if (lower.includes('internet') || lower.includes('offline') || lower.includes('no network')) return 'network';
   if (lower.includes('invalid') && lower.includes('image')) return 'invalid_image';
   if (lower.includes('ai') || lower.includes('model') || lower.includes('prediction')) return 'ai';
   if (lower.includes('no result') || lower.includes('not found') || lower.includes('empty')) return 'empty';

@@ -1,0 +1,9 @@
+{
+    "register_replay_001":  "Let me explain again. Please fill in your name, mobile number, and required details correctly. After OTP verification, your account will be created successfully.",
+    "register_success_001":  "Congratulations! Your registration is complete. You can now use all services on Kisan Unnati. Let us go to your dashboard.",
+    "register_welcome_001":  "Welcome to Kisan Unnati. To create a new account, please fill in your required details. After registration, you will be able to use all personal farming services and features.",
+    "register_offline_001":  "No internet right now. Please connect to the internet and try again to create a new account.",
+    "register_error_001":  "Sorry! Your registration could not be completed. Please check the information you entered and try again. If the problem continues, use the help option.",
+    "register_exit_001":  "Thank you. You can now move ahead. If you ever need help with registration in the future, press the replay button to hear my guidance again.",
+    "register_help_001":  "Please fill in your name, mobile number, and required details correctly. After OTP verification is complete, your account will be created successfully."
+}

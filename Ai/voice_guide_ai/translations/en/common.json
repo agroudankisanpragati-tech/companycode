@@ -1,0 +1,16 @@
+{
+    "common_retry_001":  "Please try again.",
+    "common_processing_001":  "Please wait, your information is being processed.",
+    "common_permission_required_001":  "Permission is required for this feature.",
+    "common_saving_001":  "Data is being saved.",
+    "common_upload_success_001":  "Upload was successful.",
+    "common_update_available_001":  "A new update is available.",
+    "common_session_expired_001":  "Your session has expired.",
+    "common_download_success_001":  "Download was successful.",
+    "common_data_not_found_001":  "No data found.",
+    "common_access_denied_001":  "Access is denied.",
+    "common_exit_001":  "Do you want to exit this section?",
+    "common_offline_001":  "No internet right now. Please turn on your connection and try again.",
+    "common_no_internet_001":  "Internet is not available.",
+    "common_maintenance_001":  "System is under maintenance."
+}

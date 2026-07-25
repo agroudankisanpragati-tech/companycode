@@ -1,0 +1,42 @@
+{
+  "id": "crop_season_001",
+  "page": "crop_recommendation",
+  "dialogueType": "season_selection",
+  "title": "Season Selection",
+  "version": "1.0.0",
+
+  "text": "कृपया वर्तमान कृषि मौसम का चयन करें। सही मौसम का चयन करने से एआई आपके क्षेत्र और समय के अनुसार उपयुक्त फसलों की अनुशंसा कर सकेगा।",
+
+  "repeat": {
+    "enabled": false,
+    "afterHours": 0
+  },
+
+  "voice": {
+    "enabled": true,
+    "provider": "offline",
+    "file": "crop_season_001.mp3",
+    "language": "hi",
+    "speed": 1.0,
+    "volume": 1.0
+  },
+
+  "avatar": {
+    "enabled": true,
+    "animation": "point",
+    "expression": "neutral"
+  },
+
+  "display": {
+    "showSubtitle": true,
+    "showAvatar": true
+  },
+
+  "conditions": {
+    "firstVisit": false,
+    "loggedIn": true,
+    "internetRequired": false
+  },
+
+  "status": "active"
+}

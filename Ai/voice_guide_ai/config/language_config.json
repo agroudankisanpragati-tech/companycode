@@ -1,0 +1,37 @@
+{
+    "version": "1.0.0",
+    "default_language": "hi",
+    "fallback_language": "en",
+    "supported_languages": {
+        "hi":              { "name": "Hindi",      "native": "हिन्दी",      "rtl": false, "dialect": false },
+        "en":              { "name": "English",    "native": "English",     "rtl": false, "dialect": false },
+        "gu":              { "name": "Gujarati",   "native": "ગુજરાતી",    "rtl": false, "dialect": false },
+        "pa":              { "name": "Punjabi",    "native": "ਪੰਜਾਬੀ",     "rtl": false, "dialect": false },
+        "mr":              { "name": "Marathi",    "native": "मराठी",       "rtl": false, "dialect": false },
+        "ta":              { "name": "Tamil",      "native": "தமிழ்",       "rtl": false, "dialect": false },
+        "te":              { "name": "Telugu",     "native": "తెలుగు",      "rtl": false, "dialect": false },
+        "kn":              { "name": "Kannada",    "native": "ಕನ್ನಡ",       "rtl": false, "dialect": false },
+        "ml":              { "name": "Malayalam",  "native": "മലയാളം",      "rtl": false, "dialect": false },
+        "bn":              { "name": "Bengali",    "native": "বাংলা",       "rtl": false, "dialect": false },
+        "ur":              { "name": "Urdu",       "native": "اردو",        "rtl": true,  "dialect": false },
+        "od":              { "name": "Odia",       "native": "ଓଡ଼ିଆ",       "rtl": false, "dialect": false },
+        "as":              { "name": "Assamese",   "native": "অসমীয়া",     "rtl": false, "dialect": false },
+        "rj/bagri":        { "name": "Bagri",      "native": "बागड़ी",      "rtl": false, "dialect": true, "parent": "hi" },
+        "rj/marwari":      { "name": "Marwari",    "native": "मारवाड़ी",    "rtl": false, "dialect": true, "parent": "hi" },
+        "rj/mewari":       { "name": "Mewari",     "native": "मेवाड़ी",     "rtl": false, "dialect": true, "parent": "hi" },
+        "rj/dhundhari":    { "name": "Dhundhari",  "native": "ढूंढाड़ी",    "rtl": false, "dialect": true, "parent": "hi" },
+        "rj/hadoti":       { "name": "Hadoti",     "native": "हाड़ौती",     "rtl": false, "dialect": true, "parent": "hi" },
+        "rj/shekhawati":   { "name": "Shekhawati", "native": "शेखावाटी",   "rtl": false, "dialect": true, "parent": "hi" },
+        "rj/mewati":       { "name": "Mewati",     "native": "मेवाती",      "rtl": false, "dialect": true, "parent": "hi" },
+        "rj/wagdi":        { "name": "Wagdi",      "native": "वागड़ी",      "rtl": false, "dialect": true, "parent": "hi" }
+    },
+    "tts_language_codes": {
+        "hi": "hi-IN", "en": "en-IN", "gu": "gu-IN", "pa": "pa-IN",
+        "mr": "mr-IN", "ta": "ta-IN", "te": "te-IN", "kn": "kn-IN",
+        "ml": "ml-IN", "bn": "bn-IN", "ur": "ur-PK", "od": "or-IN",
+        "as": "as-IN",
+        "rj/bagri": "hi-IN", "rj/marwari": "hi-IN", "rj/mewari": "hi-IN",
+        "rj/dhundhari": "hi-IN", "rj/hadoti": "hi-IN", "rj/shekhawati": "hi-IN",
+        "rj/mewati": "hi-IN", "rj/wagdi": "hi-IN"
+    }
+}

@@ -1,0 +1,42 @@
+{
+  "id": "disease_welcome_001",
+  "page": "disease_detection",
+  "dialogueType": "welcome",
+  "title": "Disease Detection Welcome",
+  "version": "1.0.0",
+
+  "text": "फसल रोग पहचान पेज पर आपका स्वागत है। इस सुविधा की सहायता से आप अपनी फसल की तस्वीर अपलोड करके कुछ ही क्षणों में संभावित रोग की पहचान कर सकते हैं। बेहतर परिणाम के लिए फसल की स्पष्ट और अच्छी रोशनी में ली गई तस्वीर का उपयोग करें।",
+
+  "repeat": {
+    "enabled": true,
+    "afterHours": 24
+  },
+
+  "voice": {
+    "enabled": true,
+    "provider": "offline",
+    "file": "disease_welcome_001.mp3",
+    "language": "hi",
+    "speed": 1.0,
+    "volume": 1.0
+  },
+
+  "avatar": {
+    "enabled": true,
+    "animation": "wave",
+    "expression": "smile"
+  },
+
+  "display": {
+    "showSubtitle": true,
+    "showAvatar": true
+  },
+
+  "conditions": {
+    "firstVisit": true,
+    "loggedIn": true,
+    "internetRequired": false
+  },
+
+  "status": "active"
+}

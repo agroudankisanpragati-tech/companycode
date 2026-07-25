@@ -1,0 +1,35 @@
+{
+    "id":  "common_data_not_found_001",
+    "page":  "common",
+    "dialogueType":  "data_not_found",
+    "title":  "Common Data Not Found",
+    "version":  "1.0.0",
+    "text":  "कोई डेटा नहीं मिला।",
+    "repeat":  {
+                   "enabled":  false,
+                   "afterHours":  0
+               },
+    "voice":  {
+                  "enabled":  true,
+                  "provider":  "offline",
+                  "file":  "common_data_not_found_001.mp3",
+                  "language":  "hi",
+                  "speed":  1,
+                  "volume":  1
+              },
+    "avatar":  {
+                   "enabled":  true,
+                   "animation":  "warning",
+                   "expression":  "warning"
+               },
+    "display":  {
+                    "showSubtitle":  true,
+                    "showAvatar":  true
+                },
+    "conditions":  {
+                       "firstVisit":  false,
+                       "loggedIn":  true,
+                       "internetRequired":  false
+                   },
+    "status":  "active"
+}

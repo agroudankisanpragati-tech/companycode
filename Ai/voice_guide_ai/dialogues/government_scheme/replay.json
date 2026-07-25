@@ -1,0 +1,42 @@
+{
+  "id": "scheme_replay_001",
+  "page": "government_scheme",
+  "dialogueType": "replay",
+  "title": "Replay Government Scheme Guide",
+  "version": "1.0.0",
+
+  "text": "मैं आपको फिर से मार्गदर्शन देता हूँ। अपनी जानकारी सही प्रकार से भरें। हमारा सिस्टम आपकी पात्रता के अनुसार सरकारी योजनाओं की खोज करेगा। परिणाम में प्रत्येक योजना के लाभ, पात्रता और आवेदन प्रक्रिया ध्यान से पढ़ें।",
+
+  "repeat": {
+    "enabled": false,
+    "afterHours": 0
+  },
+
+  "voice": {
+    "enabled": true,
+    "provider": "offline",
+    "file": "scheme_replay_001.mp3",
+    "language": "hi",
+    "speed": 1.0,
+    "volume": 1.0
+  },
+
+  "avatar": {
+    "enabled": true,
+    "animation": "point",
+    "expression": "smile"
+  },
+
+  "display": {
+    "showSubtitle": true,
+    "showAvatar": true
+  },
+
+  "conditions": {
+    "firstVisit": false,
+    "loggedIn": true,
+    "internetRequired": false
+  },
+
+  "status": "active"
+}

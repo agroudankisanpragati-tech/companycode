@@ -1,12 +1,12 @@
 /**
  * Emergency Agent
- * Domain: Farming emergencies — crop damage, pest outbreak, flood, poisoning
- * Data sources: Static guidance only (no DB, no LLM)
- * Never communicates directly with the user.
- * LLM is NEVER called for emergency intent.
+ * Fix 9: uses structured logger
  */
 
 import { AgentContext, AgentResult } from './types';
+import { createLogger } from '../utils/logger';
+
+const log = createLogger('emergencyAgent');
 
 const EMERGENCY_GENERAL = `🚨 Emergency Farming Assistance
 
@@ -46,27 +46,20 @@ Immediate steps:
 4. Carry the pesticide container/label
 5. Stay in open air`;
 
-function detectEmergencyType(msg: string): string {
-  const lower = msg.toLowerCase();
-  if (/poison|toxic|pesticide.*poison|विष|कीटनाशक.*विषाक्त/.test(lower)) return 'poison';
-  if (/flood|waterlog|बाढ़|जलभराव|drought|सूखा/.test(lower)) return 'flood';
-  if (/pest|insect|locust|टिड्डी|aphid|whitefly|कीट/.test(lower)) return 'pest';
-  return 'general';
-}
-
 export async function runEmergencyAgent(ctx: AgentContext): Promise<AgentResult> {
-  const emergencyType = detectEmergencyType(ctx.message);
+  const emergencyType = ctx.entities?.emergency || 'general';
+
+  log.debug('EmergencyAgent running', { emergencyType });
 
   const msgMap: Record<string, string> = {
-    poison:  EMERGENCY_POISON,
-    flood:   EMERGENCY_FLOOD,
-    pest:    EMERGENCY_PEST,
+    poison: EMERGENCY_POISON,
+    flood:  EMERGENCY_FLOOD,
+    pest:   EMERGENCY_PEST,
     general: EMERGENCY_GENERAL,
   };
 
   return {
-    agent: 'EmergencyAgent',
-    success: true,
+    agent: 'EmergencyAgent', success: true,
     data: { emergencyType },
     summary: msgMap[emergencyType],
   };

@@ -1,0 +1,42 @@
+{
+  "id": "crop_welcome_001",
+  "page": "crop_recommendation",
+  "dialogueType": "welcome",
+  "title": "Crop Recommendation Welcome",
+  "version": "1.0.0",
+
+  "text": "फसल अनुशंसा पेज पर आपका स्वागत है। यह सुविधा आपकी भूमि, मौसम, पानी की उपलब्धता, मिट्टी की स्थिति तथा अन्य कृषि जानकारियों के आधार पर आपके लिए उपयुक्त फसलों का सुझाव देती है। कृपया सही जानकारी भरें ताकि आपको अधिक सटीक परिणाम प्राप्त हो सकें।",
+
+  "repeat": {
+    "enabled": true,
+    "afterHours": 24
+  },
+
+  "voice": {
+    "enabled": true,
+    "provider": "offline",
+    "file": "crop_welcome_001.mp3",
+    "language": "hi",
+    "speed": 1.0,
+    "volume": 1.0
+  },
+
+  "avatar": {
+    "enabled": true,
+    "animation": "wave",
+    "expression": "smile"
+  },
+
+  "display": {
+    "showSubtitle": true,
+    "showAvatar": true
+  },
+
+  "conditions": {
+    "firstVisit": true,
+    "loggedIn": true,
+    "internetRequired": false
+  },
+
+  "status": "active"
+}

@@ -1,0 +1,42 @@
+{
+  "id": "mandi_price_alert_001",
+  "page": "mandi",
+  "dialogueType": "price_alert",
+  "title": "Price Alert",
+  "version": "1.0.0",
+
+  "text": "ध्यान दें। आपकी चुनी हुई फसल के बाजार भाव में महत्वपूर्ण परिवर्तन हुआ है। कृपया वर्तमान भाव और बाजार की स्थिति देखकर ही बिक्री का निर्णय लें।",
+
+  "repeat": {
+    "enabled": false,
+    "afterHours": 0
+  },
+
+  "voice": {
+    "enabled": true,
+    "provider": "offline",
+    "file": "mandi_price_alert_001.mp3",
+    "language": "hi",
+    "speed": 1.0,
+    "volume": 1.0
+  },
+
+  "avatar": {
+    "enabled": true,
+    "animation": "warning",
+    "expression": "warning"
+  },
+
+  "display": {
+    "showSubtitle": true,
+    "showAvatar": true
+  },
+
+  "conditions": {
+    "firstVisit": false,
+    "loggedIn": true,
+    "internetRequired": false
+  },
+
+  "status": "active"
+}

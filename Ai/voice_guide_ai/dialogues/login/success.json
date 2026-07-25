@@ -1,0 +1,42 @@
+{
+  "id": "login_success_001",
+  "page": "login",
+  "dialogueType": "success",
+  "title": "Login Success",
+  "version": "1.0.0",
+
+  "text": "बधाई हो! आपका लॉगिन सफलतापूर्वक हो गया है। अब आप किसान उन्नति की सभी व्यक्तिगत सेवाओं का उपयोग कर सकते हैं। आइए, आपके डैशबोर्ड पर चलते हैं।",
+
+  "repeat": {
+    "enabled": false,
+    "afterHours": 0
+  },
+
+  "voice": {
+    "enabled": true,
+    "provider": "offline",
+    "file": "login_success_001.mp3",
+    "language": "hi",
+    "speed": 1.0,
+    "volume": 1.0
+  },
+
+  "avatar": {
+    "enabled": true,
+    "animation": "success",
+    "expression": "happy"
+  },
+
+  "display": {
+    "showSubtitle": true,
+    "showAvatar": true
+  },
+
+  "conditions": {
+    "firstVisit": false,
+    "loggedIn": true,
+    "internetRequired": false
+  },
+
+  "status": "active"
+}

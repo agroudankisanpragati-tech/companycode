@@ -355,7 +355,8 @@ export default function SevaMitraPage() {
                     stateName: prof.state,
                     district: prof.district,
                     category: prof.category.toLowerCase(),
-                    land: String(prof.landOwnedHectares || 0)
+                    land: String(prof.landOwnedHectares || 0),
+                    phone: ''
                 };
 
                 setProfile(newProfile);

@@ -1,0 +1,42 @@
+{
+  "id": "soil_replay_001",
+  "page": "soil_health",
+  "dialogueType": "replay",
+  "title": "Replay Soil Guide",
+  "version": "1.0.0",
+
+  "text": "मैं आपको फिर से मार्गदर्शन देता हूँ। मिट्टी परीक्षण रिपोर्ट अपलोड करें या आवश्यक जानकारी भरें। हमारा एआई आपकी मिट्टी का विश्लेषण करके खेती के लिए उपयुक्त सुझाव प्रदान करेगा।",
+
+  "repeat": {
+    "enabled": false,
+    "afterHours": 0
+  },
+
+  "voice": {
+    "enabled": true,
+    "provider": "offline",
+    "file": "soil_replay_001.mp3",
+    "language": "hi",
+    "speed": 1.0,
+    "volume": 1.0
+  },
+
+  "avatar": {
+    "enabled": true,
+    "animation": "point",
+    "expression": "smile"
+  },
+
+  "display": {
+    "showSubtitle": true,
+    "showAvatar": true
+  },
+
+  "conditions": {
+    "firstVisit": false,
+    "loggedIn": true,
+    "internetRequired": false
+  },
+
+  "status": "active"
+}

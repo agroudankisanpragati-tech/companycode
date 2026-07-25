@@ -1,0 +1,35 @@
+{
+    "id":  "common_access_denied_001",
+    "page":  "common",
+    "dialogueType":  "access_denied",
+    "title":  "Common Access Denied",
+    "version":  "1.0.0",
+    "text":  "पहुंच अस्वीकृत है।",
+    "repeat":  {
+                   "enabled":  false,
+                   "afterHours":  0
+               },
+    "voice":  {
+                  "enabled":  true,
+                  "provider":  "offline",
+                  "file":  "common_access_denied_001.mp3",
+                  "language":  "hi",
+                  "speed":  1,
+                  "volume":  1
+              },
+    "avatar":  {
+                   "enabled":  true,
+                   "animation":  "warning",
+                   "expression":  "warning"
+               },
+    "display":  {
+                    "showSubtitle":  true,
+                    "showAvatar":  true
+                },
+    "conditions":  {
+                       "firstVisit":  false,
+                       "loggedIn":  true,
+                       "internetRequired":  false
+                   },
+    "status":  "active"
+}

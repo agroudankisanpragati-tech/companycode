@@ -1,0 +1,14 @@
+{
+    "crop_recommendation_replay_001": "मी पुन्हा समजावतो. पीक शिफारससाठी माती प्रकार, हंगाम आणि सिंचन माहिती भरा.",
+    "crop_recommendation_welcome_001": "पीक शिफारस पेजवर आपले स्वागत आहे. येथे तुम्ही तुमच्या जमिनीसाठी सर्वोत्तम पीक शिफारस मिळवू शकता.",
+    "crop_recommendation_result_001": "तुमच्यासाठी पीक शिफारस तयार आहे. कृपया स्क्रीनवर दाखवलेली माहिती पाहा.",
+    "crop_recommendation_error_001": "माफ करा, पीक शिफारस मिळवता आली नाही. कृपया पुन्हा प्रयत्न करा.",
+    "crop_recommendation_offline_001": "इंटरनेट कनेक्शन उपलब्ध नाही. पीक शिफारससाठी इंटरनेटशी जोडा.",
+    "crop_recommendation_exit_001": "धन्यवाद. पीक शिफारस पाहिल्याबद्दल आभार.",
+    "crop_recommendation_help_001": "पीक शिफारससाठी माती प्रकार, हंगाम, सिंचन सुविधा आणि क्षेत्र माहिती भरा.",
+    "crop_recommendation_soil_selection_001": "माती प्रकार निवडा.",
+    "crop_recommendation_season_selection_001": "हंगाम निवडा.",
+    "crop_recommendation_irrigation_selection_001": "सिंचन प्रकार निवडा.",
+    "crop_recommendation_processing_001": "पीक शिफारस तयार होत आहे.",
+    "crop_recommendation_retry_001": "कृपया पुन्हा प्रयत्न करा."
+}

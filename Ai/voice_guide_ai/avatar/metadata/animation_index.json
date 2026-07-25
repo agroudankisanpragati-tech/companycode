@@ -1,0 +1,19 @@
+{
+    "version": "1.0.0",
+    "total": 13,
+    "animations": [
+        {"id": "idle",        "label": "Idle",        "loop": true,  "frames": 4,  "duration_ms": 3200},
+        {"id": "wave",        "label": "Wave",        "loop": false, "frames": 5,  "duration_ms": 600},
+        {"id": "namaste",     "label": "Namaste",     "loop": false, "frames": 6,  "duration_ms": 900},
+        {"id": "thinking",    "label": "Thinking",    "loop": true,  "frames": 4,  "duration_ms": 2000},
+        {"id": "listening",   "label": "Listening",   "loop": true,  "frames": 3,  "duration_ms": 1200},
+        {"id": "speaking",    "label": "Speaking",    "loop": true,  "frames": 4,  "duration_ms": 400},
+        {"id": "success",     "label": "Success",     "loop": false, "frames": 5,  "duration_ms": 600},
+        {"id": "warning",     "label": "Warning",     "loop": false, "frames": 3,  "duration_ms": 900},
+        {"id": "error",       "label": "Error",       "loop": false, "frames": 3,  "duration_ms": 900},
+        {"id": "loading",     "label": "Loading",     "loop": true,  "frames": 4,  "duration_ms": 800},
+        {"id": "goodbye",     "label": "Goodbye",     "loop": false, "frames": 5,  "duration_ms": 750},
+        {"id": "head_nod",    "label": "Head Nod",    "loop": false, "frames": 3,  "duration_ms": 600},
+        {"id": "head_shake",  "label": "Head Shake",  "loop": false, "frames": 3,  "duration_ms": 600}
+    ]
+}

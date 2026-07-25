@@ -1,0 +1,42 @@
+{
+  "id": "weather_welcome_001",
+  "page": "weather",
+  "dialogueType": "welcome",
+  "title": "Weather Welcome",
+  "version": "1.0.0",
+
+  "text": "मौसम जानकारी पेज पर आपका स्वागत है। यहाँ आप अपने क्षेत्र का वर्तमान मौसम, आगामी दिनों का पूर्वानुमान तथा खेती से जुड़े मौसम संबंधी महत्वपूर्ण सुझाव प्राप्त कर सकते हैं।",
+
+  "repeat": {
+    "enabled": true,
+    "afterHours": 24
+  },
+
+  "voice": {
+    "enabled": true,
+    "provider": "offline",
+    "file": "weather_welcome_001.mp3",
+    "language": "hi",
+    "speed": 1.0,
+    "volume": 1.0
+  },
+
+  "avatar": {
+    "enabled": true,
+    "animation": "wave",
+    "expression": "smile"
+  },
+
+  "display": {
+    "showSubtitle": true,
+    "showAvatar": true
+  },
+
+  "conditions": {
+    "firstVisit": true,
+    "loggedIn": true,
+    "internetRequired": false
+  },
+
+  "status": "active"
+}

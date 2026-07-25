@@ -1,0 +1,35 @@
+{
+    "id":  "common_download_success_001",
+    "page":  "common",
+    "dialogueType":  "download_success",
+    "title":  "Common Download Success",
+    "version":  "1.0.0",
+    "text":  "डाउनलोड सफल रहा।",
+    "repeat":  {
+                   "enabled":  false,
+                   "afterHours":  0
+               },
+    "voice":  {
+                  "enabled":  true,
+                  "provider":  "offline",
+                  "file":  "common_download_success_001.mp3",
+                  "language":  "hi",
+                  "speed":  1,
+                  "volume":  1
+              },
+    "avatar":  {
+                   "enabled":  true,
+                   "animation":  "success",
+                   "expression":  "happy"
+               },
+    "display":  {
+                    "showSubtitle":  true,
+                    "showAvatar":  true
+                },
+    "conditions":  {
+                       "firstVisit":  false,
+                       "loggedIn":  true,
+                       "internetRequired":  false
+                   },
+    "status":  "active"
+}

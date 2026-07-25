@@ -9,6 +9,11 @@ import LanguagePopupMount from "@/components/LanguagePopupMount";
 import GlobalOfflineBanner from "@/components/GlobalOfflineBanner";
 import { AccessibilityProvider } from "@/context/AccessibilityContext";
 import { VoiceEngineProvider } from "@/components/VoiceEngineProvider";
+import { VoiceGuideProvider } from "@/context/VoiceGuideContext";
+import VoiceGuideAvatar from "@/components/VoiceGuideAvatar";
+import VoiceGuideNavigator from "@/components/VoiceGuideNavigator";
+import VoiceGuidePopupGuide from "@/components/VoiceGuidePopupGuide";
+import KisanSaathiInit from "@/components/KisanSaathiInit";
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -111,12 +116,18 @@ export default function RootLayout({
               <LocationProvider>
                 <AIAssistantProvider>
                   <VoiceEngineProvider>
+                  <VoiceGuideProvider>
                   <GlobalOfflineBanner />
                   <main id="top" className="min-h-screen">
                     {children}
                   </main>
                   <AIAssistantWidget />
                   <LanguagePopupMount />
+                  <KisanSaathiInit />
+                  <VoiceGuideNavigator />
+                  <VoiceGuidePopupGuide />
+                  <VoiceGuideAvatar />
+                  </VoiceGuideProvider>
                   </VoiceEngineProvider>
                 </AIAssistantProvider>
               </LocationProvider>

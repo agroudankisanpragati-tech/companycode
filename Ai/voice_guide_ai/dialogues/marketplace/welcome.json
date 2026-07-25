@@ -1,0 +1,35 @@
+{
+    "id": "market_welcome_001",
+    "page": "marketplace",
+    "dialogueType": "welcome",
+    "title": "Marketplace Welcome",
+    "version": "1.0.0",
+    "text": "बाज़ार में आपका स्वागत है। यहाँ आप कृषि उत्पाद खरीद और बेच सकते हैं।",
+    "repeat": {
+        "enabled": false,
+        "afterHours": 0
+    },
+    "voice": {
+        "enabled": true,
+        "provider": "offline",
+        "file": "market_welcome_001.mp3",
+        "language": "hi",
+        "speed": 1,
+        "volume": 1
+    },
+    "avatar": {
+        "enabled": true,
+        "animation": "wave",
+        "expression": "smile"
+    },
+    "display": {
+        "showSubtitle": true,
+        "showAvatar": true
+    },
+    "conditions": {
+        "firstVisit": false,
+        "loggedIn": true,
+        "internetRequired": false
+    },
+    "status": "active"
+}

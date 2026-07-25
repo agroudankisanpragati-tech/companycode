@@ -1,0 +1,9 @@
+{
+    "login_replay_001":  "Let me explain again. Please enter your registered mobile number. After that, an OTP will be sent to your mobile. Once you verify the OTP, you can safely log in to your account.",
+    "login_success_001":  "Congratulations! You have logged in successfully. You can now use all personal services on Kisan Unnati. Let us go to your dashboard.",
+    "login_welcome_001":  "Welcome to the Kisan Unnati login page. To securely access your account, please enter your mobile number and verify the OTP you receive. After logging in, you will get full access to your personal farming information, services, and all features.",
+    "login_offline_001":  "It looks like your internet connection is not available. Please connect to the internet and try again to log in.",
+    "login_error_001":  "Sorry! Your login could not be completed. Please enter your mobile number and OTP correctly and try again. If the problem continues, use the help option.",
+    "login_exit_001":  "Thank you. You can now move to the next step. If you ever need help with login in the future, press the replay button to hear my guidance again.",
+    "login_help_001":  "If you need help logging in, first enter your registered mobile number. After that, an OTP will be sent to your mobile. Enter the OTP to securely access your account."
+}

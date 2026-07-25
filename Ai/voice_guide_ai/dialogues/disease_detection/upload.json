@@ -1,0 +1,43 @@
+{
+  "id": "disease_upload_001",
+  "page": "disease_detection",
+  "dialogueType": "upload",
+  "title": "Upload Image",
+
+  "version": "1.0.0",
+
+  "text": "कृपया अपनी फसल की स्पष्ट तस्वीर अपलोड करें। यदि संभव हो तो केवल प्रभावित पत्तियों या पौधे का भाग तस्वीर में रखें। अच्छी गुणवत्ता वाली तस्वीर से पहचान अधिक सटीक होगी।",
+
+  "repeat": {
+    "enabled": false,
+    "afterHours": 0
+  },
+
+  "voice": {
+    "enabled": true,
+    "provider": "offline",
+    "file": "disease_upload_001.mp3",
+    "language": "hi",
+    "speed": 1.0,
+    "volume": 1.0
+  },
+
+  "avatar": {
+    "enabled": true,
+    "animation": "point",
+    "expression": "neutral"
+  },
+
+  "display": {
+    "showSubtitle": true,
+    "showAvatar": true
+  },
+
+  "conditions": {
+    "firstVisit": false,
+    "loggedIn": true,
+    "internetRequired": false
+  },
+
+  "status": "active"
+}

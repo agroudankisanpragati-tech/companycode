@@ -1,0 +1,42 @@
+{
+  "id": "crop_error_001",
+  "page": "crop_recommendation",
+  "dialogueType": "error",
+  "title": "Crop Recommendation Error",
+  "version": "1.0.0",
+
+  "text": "क्षमा करें। फसल अनुशंसा तैयार नहीं की जा सकी। कृपया अपनी जानकारी की जाँच करें और पुनः प्रयास करें। यदि समस्या बनी रहती है, तो कुछ समय बाद दोबारा प्रयास करें।",
+
+  "repeat": {
+    "enabled": false,
+    "afterHours": 0
+  },
+
+  "voice": {
+    "enabled": true,
+    "provider": "offline",
+    "file": "crop_error_001.mp3",
+    "language": "hi",
+    "speed": 1.0,
+    "volume": 1.0
+  },
+
+  "avatar": {
+    "enabled": true,
+    "animation": "warning",
+    "expression": "warning"
+  },
+
+  "display": {
+    "showSubtitle": true,
+    "showAvatar": true
+  },
+
+  "conditions": {
+    "firstVisit": false,
+    "loggedIn": true,
+    "internetRequired": false
+  },
+
+  "status": "active"
+}

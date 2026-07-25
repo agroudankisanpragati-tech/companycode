@@ -2,6 +2,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import Link from 'next/link';
 import { shopkeeperApi } from '@/services/shopkeeperApi';
+import { useVoiceGuide } from '@/hooks/useVoiceGuide';
 import {
   MapPin, Phone, CheckCircle, Search, Store, Leaf, Sprout,
   Navigation, Package, ChevronRight, RefreshCw, X,
@@ -136,6 +137,8 @@ export default function FarmerMarketplacePage() {
   const [search, setSearch] = useState('');
   const [locating, setLocating] = useState(false);
   const [userLoc, setUserLoc] = useState<UserLocation | null>(null);
+
+  useVoiceGuide('marketplace');
 
   // On mount, try to load farmer profile GPS for auto-proximity
   useEffect(() => {

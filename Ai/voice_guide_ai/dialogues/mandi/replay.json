@@ -1,0 +1,42 @@
+{
+  "id": "mandi_replay_001",
+  "page": "mandi",
+  "dialogueType": "replay",
+  "title": "Replay Mandi Guide",
+  "version": "1.0.0",
+
+  "text": "मैं आपको फिर से मार्गदर्शन देता हूँ। पहले अपनी फसल चुनें, फिर मंडी का चयन करें। इसके बाद आपको नवीनतम मंडी भाव, मूल्य परिवर्तन तथा बिक्री से संबंधित महत्वपूर्ण जानकारी दिखाई जाएगी।",
+
+  "repeat": {
+    "enabled": false,
+    "afterHours": 0
+  },
+
+  "voice": {
+    "enabled": true,
+    "provider": "offline",
+    "file": "mandi_replay_001.mp3",
+    "language": "hi",
+    "speed": 1.0,
+    "volume": 1.0
+  },
+
+  "avatar": {
+    "enabled": true,
+    "animation": "point",
+    "expression": "smile"
+  },
+
+  "display": {
+    "showSubtitle": true,
+    "showAvatar": true
+  },
+
+  "conditions": {
+    "firstVisit": false,
+    "loggedIn": true,
+    "internetRequired": false
+  },
+
+  "status": "active"
+}

@@ -4,6 +4,7 @@ import { useAuth } from '@/context/AuthContext';
 import { useLocation } from '@/context/LocationContext';
 import { useAIAssistant } from '@/context/AIAssistantContext';
 import { usePageContext } from '@/hooks/usePageContext';
+import { useVoiceGuide } from '@/hooks/useVoiceGuide';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState, useCallback } from 'react';
 import FarmerFooter from '@/components/FarmerFooter';
@@ -27,8 +28,8 @@ export default function FarmerDashboard() {
     const { user, isAuthenticated, isLoading, logout } = useAuth();
     const { location, isReady, onLocationChange } = useLocation();
     const { toggleAssistant } = useAIAssistant();
-    // Dashboard is the broadest context — AI can answer any farming topic
     usePageContext({ pageContext: 'ui' });
+    useVoiceGuide('home');
     const router = useRouter();
 
     const [locationModalOpen, setLocationModalOpen] = useState(false);

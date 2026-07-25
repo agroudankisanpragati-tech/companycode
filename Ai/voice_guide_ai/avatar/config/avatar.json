@@ -1,0 +1,39 @@
+{
+    "avatar_id": "kisan_saathi_v1",
+    "name": "Kisan Saathi",
+    "display_name": "किसान साथी",
+    "version": "1.0.0",
+    "gender": "male",
+    "age_appearance": 27,
+    "profession": "Agriculture Expert",
+    "appearance": {
+        "style": "semi_realistic",
+        "ethnicity": "indian",
+        "tone": "friendly_professional",
+        "background": "transparent",
+        "frame": "face_and_shoulders",
+        "skin_tone": "medium_brown",
+        "hair": "short_black",
+        "attire": "light_kurta_professional"
+    },
+    "default_expression": "neutral",
+    "default_animation": "idle",
+    "default_position": "bottom_right",
+    "default_theme": "transparent",
+    "asset_base_path": "avatar/final",
+    "expression_base_path": "avatar/expressions",
+    "animation_base_path": "avatar/animations",
+    "thumbnail_path": "avatar/thumbnails",
+    "supported_formats": ["webp", "png", "svg"],
+    "preferred_format": "webp",
+    "dimensions": {
+        "width": 320,
+        "height": 400,
+        "aspect_ratio": "4:5"
+    },
+    "fallback_asset": "avatar/final/webp/neutral.webp",
+    "cache_enabled": true,
+    "lazy_load": true,
+    "preload_expressions": ["neutral", "smile", "listening", "thinking"],
+    "preload_animations": ["idle", "wave"]
+}

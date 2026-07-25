@@ -1,0 +1,14 @@
+{
+  "id": "language_popup_offline_001",
+  "page": "language_popup",
+  "dialogueType": "offline",
+  "title": "Language Popup Offline",
+  "version": "1.0.0",
+  "text": "इंटरनेट कनेक्शन नहीं है। आप ऑफलाइन मोड में भी मार्गदर्शन प्राप्त कर सकते हैं।",
+  "repeat": {"enabled": false, "afterHours": 0},
+  "voice": {"enabled": true, "provider": "offline", "file": "language_popup_offline_001.mp3", "language": "hi", "speed": 1.0, "volume": 1.0},
+  "avatar": {"enabled": true, "animation": "idle", "expression": "neutral"},
+  "display": {"showSubtitle": true, "showAvatar": true},
+  "conditions": {"firstVisit": false, "loggedIn": false, "internetRequired": false},
+  "status": "active"
+}

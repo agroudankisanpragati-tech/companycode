@@ -1,0 +1,35 @@
+{
+    "id":  "common_no_internet_001",
+    "page":  "common",
+    "dialogueType":  "no_internet",
+    "title":  "Common No Internet",
+    "version":  "1.0.0",
+    "text":  "इंटरनेट उपलब्ध नहीं है।",
+    "repeat":  {
+                   "enabled":  false,
+                   "afterHours":  0
+               },
+    "voice":  {
+                  "enabled":  true,
+                  "provider":  "offline",
+                  "file":  "common_no_internet_001.mp3",
+                  "language":  "hi",
+                  "speed":  1,
+                  "volume":  1
+              },
+    "avatar":  {
+                   "enabled":  true,
+                   "animation":  "warning",
+                   "expression":  "warning"
+               },
+    "display":  {
+                    "showSubtitle":  true,
+                    "showAvatar":  true
+                },
+    "conditions":  {
+                       "firstVisit":  false,
+                       "loggedIn":  true,
+                       "internetRequired":  false
+                   },
+    "status":  "active"
+}

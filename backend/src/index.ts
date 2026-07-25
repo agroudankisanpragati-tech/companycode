@@ -36,6 +36,7 @@ import languageDictionaryRoutes from './routes/languageDictionary';
 import languageEngineRoutes from './routes/languageEngine';
 import memoryEngineRoutes from './routes/memoryEngine';
 import voiceEngineRoutes from './routes/voiceEngine';
+import voiceGuideRoutes from './routes/voiceGuide';
 import pragatiAIRoutes from './routes/pragatiAI';
 import supportRoutes from './routes/support';
 import { ensureBootstrapAdmin } from './utils/bootstrapAdmin';
@@ -158,6 +159,7 @@ app.use('/api/language-dictionary', languageDictionaryRoutes);
 app.use('/api/language-engine', languageEngineRoutes);
 app.use('/api/memory-engine', memoryEngineRoutes);
 app.use('/api/voice-engine', voiceEngineRoutes);
+app.use('/api/voice-guide', voiceGuideRoutes);
 app.use('/api/pragati-ai', pragatiAIRoutes);
 app.use('/api/support', supportRoutes);
 

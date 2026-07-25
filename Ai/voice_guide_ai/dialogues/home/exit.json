@@ -1,0 +1,42 @@
+{
+  "id": "home_exit_001",
+  "page": "home",
+  "dialogueType": "exit",
+  "title": "Home Exit",
+  "version": "1.0.0",
+
+  "text": "बहुत अच्छा। अब आप अपनी आवश्यकता के अनुसार किसी भी सुविधा का उपयोग कर सकते हैं। जब भी आप किसी नए पेज पर जाएंगे, मैं आपको उसकी जानकारी सरल भाषा में समझाऊँगा। आपकी खेती की इस यात्रा में मैं हमेशा आपके साथ हूँ।",
+
+  "repeat": {
+    "enabled": false,
+    "afterHours": 0
+  },
+
+  "voice": {
+    "enabled": true,
+    "provider": "offline",
+    "file": "home_exit_001.mp3",
+    "language": "hi",
+    "speed": 1.0,
+    "volume": 1.0
+  },
+
+  "avatar": {
+    "enabled": true,
+    "animation": "wave",
+    "expression": "smile"
+  },
+
+  "display": {
+    "showSubtitle": true,
+    "showAvatar": true
+  },
+
+  "conditions": {
+    "firstVisit": false,
+    "loggedIn": false,
+    "internetRequired": false
+  },
+
+  "status": "active"
+}

@@ -1,0 +1,42 @@
+{
+  "id": "register_replay_001",
+  "page": "register",
+  "dialogueType": "replay",
+  "title": "Register Replay",
+  "version": "1.0.0",
+
+  "text": "मैं फिर से समझाता हूँ। कृपया अपना नाम, मोबाइल नंबर और आवश्यक जानकारी सही प्रकार से भरें। ओटीपी सत्यापित करने के बाद आपका खाता सफलतापूर्वक बन जाएगा।",
+
+  "repeat": {
+    "enabled": false,
+    "afterHours": 0
+  },
+
+  "voice": {
+    "enabled": true,
+    "provider": "offline",
+    "file": "register_replay_001.mp3",
+    "language": "hi",
+    "speed": 1.0,
+    "volume": 1.0
+  },
+
+  "avatar": {
+    "enabled": true,
+    "animation": "point",
+    "expression": "smile"
+  },
+
+  "display": {
+    "showSubtitle": true,
+    "showAvatar": true
+  },
+
+  "conditions": {
+    "firstVisit": false,
+    "loggedIn": false,
+    "internetRequired": false
+  },
+
+  "status": "active"
+}

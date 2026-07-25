@@ -1,0 +1,35 @@
+{
+  "id": "language_welcome_001",
+  "page": "language_popup",
+  "dialogueType": "welcome",
+  "title": "Language Selection Welcome",
+  "version": "1.0.0",
+  "text": "नमस्कार! कृपया अपनी भाषा चुनें। आप हिंदी, अंग्रेजी, गुजराती, पंजाबी, मराठी सहित कई भाषाओं में इस ऐप का उपयोग कर सकते हैं।",
+  "repeat": {
+    "enabled": true,
+    "afterHours": 24
+  },
+  "voice": {
+    "enabled": true,
+    "provider": "offline",
+    "file": "language_welcome_001.mp3",
+    "language": "hi",
+    "speed": 1.0,
+    "volume": 1.0
+  },
+  "avatar": {
+    "enabled": true,
+    "animation": "wave",
+    "expression": "smile"
+  },
+  "display": {
+    "showSubtitle": true,
+    "showAvatar": true
+  },
+  "conditions": {
+    "firstVisit": true,
+    "loggedIn": false,
+    "internetRequired": false
+  },
+  "status": "active"
+}

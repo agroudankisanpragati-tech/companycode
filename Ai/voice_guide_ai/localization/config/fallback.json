@@ -1,0 +1,27 @@
+{
+  "chains": {
+    "hi":           ["hi", "en"],
+    "en":           ["en", "hi"],
+    "gu":           ["gu", "hi", "en"],
+    "pa":           ["pa", "hi", "en"],
+    "mr":           ["mr", "hi", "en"],
+    "ta":           ["ta", "en", "hi"],
+    "te":           ["te", "en", "hi"],
+    "kn":           ["kn", "en", "hi"],
+    "ml":           ["ml", "en", "hi"],
+    "bn":           ["bn", "hi", "en"],
+    "ur":           ["ur", "hi", "en"],
+    "od":           ["od", "hi", "en"],
+    "as":           ["as", "bn", "hi", "en"],
+    "rj/bagri":     ["rj/bagri",     "hi", "en"],
+    "rj/marwari":   ["rj/marwari",   "hi", "en"],
+    "rj/mewari":    ["rj/mewari",    "hi", "en"],
+    "rj/dhundhari": ["rj/dhundhari", "hi", "en"],
+    "rj/hadoti":    ["rj/hadoti",    "hi", "en"],
+    "rj/shekhawati":["rj/shekhawati","hi", "en"],
+    "rj/mewati":    ["rj/mewati",    "hi", "en"],
+    "rj/wagdi":     ["rj/wagdi",     "hi", "en"]
+  },
+  "default": "hi",
+  "ultimate_fallback": "en"
+}

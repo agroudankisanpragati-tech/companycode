@@ -1,0 +1,42 @@
+{
+  "id": "profile_replay_001",
+  "page": "profile",
+  "dialogueType": "replay",
+  "title": "Replay Profile Guide",
+  "version": "1.0.0",
+
+  "text": "मैं आपको फिर से मार्गदर्शन देता हूँ। अपनी व्यक्तिगत जानकारी, खेत और भूमि का विवरण सही रखें। इससे एआई आपको अधिक सटीक कृषि सुझाव और सेवाएँ प्रदान करेगा।",
+
+  "repeat": {
+    "enabled": false,
+    "afterHours": 0
+  },
+
+  "voice": {
+    "enabled": true,
+    "provider": "offline",
+    "file": "profile_replay_001.mp3",
+    "language": "hi",
+    "speed": 1.0,
+    "volume": 1.0
+  },
+
+  "avatar": {
+    "enabled": true,
+    "animation": "point",
+    "expression": "smile"
+  },
+
+  "display": {
+    "showSubtitle": true,
+    "showAvatar": true
+  },
+
+  "conditions": {
+    "firstVisit": false,
+    "loggedIn": true,
+    "internetRequired": false
+  },
+
+  "status": "active"
+}

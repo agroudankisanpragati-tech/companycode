@@ -1,0 +1,35 @@
+{
+    "id":  "language_exit_001",
+    "page":  "language_popup",
+    "dialogueType":  "exit",
+    "title":  "Language Popup Exit",
+    "version":  "1.0.0",
+    "text":  "क्या आप इस अनुभाग से बाहर निकलना चाहते हैं?",
+    "repeat":  {
+                   "enabled":  false,
+                   "afterHours":  0
+               },
+    "voice":  {
+                  "enabled":  true,
+                  "provider":  "offline",
+                  "file":  "language_exit_001.mp3",
+                  "language":  "hi",
+                  "speed":  1,
+                  "volume":  1
+              },
+    "avatar":  {
+                   "enabled":  true,
+                   "animation":  "warning",
+                   "expression":  "warning"
+               },
+    "display":  {
+                    "showSubtitle":  true,
+                    "showAvatar":  true
+                },
+    "conditions":  {
+                       "firstVisit":  false,
+                       "loggedIn":  false,
+                       "internetRequired":  false
+                   },
+    "status":  "active"
+}

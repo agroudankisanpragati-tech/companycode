@@ -1,0 +1,42 @@
+{
+  "id": "soil_recommendation_001",
+  "page": "soil_health",
+  "dialogueType": "recommendation",
+  "title": "Soil Recommendation",
+  "version": "1.0.0",
+
+  "text": "आपकी मिट्टी के विश्लेषण के आधार पर खेती से संबंधित सुझाव तैयार कर दिए गए हैं। कृपया अनुशंसित उर्वरकों, पोषक तत्वों तथा सुधारात्मक उपायों को ध्यान से पढ़ें।",
+
+  "repeat": {
+    "enabled": false,
+    "afterHours": 0
+  },
+
+  "voice": {
+    "enabled": true,
+    "provider": "offline",
+    "file": "soil_recommendation_001.mp3",
+    "language": "hi",
+    "speed": 1.0,
+    "volume": 1.0
+  },
+
+  "avatar": {
+    "enabled": true,
+    "animation": "success",
+    "expression": "smile"
+  },
+
+  "display": {
+    "showSubtitle": true,
+    "showAvatar": true
+  },
+
+  "conditions": {
+    "firstVisit": false,
+    "loggedIn": true,
+    "internetRequired": false
+  },
+
+  "status": "active"
+}

@@ -1,0 +1,35 @@
+{
+    "id":  "language_help_001",
+    "page":  "language_popup",
+    "dialogueType":  "help",
+    "title":  "Language Popup Help",
+    "version":  "1.0.0",
+    "text":  "यदि आपको सहायता चाहिए, तो दिए गए विकल्पों को ध्यान से चुनें और आवश्यकता होने पर रिप्ले दबाएँ।",
+    "repeat":  {
+                   "enabled":  true,
+                   "afterHours":  0
+               },
+    "voice":  {
+                  "enabled":  true,
+                  "provider":  "offline",
+                  "file":  "language_help_001.mp3",
+                  "language":  "hi",
+                  "speed":  1,
+                  "volume":  1
+              },
+    "avatar":  {
+                   "enabled":  true,
+                   "animation":  "point",
+                   "expression":  "smile"
+               },
+    "display":  {
+                    "showSubtitle":  true,
+                    "showAvatar":  true
+                },
+    "conditions":  {
+                       "firstVisit":  false,
+                       "loggedIn":  false,
+                       "internetRequired":  false
+                   },
+    "status":  "active"
+}

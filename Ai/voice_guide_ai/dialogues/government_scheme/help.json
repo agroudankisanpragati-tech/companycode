@@ -1,0 +1,42 @@
+{
+  "id": "scheme_help_001",
+  "page": "government_scheme",
+  "dialogueType": "help",
+  "title": "Government Scheme Help",
+  "version": "1.0.0",
+
+  "text": "कृपया अपनी आवश्यक जानकारी जैसे राज्य, जिला, आयु, व्यवसाय और अन्य विवरण सही प्रकार से भरें। इन जानकारियों के आधार पर आपके लिए उपयुक्त सरकारी योजनाएँ दिखाई जाएँगी।",
+
+  "repeat": {
+    "enabled": false,
+    "afterHours": 0
+  },
+
+  "voice": {
+    "enabled": true,
+    "provider": "offline",
+    "file": "scheme_help_001.mp3",
+    "language": "hi",
+    "speed": 1.0,
+    "volume": 1.0
+  },
+
+  "avatar": {
+    "enabled": true,
+    "animation": "point",
+    "expression": "smile"
+  },
+
+  "display": {
+    "showSubtitle": true,
+    "showAvatar": true
+  },
+
+  "conditions": {
+    "firstVisit": false,
+    "loggedIn": true,
+    "internetRequired": false
+  },
+
+  "status": "active"
+}

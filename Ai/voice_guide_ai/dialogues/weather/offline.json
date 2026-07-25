@@ -1,0 +1,42 @@
+{
+  "id": "weather_offline_001",
+  "page": "weather",
+  "dialogueType": "offline",
+  "title": "Weather Offline",
+  "version": "1.0.0",
+
+  "text": "अभी इंटरनेट उपलब्ध नहीं है। यदि मौसम की हाल की जानकारी आपके डिवाइस में उपलब्ध है, तो वही दिखाई जाएगी। नवीनतम मौसम जानकारी प्राप्त करने के लिए कृपया इंटरनेट से जुड़ें।",
+
+  "repeat": {
+    "enabled": false,
+    "afterHours": 0
+  },
+
+  "voice": {
+    "enabled": true,
+    "provider": "offline",
+    "file": "weather_offline_001.mp3",
+    "language": "hi",
+    "speed": 1.0,
+    "volume": 1.0
+  },
+
+  "avatar": {
+    "enabled": true,
+    "animation": "warning",
+    "expression": "warning"
+  },
+
+  "display": {
+    "showSubtitle": true,
+    "showAvatar": true
+  },
+
+  "conditions": {
+    "firstVisit": false,
+    "loggedIn": true,
+    "internetRequired": false
+  },
+
+  "status": "active"
+}

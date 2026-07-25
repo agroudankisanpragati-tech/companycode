@@ -1,0 +1,60 @@
+{
+    "version": "1.0.0",
+    "default_provider": "edge_tts",
+    "providers": {
+        "edge_tts": {
+            "enabled": true,
+            "voices": {
+                "hi": "hi-IN-SwaraNeural",
+                "en": "en-IN-NeerjaNeural",
+                "gu": "gu-IN-DhwaniNeural",
+                "pa": "pa-IN-Ojaswineural",
+                "mr": "mr-IN-AarohiNeural",
+                "ta": "ta-IN-PallaviNeural",
+                "te": "te-IN-ShrutiNeural",
+                "kn": "kn-IN-SapnaNeural",
+                "ml": "ml-IN-SobhanaNeural",
+                "bn": "bn-IN-TanishaaNeural",
+                "ur": "ur-PK-UzmaNeural",
+                "od": "hi-IN-SwaraNeural",
+                "as": "hi-IN-SwaraNeural",
+                "rj/bagri": "hi-IN-SwaraNeural",
+                "rj/marwari": "hi-IN-SwaraNeural",
+                "rj/mewari": "hi-IN-SwaraNeural",
+                "rj/dhundhari": "hi-IN-SwaraNeural",
+                "rj/hadoti": "hi-IN-SwaraNeural",
+                "rj/shekhawati": "hi-IN-SwaraNeural",
+                "rj/mewati": "hi-IN-SwaraNeural",
+                "rj/wagdi": "hi-IN-SwaraNeural"
+            }
+        },
+        "piper": {
+            "enabled": false,
+            "executable": "voice_models/piper/piper.exe",
+            "models_dir": "voice_models/voices"
+        },
+        "web_speech": {
+            "enabled": true,
+            "fallback_only": true
+        }
+    },
+    "audio": {
+        "format": "mp3",
+        "sample_rate": 22050,
+        "default_speed": 1.0,
+        "default_volume": 1.0,
+        "min_speed": 0.5,
+        "max_speed": 2.0
+    },
+    "cache": {
+        "enabled": true,
+        "directory": "voice/audio",
+        "max_size_mb": 500,
+        "validate_on_load": true
+    },
+    "subtitle": {
+        "enabled": true,
+        "auto_dismiss_ms": 8000,
+        "max_chars_per_line": 80
+    }
+}

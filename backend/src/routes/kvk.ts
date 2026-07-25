@@ -13,8 +13,11 @@ import {
   haversineKm,
   Coordinates,
 } from '../services/kvkService';
+import { createLogger } from '../utils/logger';
+import { createSafeRegex } from '../utils/regex';
 
 const router = express.Router();
+const log = createLogger('kvkRoute');
 
 // ── Photo upload setup ────────────────────────────────────────────────────────
 const kvkUploadsDir = path.join(process.cwd(), 'uploads', 'kvk');
@@ -131,7 +134,7 @@ router.post('/nearest', authenticate, async (req: AuthenticatedRequest, res: Res
       },
     });
   } catch (err: any) {
-    console.error('KVK nearest error:', err);
+    log.error('KVK nearest error', { error: err?.message || String(err) });
     res.status(500).json({ success: false, error: 'Failed to find nearest KVK' });
   }
 });
@@ -169,11 +172,11 @@ router.get('/admin', authenticate, requireAdmin, async (req: AuthenticatedReques
 
     const filter: Record<string, any> = {};
     if (search) {
-      const re = new RegExp(search, 'i');
+      const re = createSafeRegex(search);
       filter.$or = [{ name: re }, { district: re }, { state: re }, { village: re }];
     }
-    if (state)    filter.state    = new RegExp(state, 'i');
-    if (district) filter.district = new RegExp(district, 'i');
+    if (state)    filter.state    = createSafeRegex(state);
+    if (district) filter.district = createSafeRegex(district);
     if (isActive === 'true')  filter.isActive = true;
     if (isActive === 'false') filter.isActive = false;
 

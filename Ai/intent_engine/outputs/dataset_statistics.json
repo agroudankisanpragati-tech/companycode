@@ -1,15 +1,16 @@
 {
-  "generated_at": "2026-07-15T10:25:43.119268+00:00",
-  "total_raw": 2580,
-  "total_clean": 1380,
-  "duplicates_removed": 1200,
-  "total_train": 976,
-  "total_val": 202,
-  "total_test": 202,
-  "num_intents": 13,
+  "generated_at": "2026-07-25T03:26:30.443665+00:00",
+  "total_raw": 4474,
+  "total_clean": 3620,
+  "duplicates_removed": 854,
+  "total_train": 2546,
+  "total_val": 537,
+  "total_test": 537,
+  "num_intents": 14,
   "intent_labels": [
     "crop",
     "disease",
+    "pest",
     "weather",
     "market",
     "government",
@@ -24,28 +25,34 @@
   ],
   "per_intent": {
     "crop": {
-      "total": 136,
-      "train": 96,
-      "val": 20,
-      "test": 20
-    },
-    "disease": {
-      "total": 122,
-      "train": 86,
-      "val": 18,
-      "test": 18
-    },
-    "weather": {
-      "total": 98,
-      "train": 70,
-      "val": 14,
-      "test": 14
-    },
-    "market": {
       "total": 99,
       "train": 71,
       "val": 14,
       "test": 14
+    },
+    "disease": {
+      "total": 100,
+      "train": 70,
+      "val": 15,
+      "test": 15
+    },
+    "pest": {
+      "total": 197,
+      "train": 139,
+      "val": 29,
+      "test": 29
+    },
+    "weather": {
+      "total": 592,
+      "train": 416,
+      "val": 88,
+      "test": 88
+    },
+    "market": {
+      "total": 625,
+      "train": 439,
+      "val": 93,
+      "test": 93
     },
     "government": {
       "total": 99,
@@ -54,16 +61,16 @@
       "test": 14
     },
     "soil": {
-      "total": 122,
-      "train": 86,
-      "val": 18,
-      "test": 18
+      "total": 472,
+      "train": 332,
+      "val": 70,
+      "test": 70
     },
     "fertilizer": {
-      "total": 104,
-      "train": 74,
-      "val": 15,
-      "test": 15
+      "total": 249,
+      "train": 175,
+      "val": 37,
+      "test": 37
     },
     "irrigation": {
       "total": 99,
@@ -90,10 +97,10 @@
       "test": 15
     },
     "greeting": {
-      "total": 100,
-      "train": 70,
-      "val": 15,
-      "test": 15
+      "total": 687,
+      "train": 481,
+      "val": 103,
+      "test": 103
     },
     "emergency": {
       "total": 100,
@@ -102,7 +109,12 @@
       "test": 15
     }
   },
-  "failed_files": [],
+  "failed_files": [
+    "datasets\\crop\\crop.json: Expecting ',' delimiter: line 101 column 3 (char 7591)",
+    "datasets\\disease\\disease.json: Expecting ',' delimiter: line 102 column 3 (char 8095)",
+    "datasets\\general\\general.json: Expecting ',' delimiter: line 102 column 3 (char 6870)",
+    "datasets\\government\\government.json: Expecting ',' delimiter: line 101 column 3 (char 8123)"
+  ],
   "split_ratios": {
     "train": 0.7,
     "val": 0.15,

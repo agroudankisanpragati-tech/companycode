@@ -1,0 +1,135 @@
+{
+    "version": "1.0.0",
+    "default": "bottom_right",
+    "positions": {
+        "top_left": {
+            "id": "top_left",
+            "label": "Top Left",
+            "anchor": "top_left",
+            "offset_x": 16,
+            "offset_y": 16,
+            "z_index": 1000,
+            "safe_area": true,
+            "responsive": {
+                "mobile": {"offset_x": 8, "offset_y": 8},
+                "tablet": {"offset_x": 12, "offset_y": 12},
+                "desktop": {"offset_x": 16, "offset_y": 16}
+            }
+        },
+        "top_right": {
+            "id": "top_right",
+            "label": "Top Right",
+            "anchor": "top_right",
+            "offset_x": 16,
+            "offset_y": 16,
+            "z_index": 1000,
+            "safe_area": true,
+            "responsive": {
+                "mobile": {"offset_x": 8, "offset_y": 8},
+                "tablet": {"offset_x": 12, "offset_y": 12},
+                "desktop": {"offset_x": 16, "offset_y": 16}
+            }
+        },
+        "bottom_left": {
+            "id": "bottom_left",
+            "label": "Bottom Left",
+            "anchor": "bottom_left",
+            "offset_x": 16,
+            "offset_y": 16,
+            "z_index": 1000,
+            "safe_area": true,
+            "responsive": {
+                "mobile": {"offset_x": 8, "offset_y": 80},
+                "tablet": {"offset_x": 12, "offset_y": 24},
+                "desktop": {"offset_x": 16, "offset_y": 16}
+            }
+        },
+        "bottom_right": {
+            "id": "bottom_right",
+            "label": "Bottom Right",
+            "anchor": "bottom_right",
+            "offset_x": 16,
+            "offset_y": 16,
+            "z_index": 1000,
+            "safe_area": true,
+            "responsive": {
+                "mobile": {"offset_x": 8, "offset_y": 80},
+                "tablet": {"offset_x": 12, "offset_y": 24},
+                "desktop": {"offset_x": 16, "offset_y": 16}
+            }
+        },
+        "center_left": {
+            "id": "center_left",
+            "label": "Center Left",
+            "anchor": "center_left",
+            "offset_x": 16,
+            "offset_y": 0,
+            "z_index": 1000,
+            "safe_area": false,
+            "responsive": {
+                "mobile": {"offset_x": 8, "offset_y": 0},
+                "tablet": {"offset_x": 12, "offset_y": 0},
+                "desktop": {"offset_x": 16, "offset_y": 0}
+            }
+        },
+        "center_right": {
+            "id": "center_right",
+            "label": "Center Right",
+            "anchor": "center_right",
+            "offset_x": 16,
+            "offset_y": 0,
+            "z_index": 1000,
+            "safe_area": false,
+            "responsive": {
+                "mobile": {"offset_x": 8, "offset_y": 0},
+                "tablet": {"offset_x": 12, "offset_y": 0},
+                "desktop": {"offset_x": 16, "offset_y": 0}
+            }
+        },
+        "floating": {
+            "id": "floating",
+            "label": "Floating",
+            "anchor": "absolute",
+            "offset_x": 0,
+            "offset_y": 0,
+            "z_index": 1100,
+            "safe_area": false,
+            "draggable": true,
+            "responsive": {
+                "mobile": {"offset_x": 0, "offset_y": 0},
+                "tablet": {"offset_x": 0, "offset_y": 0},
+                "desktop": {"offset_x": 0, "offset_y": 0}
+            }
+        },
+        "dynamic": {
+            "id": "dynamic",
+            "label": "Dynamic Position",
+            "anchor": "dynamic",
+            "offset_x": 0,
+            "offset_y": 0,
+            "z_index": 1000,
+            "safe_area": true,
+            "auto_adjust": true,
+            "responsive": {
+                "mobile": {"preferred": "bottom_right"},
+                "tablet": {"preferred": "bottom_right"},
+                "desktop": {"preferred": "bottom_right"}
+            }
+        },
+        "safe_area": {
+            "id": "safe_area",
+            "label": "Safe Area",
+            "anchor": "bottom_right",
+            "offset_x": 24,
+            "offset_y": 96,
+            "z_index": 1000,
+            "safe_area": true,
+            "avoids_nav_bar": true,
+            "responsive": {
+                "mobile": {"offset_x": 12, "offset_y": 96},
+                "tablet": {"offset_x": 16, "offset_y": 32},
+                "desktop": {"offset_x": 24, "offset_y": 24}
+            }
+        }
+    }
+}

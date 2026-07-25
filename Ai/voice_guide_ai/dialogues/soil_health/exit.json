@@ -1,0 +1,42 @@
+{
+  "id": "soil_exit_001",
+  "page": "soil_health",
+  "dialogueType": "exit",
+  "title": "Soil Health Exit",
+  "version": "1.0.0",
+
+  "text": "धन्यवाद। मिट्टी स्वास्थ्य विश्लेषण सुविधा का उपयोग करने के लिए आपका आभार। आप भविष्य में नई रिपोर्ट के साथ दोबारा विश्लेषण कर सकते हैं या ऐप की अन्य सुविधाओं का उपयोग कर सकते हैं। मैं अगले पेज पर भी आपका मार्गदर्शन करता रहूँगा।",
+
+  "repeat": {
+    "enabled": false,
+    "afterHours": 0
+  },
+
+  "voice": {
+    "enabled": true,
+    "provider": "offline",
+    "file": "soil_exit_001.mp3",
+    "language": "hi",
+    "speed": 1.0,
+    "volume": 1.0
+  },
+
+  "avatar": {
+    "enabled": true,
+    "animation": "wave",
+    "expression": "smile"
+  },
+
+  "display": {
+    "showSubtitle": true,
+    "showAvatar": true
+  },
+
+  "conditions": {
+    "firstVisit": false,
+    "loggedIn": true,
+    "internetRequired": false
+  },
+
+  "status": "active"
+}

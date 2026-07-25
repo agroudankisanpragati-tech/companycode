@@ -1,0 +1,42 @@
+{
+  "id": "ai_chat_replay_001",
+  "page": "ai_chat",
+  "dialogueType": "replay",
+  "title": "Replay AI Guide",
+  "version": "1.0.0",
+
+  "text": "मैं फिर से मार्गदर्शन देता हूँ। खेती से जुड़ा कोई भी प्रश्न लिखें या बोलें। मैं उपलब्ध जानकारी और आपके प्रोफ़ाइल डेटा के आधार पर सबसे उपयुक्त उत्तर देने का प्रयास करूँगा।",
+
+  "repeat": {
+    "enabled": false,
+    "afterHours": 0
+  },
+
+  "voice": {
+    "enabled": true,
+    "provider": "offline",
+    "file": "ai_chat_replay_001.mp3",
+    "language": "hi",
+    "speed": 1.0,
+    "volume": 1.0
+  },
+
+  "avatar": {
+    "enabled": true,
+    "animation": "point",
+    "expression": "smile"
+  },
+
+  "display": {
+    "showSubtitle": true,
+    "showAvatar": true
+  },
+
+  "conditions": {
+    "firstVisit": false,
+    "loggedIn": true,
+    "internetRequired": false
+  },
+
+  "status": "active"
+}

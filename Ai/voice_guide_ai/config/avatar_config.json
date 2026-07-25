@@ -1,0 +1,45 @@
+{
+    "version": "1.0.0",
+    "enabled": true,
+    "default_avatar": "kisan_saathi",
+    "position": {
+        "default": "bottom-right",
+        "offset_x": 16,
+        "offset_y": 24,
+        "draggable": true
+    },
+    "size": {
+        "width": 56,
+        "height": 56,
+        "collapsed_width": 40,
+        "collapsed_height": 40
+    },
+    "animations": {
+        "idle":      { "emoji": "🧑‍🌾", "css": "",                "ring": "ring-gray-300" },
+        "wave":      { "emoji": "👋",    "css": "animate-bounce", "ring": "ring-green-400" },
+        "speaking":  { "emoji": "🗣️",   "css": "animate-pulse",  "ring": "ring-blue-400" },
+        "listening": { "emoji": "👂",    "css": "animate-pulse",  "ring": "ring-yellow-400" },
+        "thinking":  { "emoji": "🤔",    "css": "animate-spin",   "ring": "ring-purple-400" },
+        "success":   { "emoji": "✅",    "css": "animate-bounce", "ring": "ring-green-500" },
+        "error":     { "emoji": "⚠️",   "css": "animate-pulse",  "ring": "ring-red-400" },
+        "loading":   { "emoji": "⏳",    "css": "animate-spin",   "ring": "ring-gray-400" },
+        "namaste":   { "emoji": "🙏",    "css": "animate-bounce", "ring": "ring-orange-400" }
+    },
+    "subtitle": {
+        "max_width_px": 280,
+        "auto_dismiss_ms": 8000,
+        "show_speaking_indicator": true,
+        "show_bar_count": 4
+    },
+    "controls": {
+        "show_replay": true,
+        "show_mute": true,
+        "show_collapse": true
+    },
+    "unsupported_paths": ["/admin", "/rajasthan", "/shopkeeper"],
+    "theme": {
+        "background": "from-green-50 to-green-100",
+        "border": "border-green-200",
+        "shadow": "shadow-lg"
+    }
+}

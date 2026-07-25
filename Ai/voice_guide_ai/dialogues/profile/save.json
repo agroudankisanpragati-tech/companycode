@@ -1,0 +1,42 @@
+{
+  "id": "profile_save_001",
+  "page": "profile",
+  "dialogueType": "save",
+  "title": "Save Profile",
+  "version": "1.0.0",
+
+  "text": "आपकी जानकारी सुरक्षित की जा रही है। कृपया कुछ क्षण प्रतीक्षा करें।",
+
+  "repeat": {
+    "enabled": false,
+    "afterHours": 0
+  },
+
+  "voice": {
+    "enabled": true,
+    "provider": "offline",
+    "file": "profile_save_001.mp3",
+    "language": "hi",
+    "speed": 1.0,
+    "volume": 1.0
+  },
+
+  "avatar": {
+    "enabled": true,
+    "animation": "loading",
+    "expression": "thinking"
+  },
+
+  "display": {
+    "showSubtitle": true,
+    "showAvatar": true
+  },
+
+  "conditions": {
+    "firstVisit": false,
+    "loggedIn": true,
+    "internetRequired": false
+  },
+
+  "status": "active"
+}

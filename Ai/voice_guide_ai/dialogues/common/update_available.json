@@ -1,0 +1,35 @@
+{
+    "id":  "common_update_available_001",
+    "page":  "common",
+    "dialogueType":  "update_available",
+    "title":  "Common Update Available",
+    "version":  "1.0.0",
+    "text":  "नया अपडेट उपलब्ध है।",
+    "repeat":  {
+                   "enabled":  false,
+                   "afterHours":  0
+               },
+    "voice":  {
+                  "enabled":  true,
+                  "provider":  "offline",
+                  "file":  "common_update_available_001.mp3",
+                  "language":  "hi",
+                  "speed":  1,
+                  "volume":  1
+              },
+    "avatar":  {
+                   "enabled":  true,
+                   "animation":  "point",
+                   "expression":  "smile"
+               },
+    "display":  {
+                    "showSubtitle":  true,
+                    "showAvatar":  true
+                },
+    "conditions":  {
+                       "firstVisit":  false,
+                       "loggedIn":  true,
+                       "internetRequired":  false
+                   },
+    "status":  "active"
+}

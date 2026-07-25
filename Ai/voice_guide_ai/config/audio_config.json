@@ -1,0 +1,33 @@
+{
+    "version": "1.0.0",
+    "format": "mp3",
+    "sample_rate": 22050,
+    "channels": 1,
+    "bitrate": "128k",
+    "default_speed": 1.0,
+    "default_volume": 1.0,
+    "min_speed": 0.5,
+    "max_speed": 2.0,
+    "min_volume": 0.0,
+    "max_volume": 1.0,
+    "subtitle": {
+        "enabled": true,
+        "auto_dismiss_ms": 8000,
+        "max_chars_per_line": 80,
+        "rtl_support": true
+    },
+    "cache": {
+        "enabled": true,
+        "directory": "voice/audio",
+        "max_size_mb": 500,
+        "validate_on_load": true,
+        "ttl_hours": 720
+    },
+    "playback": {
+        "auto_play": true,
+        "replay_on_error": false,
+        "stop_on_page_change": true,
+        "fade_in_ms": 100,
+        "fade_out_ms": 200
+    }
+}

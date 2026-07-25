@@ -24,9 +24,12 @@ import { createLogger } from '../utils/logger';
 import { loadMemoryContext, writeMemoryTurn, buildMemoryContextBlock } from './memoryEngine';
 import { runSpeechTranslationPipeline, translateOutputForDisplay } from './speechTranslationPipeline';
 import { dispatchAgents, buildAgentContextBlock } from '../agents/agentRouter';
-import { detectIntent } from './intentEngine';
+import { detectIntentAsync, IntentType } from './intentEngine';
 import { buildPageContextBlock, buildMismatchWarning, type PageData } from './contextEngine';
 import { updateLanguagePreference, updatePreferredTopics } from './memoryEngine';
+import { extractEntities } from './entityExtractor';
+import { loadSharedContext } from './sharedContext';
+import { prepareForIntentDetection } from './aliasResolver';
 
 const log = createLogger('integrationBus');
 
@@ -53,7 +56,7 @@ export interface BusResult {
   /** Full memory + agent context block for AI system prompt injection */
   contextBlock: string;
   /** Detected intent */
-  intent: string;
+  intent: IntentType;
   /** Whether the input term was found in the dictionary */
   foundInDictionary: boolean;
 }
@@ -95,6 +98,9 @@ export async function processRequest(req: BusRequest): Promise<BusResult> {
     log.warn('Language pipeline error (non-fatal)', { error: err?.message });
   }
 
+  // ── Step 1b: Alias normalization — keeps backend and Python aligned ──────
+  englishForBackend = prepareForIntentDetection(englishForBackend);
+
   // ── Step 2: Shared Memory — load farmer context ───────────────────────────
   try {
     const memCtx = await loadMemoryContext(userId);
@@ -104,10 +110,13 @@ export async function processRequest(req: BusRequest): Promise<BusResult> {
   }
 
   // ── Step 3: Intent + page context ────────────────────────────────────────
-  const intent = detectIntent(englishForBackend);
+  const intent = await detectIntentAsync(englishForBackend);
+
+  const entities = extractEntities(englishForBackend);
+  const shared = await loadSharedContext(userId);
   try {
     if (pageData?.pageContext) {
-      contextBlock += buildPageContextBlock(pageData, englishForBackend);
+      contextBlock += buildPageContextBlock(pageData, englishForBackend, intent);
       contextBlock += buildMismatchWarning(pageData.pageContext, intent);
     }
   } catch (err: any) {
@@ -117,10 +126,13 @@ export async function processRequest(req: BusRequest): Promise<BusResult> {
   // ── Step 4: Internal module dispatch (Pragati AI internal enrichment) ──────
   // These modules feed data into Pragati AI's context. They are NOT separate AIs.
   try {
-    const agentResults = await dispatchAgents(englishForBackend, {
+    const agentResults = await dispatchAgents(intent, {
       userId,
+      message: englishForBackend,
       farmerProfile,
       pageData: pageData as any,
+      entities,
+      shared,
     });
     contextBlock += buildAgentContextBlock(agentResults);
 

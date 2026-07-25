@@ -1,0 +1,42 @@
+{
+  "id": "profile_welcome_001",
+  "page": "profile",
+  "dialogueType": "welcome",
+  "title": "Profile Welcome",
+  "version": "1.0.0",
+
+  "text": "प्रोफ़ाइल पेज पर आपका स्वागत है। यहाँ आप अपनी व्यक्तिगत जानकारी, खेत, भूमि तथा खेती से संबंधित विवरण देख और अपडेट कर सकते हैं। सही जानकारी देने से आपको अधिक सटीक एआई सेवाएँ प्राप्त होंगी।",
+
+  "repeat": {
+    "enabled": true,
+    "afterHours": 24
+  },
+
+  "voice": {
+    "enabled": true,
+    "provider": "offline",
+    "file": "profile_welcome_001.mp3",
+    "language": "hi",
+    "speed": 1.0,
+    "volume": 1.0
+  },
+
+  "avatar": {
+    "enabled": true,
+    "animation": "wave",
+    "expression": "smile"
+  },
+
+  "display": {
+    "showSubtitle": true,
+    "showAvatar": true
+  },
+
+  "conditions": {
+    "firstVisit": true,
+    "loggedIn": true,
+    "internetRequired": false
+  },
+
+  "status": "active"
+}

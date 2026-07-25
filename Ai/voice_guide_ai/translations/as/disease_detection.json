@@ -1,0 +1,15 @@
+{
+    "disease_detection_welcome_001": "ৰোগ চিনাক্তকৰণ পেজত আপোনাক স্বাগতম। শস্যৰ ছবি তুলক বা গেলেৰীৰ পৰা আপলোড কৰক।",
+    "disease_detection_replay_001": "মই পুনৰ বুজাওঁ।",
+    "disease_detection_help_001": "কেমেৰা বা গেলেৰী ব্যৱহাৰ কৰি শস্যৰ ছবি আপলোড কৰক।",
+    "disease_detection_error_001": "ৰোগ চিনাক্ত কৰিব পৰা নগ'ল। পুনৰ চেষ্টা কৰক।",
+    "disease_detection_offline_001": "ইন্টাৰনেট সংযোগ নাই।",
+    "disease_detection_exit_001": "ধন্যবাদ।",
+    "disease_detection_processing_001": "ছবি বিশ্লেষণ হৈছে।",
+    "disease_detection_retry_001": "পুনৰ চেষ্টা কৰক।",
+    "disease_detection_camera_001": "কেমেৰা খোলক।",
+    "disease_detection_gallery_001": "গেলেৰীৰ পৰা ছবি বাছক।",
+    "disease_detection_upload_001": "ছবি আপলোড কৰক।",
+    "disease_detection_disease_found_001": "ৰোগ চিনাক্ত হৈছে।",
+    "disease_detection_healthy_001": "শস্য সুস্থ আছে।"
+}

@@ -4,6 +4,7 @@ import path from 'path';
 import fs from 'fs';
 import { AuthenticatedRequest, authenticate, requireAdmin } from '../middleware/auth';
 import { DiseasePestSolution } from '../models/DiseasePestSolution';
+import { createExactSafeRegex, createSafeRegex } from '../utils/regex';
 
 const router = express.Router();
 
@@ -34,11 +35,11 @@ router.get('/', authenticate, requireAdmin, async (req: AuthenticatedRequest, re
     const { search, recordType, severity, status, cropName } = req.query as Record<string, string>;
 
     const filter: any = {};
-    if (search)     filter.$or = [{ cropName: new RegExp(search,'i') }, { diseasePestName: new RegExp(search,'i') }, { tags: new RegExp(search,'i') }];
+    if (search)     filter.$or = [{ cropName: createSafeRegex(search) }, { diseasePestName: createSafeRegex(search) }, { tags: createSafeRegex(search) }];
     if (recordType) filter.recordType = recordType;
     if (severity)   filter.severity   = severity;
     if (status)     filter.status     = status;
-    if (cropName)   filter.cropName   = new RegExp(cropName, 'i');
+    if (cropName)   filter.cropName   = createSafeRegex(cropName);
 
     const [data, total] = await Promise.all([
       DiseasePestSolution.find(filter).sort({ updatedAt: -1 }).skip((page-1)*limit).limit(limit).lean(),
@@ -156,7 +157,7 @@ router.get('/export/json', authenticate, requireAdmin, async (req: Authenticated
   try {
     const { cropName, status } = req.query as Record<string, string>;
     const filter: any = {};
-    if (cropName) filter.cropName = new RegExp(cropName, 'i');
+    if (cropName) filter.cropName = createSafeRegex(cropName);
     if (status)   filter.status   = status;
     const data = await DiseasePestSolution.find(filter).lean();
     res.setHeader('Content-Disposition', 'attachment; filename="disease-pest-solutions.json"');
@@ -174,7 +175,7 @@ router.post('/import/json', authenticate, requireAdmin, async (req: Authenticate
       if (!r.cropName || !r.diseasePestName) { errors++; continue; }
       try {
         const res2 = await DiseasePestSolution.findOneAndUpdate(
-          { cropName: new RegExp(`^${r.cropName.trim()}$`,'i'), diseasePestName: new RegExp(`^${r.diseasePestName.trim()}$`,'i') },
+          { cropName: createExactSafeRegex(r.cropName.trim()), diseasePestName: createExactSafeRegex(r.diseasePestName.trim()) },
           { ...r },
           { upsert: true, new: true, setDefaultsOnInsert: true }
         );

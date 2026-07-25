@@ -1,0 +1,70 @@
+{
+    "version": "1.0.0",
+    "triggers": {
+        "page_open": {
+            "action": "play_welcome",
+            "dialogue_type": "welcome",
+            "first_visit_only": false,
+            "cooldown_seconds": 5
+        },
+        "page_return": {
+            "action": "play_help",
+            "dialogue_type": "help",
+            "first_visit_only": false,
+            "cooldown_seconds": 5
+        },
+        "error": {
+            "action": "play_error",
+            "dialogue_type": "error",
+            "first_visit_only": false,
+            "cooldown_seconds": 0
+        },
+        "offline": {
+            "action": "play_offline",
+            "dialogue_type": "offline",
+            "first_visit_only": false,
+            "cooldown_seconds": 0
+        },
+        "replay": {
+            "action": "replay_last",
+            "dialogue_type": "replay",
+            "first_visit_only": false,
+            "cooldown_seconds": 2
+        },
+        "exit": {
+            "action": "play_exit",
+            "dialogue_type": "exit",
+            "first_visit_only": false,
+            "cooldown_seconds": 0
+        },
+        "success": {
+            "action": "play_success",
+            "dialogue_type": "success",
+            "first_visit_only": false,
+            "cooldown_seconds": 0
+        },
+        "processing": {
+            "action": "play_processing",
+            "dialogue_type": "processing",
+            "first_visit_only": false,
+            "cooldown_seconds": 0
+        }
+    },
+    "pages": {
+        "language_popup": ["welcome", "help", "error", "exit", "replay", "language_selected"],
+        "home": ["welcome", "help", "error", "exit", "replay", "offline", "success", "revisit"],
+        "login": ["welcome", "help", "error", "exit", "replay", "offline", "success"],
+        "register": ["welcome", "help", "error", "exit", "replay", "offline", "success"],
+        "profile": ["welcome", "help", "error", "exit", "replay", "offline", "success", "edit_profile", "farm_details", "land_details", "personal_details", "save"],
+        "weather": ["welcome", "help", "error", "exit", "replay", "offline", "result", "current_weather", "forecast", "rain_alert", "weather_warning"],
+        "mandi": ["welcome", "help", "error", "exit", "replay", "offline", "result", "processing", "crop_selection", "market_selection", "price_alert"],
+        "marketplace": ["welcome", "help", "error", "exit", "replay", "offline", "products", "product_details", "cart", "checkout", "payment", "order_success", "orders", "categories", "search"],
+        "crop_recommendation": ["welcome", "help", "error", "exit", "replay", "offline", "result", "processing", "retry", "soil_selection", "season_selection", "irrigation_selection"],
+        "disease_detection": ["welcome", "help", "error", "exit", "replay", "offline", "processing", "retry", "camera", "gallery", "upload", "disease_found", "healthy"],
+        "government_scheme": ["welcome", "help", "error", "exit", "replay", "offline", "result", "search", "eligibility", "documents", "application"],
+        "soil_health": ["welcome", "help", "error", "exit", "replay", "offline", "result", "processing", "sample_selection", "upload_report", "recommendation"],
+        "ai_chat": ["welcome", "help", "error", "exit", "replay", "offline", "listening", "thinking", "response"],
+        "app_settings": ["welcome", "help", "error", "exit", "replay", "success", "language", "voice", "avatar", "notifications", "privacy", "offline_mode", "save"],
+        "common": ["error", "offline", "loading", "processing", "success", "exit", "retry", "saving", "session_expired", "no_internet", "permission_required", "access_denied", "data_not_found", "maintenance", "update_available", "download_success", "upload_success"]
+    }
+}

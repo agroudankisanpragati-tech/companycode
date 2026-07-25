@@ -2,32 +2,46 @@
  * Crop Agent
  * Domain: Crop advisory, recommendations, cultivation guidance
  * Data sources: CropKnowledgeBase (via knowledgeBaseSearch), FarmerCropRequest history
- * Never communicates directly with the user.
+ *
+ * Fix 2: reads crop name from ctx.entities (pre-extracted) — no local parsing
+ * Fix 8: reads soilType from ctx.shared.soilReport — no duplicate DB query
  */
 
 import { FarmerCropRequest } from '../models/FarmerCropRequest';
 import { AgentContext, AgentResult } from './types';
 import { searchCropKB } from '../services/knowledgeBaseSearch';
+import { buildFallbackResult, buildErrorResult } from '../services/fallbackManager';
+import { createLogger } from '../utils/logger';
+
+const log = createLogger('cropAgent');
 
 export async function runCropAgent(ctx: AgentContext): Promise<AgentResult> {
   try {
-    const { userId, message, pageData, farmerProfile } = ctx;
+    const { userId, pageData, farmerProfile, entities, shared } = ctx;
 
+    // Fix 2: use pre-extracted entity, fall back to pageData
     const cropName =
       pageData?.cropData?.cropName ||
-      extractCropFromMessage(message);
+      entities?.crop ||
+      '';
 
-    const soilType = farmerProfile?.soilType || '';
-    const season   = extractSeasonFromMessage(message);
+    // Fix 8: read soilType from shared context — no extra DB query
+    const soilType =
+      shared?.soilReport?.soilType ||
+      farmerProfile?.soilType ||
+      '';
 
-    // Priority KB search
+    const season = entities?.season || '';
+
+    log.debug('CropAgent running', { cropName, soilType, season });
+
     if (cropName) {
       const kbResult = await searchCropKB(cropName, soilType, season);
       if (kbResult.found) {
         return {
-          agent: 'CropAgent',
+          agent:   'CropAgent',
           success: true,
-          data: kbResult.data,
+          data:    kbResult.data,
           summary: kbResult.summary,
         };
       }
@@ -40,91 +54,21 @@ export async function runCropAgent(ctx: AgentContext): Promise<AgentResult> {
 
     if (lastRequest) {
       return {
-        agent: 'CropAgent',
+        agent:   'CropAgent',
         success: true,
         data: {
-          lastRequestSoilType:  lastRequest.soilType,
-          lastRequestSeason:    lastRequest.season,
-          lastRequestDistrict:  lastRequest.district,
-          lastRequestState:     lastRequest.state,
+          lastRequestSoilType: lastRequest.soilType,
+          lastRequestSeason:   lastRequest.season,
+          lastRequestDistrict: lastRequest.district,
+          lastRequestState:    lastRequest.state,
         },
         summary: `Farmer's last crop request: ${lastRequest.soilType} soil, ${lastRequest.season} season in ${lastRequest.district}, ${lastRequest.state}.`,
       };
     }
 
-    return {
-      agent: 'CropAgent',
-      success: true,
-      data: {},
-      summary: 'No crop history found. Guide the farmer to use the Crop Advisory page to get personalized recommendations.',
-    };
+    return buildFallbackResult('CropAgent', 'crop');
   } catch (err: any) {
-    return {
-      agent: 'CropAgent',
-      success: false,
-      error: 'Crop advisory information is temporarily unavailable.',
-    };
+    log.error('CropAgent error', { error: err?.message });
+    return buildErrorResult('CropAgent', 'crop', err);
   }
-}
-
-function extractCropFromMessage(msg: string): string {
-  const crops = [
-    'wheat', 'rice', 'tomato', 'corn', 'maize', 'cotton', 'sugarcane',
-    'potato', 'onion', 'mustard', 'gram', 'soybean', 'bajra', 'jowar', // ===== Your 6 AI Crops =====
-  'black_gram',
-  'green_gram',
-  'corn_maize',
-  'tomato',
-  'pearl_millet _bajra',
-  'wheat',
-
-  // ===== Common English =====
-  'black gram',
-  'green gram',
-  'corn',
-  'maize',
-  'tomato',
-  'pearl millet',
-
-  // ===== Hindi / Hinglish =====
-  'urad',
-  'udad',
-  'moong',
-  'mung',
-  'makka',
-  'tamatar',
-  'bajra',
-  'gehu',
-  'gehun',
-
-  // ===== Existing crops =====
-  'rice',
-  'cotton',
-  'sugarcane',
-  'potato',
-  'onion',
-  'mustard',
-  'gram',
-  'soybean',
-  'jowar',
-  'groundnut',
-  'sunflower',
-  'turmeric',
-  'ginger',
-  'chilli',
-  'brinjal',
-  'arhar',
-    'groundnut', 'sunflower', 'turmeric', 'ginger', 'chilli', 'brinjal',
-    'moong', 'mung', 'arhar', 'urad',
-  ];
-  const lower = msg.toLowerCase();
-  return crops.find(c => lower.includes(c)) || '';
-}
-
-function extractSeasonFromMessage(msg: string): string {
-  const lower = msg.toLowerCase();
-  if (/kharif|monsoon|rainy|sawan/.test(lower)) return 'Kharif';
-  if (/rabi|winter|sardi/.test(lower))          return 'Rabi';
-  if (/zaid|summer|garmi/.test(lower))          return 'Zaid';
-  return '';
 }

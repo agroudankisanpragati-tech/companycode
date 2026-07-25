@@ -2,13 +2,30 @@
  * Intent Engine
  *
  * Classifies user messages into one of the defined intent types.
- * Pure function — no DB, no AI call, no side effects.
- * Used by the Root AI chat handler to route context correctly.
  *
- * Intent types:
- *   disease | crop | soil | weather | market | government | kvk |
- *   navigation | voice_command | general
+ * Detection strategy (Fix 1 — single source of truth):
+ *   1. Python ML bridge (TF-IDF + LogReg) — primary, most accurate
+ *   2. Regex rules — fast-path fallback when Python bridge is unavailable
+ *
+ * The Python bridge is the canonical intent engine. The regex rules exist
+ * only as a resilience fallback so the system degrades gracefully when the
+ * Python process is not running.
+ *
+ * Intent is detected EXACTLY ONCE per request in pragatiAIController.
+ * agentRouter.ts and all agents receive the already-detected intent —
+ * they never call detectIntent() again.
  */
+
+import { createLogger } from '../utils/logger';
+
+const log = createLogger('intentEngine');
+
+// ─── Python bridge config ─────────────────────────────────────────────────────
+
+const PYTHON_BRIDGE_URL = process.env.PRAGATI_AI_BRIDGE_URL || 'http://localhost:8001';
+const PYTHON_INTENT_TIMEOUT_MS = parseInt(process.env.INTENT_TIMEOUT_MS || '3000', 10);
+
+// ─── Types ────────────────────────────────────────────────────────────────────
 
 export type IntentType =
   | 'greeting'
@@ -129,6 +146,9 @@ const INTENT_RULES: IntentRule[] = [
 /**
  * Detect the primary intent from a user message.
  * Returns 'general' if no specific intent matches.
+ *
+ * NOTE: This is the REGEX FALLBACK used when the Python bridge is unavailable.
+ * Prefer detectIntentAsync() in all production code paths.
  */
 export function detectIntent(message: string): IntentType {
   if (!message?.trim()) return 'general';
@@ -136,6 +156,68 @@ export function detectIntent(message: string): IntentType {
     if (patterns.some(p => p.test(message))) return intent;
   }
   return 'general';
+}
+
+/**
+ * Detect intent using the Python ML bridge as primary source.
+ * If the bridge is unavailable or returns an unknown label, the request
+ * degrades to 'general' instead of re-implementing routing rules in TS.
+ *
+ * This is the SINGLE ENTRY POINT for intent detection.
+ * Called exactly once per request in pragatiAIController.
+ * The result is passed through the entire pipeline — never re-detected.
+ *
+ * @param message - The normalised English message (post alias resolution)
+ * @returns IntentType
+ */
+export async function detectIntentAsync(message: string): Promise<IntentType> {
+  if (!message?.trim()) return 'general';
+
+  // ── Try Python ML bridge first ───────────────────────────────────────────────
+  try {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), PYTHON_INTENT_TIMEOUT_MS);
+
+    const res = await fetch(`${PYTHON_BRIDGE_URL}/intent/predict`, {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ text: message }),
+      signal:  controller.signal,
+    });
+
+    clearTimeout(timer);
+
+    if (res.ok) {
+      const data = await res.json() as { intent?: string; confidence?: number; is_unknown?: boolean };
+      const bridgeIntent = data.intent?.toLowerCase() as IntentType | undefined;
+
+      if (bridgeIntent && !data.is_unknown) {
+        const valid: IntentType[] = [
+          'greeting', 'disease', 'crop', 'soil', 'weather', 'market',
+          'government', 'kvk', 'irrigation', 'machinery', 'emergency',
+          'navigation', 'voice_command', 'general',
+        ];
+        if (valid.includes(bridgeIntent)) {
+          log.debug('Intent from Python bridge', { intent: bridgeIntent, confidence: data.confidence });
+          return bridgeIntent;
+        }
+      }
+
+      // Python returned 'unknown' or unrecognised label — fall through to regex
+      log.debug('Python bridge returned unknown/unrecognised intent, falling back to regex', {
+        bridgeIntent, isUnknown: data.is_unknown,
+      });
+    }
+  } catch (err: any) {
+    if (err?.name !== 'AbortError') {
+      log.debug('Python bridge unreachable, falling back to regex', { error: err?.message });
+    } else {
+      log.debug('Python bridge timed out, falling back to regex');
+    }
+  }
+
+  // ── Regex fallback — used when bridge is unavailable or returns unknown ───────
+  return detectIntent(message);
 }
 
 /**

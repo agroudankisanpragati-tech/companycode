@@ -12,7 +12,7 @@
  * from the frontend via the `pageData` field in the chat request body.
  */
 
-import { IntentType, detectIntent, intentLabel } from './intentEngine';
+import { IntentType, intentLabel } from './intentEngine';
 
 // ─── Page context keys ────────────────────────────────────────────────────────
 
@@ -193,13 +193,12 @@ Answer any farming or platform question. You are not restricted to a specific pa
 
 // ─── Main context builder ─────────────────────────────────────────────────────
 
-export function buildPageContextBlock(pageData: PageData, userMessage: string): string {
+export function buildPageContextBlock(pageData: PageData, userMessage: string, intent: IntentType): string {
   const ctx = pageData.pageContext || 'ui';
   const instruction = PAGE_INSTRUCTIONS[ctx] || PAGE_INSTRUCTIONS.ui;
-
-  // Detect intent from user message
-  const intent = detectIntent(userMessage);
   const intentName = intentLabel(intent);
+
+  if (ctx === 'dashboard' && intent !== 'general') return '';
 
   let block = `\n\n${instruction}\nDETECTED USER INTENT: ${intentName}`;
 

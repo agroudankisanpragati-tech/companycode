@@ -1,0 +1,42 @@
+{
+  "id": "disease_healthy_001",
+  "page": "disease_detection",
+  "dialogueType": "healthy",
+  "title": "Healthy Crop",
+  "version": "1.0.0",
+
+  "text": "विश्लेषण सफलतापूर्वक पूरा हो गया है। आपकी स्क्रीन पर परिणाम प्रदर्शित कर दिया गया है। उपलब्ध जानकारी के अनुसार आपकी फसल स्वस्थ दिखाई दे रही है। फिर भी नियमित निगरानी रखें और समय-समय पर फसल का निरीक्षण करते रहें।",
+
+  "repeat": {
+    "enabled": false,
+    "afterHours": 0
+  },
+
+  "voice": {
+    "enabled": true,
+    "provider": "offline",
+    "file": "disease_healthy_001.mp3",
+    "language": "hi",
+    "speed": 1.0,
+    "volume": 1.0
+  },
+
+  "avatar": {
+    "enabled": true,
+    "animation": "success",
+    "expression": "happy"
+  },
+
+  "display": {
+    "showSubtitle": true,
+    "showAvatar": true
+  },
+
+  "conditions": {
+    "firstVisit": false,
+    "loggedIn": true,
+    "internetRequired": false
+  },
+
+  "status": "active"
+}

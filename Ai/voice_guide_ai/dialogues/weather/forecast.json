@@ -1,0 +1,42 @@
+{
+  "id": "weather_forecast_001",
+  "page": "weather",
+  "dialogueType": "forecast",
+  "title": "Weather Forecast",
+  "version": "1.0.0",
+
+  "text": "अगले कुछ दिनों का मौसम पूर्वानुमान आपकी स्क्रीन पर प्रदर्शित किया गया है। कृपया तापमान, वर्षा की संभावना और मौसम में होने वाले बदलावों को ध्यान से देखें, ताकि खेती से जुड़े कार्यों की बेहतर योजना बना सकें।",
+
+  "repeat": {
+    "enabled": false,
+    "afterHours": 0
+  },
+
+  "voice": {
+    "enabled": true,
+    "provider": "offline",
+    "file": "weather_forecast_001.mp3",
+    "language": "hi",
+    "speed": 1.0,
+    "volume": 1.0
+  },
+
+  "avatar": {
+    "enabled": true,
+    "animation": "loading",
+    "expression": "thinking"
+  },
+
+  "display": {
+    "showSubtitle": true,
+    "showAvatar": true
+  },
+
+  "conditions": {
+    "firstVisit": false,
+    "loggedIn": true,
+    "internetRequired": false
+  },
+
+  "status": "active"
+}

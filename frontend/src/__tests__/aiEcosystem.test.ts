@@ -4,6 +4,8 @@
  *         Soil Health, Voice Input, Voice Output, Error Handling
  */
 
+import { getAssistantGreeting, getAssistantBranding } from '../context/AIAssistantContext';
+
 // ─── Mock browser APIs ──────────────────────────────────────────────────────
 const mockSpeak = jest.fn();
 const mockCancel = jest.fn();
@@ -18,6 +20,17 @@ Object.defineProperty(window, 'speechSynthesis', {
   value: { speak: mockSpeak, cancel: mockCancel, pause: mockPause, resume: mockResume, getVoices: mockGetVoices },
   writable: true,
 });
+
+class MockSpeechSynthesisUtterance {
+  text: string;
+  lang: string;
+  constructor(text: string) {
+    this.text = text;
+    this.lang = 'en-US';
+  }
+}
+
+(window as any).SpeechSynthesisUtterance = MockSpeechSynthesisUtterance;
 
 const mockRecognitionStart = jest.fn();
 const mockRecognitionStop = jest.fn();
@@ -44,7 +57,23 @@ const mockFetch = (data: any, ok = true, status = 200) => {
   });
 };
 
-// ─── 1. Language Switching ───────────────────────────────────────────────────
+// ─── 1. Assistant Branding ────────────────────────────────────────────────
+
+describe('Assistant Branding', () => {
+  test('defaults to Pragati AI branding in the assistant greeting', () => {
+    const greeting = getAssistantGreeting();
+    expect(greeting).toContain('Pragati AI');
+    expect(greeting).not.toContain('Kisan Saathi');
+  });
+
+  test('exposes the original Pragati AI branding metadata', () => {
+    const branding = getAssistantBranding();
+    expect(branding.title).toBe('Pragati AI');
+    expect(branding.subtitle).toBe('Agroudan Kisan Pragati');
+  });
+});
+
+// ─── 2. Language Switching ───────────────────────────────────────────────────
 
 describe('Language Context', () => {
   beforeEach(() => {
@@ -94,7 +123,7 @@ describe('Language Context', () => {
   });
 });
 
-// ─── 2. AI Copilot (Bilingual Response) ────────────────────────────────────
+// ─── 3. AI Copilot (Bilingual Response) ────────────────────────────────────
 
 describe('AI Copilot — Bilingual Response', () => {
   beforeEach(() => {
@@ -160,7 +189,7 @@ describe('AI Copilot — Bilingual Response', () => {
   });
 });
 
-// ─── 3. Crop Recommendation ─────────────────────────────────────────────────
+// ─── 4. Crop Recommendation ─────────────────────────────────────────────────
 
 describe('Crop Recommendation — Bilingual', () => {
   beforeEach(() => {
@@ -208,7 +237,7 @@ describe('Crop Recommendation — Bilingual', () => {
   });
 });
 
-// ─── 4. Disease Detection ────────────────────────────────────────────────────
+// ─── 5. Disease Detection ────────────────────────────────────────────────────
 
 describe('Disease Detection — Bilingual', () => {
   beforeEach(() => {

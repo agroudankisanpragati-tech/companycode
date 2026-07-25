@@ -1,0 +1,13 @@
+{
+    "soil_health_welcome_001": "মাটিৰ স্বাস্থ্য পেজত আপোনাক স্বাগতম। আপোনাৰ মাটিৰ স্বাস্থ্য বিশ্লেষণ কৰক।",
+    "soil_health_replay_001": "মই পুনৰ বুজাওঁ।",
+    "soil_health_help_001": "মাটিৰ নমুনা নিৰ্বাচন কৰক আৰু ৰিপোৰ্ট আপলোড কৰক।",
+    "soil_health_error_001": "মাটিৰ তথ্য পাব পৰা নগ'ল। পুনৰ চেষ্টা কৰক।",
+    "soil_health_offline_001": "ইন্টাৰনেট সংযোগ নাই।",
+    "soil_health_exit_001": "ধন্যবাদ।",
+    "soil_health_result_001": "মাটিৰ স্বাস্থ্যৰ তথ্য ইয়াত আছে।",
+    "soil_health_processing_001": "মাটিৰ তথ্য বিশ্লেষণ হৈছে।",
+    "soil_health_sample_selection_001": "মাটিৰ নমুনা নিৰ্বাচন কৰক।",
+    "soil_health_upload_report_001": "ৰিপোৰ্ট আপলোড কৰক।",
+    "soil_health_recommendation_001": "মাটিৰ পৰামৰ্শ।"
+}

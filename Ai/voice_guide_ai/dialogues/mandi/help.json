@@ -1,0 +1,42 @@
+{
+  "id": "mandi_help_001",
+  "page": "mandi",
+  "dialogueType": "help",
+  "title": "Mandi Help",
+  "version": "1.0.0",
+
+  "text": "कृपया अपनी फसल और मंडी का चयन करें। इसके बाद आपको उस मंडी के नवीनतम भाव, न्यूनतम और अधिकतम मूल्य तथा अन्य आवश्यक जानकारी दिखाई जाएगी।",
+
+  "repeat": {
+    "enabled": false,
+    "afterHours": 0
+  },
+
+  "voice": {
+    "enabled": true,
+    "provider": "offline",
+    "file": "mandi_help_001.mp3",
+    "language": "hi",
+    "speed": 1.0,
+    "volume": 1.0
+  },
+
+  "avatar": {
+    "enabled": true,
+    "animation": "point",
+    "expression": "smile"
+  },
+
+  "display": {
+    "showSubtitle": true,
+    "showAvatar": true
+  },
+
+  "conditions": {
+    "firstVisit": false,
+    "loggedIn": true,
+    "internetRequired": false
+  },
+
+  "status": "active"
+}

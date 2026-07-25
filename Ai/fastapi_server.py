@@ -219,16 +219,21 @@ def get_crops():
 
 @app.post("/predict")
 async def predict_endpoint(
-    image: UploadFile = File(...),
-    crop_hint: Optional[str] = Form(None),
+    image:       UploadFile    = File(...),
+    crop_hint:   Optional[str] = Form(None),
+    farmer_crop: Optional[str] = Form(None),
 ):
     """
     Crop-aware prediction endpoint.
 
-    - If crop_hint is provided and matches a known crop, YOLO output is
-      filtered to only that crop's class IDs. Cross-crop confusion eliminated.
-    - If crop_hint is not in the index, returns 422 so backend falls back to local knowledge base.
-    - Returns top-5 filtered predictions for the selected crop only.
+    - farmer_crop (optional): the crop selected by the farmer in the UI.
+      Passed to the AI pipeline for mismatch validation against EfficientNet.
+      If the uploaded image does not match farmer_crop, the pipeline returns
+      an error before YOLO runs. farmer_crop is NEVER used directly for
+      disease detection — only for validation.
+    - crop_hint (optional): legacy YOLO class-filter hint. Still supported
+      for backward compatibility.
+    - Returns top-5 filtered predictions for the verified crop only.
     """
     # Accept image by content-type OR by file extension (handles multipart quirks)
     filename = image.filename or "upload.jpg"
@@ -244,7 +249,7 @@ async def predict_endpoint(
             detail=f"Only image files are accepted (got content_type={image.content_type!r}, ext={ext!r})"
         )
 
-    # Resolve crop
+    # Resolve crop for YOLO class filtering (legacy crop_hint path)
     crop_key: Optional[str] = None
     allowed_class_ids: Optional[set[int]] = None
 
@@ -266,17 +271,92 @@ async def predict_endpoint(
             shutil.copyfileobj(image.file, tmp)
             tmp_path = tmp.name
 
+        log.info("[predict] ↓ Request received | farmer_crop=%s crop_hint=%s file=%s",
+                 farmer_crop or "(none)", crop_hint or "(none)", filename)
+        log.info("[predict] ↓ Image validated | tmp=%s size=%d bytes",
+                 tmp_path, os.path.getsize(tmp_path))
+
+        # ── Crop Verification (PRIMARY authority) ──────────────────────────────────
+        # Runs EfficientNet-B0 BEFORE YOLO. farmer_crop is used only for
+        # mismatch validation — never passed to the disease model.
+        if farmer_crop:
+            log.info("[predict] ↓ Crop verification started | farmer_crop=%s", farmer_crop)
+            try:
+                from crop_verifier import crops_match, verify as _verify_crop
+                cv = _verify_crop(tmp_path)
+                if cv.success:
+                    log.info(
+                        "[predict] ↓ Crop verified | predicted='%s' conf=%.2f%% farmer='%s'",
+                        cv.predicted_crop, cv.confidence, farmer_crop,
+                    )
+                    # Requirement 6: low confidence
+                    if cv.low_confidence:
+                        log.warning("[predict] Crop verification: low confidence=%.2f%% — rejecting", cv.confidence)
+                        return JSONResponse(
+                            status_code=200,
+                            content={
+                                "success": False,
+                                "error": "Unable to verify crop. Please upload a clearer leaf image.",
+                            },
+                        )
+                    # Requirement 5: mismatch → stop pipeline
+                    if not crops_match(cv.predicted_crop, farmer_crop):
+                        log.warning(
+                            "[predict] Crop mismatch: predicted='%s' farmer='%s' — rejecting",
+                            cv.predicted_crop, farmer_crop,
+                        )
+                        return JSONResponse(
+                            status_code=200,
+                            content={
+                                "success": False,
+                                "error": (
+                                    f"Uploaded image belongs to {cv.predicted_crop}. "
+                                    f"Please upload {farmer_crop} leaf or change crop selection."
+                                ),
+                            },
+                        )
+                    # Verification passed — use verified crop for YOLO filtering
+                    verified_key = _resolve_crop_key(cv.predicted_crop)
+                    if verified_key:
+                        allowed_class_ids = _crop_class_ids[verified_key]
+                        log.info(
+                            "[predict] YOLO filter updated to verified crop '%s' → %d classes",
+                            cv.predicted_crop, len(allowed_class_ids),
+                        )
+                else:
+                    log.warning("[predict] CropVerifier unavailable: %s — skipping verification", cv.error)
+            except ImportError as exc:
+                log.warning("[predict] CropVerifier import failed (skipping): %s", exc)
+            except Exception as exc:
+                import traceback
+                log.warning("[predict] CropVerification skipped (error): %s", exc)
+                log.warning("[predict] CropVerification traceback:\n%s", traceback.format_exc())
+        else:
+            log.info("[predict] ↓ Crop verification skipped (no farmer_crop provided)")
+
+        log.info("[predict] ↓ Disease prediction started | allowed_classes=%s",
+                 len(allowed_class_ids) if allowed_class_ids is not None else "all")
+
         result = _run_crop_filtered_predict(tmp_path, allowed_class_ids)
 
         if result["status"] == "error":
+            log.error("[predict] Disease prediction failed: %s", result.get("error"))
             raise HTTPException(status_code=500, detail=result.get("error", "Inference failed"))
 
+        log.info(
+            "[predict] ↓ Disease predicted | crop=%s class=%s conf=%.2f%% inference_ms=%.1f",
+            result.get("crop"), result.get("class_name"),
+            result.get("confidence", 0), result.get("inference_ms", 0),
+        )
+        log.info("[predict] ↓ Response sent | success=True")
         return JSONResponse(content=result)
 
     except HTTPException:
         raise
     except Exception as exc:
-        log.error("Predict endpoint error: %s", exc)
+        import traceback
+        log.error("[predict] Unhandled exception: %s", exc)
+        log.error("[predict] Full traceback:\n%s", traceback.format_exc())
         raise HTTPException(status_code=500, detail=str(exc))
     finally:
         if tmp_path and os.path.exists(tmp_path):
@@ -407,7 +487,9 @@ def _run_crop_filtered_predict(
         }
 
     except Exception as exc:
-        log.error("Inference error: %s", exc)
+        import traceback
+        log.error("[predict] Inference error: %s", exc)
+        log.error("[predict] Inference traceback:\n%s", traceback.format_exc())
         return {"status": "error", "error": str(exc)}
 
 

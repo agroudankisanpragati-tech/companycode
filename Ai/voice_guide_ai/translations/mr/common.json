@@ -1,0 +1,16 @@
+{
+    "common_retry_001": "कृपया पुन्हा प्रयत्न करा.",
+    "common_processing_001": "कृपया प्रतीक्षा करा, माहिती प्रक्रिया केली जात आहे.",
+    "common_permission_required_001": "या सुविधेसाठी परवानगी आवश्यक आहे.",
+    "common_saving_001": "डेटा जतन केला जात आहे.",
+    "common_upload_success_001": "अपलोड यशस्वी झाले.",
+    "common_update_available_001": "नवीन अपडेट उपलब्ध आहे.",
+    "common_session_expired_001": "तुमचे सत्र संपले आहे.",
+    "common_download_success_001": "डाउनलोड यशस्वी झाले.",
+    "common_data_not_found_001": "कोणताही डेटा आढळला नाही.",
+    "common_access_denied_001": "प्रवेश नाकारला आहे.",
+    "common_exit_001": "तुम्हाला या विभागातून बाहेर पडायचे आहे का?",
+    "common_offline_001": "सध्या इंटरनेट उपलब्ध नाही. कृपया कनेक्शन सुरू करून पुन्हा प्रयत्न करा.",
+    "common_no_internet_001": "इंटरनेट उपलब्ध नाही.",
+    "common_maintenance_001": "सिस्टम देखभालीत आहे."
+}

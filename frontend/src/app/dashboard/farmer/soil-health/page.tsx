@@ -7,6 +7,7 @@ import FarmerSidebar from '@/components/FarmerSidebar';
 import FarmerFooter from '@/components/FarmerFooter';
 import { useAuth } from '@/context/AuthContext';
 import { usePageContext } from '@/hooks/usePageContext';
+import { useVoiceGuide } from '@/hooks/useVoiceGuide';
 import {
   uploadSoilReport,
   getSoilHistory,
@@ -449,6 +450,7 @@ export default function SoilHealthPage() {
       recommendations: report.aiAnalysis,
     } : undefined,
   });
+  useVoiceGuide('soil_health');
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 

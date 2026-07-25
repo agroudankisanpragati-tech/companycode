@@ -1,0 +1,42 @@
+{
+  "id": "profile_success_001",
+  "page": "profile",
+  "dialogueType": "success",
+  "title": "Profile Updated",
+  "version": "1.0.0",
+
+  "text": "बधाई हो। आपकी प्रोफ़ाइल सफलतापूर्वक अपडेट हो गई है। अब एआई आपकी नवीनतम जानकारी के आधार पर अधिक सटीक सुझाव प्रदान करेगा।",
+
+  "repeat": {
+    "enabled": false,
+    "afterHours": 0
+  },
+
+  "voice": {
+    "enabled": true,
+    "provider": "offline",
+    "file": "profile_success_001.mp3",
+    "language": "hi",
+    "speed": 1.0,
+    "volume": 1.0
+  },
+
+  "avatar": {
+    "enabled": true,
+    "animation": "success",
+    "expression": "happy"
+  },
+
+  "display": {
+    "showSubtitle": true,
+    "showAvatar": true
+  },
+
+  "conditions": {
+    "firstVisit": false,
+    "loggedIn": true,
+    "internetRequired": false
+  },
+
+  "status": "active"
+}

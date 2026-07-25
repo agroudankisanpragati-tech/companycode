@@ -1,0 +1,42 @@
+{
+  "id": "disease_processing_001",
+  "page": "disease_detection",
+  "dialogueType": "processing",
+  "title": "Processing Image",
+  "version": "1.0.0",
+
+  "text": "कृपया कुछ क्षण प्रतीक्षा करें। आपकी तस्वीर का विश्लेषण किया जा रहा है। हमारा एआई मॉडल फसल की पहचान करके संभावित रोग का पता लगा रहा है।",
+
+  "repeat": {
+    "enabled": false,
+    "afterHours": 0
+  },
+
+  "voice": {
+    "enabled": true,
+    "provider": "offline",
+    "file": "disease_processing_001.mp3",
+    "language": "hi",
+    "speed": 1.0,
+    "volume": 1.0
+  },
+
+  "avatar": {
+    "enabled": true,
+    "animation": "loading",
+    "expression": "thinking"
+  },
+
+  "display": {
+    "showSubtitle": true,
+    "showAvatar": true
+  },
+
+  "conditions": {
+    "firstVisit": false,
+    "loggedIn": true,
+    "internetRequired": false
+  },
+
+  "status": "active"
+}

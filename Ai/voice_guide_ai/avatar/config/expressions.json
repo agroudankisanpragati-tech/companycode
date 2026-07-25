@@ -1,0 +1,163 @@
+{
+    "version": "1.0.0",
+    "default": "neutral",
+    "fallback": "neutral",
+    "expressions": {
+        "neutral": {
+            "id": "neutral",
+            "label": "Neutral",
+            "asset_webp": "avatar/expressions/neutral/neutral.webp",
+            "asset_png": "avatar/expressions/neutral/neutral.png",
+            "transition_in_ms": 200,
+            "transition_out_ms": 200,
+            "loop": false,
+            "priority": 0,
+            "fallback": null,
+            "tags": ["default", "idle"]
+        },
+        "smile": {
+            "id": "smile",
+            "label": "Smile",
+            "asset_webp": "avatar/expressions/smile/smile.webp",
+            "asset_png": "avatar/expressions/smile/smile.png",
+            "transition_in_ms": 300,
+            "transition_out_ms": 250,
+            "loop": false,
+            "priority": 1,
+            "fallback": "neutral",
+            "tags": ["positive", "greeting"]
+        },
+        "happy": {
+            "id": "happy",
+            "label": "Happy",
+            "asset_webp": "avatar/expressions/happy/happy.webp",
+            "asset_png": "avatar/expressions/happy/happy.png",
+            "transition_in_ms": 300,
+            "transition_out_ms": 300,
+            "loop": false,
+            "priority": 1,
+            "fallback": "smile",
+            "tags": ["positive", "success"]
+        },
+        "thinking": {
+            "id": "thinking",
+            "label": "Thinking",
+            "asset_webp": "avatar/expressions/thinking/thinking.webp",
+            "asset_png": "avatar/expressions/thinking/thinking.png",
+            "transition_in_ms": 400,
+            "transition_out_ms": 300,
+            "loop": false,
+            "priority": 2,
+            "fallback": "neutral",
+            "tags": ["cognitive", "processing"]
+        },
+        "listening": {
+            "id": "listening",
+            "label": "Listening",
+            "asset_webp": "avatar/expressions/listening/listening.webp",
+            "asset_png": "avatar/expressions/listening/listening.png",
+            "transition_in_ms": 250,
+            "transition_out_ms": 200,
+            "loop": false,
+            "priority": 2,
+            "fallback": "neutral",
+            "tags": ["attentive", "input"]
+        },
+        "speaking": {
+            "id": "speaking",
+            "label": "Speaking",
+            "asset_webp": "avatar/expressions/speaking/speaking.webp",
+            "asset_png": "avatar/expressions/speaking/speaking.png",
+            "transition_in_ms": 150,
+            "transition_out_ms": 150,
+            "loop": true,
+            "priority": 3,
+            "fallback": "neutral",
+            "tags": ["output", "voice"]
+        },
+        "warning": {
+            "id": "warning",
+            "label": "Warning",
+            "asset_webp": "avatar/expressions/warning/warning.webp",
+            "asset_png": "avatar/expressions/warning/warning.png",
+            "transition_in_ms": 200,
+            "transition_out_ms": 300,
+            "loop": false,
+            "priority": 4,
+            "fallback": "neutral",
+            "tags": ["alert", "caution"]
+        },
+        "error": {
+            "id": "error",
+            "label": "Error",
+            "asset_webp": "avatar/expressions/error/error.webp",
+            "asset_png": "avatar/expressions/error/error.png",
+            "transition_in_ms": 200,
+            "transition_out_ms": 300,
+            "loop": false,
+            "priority": 5,
+            "fallback": "neutral",
+            "tags": ["negative", "problem"]
+        },
+        "success": {
+            "id": "success",
+            "label": "Success",
+            "asset_webp": "avatar/expressions/success/success.webp",
+            "asset_png": "avatar/expressions/success/success.png",
+            "transition_in_ms": 300,
+            "transition_out_ms": 300,
+            "loop": false,
+            "priority": 1,
+            "fallback": "happy",
+            "tags": ["positive", "achievement"]
+        },
+        "goodbye": {
+            "id": "goodbye",
+            "label": "Goodbye",
+            "asset_webp": "avatar/expressions/goodbye/goodbye.webp",
+            "asset_png": "avatar/expressions/goodbye/goodbye.png",
+            "transition_in_ms": 400,
+            "transition_out_ms": 500,
+            "loop": false,
+            "priority": 1,
+            "fallback": "smile",
+            "tags": ["farewell", "exit"]
+        },
+        "confused": {
+            "id": "confused",
+            "label": "Confused",
+            "asset_webp": "avatar/expressions/confused/confused.webp",
+            "asset_png": "avatar/expressions/confused/confused.png",
+            "transition_in_ms": 350,
+            "transition_out_ms": 300,
+            "loop": false,
+            "priority": 2,
+            "fallback": "thinking",
+            "tags": ["uncertain", "question"]
+        },
+        "blink": {
+            "id": "blink",
+            "label": "Blink",
+            "asset_webp": "avatar/expressions/blink/blink.webp",
+            "asset_png": "avatar/expressions/blink/blink.png",
+            "transition_in_ms": 80,
+            "transition_out_ms": 80,
+            "loop": false,
+            "priority": 0,
+            "fallback": "neutral",
+            "tags": ["natural", "idle"]
+        },
+        "loading": {
+            "id": "loading",
+            "label": "Loading",
+            "asset_webp": "avatar/expressions/loading/loading.webp",
+            "asset_png": "avatar/expressions/loading/loading.png",
+            "transition_in_ms": 200,
+            "transition_out_ms": 200,
+            "loop": true,
+            "priority": 3,
+            "fallback": "thinking",
+            "tags": ["wait", "processing"]
+        }
+    }
+}

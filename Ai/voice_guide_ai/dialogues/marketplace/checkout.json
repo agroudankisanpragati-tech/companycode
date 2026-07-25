@@ -1,0 +1,35 @@
+{
+    "id":  "market_checkout_001",
+    "page":  "marketplace",
+    "dialogueType":  "checkout",
+    "title":  "Marketplace Checkout",
+    "version":  "1.0.0",
+    "text":  "चेकआउट प्रक्रिया शुरू की जा रही है।",
+    "repeat":  {
+                   "enabled":  false,
+                   "afterHours":  0
+               },
+    "voice":  {
+                  "enabled":  true,
+                  "provider":  "offline",
+                  "file":  "market_checkout_001.mp3",
+                  "language":  "hi",
+                  "speed":  1,
+                  "volume":  1
+              },
+    "avatar":  {
+                   "enabled":  true,
+                   "animation":  "loading",
+                   "expression":  "thinking"
+               },
+    "display":  {
+                    "showSubtitle":  true,
+                    "showAvatar":  true
+                },
+    "conditions":  {
+                       "firstVisit":  false,
+                       "loggedIn":  true,
+                       "internetRequired":  false
+                   },
+    "status":  "active"
+}

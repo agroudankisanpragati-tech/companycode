@@ -1,0 +1,42 @@
+{
+  "id": "ai_chat_welcome_001",
+  "page": "ai_chat",
+  "dialogueType": "welcome",
+  "title": "Pragati AI Welcome",
+  "version": "1.0.0",
+
+  "text": "नमस्कार! मैं प्रगति एआई हूँ। मैं खेती से जुड़े आपके सभी प्रश्नों के उत्तर देने, फसलों के बारे में जानकारी देने, सरकारी योजनाओं, मौसम, मंडी भाव, मिट्टी स्वास्थ्य, रोग पहचान तथा खेती से जुड़े निर्णय लेने में आपकी सहायता कर सकता हूँ। आप मुझसे लिखकर या बोलकर प्रश्न पूछ सकते हैं।",
+
+  "repeat": {
+    "enabled": true,
+    "afterHours": 24
+  },
+
+  "voice": {
+    "enabled": true,
+    "provider": "offline",
+    "file": "ai_chat_welcome_001.mp3",
+    "language": "hi",
+    "speed": 1.0,
+    "volume": 1.0
+  },
+
+  "avatar": {
+    "enabled": true,
+    "animation": "wave",
+    "expression": "smile"
+  },
+
+  "display": {
+    "showSubtitle": true,
+    "showAvatar": true
+  },
+
+  "conditions": {
+    "firstVisit": true,
+    "loggedIn": true,
+    "internetRequired": false
+  },
+
+  "status": "active"
+}

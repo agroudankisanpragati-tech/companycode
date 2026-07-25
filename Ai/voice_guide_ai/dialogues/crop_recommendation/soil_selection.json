@@ -1,0 +1,42 @@
+{
+  "id": "crop_soil_001",
+  "page": "crop_recommendation",
+  "dialogueType": "soil_selection",
+  "title": "Soil Selection",
+  "version": "1.0.0",
+
+  "text": "कृपया अपनी खेत की मिट्टी का प्रकार चुनें। यदि आपको मिट्टी का प्रकार ज्ञात नहीं है, तो पहले मिट्टी स्वास्थ्य विश्लेषण सुविधा का उपयोग करें। सही मिट्टी का चयन करने से फसल अनुशंसा अधिक सटीक होगी।",
+
+  "repeat": {
+    "enabled": false,
+    "afterHours": 0
+  },
+
+  "voice": {
+    "enabled": true,
+    "provider": "offline",
+    "file": "crop_soil_001.mp3",
+    "language": "hi",
+    "speed": 1.0,
+    "volume": 1.0
+  },
+
+  "avatar": {
+    "enabled": true,
+    "animation": "point",
+    "expression": "neutral"
+  },
+
+  "display": {
+    "showSubtitle": true,
+    "showAvatar": true
+  },
+
+  "conditions": {
+    "firstVisit": false,
+    "loggedIn": true,
+    "internetRequired": false
+  },
+
+  "status": "active"
+}

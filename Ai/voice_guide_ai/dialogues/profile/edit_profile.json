@@ -1,0 +1,42 @@
+{
+  "id": "profile_edit_001",
+  "page": "profile",
+  "dialogueType": "edit_profile",
+  "title": "Edit Profile",
+  "version": "1.0.0",
+
+  "text": "अब आप अपनी प्रोफ़ाइल की जानकारी संपादित कर सकते हैं। कृपया सभी विवरण सही प्रकार से भरें ताकि भविष्य में आपको अधिक सटीक एआई सेवाएँ और कृषि सुझाव प्राप्त हो सकें।",
+
+  "repeat": {
+    "enabled": false,
+    "afterHours": 0
+  },
+
+  "voice": {
+    "enabled": true,
+    "provider": "offline",
+    "file": "profile_edit_001.mp3",
+    "language": "hi",
+    "speed": 1.0,
+    "volume": 1.0
+  },
+
+  "avatar": {
+    "enabled": true,
+    "animation": "edit",
+    "expression": "smile"
+  },
+
+  "display": {
+    "showSubtitle": true,
+    "showAvatar": true
+  },
+
+  "conditions": {
+    "firstVisit": false,
+    "loggedIn": true,
+    "internetRequired": false
+  },
+
+  "status": "active"
+}

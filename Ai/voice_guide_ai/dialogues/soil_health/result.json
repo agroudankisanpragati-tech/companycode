@@ -1,0 +1,42 @@
+{
+  "id": "soil_result_001",
+  "page": "soil_health",
+  "dialogueType": "result",
+  "title": "Soil Analysis Result",
+  "version": "1.0.0",
+
+  "text": "विश्लेषण सफलतापूर्वक पूरा हो गया है। आपकी स्क्रीन पर मिट्टी की गुणवत्ता, पोषक तत्वों की स्थिति और अन्य महत्वपूर्ण जानकारी प्रदर्शित की गई है। कृपया सभी परिणाम ध्यानपूर्वक देखें।",
+
+  "repeat": {
+    "enabled": false,
+    "afterHours": 0
+  },
+
+  "voice": {
+    "enabled": true,
+    "provider": "offline",
+    "file": "soil_result_001.mp3",
+    "language": "hi",
+    "speed": 1.0,
+    "volume": 1.0
+  },
+
+  "avatar": {
+    "enabled": true,
+    "animation": "success",
+    "expression": "happy"
+  },
+
+  "display": {
+    "showSubtitle": true,
+    "showAvatar": true
+  },
+
+  "conditions": {
+    "firstVisit": false,
+    "loggedIn": true,
+    "internetRequired": false
+  },
+
+  "status": "active"
+}

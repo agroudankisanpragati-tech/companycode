@@ -1,0 +1,35 @@
+{
+    "id": "market_products_001",
+    "page": "marketplace",
+    "dialogueType": "products",
+    "title": "Marketplace Products",
+    "version": "1.0.0",
+    "text": "यहाँ उपलब्ध उत्पाद देखें। किसी उत्पाद पर टैप करके विवरण जानें।",
+    "repeat": {
+        "enabled": false,
+        "afterHours": 0
+    },
+    "voice": {
+        "enabled": true,
+        "provider": "offline",
+        "file": "market_products_001.mp3",
+        "language": "hi",
+        "speed": 1,
+        "volume": 1
+    },
+    "avatar": {
+        "enabled": true,
+        "animation": "point",
+        "expression": "smile"
+    },
+    "display": {
+        "showSubtitle": true,
+        "showAvatar": true
+    },
+    "conditions": {
+        "firstVisit": false,
+        "loggedIn": true,
+        "internetRequired": false
+    },
+    "status": "active"
+}

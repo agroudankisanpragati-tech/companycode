@@ -1,0 +1,90 @@
+{
+    "version": "1.0.0",
+    "default": "transparent",
+    "themes": {
+        "light": {
+            "id": "light",
+            "label": "Light Theme",
+            "background_color": "#FFFFFF",
+            "background_opacity": 1.0,
+            "border_color": "#E0E0E0",
+            "border_radius": 16,
+            "border_width": 1,
+            "shadow": "0 4px 16px rgba(0,0,0,0.12)",
+            "avatar_tint": null,
+            "overlay_color": "#FFFFFF",
+            "overlay_opacity": 0.95,
+            "badge_background": "#4CAF50",
+            "badge_text_color": "#FFFFFF",
+            "css_vars": {
+                "--avatar-bg": "#FFFFFF",
+                "--avatar-border": "#E0E0E0",
+                "--avatar-shadow": "0 4px 16px rgba(0,0,0,0.12)",
+                "--avatar-radius": "16px"
+            }
+        },
+        "dark": {
+            "id": "dark",
+            "label": "Dark Theme",
+            "background_color": "#1E1E2E",
+            "background_opacity": 0.95,
+            "border_color": "#3A3A5C",
+            "border_radius": 16,
+            "border_width": 1,
+            "shadow": "0 4px 24px rgba(0,0,0,0.4)",
+            "avatar_tint": null,
+            "overlay_color": "#1E1E2E",
+            "overlay_opacity": 0.95,
+            "badge_background": "#66BB6A",
+            "badge_text_color": "#FFFFFF",
+            "css_vars": {
+                "--avatar-bg": "#1E1E2E",
+                "--avatar-border": "#3A3A5C",
+                "--avatar-shadow": "0 4px 24px rgba(0,0,0,0.4)",
+                "--avatar-radius": "16px"
+            }
+        },
+        "high_contrast": {
+            "id": "high_contrast",
+            "label": "High Contrast",
+            "background_color": "#000000",
+            "background_opacity": 1.0,
+            "border_color": "#FFFF00",
+            "border_radius": 8,
+            "border_width": 3,
+            "shadow": "none",
+            "avatar_tint": null,
+            "overlay_color": "#000000",
+            "overlay_opacity": 1.0,
+            "badge_background": "#FFFF00",
+            "badge_text_color": "#000000",
+            "css_vars": {
+                "--avatar-bg": "#000000",
+                "--avatar-border": "#FFFF00",
+                "--avatar-shadow": "none",
+                "--avatar-radius": "8px"
+            }
+        },
+        "transparent": {
+            "id": "transparent",
+            "label": "Transparent",
+            "background_color": "transparent",
+            "background_opacity": 0.0,
+            "border_color": "transparent",
+            "border_radius": 0,
+            "border_width": 0,
+            "shadow": "none",
+            "avatar_tint": null,
+            "overlay_color": "transparent",
+            "overlay_opacity": 0.0,
+            "badge_background": "#4CAF50",
+            "badge_text_color": "#FFFFFF",
+            "css_vars": {
+                "--avatar-bg": "transparent",
+                "--avatar-border": "transparent",
+                "--avatar-shadow": "none",
+                "--avatar-radius": "0px"
+            }
+        }
+    }
+}

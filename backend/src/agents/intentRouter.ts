@@ -1,7 +1,7 @@
 /**
  * Intent Router — Root Router
  *
- * Called immediately after detectIntent(). Selects the correct agent for
+ * Called immediately after detectIntentAsync(). Selects the correct agent for
  * the detected intent and returns a structured AgentRouteResult.
  *
  * Rules:
@@ -9,6 +9,10 @@
  * - disease/crop/soil/weather/market/government/kvk → dedicated agent only
  * - general → GeneralAgent (dispatchAgents + composeLocalResponse, optional LLM)
  * - LLM is NEVER called for any intent except general (and only as fallback)
+ *
+ * Fix 4: intent is detected ONCE upstream and passed in here.
+ *        This router NEVER calls detectIntent() again.
+ * Fix M2: KVK intent no longer runs SeedAgent (unrelated domain pairing removed).
  */
 
 import { createLogger } from '../utils/logger';
@@ -39,17 +43,17 @@ export type RouteMode =
   | 'general';  // GeneralAgent: dispatchAgents + composeLocalResponse + optional LLM
 
 export interface AgentRouteResult {
-  mode:        RouteMode;
-  intent:      IntentType;
-  agentName:   string;
+  mode:         RouteMode;
+  intent:       IntentType;
+  agentName:    string;
   agentResults: AgentResult[];
   staticReply?: { english: string; hindi: string; native: string };
-  yoloUsed:    boolean;
-  kbUsed:      boolean;
-  executionMs: number;
+  yoloUsed:     boolean;
+  kbUsed:       boolean;
+  executionMs:  number;
 }
 
-// ─── Static greeting responses ────────────────────────────────────────────────
+// ─── Static responses ─────────────────────────────────────────────────────────
 
 const GREETING_RESPONSE = {
   english: '🙏 Namaste! I am Pragati AI, your agriculture assistant. How can I help you today?\n\nYou can ask me about:\n• 🌾 Crop recommendations\n• 🌿 Disease detection\n• 🌱 Soil health\n• 🌤️ Weather forecast\n• 📊 Mandi prices\n• 🏛️ Government schemes',
@@ -69,24 +73,26 @@ const VOICE_RESPONSE = {
   native:  '🎙️ वॉयस कमांड प्राप्त हुई। कृपया पेज पर वॉयस नियंत्रण का उपयोग करें।',
 };
 
-// ─── Intent → Agent mapping ───────────────────────────────────────────────────
+// ─── Dedicated agent runner ───────────────────────────────────────────────────
 
 async function runDedicatedAgent(
   intent: IntentType,
-  ctx: AgentContext,
+  ctx:    AgentContext,
 ): Promise<{ agentName: string; results: AgentResult[]; yoloUsed: boolean; kbUsed: boolean }> {
   switch (intent) {
     case 'disease': {
-      const result = await runDiseaseAgent(ctx);
+      const result   = await runDiseaseAgent(ctx);
       const yoloUsed = !!(ctx.pageData?.diseaseResult);
       const kbUsed   = result.success && !!result.data && Object.keys(result.data).length > 0;
       return { agentName: 'DiseaseAgent', results: [result], yoloUsed, kbUsed };
     }
     case 'crop': {
+      // SoilAgent and FertilizerAgent share ctx.shared.soilReport — no duplicate query
       const [crop, fert] = await Promise.all([runCropAgent(ctx), runFertilizerAgent(ctx)]);
       return { agentName: 'CropAgent', results: [crop, fert], yoloUsed: false, kbUsed: crop.success };
     }
     case 'soil': {
+      // Both agents read ctx.shared.soilReport — no duplicate query (Fix 8)
       const [soil, fert] = await Promise.all([runSoilAgent(ctx), runFertilizerAgent(ctx)]);
       return { agentName: 'SoilAgent', results: [soil, fert], yoloUsed: false, kbUsed: soil.success };
     }
@@ -103,12 +109,14 @@ async function runDedicatedAgent(
       return { agentName: 'GovernmentAgent', results: [result], yoloUsed: false, kbUsed: result.success };
     }
     case 'kvk': {
-      const [kvk, seed] = await Promise.all([runKVKAgent(ctx), runSeedAgent(ctx)]);
-      return { agentName: 'KVKAgent', results: [kvk, seed], yoloUsed: false, kbUsed: kvk.success };
+      // Fix M2: removed unrelated SeedAgent pairing — KVK queries only run KVKAgent
+      const result = await runKVKAgent(ctx);
+      return { agentName: 'KVKAgent', results: [result], yoloUsed: false, kbUsed: result.success };
     }
     case 'irrigation': {
       const result = await runIrrigationAgent(ctx);
-      return { agentName: 'IrrigationAgent', results: [result], yoloUsed: false, kbUsed: result.success && !!result.data && Object.keys(result.data).length > 0 };
+      const kbUsed = result.success && !!result.data && Object.keys(result.data).length > 0;
+      return { agentName: 'IrrigationAgent', results: [result], yoloUsed: false, kbUsed };
     }
     case 'machinery': {
       const result = await runMachineryAgent(ctx);
@@ -127,82 +135,69 @@ async function runDedicatedAgent(
 
 export async function routeIntent(
   intent: IntentType,
-  ctx: AgentContext,
+  ctx:    AgentContext,
 ): Promise<AgentRouteResult> {
   const start = Date.now();
 
-  // ── Static intents — NEVER touch KB or LLM ───────────────────────────────
+  // ── Static intents — NEVER touch KB or LLM ──────────────────────────────
   if (intent === 'greeting') {
     log.info('Intent routed', { intent, agent: 'GreetingAgent', mode: 'static' });
     return {
-      mode: 'static',
-      intent,
-      agentName:    'GreetingAgent',
-      agentResults: [],
-      staticReply:  GREETING_RESPONSE,
-      yoloUsed:     false,
-      kbUsed:       false,
-      executionMs:  Date.now() - start,
+      mode: 'static', intent,
+      agentName: 'GreetingAgent', agentResults: [],
+      staticReply: GREETING_RESPONSE,
+      yoloUsed: false, kbUsed: false,
+      executionMs: Date.now() - start,
     };
   }
 
   if (intent === 'navigation') {
     log.info('Intent routed', { intent, agent: 'NavigationAgent', mode: 'static' });
     return {
-      mode: 'static',
-      intent,
-      agentName:    'NavigationAgent',
-      agentResults: [],
-      staticReply:  NAVIGATION_RESPONSE,
-      yoloUsed:     false,
-      kbUsed:       false,
-      executionMs:  Date.now() - start,
+      mode: 'static', intent,
+      agentName: 'NavigationAgent', agentResults: [],
+      staticReply: NAVIGATION_RESPONSE,
+      yoloUsed: false, kbUsed: false,
+      executionMs: Date.now() - start,
     };
   }
 
   if (intent === 'voice_command') {
     log.info('Intent routed', { intent, agent: 'VoiceAgent', mode: 'static' });
     return {
-      mode: 'static',
-      intent,
-      agentName:    'VoiceAgent',
-      agentResults: [],
-      staticReply:  VOICE_RESPONSE,
-      yoloUsed:     false,
-      kbUsed:       false,
-      executionMs:  Date.now() - start,
+      mode: 'static', intent,
+      agentName: 'VoiceAgent', agentResults: [],
+      staticReply: VOICE_RESPONSE,
+      yoloUsed: false, kbUsed: false,
+      executionMs: Date.now() - start,
     };
   }
 
-  // ── General intent — GeneralAgent (KB + optional LLM) ────────────────────
+  // ── General intent — GeneralAgent (KB + optional LLM) ───────────────────
   if (intent === 'general') {
     log.info('Intent routed', { intent, agent: 'GeneralAgent', mode: 'general' });
     let agentResults: AgentResult[] = [];
     try {
-      agentResults = await dispatchAgents(ctx.message, {
-        userId:        ctx.userId,
-        farmerProfile: ctx.farmerProfile,
-        pageData:      ctx.pageData,
-      });
+      // Fix 4: pass already-detected intent — dispatchAgents never re-detects
+      agentResults = await dispatchAgents(intent, ctx);
     } catch (err: any) {
       log.warn('GeneralAgent dispatch error (non-fatal)', { error: err?.message });
     }
     return {
-      mode: 'general',
-      intent,
-      agentName:    'GeneralAgent',
+      mode: 'general', intent,
+      agentName: 'GeneralAgent',
       agentResults,
-      yoloUsed:     false,
-      kbUsed:       agentResults.some(r => r.success && r.data && Object.keys(r.data).length > 0),
-      executionMs:  Date.now() - start,
+      yoloUsed: false,
+      kbUsed: agentResults.some(r => r.success && r.data && Object.keys(r.data).length > 0),
+      executionMs: Date.now() - start,
     };
   }
 
-  // ── Dedicated agent intents ───────────────────────────────────────────────
-  let agentName = 'UnknownAgent';
+  // ── Dedicated agent intents ──────────────────────────────────────────────
+  let agentName    = 'UnknownAgent';
   let agentResults: AgentResult[] = [];
-  let yoloUsed = false;
-  let kbUsed   = false;
+  let yoloUsed     = false;
+  let kbUsed       = false;
 
   try {
     const routed = await runDedicatedAgent(intent, ctx);
@@ -215,21 +210,14 @@ export async function routeIntent(
   }
 
   log.info('Intent routed', {
-    intent,
-    agent:      agentName,
-    mode:       'agent',
-    yoloUsed,
-    kbUsed,
-    executionMs: Date.now() - start,
+    intent, agent: agentName, mode: 'agent',
+    yoloUsed, kbUsed, executionMs: Date.now() - start,
   });
 
   return {
-    mode: 'agent',
-    intent,
-    agentName,
-    agentResults,
-    yoloUsed,
-    kbUsed,
+    mode: 'agent', intent,
+    agentName, agentResults,
+    yoloUsed, kbUsed,
     executionMs: Date.now() - start,
   };
 }

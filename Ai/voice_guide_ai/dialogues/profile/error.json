@@ -1,0 +1,42 @@
+{
+  "id": "profile_error_001",
+  "page": "profile",
+  "dialogueType": "error",
+  "title": "Profile Error",
+  "version": "1.0.0",
+
+  "text": "क्षमा करें। आपकी प्रोफ़ाइल अपडेट नहीं हो सकी। कृपया जानकारी की जाँच करें और पुनः प्रयास करें।",
+
+  "repeat": {
+    "enabled": false,
+    "afterHours": 0
+  },
+
+  "voice": {
+    "enabled": true,
+    "provider": "offline",
+    "file": "profile_error_001.mp3",
+    "language": "hi",
+    "speed": 1.0,
+    "volume": 1.0
+  },
+
+  "avatar": {
+    "enabled": true,
+    "animation": "warning",
+    "expression": "warning"
+  },
+
+  "display": {
+    "showSubtitle": true,
+    "showAvatar": true
+  },
+
+  "conditions": {
+    "firstVisit": false,
+    "loggedIn": true,
+    "internetRequired": false
+  },
+
+  "status": "active"
+}

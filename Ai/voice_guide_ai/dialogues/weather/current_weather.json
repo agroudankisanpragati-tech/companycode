@@ -1,0 +1,42 @@
+{
+  "id": "weather_current_001",
+  "page": "weather",
+  "dialogueType": "current_weather",
+  "title": "Current Weather",
+  "version": "1.0.0",
+
+  "text": "आपके क्षेत्र का वर्तमान मौसम प्रदर्शित किया जा रहा है। कृपया तापमान, आर्द्रता, हवा की गति तथा अन्य मौसम संबंधी जानकारी ध्यान से देखें।",
+
+  "repeat": {
+    "enabled": false,
+    "afterHours": 0
+  },
+
+  "voice": {
+    "enabled": true,
+    "provider": "offline",
+    "file": "weather_current_001.mp3",
+    "language": "hi",
+    "speed": 1.0,
+    "volume": 1.0
+  },
+
+  "avatar": {
+    "enabled": true,
+    "animation": "loading",
+    "expression": "thinking"
+  },
+
+  "display": {
+    "showSubtitle": true,
+    "showAvatar": true
+  },
+
+  "conditions": {
+    "firstVisit": false,
+    "loggedIn": true,
+    "internetRequired": false
+  },
+
+  "status": "active"
+}

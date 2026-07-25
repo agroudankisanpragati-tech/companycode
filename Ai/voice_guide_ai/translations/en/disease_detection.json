@@ -1,0 +1,15 @@
+{
+    "disease_replay_001":  "Let me guide you again. Take a clear photo of the crop with the camera or choose one from the gallery. Make sure the affected leaves or plant part is clearly visible. After uploading the photo, our AI will analyse it and show the possible disease and its treatment on your screen.",
+    "disease_processing_001":  "Please wait a moment. Your photo is being analysed. Our AI model is identifying the crop and detecting the possible disease.",
+    "disease_offline_001":  "No internet right now. If your disease detection model is available offline, the analysis will continue. Otherwise please connect to the internet and try again.",
+    "disease_welcome_001":  "Welcome to the Crop Disease Detection page. With this feature, you can upload a photo of your crop and identify the possible disease within moments. For better results, use a clear photo taken in good lighting.",
+    "disease_upload_001":  "Please upload a clear photo of your crop. If possible, keep only the affected leaves or plant part in the photo. A good quality photo will give a more accurate result.",
+    "disease_retry_001":  "Please try again. For better results, use a clear photo of the crop taken in good lighting.",
+    "disease_help_001":  "If you need help identifying the crop, take a new photo with the camera or choose a clear photo from your gallery. Make sure only the affected leaves or plants are clearly visible in the photo. Blurry or distant photos may give wrong results.",
+    "disease_error_001":  "Sorry. Your photo could not be analysed completely. Please choose a clear photo or try again. If the problem continues, try again after some time.",
+    "disease_found_001":  "Analysis is complete. Information about the possible disease is shown on your screen. Please read the disease name, symptoms, possible causes, and treatment suggestions carefully. Before following any treatment, consult an agricultural expert if needed.",
+    "disease_camera_001":  "Camera is open. Please take a clear photo of the crop. Make sure there is good lighting and keep only the affected leaves or plant part in the photo. The photo should not be blurry so the disease can be identified more accurately.",
+    "disease_healthy_001":  "Analysis is complete. The result is shown on your screen. Based on available information, your crop appears to be healthy. Still, keep a regular watch and inspect your crop from time to time.",
+    "disease_gallery_001":  "Please choose a clear photo of the crop from your gallery. If there are multiple photos, choose the one where the diseased part is clearly visible.",
+    "disease_exit_001":  "Thank you for using the Disease Detection feature. You can now use any other feature or detect disease again when needed. I will keep guiding you on the next page too."
+}

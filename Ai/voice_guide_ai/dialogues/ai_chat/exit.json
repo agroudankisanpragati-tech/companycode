@@ -1,0 +1,42 @@
+{
+  "id": "ai_chat_exit_001",
+  "page": "ai_chat",
+  "dialogueType": "exit",
+  "title": "AI Chat Exit",
+  "version": "1.0.0",
+
+  "text": "धन्यवाद। प्रगति एआई का उपयोग करने के लिए आपका आभार। जब भी आपको खेती से जुड़ी किसी सहायता की आवश्यकता हो, आप मुझसे फिर से प्रश्न पूछ सकते हैं। मैं हमेशा आपकी सहायता के लिए उपलब्ध हूँ।",
+
+  "repeat": {
+    "enabled": false,
+    "afterHours": 0
+  },
+
+  "voice": {
+    "enabled": true,
+    "provider": "offline",
+    "file": "ai_chat_exit_001.mp3",
+    "language": "hi",
+    "speed": 1.0,
+    "volume": 1.0
+  },
+
+  "avatar": {
+    "enabled": true,
+    "animation": "wave",
+    "expression": "smile"
+  },
+
+  "display": {
+    "showSubtitle": true,
+    "showAvatar": true
+  },
+
+  "conditions": {
+    "firstVisit": false,
+    "loggedIn": true,
+    "internetRequired": false
+  },
+
+  "status": "active"
+}

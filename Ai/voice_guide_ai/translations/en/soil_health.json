@@ -1,0 +1,13 @@
+{
+    "soil_result_001":  "Analysis is complete. Soil quality, nutrient status, and other important information are shown on your screen. Please review all results carefully.",
+    "soil_replay_001":  "Let me guide you again. Upload your soil test report or fill in the required information. Our AI will analyse your soil and give suitable farming suggestions.",
+    "soil_sample_001":  "Please select your soil report or enter the required soil-related information. Providing correct details will make the analysis more accurate.",
+    "soil_welcome_001":  "Welcome to the Soil Health Analysis page. Here you can get information about your soil quality, nutrient status, and suggestions needed for farming. With correct information, the AI will analyse your soil and guide you for better farming.",
+    "soil_upload_report_001":  "Please upload your soil test report. If you do not have a report, you can also get an analysis by filling in the required information.",
+    "soil_recommendation_001":  "Farming suggestions based on your soil analysis are ready. Please carefully read the recommended fertilizers, nutrients, and corrective measures.",
+    "soil_exit_001":  "Thank you for using the Soil Health Analysis feature. You can do a new analysis with a fresh report in the future or use other features of the app. I will keep guiding you on the next page too.",
+    "soil_error_001":  "Sorry. Soil analysis could not be completed. Please provide correct information or try again.",
+    "soil_help_001":  "If you have a soil test report, upload it. If not, fill in the required information asked by the app. Our AI will analyse your soil and give suitable suggestions.",
+    "soil_processing_001":  "Please wait a moment. Our AI is analysing your soil and preparing suggestions for required nutrients and farming.",
+    "soil_offline_001":  "No internet right now. If the required data and AI model are available on your device, the analysis will continue. Otherwise please connect to the internet and try again."
+}

@@ -1,0 +1,42 @@
+{
+  "id": "soil_error_001",
+  "page": "soil_health",
+  "dialogueType": "error",
+  "title": "Soil Analysis Error",
+  "version": "1.0.0",
+
+  "text": "क्षमा करें। मिट्टी का विश्लेषण पूरा नहीं हो सका। कृपया सही जानकारी दें या पुनः प्रयास करें।",
+
+  "repeat": {
+    "enabled": false,
+    "afterHours": 0
+  },
+
+  "voice": {
+    "enabled": true,
+    "provider": "offline",
+    "file": "soil_error_001.mp3",
+    "language": "hi",
+    "speed": 1.0,
+    "volume": 1.0
+  },
+
+  "avatar": {
+    "enabled": true,
+    "animation": "warning",
+    "expression": "warning"
+  },
+
+  "display": {
+    "showSubtitle": true,
+    "showAvatar": true
+  },
+
+  "conditions": {
+    "firstVisit": false,
+    "loggedIn": true,
+    "internetRequired": false
+  },
+
+  "status": "active"
+}

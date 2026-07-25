@@ -1,0 +1,35 @@
+{
+    "id":  "common_maintenance_001",
+    "page":  "common",
+    "dialogueType":  "maintenance",
+    "title":  "Common Maintenance",
+    "version":  "1.0.0",
+    "text":  "सिस्टम रखरखाव में है।",
+    "repeat":  {
+                   "enabled":  false,
+                   "afterHours":  0
+               },
+    "voice":  {
+                  "enabled":  true,
+                  "provider":  "offline",
+                  "file":  "common_maintenance_001.mp3",
+                  "language":  "hi",
+                  "speed":  1,
+                  "volume":  1
+              },
+    "avatar":  {
+                   "enabled":  true,
+                   "animation":  "warning",
+                   "expression":  "warning"
+               },
+    "display":  {
+                    "showSubtitle":  true,
+                    "showAvatar":  true
+                },
+    "conditions":  {
+                       "firstVisit":  false,
+                       "loggedIn":  true,
+                       "internetRequired":  false
+                   },
+    "status":  "active"
+}

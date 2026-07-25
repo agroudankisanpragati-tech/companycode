@@ -1,0 +1,35 @@
+{
+  "id": "common_error_001",
+  "page": "common",
+  "dialogueType": "error",
+  "title": "Common Error",
+  "version": "1.0.0",
+  "text": "क्षमा करें, अभी कुछ समस्या हुई है। कृपया पुनः प्रयास करें।",
+  "repeat": {
+    "enabled": false,
+    "afterHours": 0
+  },
+  "voice": {
+    "enabled": true,
+    "provider": "offline",
+    "file": "common_error_001.mp3",
+    "language": "hi",
+    "speed": 1.0,
+    "volume": 1.0
+  },
+  "avatar": {
+    "enabled": true,
+    "animation": "error",
+    "expression": "warning"
+  },
+  "display": {
+    "showSubtitle": true,
+    "showAvatar": true
+  },
+  "conditions": {
+    "firstVisit": false,
+    "loggedIn": false,
+    "internetRequired": false
+  },
+  "status": "active"
+}

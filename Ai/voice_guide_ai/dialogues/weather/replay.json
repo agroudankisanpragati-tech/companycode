@@ -1,0 +1,42 @@
+{
+  "id": "weather_replay_001",
+  "page": "weather",
+  "dialogueType": "replay",
+  "title": "Replay Weather Guide",
+  "version": "1.0.0",
+
+  "text": "मैं आपको फिर से मार्गदर्शन देता हूँ। अपना स्थान चुनें या लोकेशन की अनुमति दें। इसके बाद आपको वर्तमान मौसम, आगामी पूर्वानुमान, वर्षा की संभावना तथा खेती के लिए आवश्यक मौसम संबंधी सुझाव दिखाई देंगे।",
+
+  "repeat": {
+    "enabled": false,
+    "afterHours": 0
+  },
+
+  "voice": {
+    "enabled": true,
+    "provider": "offline",
+    "file": "weather_replay_001.mp3",
+    "language": "hi",
+    "speed": 1.0,
+    "volume": 1.0
+  },
+
+  "avatar": {
+    "enabled": true,
+    "animation": "point",
+    "expression": "smile"
+  },
+
+  "display": {
+    "showSubtitle": true,
+    "showAvatar": true
+  },
+
+  "conditions": {
+    "firstVisit": false,
+    "loggedIn": true,
+    "internetRequired": false
+  },
+
+  "status": "active"
+}

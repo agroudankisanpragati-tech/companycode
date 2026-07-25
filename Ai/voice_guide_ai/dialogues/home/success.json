@@ -1,0 +1,35 @@
+{
+    "id":  "home_success_001",
+    "page":  "home",
+    "dialogueType":  "success",
+    "title":  "Home Success",
+    "version":  "1.0.0",
+    "text":  "आपकी प्रक्रिया सफलतापूर्वक पूरी हो गई है।",
+    "repeat":  {
+                   "enabled":  false,
+                   "afterHours":  0
+               },
+    "voice":  {
+                  "enabled":  true,
+                  "provider":  "offline",
+                  "file":  "home_success_001.mp3",
+                  "language":  "hi",
+                  "speed":  1,
+                  "volume":  1
+              },
+    "avatar":  {
+                   "enabled":  true,
+                   "animation":  "success",
+                   "expression":  "happy"
+               },
+    "display":  {
+                    "showSubtitle":  true,
+                    "showAvatar":  true
+                },
+    "conditions":  {
+                       "firstVisit":  false,
+                       "loggedIn":  false,
+                       "internetRequired":  false
+                   },
+    "status":  "active"
+}

@@ -25,15 +25,17 @@
  */
 
 import { createLogger } from '../utils/logger';
-import { detectIntent, IntentType } from './intentEngine';
+import { detectIntentAsync, IntentType } from './intentEngine';
 import { routeIntent } from '../agents/intentRouter';
 import { buildAgentContextBlock } from '../agents/agentRouter';
 import { loadMemoryContext, writeMemoryTurn, buildMemoryContextBlock, updateLanguagePreference, updatePreferredTopics } from './memoryEngine';
 import { runSpeechTranslationPipeline } from './speechTranslationPipeline';
 import { buildPageContextBlock, buildMismatchWarning, type PageData } from './contextEngine';
 import { composeLocalResponse, buildNotFoundResponse } from './localResponseComposer';
-import { prepareForIntentDetection } from './aliasNormalizer';
+import { prepareForIntentDetection } from './aliasResolver';
 import { resolveContextReferences } from './contextMemoryEngine';
+import { extractEntities } from './entityExtractor';
+import { loadSharedContext } from './sharedContext';
 
 const log = createLogger('pragatiAIController');
 
@@ -212,10 +214,20 @@ export async function runPragatiAIController(
     englishForBackend = aliasPrepped;
   }
 
-  // ── Step 2: Intent Engine ─────────────────────────────────────────────────
-  const intent = detectIntent(englishForBackend);
+  // ── Step 2: Intent Engine — Python ML bridge primary, regex fallback ──────
+  // detectIntentAsync is called EXACTLY ONCE here. Never called again inside
+  // agentRouter, intentRouter, or any agent. (Fix 1, Fix 4)
+  const intent = await detectIntentAsync(englishForBackend);
 
-  // ── Step 2b: Load memory + resolve context references ────────────────────
+  // ── Step 2b: Extract entities ONCE — all agents read from ctx.entities ────
+  // (Fix 2) No agent re-parses the message.
+  const entities = extractEntities(englishForBackend);
+
+  // ── Step 2c: Load shared DB context ONCE — eliminates duplicate queries ───
+  // (Fix 5, Fix 8) SoilAgent + FertilizerAgent both read ctx.shared.soilReport.
+  const shared = await loadSharedContext(userId);
+
+  // ── Step 2d: Load memory + resolve context references ────────────────────
   let memCtxForHistory: Awaited<ReturnType<typeof loadMemoryContext>> | null = null;
   let memoryUsed = false;
   let resolvedMessage = englishForBackend;
@@ -243,6 +255,8 @@ export async function runPragatiAIController(
     message:       resolvedMessage,
     farmerProfile,
     pageData:      pageData as any,
+    entities,
+    shared,
   });
 
   log.info('Request routed', {
@@ -371,7 +385,7 @@ export async function runPragatiAIController(
 
   if (pageData?.pageContext) {
     try {
-      contextBlock += buildPageContextBlock(pageData, englishForBackend);
+      contextBlock += buildPageContextBlock(pageData, englishForBackend, intent);
       contextBlock += buildMismatchWarning(pageData.pageContext, intent);
     } catch { /* non-fatal */ }
   }
@@ -380,7 +394,7 @@ export async function runPragatiAIController(
     contextBlock += buildAgentContextBlock(routeResult.agentResults);
   }
 
-  if (dashboardContext) {
+  if (dashboardContext && intent === 'general') {
     const { weather, soilMoisture } = dashboardContext;
     if (weather) contextBlock += `\n\nLIVE DASHBOARD:\nWeather: ${weather.condition || 'N/A'}, ${weather.temp !== undefined ? weather.temp + '°C' : 'N/A'}, Humidity: ${weather.humidity !== undefined ? weather.humidity + '%' : 'N/A'}`;
     if (soilMoisture) contextBlock += `\nSoil Moisture: ${soilMoisture.percentage}% (${soilMoisture.status})`;

@@ -1,0 +1,42 @@
+{
+  "id": "disease_camera_001",
+  "page": "disease_detection",
+  "dialogueType": "camera",
+  "title": "Open Camera",
+  "version": "1.0.0",
+
+  "text": "कैमरा खुल गया है। कृपया फसल की स्पष्ट तस्वीर लें। अच्छी रोशनी का ध्यान रखें और केवल प्रभावित पत्तियों या पौधे का भाग तस्वीर में रखें। तस्वीर धुंधली न हो, ताकि रोग की पहचान अधिक सटीक हो सके।",
+
+  "repeat": {
+    "enabled": false,
+    "afterHours": 0
+  },
+
+  "voice": {
+    "enabled": true,
+    "provider": "offline",
+    "file": "disease_camera_001.mp3",
+    "language": "hi",
+    "speed": 1.0,
+    "volume": 1.0
+  },
+
+  "avatar": {
+    "enabled": true,
+    "animation": "point",
+    "expression": "neutral"
+  },
+
+  "display": {
+    "showSubtitle": true,
+    "showAvatar": true
+  },
+
+  "conditions": {
+    "firstVisit": false,
+    "loggedIn": true,
+    "internetRequired": false
+  },
+
+  "status": "active"
+}

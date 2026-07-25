@@ -1,104 +1,74 @@
 /**
  * Irrigation Agent
- * Domain: Irrigation schedules, water management, drip/sprinkler guidance
- * Data sources: IrrigationSchedule, SoilMoisture MongoDB collections
- * Never communicates directly with the user.
+ * Fix 2: reads crop/irrigation type from ctx.entities
+ * Fix M10: IrrigationSchedule query scoped to farmerId (data isolation bug fixed)
  */
 
 import { IrrigationSchedule } from '../models/IrrigationSchedule';
 import { SoilMoisture } from '../models/SoilMoisture';
 import { AgentContext, AgentResult } from './types';
+import { buildFallbackResult, buildErrorResult } from '../services/fallbackManager';
+import { createLogger } from '../utils/logger';
+import { createSafeRegex } from '../utils/regex';
+
+const log = createLogger('irrigationAgent');
 
 export async function runIrrigationAgent(ctx: AgentContext): Promise<AgentResult> {
   try {
-    const { userId, message, pageData, farmerProfile } = ctx;
+    const { userId, pageData, entities } = ctx;
 
     if (pageData?.irrigationData) {
       const d = pageData.irrigationData;
       return {
-        agent: 'IrrigationAgent',
-        success: true,
-        data: d,
+        agent: 'IrrigationAgent', success: true, data: d,
         summary: `Irrigation for ${d.cropName || 'crop'}: ${d.irrigationMethod || 'N/A'}, every ${d.intervalDays || 'N/A'} days.`,
       };
     }
 
-    const cropName = extractCropFromMessage(message);
-    const irrigationType = extractIrrigationTypeFromMessage(message);
+    const cropName       = entities?.crop || '';
+    const irrigationType = entities?.irrigation || '';
 
-    const filter: any = {};
-    if (cropName) filter.cropName = new RegExp(cropName, 'i');
-    if (irrigationType) filter.irrigationMethod = new RegExp(irrigationType, 'i');
+    log.debug('IrrigationAgent running', { cropName, irrigationType, userId });
+
+    // Fix M10: scope to farmerId — previously returned any farmer's schedule
+    const filter: any = { farmerId: userId };
+    if (cropName)       filter.cropName        = createSafeRegex(cropName);
+    if (irrigationType) filter.irrigationMethod = createSafeRegex(irrigationType);
 
     const schedule = await IrrigationSchedule.findOne(filter).lean();
 
     if (schedule) {
       const s = schedule as any;
       return {
-        agent: 'IrrigationAgent',
-        success: true,
+        agent: 'IrrigationAgent', success: true,
         data: {
-          cropName: s.cropName,
-          irrigationMethod: s.irrigationMethod,
-          intervalDays: s.intervalDays,
-          waterAmount: s.waterAmount,
-          growthStage: s.growthStage,
-          notes: s.notes,
+          cropName: s.cropName, irrigationMethod: s.irrigationMethod,
+          intervalDays: s.intervalDays, waterAmount: s.waterAmount,
+          growthStage: s.growthStage, notes: s.notes,
         },
         summary: `Irrigation for ${s.cropName}: ${s.irrigationMethod}, every ${s.intervalDays} days, ${s.waterAmount} water.`,
       };
     }
 
-    // Fallback: soil moisture reading
-    const moisture = await SoilMoisture.findOne({ farmerId: userId })
-      .sort({ createdAt: -1 })
-      .lean();
+    const moisture = await SoilMoisture.findOne({ farmerId: userId }).sort({ createdAt: -1 }).lean();
 
     if (moisture) {
-      const m = moisture as any;
+      const m   = moisture as any;
+      const pct = m.moisturePercent;
+      const recommendation =
+        pct < 30 ? 'Soil moisture is low — irrigate immediately.' :
+        pct > 70 ? 'Soil moisture is adequate — delay irrigation.' :
+                   'Soil moisture is moderate — monitor and irrigate as needed.';
       return {
-        agent: 'IrrigationAgent',
-        success: true,
-        data: {
-          soilMoisturePercent: m.moisturePercent,
-          soilMoistureStatus: m.status,
-          recommendation: m.moisturePercent < 30
-            ? 'Soil moisture is low — irrigate immediately.'
-            : m.moisturePercent > 70
-            ? 'Soil moisture is adequate — delay irrigation.'
-            : 'Soil moisture is moderate — monitor and irrigate as needed.',
-        },
-        summary: `Soil moisture: ${m.moisturePercent}% (${m.status}). ${m.moisturePercent < 30 ? 'Irrigate immediately.' : 'Monitor moisture levels.'}`,
+        agent: 'IrrigationAgent', success: true,
+        data: { soilMoisturePercent: pct, soilMoistureStatus: m.status, recommendation },
+        summary: `Soil moisture: ${pct}% (${m.status}). ${pct < 30 ? 'Irrigate immediately.' : 'Monitor moisture levels.'}`,
       };
     }
 
-    return {
-      agent: 'IrrigationAgent',
-      success: true,
-      data: {},
-      summary: 'No irrigation data found. Guide the farmer to the Irrigation page for schedules and soil moisture readings.',
-    };
+    return buildFallbackResult('IrrigationAgent', 'irrigation');
   } catch (err: any) {
-    return {
-      agent: 'IrrigationAgent',
-      success: false,
-      error: 'Irrigation information is temporarily unavailable.',
-    };
+    log.error('IrrigationAgent error', { error: err?.message });
+    return buildErrorResult('IrrigationAgent', 'irrigation', err);
   }
-}
-
-function extractCropFromMessage(msg: string): string {
-  const crops = [
-    'wheat', 'rice', 'tomato', 'corn', 'maize', 'cotton', 'sugarcane',
-    'potato', 'onion', 'mustard', 'gram', 'soybean', 'bajra', 'jowar',
-    'groundnut', 'sunflower', 'chilli', 'brinjal',
-  ];
-  const lower = msg.toLowerCase();
-  return crops.find(c => lower.includes(c)) || '';
-}
-
-function extractIrrigationTypeFromMessage(msg: string): string {
-  const types = ['drip', 'sprinkler', 'flood', 'furrow', 'surface', 'subsurface'];
-  const lower = msg.toLowerCase();
-  return types.find(t => lower.includes(t)) || '';
 }

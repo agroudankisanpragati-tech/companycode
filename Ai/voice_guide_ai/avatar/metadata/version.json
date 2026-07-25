@@ -1,0 +1,13 @@
+{
+    "avatar_id": "kisan_saathi_v1",
+    "version": "1.0.0",
+    "schema_version": "1.0",
+    "release_date": "2025-07-23",
+    "changelog": [
+        {
+            "version": "1.0.0",
+            "date": "2025-07-23",
+            "changes": ["Initial release of Kisan Saathi avatar runtime system"]
+        }
+    ]
+}

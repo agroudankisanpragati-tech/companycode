@@ -7,11 +7,12 @@ import { FaBell, FaCloud, FaHome, FaArrowLeft, FaSearch, FaMapMarkerAlt } from '
 import { useRouter } from 'next/navigation';
 import WeatherWidget from './WeatherWidget';
 import { usePageContext } from '@/hooks/usePageContext';
+import { useVoiceGuide } from '@/hooks/useVoiceGuide';
 
 export default function Page() {
     const router = useRouter();
-    // Register weather page context with Root AI (no live data needed — WeatherWidget owns it)
     usePageContext({ pageContext: 'weather' });
+    useVoiceGuide('weather');
 
     const handleGoBack = () => {
         try {

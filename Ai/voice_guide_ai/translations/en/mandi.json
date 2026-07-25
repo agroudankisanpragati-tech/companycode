@@ -1,0 +1,13 @@
+{
+    "mandi_processing_001":  "Please wait a moment. The latest market prices for your selected crop and mandi are being fetched.",
+    "mandi_price_alert_001":  "Attention. There has been a significant change in the market price of your selected crop. Please check the current price and market situation before deciding to sell.",
+    "mandi_replay_001":  "Let me guide you again. First select your crop, then choose the mandi. After that, you will see the latest mandi prices, price changes, and important information related to selling.",
+    "mandi_welcome_001":  "Welcome to the Mandi Prices page. Here you can get the latest market prices, price changes, and important selling information for your crops across different mandis.",
+    "mandi_result_001":  "Mandi prices fetched successfully. Minimum price, maximum price, average price, and other important market information are shown on your screen. Please check all information carefully before deciding to sell.",
+    "mandi_offline_001":  "No internet right now. If recent mandi prices are available on your device, they will be shown. Please connect to the internet for the latest information.",
+    "mandi_error_001":  "Sorry. Mandi prices could not be fetched right now. Please check your internet connection and try again after some time.",
+    "mandi_crop_selection_001":  "Please select the crop whose mandi price you want to check. After selecting the right crop, the latest market prices from related mandis will be shown.",
+    "mandi_exit_001":  "Thank you for using the Mandi Prices feature. You can check prices for other crops too or use other features of the app. I will keep guiding you on the next page too.",
+    "mandi_market_selection_001":  "Now select your preferred mandi. After selection, the latest prices, price changes, and other market information for that mandi will be shown.",
+    "mandi_help_001":  "Please select your crop and mandi. After that, you will see the latest prices, minimum and maximum values, and other required information for that mandi."
+}

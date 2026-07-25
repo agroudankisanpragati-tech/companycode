@@ -1,0 +1,20 @@
+{
+    "app_name": "Voice Guide AI",
+    "version": "1.0.0",
+    "fallback_language": "en",
+    "default_language": "hi",
+    "dialogues_dir": null,
+    "translations_dir": null,
+    "logs_dir": null,
+    "max_history_entries": 500,
+    "max_replay_count": 10,
+    "offline_mode": false,
+    "debug": false,
+    "log_level": "INFO",
+    "cache_ttl_seconds": 300,
+    "cache_capacity": 512,
+    "scheduler_cooldown_seconds": 5.0,
+    "bridge_port": 8002,
+    "bridge_host": "0.0.0.0",
+    "cors_origins": ["http://localhost:3000", "http://localhost:4000", "http://localhost:3001"]
+}

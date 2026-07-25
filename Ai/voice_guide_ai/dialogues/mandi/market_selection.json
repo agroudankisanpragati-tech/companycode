@@ -1,0 +1,42 @@
+{
+  "id": "mandi_market_selection_001",
+  "page": "mandi",
+  "dialogueType": "market_selection",
+  "title": "Market Selection",
+  "version": "1.0.0",
+
+  "text": "अब अपनी पसंद की मंडी का चयन करें। चयन के बाद उस मंडी के नवीनतम भाव, मूल्य परिवर्तन और अन्य बाजार संबंधी जानकारी प्रदर्शित की जाएगी।",
+
+  "repeat": {
+    "enabled": false,
+    "afterHours": 0
+  },
+
+  "voice": {
+    "enabled": true,
+    "provider": "offline",
+    "file": "mandi_market_selection_001.mp3",
+    "language": "hi",
+    "speed": 1.0,
+    "volume": 1.0
+  },
+
+  "avatar": {
+    "enabled": true,
+    "animation": "point",
+    "expression": "neutral"
+  },
+
+  "display": {
+    "showSubtitle": true,
+    "showAvatar": true
+  },
+
+  "conditions": {
+    "firstVisit": false,
+    "loggedIn": true,
+    "internetRequired": false
+  },
+
+  "status": "active"
+}

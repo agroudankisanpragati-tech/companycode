@@ -339,7 +339,11 @@ class VoicePipeline:
 
 class ImagePipeline:
     """
-    image → InferenceService → KnowledgeService → response
+    image → CropVerification → InferenceService → KnowledgeService → response
+
+    Crop Verification (EfficientNet-B0) runs FIRST as the PRIMARY authority.
+    farmer_crop is SECONDARY metadata used only for mismatch validation.
+    YOLO and KnowledgeBase always receive the VERIFIED crop.
 
     Returns:
         (router_result, knowledge_dict, language, metrics, error)
@@ -381,11 +385,17 @@ class ImagePipeline:
         image_path:        Path,
         session_id:        str,
         farmer_id:         str,
-        explicit_language: Optional[str] = None,
+        explicit_language: Optional[str]            = None,
         location:          Optional[dict[str, Any]] = None,
+        farmer_crop:       Optional[str]            = None,
     ) -> tuple[dict[str, Any], Optional[dict[str, Any]], str, dict[str, float], str]:
         """
-        Runs the image pipeline.
+        Runs the image pipeline with crop verification as the first gate.
+
+        Args:
+            farmer_crop: Crop selected by the farmer (SECONDARY metadata).
+                         Used only for mismatch validation against EfficientNet.
+                         YOLO and KnowledgeBase always use the VERIFIED crop.
 
         Returns:
             (router_result, knowledge_dict, language, metrics, error)
@@ -394,15 +404,46 @@ class ImagePipeline:
             "stt_ms": 0.0, "intent_ms": 0.0, "router_ms": 0.0,
             "tts_ms": 0.0, "inference_ms": 0.0, "knowledge_ms": 0.0,
         }
-        t_total = time.perf_counter()
-        language = explicit_language or self._cfg.default_language
+        t_total   = time.perf_counter()
+        language  = explicit_language or self._cfg.default_language
 
+        # ── Stage 1: Crop Verification (PRIMARY authority) ──────────────────
+        verified_crop: Optional[str] = None
+        if farmer_crop:
+            try:
+                ai_root_str = str(self._cfg.ai_root)
+                if ai_root_str not in sys.path:
+                    sys.path.insert(0, ai_root_str)
+                from crop_verifier import crops_match, verify as _verify
+                cv = _verify(image_path)
+                if cv.success:
+                    verified_crop = cv.predicted_crop
+                    self._log.info(
+                        "CropVerification: predicted='%s' conf=%.2f%% farmer='%s'",
+                        verified_crop, cv.confidence, farmer_crop,
+                    )
+                    # Requirement 6: low confidence
+                    if cv.low_confidence:
+                        err = "Unable to verify crop. Please upload a clearer leaf image."
+                        return {"success": False, "error": err}, None, language, metrics, err
+                    # Requirement 5: mismatch → stop entire pipeline
+                    if not crops_match(verified_crop, farmer_crop):
+                        err = (
+                            f"Uploaded image belongs to {verified_crop}. "
+                            f"Please upload {farmer_crop} leaf or change crop selection."
+                        )
+                        return {"success": False, "error": err}, None, language, metrics, err
+                else:
+                    self._log.warning("CropVerifier unavailable: %s — skipping", cv.error)
+            except Exception as exc:
+                self._log.warning("CropVerification skipped (error): %s", exc)
+
+        # ── Stage 2: YOLO Inference ───────────────────────────────────────
         inference_svc, knowledge_svc = self._get_services()
 
         if inference_svc is None:
             return {}, None, language, metrics, "InferenceService unavailable"
 
-        # YOLO inference
         t0 = time.perf_counter()
         try:
             svc_response = inference_svc.predict_single(image_path)
@@ -413,9 +454,14 @@ class ImagePipeline:
         if not svc_response.success:
             return {}, None, language, metrics, svc_response.error or "Inference failed"
 
-        prediction = svc_response.data or {}
+        prediction: dict[str, Any] = svc_response.data or {}
 
-        # Knowledge Base lookup
+        # Requirement 2 & 7: override crop with VERIFIED crop so KB lookup
+        # always uses the EfficientNet-confirmed crop, never farmer's raw input
+        if verified_crop and prediction.get("crop") != verified_crop:
+            prediction = {**prediction, "crop": verified_crop}
+
+        # ── Stage 3: Knowledge Base (uses VERIFIED crop via prediction dict) ─
         knowledge_dict: Optional[dict[str, Any]] = None
         if knowledge_svc and prediction.get("status") == "success":
             t0 = time.perf_counter()

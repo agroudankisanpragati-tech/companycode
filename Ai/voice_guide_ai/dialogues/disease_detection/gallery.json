@@ -1,0 +1,42 @@
+{
+  "id": "disease_gallery_001",
+  "page": "disease_detection",
+  "dialogueType": "gallery",
+  "title": "Select From Gallery",
+  "version": "1.0.0",
+
+  "text": "कृपया अपनी गैलरी से फसल की स्पष्ट तस्वीर चुनें। यदि एक से अधिक तस्वीरें हैं, तो वही तस्वीर चुनें जिसमें रोगग्रस्त भाग साफ़ दिखाई दे।",
+
+  "repeat": {
+    "enabled": false,
+    "afterHours": 0
+  },
+
+  "voice": {
+    "enabled": true,
+    "provider": "offline",
+    "file": "disease_gallery_001.mp3",
+    "language": "hi",
+    "speed": 1.0,
+    "volume": 1.0
+  },
+
+  "avatar": {
+    "enabled": true,
+    "animation": "point",
+    "expression": "neutral"
+  },
+
+  "display": {
+    "showSubtitle": true,
+    "showAvatar": true
+  },
+
+  "conditions": {
+    "firstVisit": false,
+    "loggedIn": true,
+    "internetRequired": false
+  },
+
+  "status": "active"
+}

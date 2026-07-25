@@ -482,6 +482,48 @@ async def diagnostics():
 
 
 # ---------------------------------------------------------------------------
+# ENDPOINTS — INTENT PREDICTION (consumed by TypeScript detectIntentAsync)
+# ---------------------------------------------------------------------------
+
+class IntentRequest(BaseModel):
+    text: str
+
+
+@app.post("/intent/predict")
+async def predict_intent(req: IntentRequest):
+    """
+    Lightweight intent classification endpoint.
+    Called by TypeScript detectIntentAsync() on every chat request.
+    Uses the trained TF-IDF + LogReg model via the Predictor singleton.
+    Falls back gracefully if the model is not loaded.
+    """
+    if not req.text or not req.text.strip():
+        raise HTTPException(status_code=400, detail={"error": "text is required", "success": False})
+
+    try:
+        from intent_engine.predictor import get_predictor
+        predictor = get_predictor()
+        result    = await _run_in_executor(predictor.predict, req.text)
+        return JSONResponse(content={
+            "intent":     result.intent,
+            "confidence": result.confidence,
+            "is_unknown": result.is_unknown,
+            "language":   result.language_hint,
+            "top":        result.top_predictions,
+        })
+    except Exception as exc:
+        _log.error("predict_intent error: %s", exc)
+        # Return unknown so TypeScript falls back to regex — never crash
+        return JSONResponse(content={
+            "intent":     "unknown",
+            "confidence": 0.0,
+            "is_unknown": True,
+            "language":   "unknown",
+            "top":        [],
+        })
+
+
+# ---------------------------------------------------------------------------
 # ENDPOINTS — TEXT PIPELINE
 # ---------------------------------------------------------------------------
 

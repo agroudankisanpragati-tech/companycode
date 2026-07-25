@@ -468,16 +468,10 @@ export function composeLocalResponse(
     case 'crop':
       english = composeCropResponse(results);
       if (english) agentsUsed.push('CropAgent');
-      if (english) {
-        const fertExt = composeFertilizerResponse(results);
-        if (fertExt) { english += '\n' + fertExt; agentsUsed.push('FertilizerAgent'); }
-      }
       break;
     case 'soil': {
       english = composeSoilResponse(results);
       if (english) agentsUsed.push('SoilAgent');
-      const fertSoil = composeFertilizerResponse(results);
-      if (fertSoil) { english = (english || '') + '\n' + fertSoil; agentsUsed.push('FertilizerAgent'); }
       break;
     }
     case 'weather':

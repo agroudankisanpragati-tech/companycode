@@ -1,0 +1,42 @@
+{
+  "id": "scheme_eligibility_001",
+  "page": "government_scheme",
+  "dialogueType": "eligibility",
+  "title": "Scheme Eligibility",
+  "version": "1.0.0",
+
+  "text": "आपकी जानकारी के आधार पर प्रत्येक योजना की पात्रता की जाँच की जा रही है। कृपया परिणाम में दिखाई गई पात्रता की शर्तों को ध्यान से पढ़ें और केवल उन्हीं योजनाओं के लिए आवेदन करें जिनके लिए आप योग्य हैं।",
+
+  "repeat": {
+    "enabled": false,
+    "afterHours": 0
+  },
+
+  "voice": {
+    "enabled": true,
+    "provider": "offline",
+    "file": "scheme_eligibility_001.mp3",
+    "language": "hi",
+    "speed": 1.0,
+    "volume": 1.0
+  },
+
+  "avatar": {
+    "enabled": true,
+    "animation": "thinking",
+    "expression": "thinking"
+  },
+
+  "display": {
+    "showSubtitle": true,
+    "showAvatar": true
+  },
+
+  "conditions": {
+    "firstVisit": false,
+    "loggedIn": true,
+    "internetRequired": false
+  },
+
+  "status": "active"
+}

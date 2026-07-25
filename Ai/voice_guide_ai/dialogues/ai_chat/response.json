@@ -1,0 +1,35 @@
+{
+    "id":  "chat_response_001",
+    "page":  "ai_chat",
+    "dialogueType":  "response",
+    "title":  "AI Chat Response",
+    "version":  "1.0.0",
+    "text":  "उत्तर तैयार है।",
+    "repeat":  {
+                   "enabled":  false,
+                   "afterHours":  0
+               },
+    "voice":  {
+                  "enabled":  true,
+                  "provider":  "offline",
+                  "file":  "chat_response_001.mp3",
+                  "language":  "hi",
+                  "speed":  1,
+                  "volume":  1
+              },
+    "avatar":  {
+                   "enabled":  true,
+                   "animation":  "success",
+                   "expression":  "happy"
+               },
+    "display":  {
+                    "showSubtitle":  true,
+                    "showAvatar":  true
+                },
+    "conditions":  {
+                       "firstVisit":  false,
+                       "loggedIn":  true,
+                       "internetRequired":  false
+                   },
+    "status":  "active"
+}

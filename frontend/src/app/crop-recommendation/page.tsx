@@ -12,6 +12,7 @@ import {
 import { useAuth } from '@/context/AuthContext';
 import AILanguageSelector from '@/components/AILanguageSelector';
 import { usePageContext } from '@/hooks/usePageContext';
+import { useVoiceGuide } from '@/hooks/useVoiceGuide';
 
 type Step = 'form' | 'results';
 
@@ -25,6 +26,8 @@ function CropRecommendationContent() {
   const [result, setResult] = useState<RecommendationResponse | null>(null);
   const [feedback, setFeedback] = useState<'helpful' | 'not_helpful' | null>(null);
   const [displayRecommendations, setDisplayRecommendations] = useState<RecommendationResponse['recommendations'] | null>(null);
+
+  const voiceGuide = useVoiceGuide('crop_recommendation');
 
   // Register live crop recommendation with Pragati AI
   const topCrop = (displayRecommendations || result?.recommendations)?.[0];
@@ -88,12 +91,16 @@ function CropRecommendationContent() {
     setLoading(true);
     setError('');
     try {
+      voiceGuide.triggerProcessing();
+      voiceGuide.triggerButton('submit');
       const res = await getCropRecommendations(data);
       setResult(res);
       setDisplayRecommendations(null);
       setStep('results');
+      voiceGuide.triggerSuccess();
     } catch (err: any) {
       setError(err.message || 'Something went wrong. Please try again.');
+      voiceGuide.triggerError();
     } finally {
       setLoading(false);
     }

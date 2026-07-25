@@ -3,36 +3,30 @@
 # File: ai_pipeline.py
 # Purpose: Modular, stage-based prediction workflow.
 #
-# WORKFLOW:
+# NEW PRODUCTION PIPELINE:
 #   Image
-#     ↓  ValidationStage     — path + format + size checks
-#     ↓  PreprocessingStage  — load + validate pixel data
-#     ↓  PredictionStage     — YOLO inference via InferenceService
-#     ↓  KnowledgeStage      — MongoDB lookup via KnowledgeService
-#     ↓  FormatterStage      — build final JSON-ready response
+#     ↓  ValidationStage          — path + format + size checks
+#     ↓  PreprocessingStage       — load + validate pixel data
+#     ↓  CropVerificationStage    — EfficientNet-B0 crop identity (PRIMARY)
+#     ↓  PredictionStage          — YOLO inference (uses VERIFIED crop only)
+#     ↓  KnowledgeStage           — MongoDB lookup (uses VERIFIED crop only)
+#     ↓  FormatterStage           — build final JSON-ready response
 #     ↓
 #   ControllerResponse
 #
+# AUTHORITY MODEL:
+#   CropVerificationStage is the PRIMARY authority for crop identity.
+#   farmer_crop is SECONDARY metadata used only for mismatch validation.
+#   YOLO, KnowledgeBase, and Pragati AI all receive the VERIFIED crop.
+#
 # DESIGN:
 #   • Every stage implements PipelineStage (Single Responsibility).
-#   • AIPipeline composes stages via dependency injection — any stage
-#     can be replaced, mocked, or extended without touching others.
+#   • AIPipeline composes stages via dependency injection.
 #   • PipelineContext is the shared state object passed through all stages.
-#     Stages read from it and write their output back to it.
-#   • A stage sets context.failed = True + context.error to abort the
-#     pipeline early. Subsequent stages are skipped automatically.
-#   • Supports future analysis types (soil, weed, nutrient, fruit,
-#     crop recommendation, pest) by swapping PredictionStage and
-#     KnowledgeStage without changing the pipeline runner or formatter.
-#
-# Usage:
-#   from ai_pipeline import AIPipeline
-#   pipeline = AIPipeline()
-#   response = pipeline.run(image_path="/uploads/leaf.jpg")
-#   print(response.to_dict())
+#   • A stage sets context.failed = True + context.error to abort early.
 #
 # Dependencies: ai_controller.py, inference_service.py, knowledge_service.py,
-#               preprocessing.py, config.py, logger.py
+#               crop_verification_stage.py, preprocessing.py, config.py, logger.py
 # =============================================================================
 
 from __future__ import annotations
@@ -62,6 +56,10 @@ from preprocessing import load_image, validate_array
 
 log = get_logger(__name__)
 
+# Abort token prefixes written by CropVerificationStage
+_MISMATCH_TOKEN  = "CROP_MISMATCH"
+_LOW_CONF_TOKEN  = "CROP_LOW_CONFIDENCE"
+
 
 # =============================================================================
 # SECTION 1 — PIPELINE CONTEXT
@@ -72,54 +70,46 @@ class PipelineContext:
     """
     Shared state object passed through every pipeline stage.
 
-    Each stage reads from the context and writes its output back.
-    If a stage sets `failed = True`, the pipeline runner skips all
-    subsequent stages and returns an error response immediately.
-
     Fields:
         image_path      — Absolute path to the input image.
         analysis_type   — Analysis type (e.g. "disease_pest").
         language        — Desired language for knowledge content.
         weights_path    — Optional model weights path override.
         device          — Optional device override.
+        farmer_crop     — Crop selected by the farmer (SECONDARY metadata only).
+                          Used only for mismatch validation. Never passed to YOLO.
+        verified_crop   — Crop confirmed by EfficientNet (PRIMARY authority).
+                          Set by CropVerificationStage. Used by all downstream stages.
         t_start         — perf_counter timestamp at pipeline entry.
         failed          — True if any stage has aborted the pipeline.
-        error           — Human-readable reason for failure (if failed).
+        error           — Abort token string (if failed).
         prediction_dict — Raw PredictionResult dict from InferenceService.
         knowledge_dict  — Raw KnowledgeResult dict from KnowledgeService.
         prediction      — Typed PredictionPayload (built by FormatterStage).
         knowledge       — Typed KnowledgePayload (built by FormatterStage).
     """
     image_path:      str
-    analysis_type:   str                    = "disease_pest"
-    language:        str                    = "en"
-    weights_path:    Optional[str]          = None
-    device:          Optional[str]          = None
-    t_start:         float                  = field(default_factory=time.perf_counter)
-    failed:          bool                   = False
-    error:           Optional[str]          = None
-    prediction_dict: dict                   = field(default_factory=dict)
-    knowledge_dict:  dict                   = field(default_factory=dict)
+    analysis_type:   str                         = "disease_pest"
+    language:        str                         = "en"
+    weights_path:    Optional[str]               = None
+    device:          Optional[str]               = None
+    farmer_crop:     Optional[str]               = None   # SECONDARY — farmer's selection
+    verified_crop:   Optional[str]               = None   # PRIMARY — EfficientNet result
+    t_start:         float                       = field(default_factory=time.perf_counter)
+    failed:          bool                        = False
+    error:           Optional[str]               = None
+    prediction_dict: dict                        = field(default_factory=dict)
+    knowledge_dict:  dict                        = field(default_factory=dict)
     prediction:      Optional[PredictionPayload] = None
     knowledge:       Optional[KnowledgePayload]  = None
 
     def abort(self, reason: str) -> None:
-        """
-        Marks the pipeline as failed and records the reason.
-
-        Calling this inside a stage causes the pipeline runner to skip
-        all remaining stages and return an error response.
-
-        Args:
-            reason: Human-readable description of what went wrong.
-        """
         self.failed = True
-        self.error = reason
+        self.error  = reason
         log.warning("Pipeline aborted [%s]: %s", self.analysis_type, reason)
 
     @property
     def elapsed_ms(self) -> float:
-        """Returns wall-clock time since pipeline entry in milliseconds."""
         return (time.perf_counter() - self.t_start) * 1000.0
 
 
@@ -128,23 +118,7 @@ class PipelineContext:
 # =============================================================================
 
 class PipelineStage(ABC):
-    """
-    Abstract base class for all pipeline stages.
-
-    Every stage receives the shared PipelineContext, performs its work,
-    and writes results back to the context. If the stage encounters an
-    unrecoverable error, it calls context.abort(reason) to stop the pipeline.
-
-    Implementing a new stage:
-        class MySoilStage(PipelineStage):
-            @property
-            def name(self) -> str:
-                return "SoilAnalysisStage"
-
-            def process(self, context: PipelineContext) -> None:
-                # read from context, write results back
-                context.prediction_dict = run_soil_model(context.image_path)
-    """
+    """Abstract base class for all pipeline stages."""
 
     @property
     @abstractmethod
@@ -155,10 +129,8 @@ class PipelineStage(ABC):
     def process(self, context: PipelineContext) -> None:
         """
         Executes this stage's logic.
-
-        Args:
-            context: Shared pipeline context. Read inputs from it and
-                     write outputs back. Call context.abort() on failure.
+        Read inputs from context, write outputs back.
+        Call context.abort(reason) on unrecoverable failure.
         """
 
 
@@ -167,18 +139,7 @@ class PipelineStage(ABC):
 # =============================================================================
 
 class ValidationStage(PipelineStage):
-    """
-    Stage 1 — Validates the image path before any I/O or model work.
-
-    Checks:
-      1. image_path is a non-empty string.
-      2. File exists on disk.
-      3. Path points to a regular file.
-      4. File extension is in SUPPORTED_IMAGE_EXTENSIONS.
-      5. File is non-empty (size > 0 bytes).
-
-    Aborts the pipeline on any failure.
-    """
+    """Stage 1 — Validates image path before any I/O or model work."""
 
     @property
     def name(self) -> str:
@@ -213,59 +174,37 @@ class ValidationStage(PipelineStage):
 
 
 class PreprocessingStage(PipelineStage):
-    """
-    Stage 2 — Loads the image and validates pixel data integrity.
-
-    Uses load_image() and validate_array() from preprocessing.py to
-    perform a fast corruption check before passing the path to the model.
-
-    This stage does NOT produce a preprocessed tensor — YOLO handles its
-    own internal preprocessing. This stage only confirms the image is
-    readable and has a valid shape/dtype.
-
-    Aborts the pipeline if the image cannot be loaded or is corrupt.
-    """
+    """Stage 2 — Loads image and validates pixel data integrity."""
 
     @property
     def name(self) -> str:
         return "PreprocessingStage"
 
     def process(self, context: PipelineContext) -> None:
-        path = Path(context.image_path)
-
+        path  = Path(context.image_path)
         array = load_image(path)
+
         if array is None:
             context.abort(f"Cannot load image — file may be corrupted: {path.name}")
             return
-
         if not validate_array(array, path):
             context.abort(f"Invalid image array — unexpected shape or dtype: {path.name}")
             return
 
-        log.debug(
-            "PreprocessingStage: OK — %s  shape=%s",
-            path.name, array.shape,
-        )
+        log.debug("PreprocessingStage: OK — %s  shape=%s", path.name, array.shape)
 
 
 class PredictionStage(PipelineStage):
     """
-    Stage 3 — Runs YOLO inference via InferenceService.
+    Stage 4 — Runs YOLO inference via InferenceService.
 
-    Delegates all model loading, preprocessing, and inference to
-    InferenceService.predict_single(). Writes the raw PredictionResult
-    dict to context.prediction_dict.
-
-    Aborts the pipeline if the inference service returns a failure or
-    if the prediction status is not "success".
-
-    Dependency injection:
-        Pass a custom InferenceService at construction time to override
-        the default (useful for testing or multi-model setups).
+    IMPORTANT: Uses context.verified_crop (set by CropVerificationStage)
+    to override the crop in prediction_dict. This ensures YOLO's crop
+    metadata is always the EfficientNet-verified crop, never the raw
+    farmer input.
 
     Args:
-        inference_service: InferenceService instance. Defaults to a new
-                           instance using config defaults.
+        inference_service: InferenceService instance (injectable for testing).
     """
 
     def __init__(self, inference_service: Optional[InferenceService] = None) -> None:
@@ -282,37 +221,38 @@ class PredictionStage(PipelineStage):
             context.abort(f"Inference service error: {response.error}")
             return
 
-        context.prediction_dict = response.data or {}
+        prediction_dict: dict = response.data or {}
+
+        # ── Requirement 2 & 3: override crop with VERIFIED crop ─────────────
+        # YOLO's own crop label is replaced by the EfficientNet-verified crop.
+        # This ensures the disease model never uses the farmer's raw selection.
+        if context.verified_crop:
+            prediction_dict = {**prediction_dict, "crop": context.verified_crop}
+            log.debug(
+                "PredictionStage: crop overridden with verified='%s'",
+                context.verified_crop,
+            )
+
+        context.prediction_dict = prediction_dict
 
         log.debug(
-            "PredictionStage: status=%s  class=%s  conf=%.2f%%",
-            context.prediction_dict.get("status"),
-            context.prediction_dict.get("class_name", "(none)"),
-            context.prediction_dict.get("confidence", 0.0),
+            "PredictionStage: status=%s  crop=%s  class=%s  conf=%.2f%%",
+            prediction_dict.get("status"),
+            prediction_dict.get("crop", "(none)"),
+            prediction_dict.get("class_name", "(none)"),
+            prediction_dict.get("confidence", 0.0),
         )
 
 
 class KnowledgeStage(PipelineStage):
     """
-    Stage 4 — Queries MongoDB for agronomic knowledge via KnowledgeService.
+    Stage 5 — Queries MongoDB for agronomic knowledge via KnowledgeService.
 
-    Only runs if the prediction status is "success". Writes the raw
-    KnowledgeResult dict to context.knowledge_dict.
-
-    If the prediction failed or the category is "healthy", the knowledge
-    lookup is skipped and context.knowledge_dict remains empty — this is
-    not treated as a pipeline failure.
-
-    The AI module remains completely independent from agronomic content.
-    This stage is the ONLY bridge between prediction and knowledge.
-
-    Dependency injection:
-        Pass a custom KnowledgeService at construction time to override
-        the default (useful for testing or multi-database setups).
+    Uses prediction_dict which already has the verified crop injected by
+    PredictionStage. Knowledge lookup therefore always uses verified crop.
 
     Args:
-        knowledge_service: KnowledgeService instance. Defaults to a new
-                           instance using env var defaults.
+        knowledge_service: KnowledgeService instance (injectable for testing).
     """
 
     def __init__(self, knowledge_service: Optional[KnowledgeService] = None) -> None:
@@ -346,13 +286,7 @@ class KnowledgeStage(PipelineStage):
 
 
 class FormatterStage(PipelineStage):
-    """
-    Stage 5 — Builds typed PredictionPayload and KnowledgePayload from
-    the raw dicts written by PredictionStage and KnowledgeStage.
-
-    This stage never aborts the pipeline — it always produces a valid
-    (possibly empty) payload pair. Missing fields default to empty strings.
-    """
+    """Stage 6 — Builds typed PredictionPayload and KnowledgePayload."""
 
     @property
     def name(self) -> str:
@@ -360,7 +294,7 @@ class FormatterStage(PipelineStage):
 
     def process(self, context: PipelineContext) -> None:
         context.prediction = _build_prediction_payload(context.prediction_dict)
-        context.knowledge = (
+        context.knowledge  = (
             _build_knowledge_payload(context.knowledge_dict)
             if context.knowledge_dict
             else _empty_knowledge()
@@ -380,27 +314,13 @@ class AIPipeline:
     """
     Modular prediction pipeline that composes and runs all stages in order.
 
-    The pipeline is fully configurable via dependency injection — any stage
-    can be replaced without changing the runner or the response contract.
-
     Default stage order:
       1. ValidationStage
       2. PreprocessingStage
-      3. PredictionStage
-      4. KnowledgeStage
-      5. FormatterStage
-
-    To replace a stage (e.g. for a future soil analysis module):
-        from ai_pipeline import AIPipeline, ValidationStage, FormatterStage
-        from my_soil_module import SoilPredictionStage, SoilKnowledgeStage
-
-        pipeline = AIPipeline(stages=[
-            ValidationStage(),
-            PreprocessingStage(),
-            SoilPredictionStage(),
-            SoilKnowledgeStage(),
-            FormatterStage(),
-        ])
+      3. CropVerificationStage   ← NEW: EfficientNet-B0 (PRIMARY crop authority)
+      4. PredictionStage         ← uses verified_crop, never farmer_crop
+      5. KnowledgeStage          ← uses verified_crop via prediction_dict
+      6. FormatterStage
 
     Args:
         stages: Ordered list of PipelineStage instances. If None, the
@@ -408,7 +328,7 @@ class AIPipeline:
 
     Usage:
         pipeline = AIPipeline()
-        response = pipeline.run(image_path="/uploads/leaf.jpg")
+        response = pipeline.run(image_path="/uploads/leaf.jpg", farmer_crop="Tomato")
         print(response.to_dict())
     """
 
@@ -419,19 +339,22 @@ class AIPipeline:
         if stages is not None:
             self._stages = stages
         else:
-            # Default disease/pest pipeline — shared service instances
+            from crop_verification_stage import CropVerificationStage
             _inference = InferenceService()
             _knowledge = KnowledgeService()
             self._stages: list[PipelineStage] = [
                 ValidationStage(),
                 PreprocessingStage(),
+                CropVerificationStage(),              # PRIMARY crop authority
                 PredictionStage(inference_service=_inference),
                 KnowledgeStage(knowledge_service=_knowledge),
                 FormatterStage(),
             ]
 
-        stage_names = [s.name for s in self._stages]
-        log.info("AIPipeline initialised — stages: %s", " → ".join(stage_names))
+        log.info(
+            "AIPipeline initialised — stages: %s",
+            " → ".join(s.name for s in self._stages),
+        )
 
     # ------------------------------------------------------------------
     # Public API
@@ -439,17 +362,15 @@ class AIPipeline:
 
     def run(
         self,
-        image_path: str,
-        analysis_type: str = "disease_pest",
-        language: str = "en",
-        weights_path: Optional[str] = None,
-        device: Optional[str] = None,
+        image_path:    str,
+        analysis_type: str           = "disease_pest",
+        language:      str           = "en",
+        weights_path:  Optional[str] = None,
+        device:        Optional[str] = None,
+        farmer_crop:   Optional[str] = None,
     ) -> ControllerResponse:
         """
         Runs the full pipeline on a single image and returns a unified response.
-
-        Executes each stage in order. If any stage calls context.abort(),
-        the remaining stages are skipped and an error response is returned.
 
         Args:
             image_path:    Absolute path to the image file.
@@ -457,14 +378,12 @@ class AIPipeline:
             language:      Desired language for knowledge content.
             weights_path:  Optional model weights path override.
             device:        Optional device override.
+            farmer_crop:   Crop selected by the farmer (SECONDARY metadata).
+                           Used only for mismatch validation against EfficientNet.
+                           Never passed directly to YOLO or KnowledgeBase.
 
         Returns:
             ControllerResponse — always returned, never raises.
-
-        Usage:
-            response = pipeline.run("/uploads/leaf.jpg")
-            if response.success:
-                print(response.to_dict())
         """
         context = PipelineContext(
             image_path=image_path,
@@ -472,6 +391,7 @@ class AIPipeline:
             language=language,
             weights_path=weights_path,
             device=device,
+            farmer_crop=farmer_crop,
             t_start=time.perf_counter(),
         )
 
@@ -481,7 +401,6 @@ class AIPipeline:
                     break
                 log.debug("Running stage: %s", stage.name)
                 stage.process(context)
-
         except Exception as exc:
             context.abort(f"Unhandled exception in pipeline: {exc}")
 
@@ -489,38 +408,18 @@ class AIPipeline:
 
     def run_batch(
         self,
-        image_paths: list[str],
-        analysis_type: str = "disease_pest",
-        language: str = "en",
-        weights_path: Optional[str] = None,
-        device: Optional[str] = None,
+        image_paths:   list[str],
+        analysis_type: str           = "disease_pest",
+        language:      str           = "en",
+        weights_path:  Optional[str] = None,
+        device:        Optional[str] = None,
     ) -> list[ControllerResponse]:
-        """
-        Runs the full pipeline on a list of images.
-
-        Each image is processed independently. A failure on one image
-        does not affect the others. Results are returned in the same
-        order as the input list.
-
-        Args:
-            image_paths:   List of absolute image paths.
-            analysis_type: Analysis type for all images.
-            language:      Desired language for knowledge content.
-            weights_path:  Optional model weights path override.
-            device:        Optional device override.
-
-        Returns:
-            List of ControllerResponse, one per input image, same order.
-
-        Usage:
-            responses = pipeline.run_batch(["/img1.jpg", "/img2.jpg"])
-        """
+        """Runs the full pipeline on a list of images."""
         if not isinstance(image_paths, list) or not image_paths:
             log.warning("run_batch: empty or invalid image_paths")
             return []
 
         log.info("AIPipeline batch: %d images", len(image_paths))
-
         responses = [
             self.run(
                 image_path=p,
@@ -531,12 +430,8 @@ class AIPipeline:
             )
             for p in image_paths
         ]
-
         success_count = sum(1 for r in responses if r.success)
-        log.info(
-            "AIPipeline batch complete: %d/%d succeeded",
-            success_count, len(responses),
-        )
+        log.info("AIPipeline batch complete: %d/%d succeeded", success_count, len(responses))
         return responses
 
     # ------------------------------------------------------------------
@@ -547,26 +442,37 @@ class AIPipeline:
         """
         Converts the final PipelineContext into a ControllerResponse.
 
-        Called after all stages have run (or after an abort). Handles
-        both success and failure paths.
-
-        Args:
-            context: The completed (or aborted) pipeline context.
-
-        Returns:
-            ControllerResponse ready for JSON serialisation.
+        Parses structured abort tokens from CropVerificationStage to
+        produce human-readable error messages.
         """
         if context.failed:
-            return _error_response(
-                context.error or "Unknown pipeline error",
-                context.analysis_type,
-                context.elapsed_ms,
-            )
+            error_msg = context.error or "Unknown pipeline error"
+
+            # ── Requirement 5: crop mismatch ────────────────────────────────
+            if error_msg.startswith(_MISMATCH_TOKEN):
+                parts     = _parse_token(error_msg)
+                predicted = parts.get("predicted", "Unknown")
+                selected  = parts.get("selected", "Unknown")
+                human_msg = (
+                    f"Uploaded image belongs to {predicted}. "
+                    f"Please upload {selected} leaf or change crop selection."
+                )
+                return _error_response(human_msg, context.analysis_type, context.elapsed_ms)
+
+            # ── Requirement 6: low confidence ───────────────────────────────
+            if error_msg.startswith(_LOW_CONF_TOKEN):
+                return _error_response(
+                    "Unable to verify crop. Please upload a clearer leaf image.",
+                    context.analysis_type,
+                    context.elapsed_ms,
+                )
+
+            return _error_response(error_msg, context.analysis_type, context.elapsed_ms)
 
         return ControllerResponse(
             success=True,
             prediction=context.prediction or _empty_prediction(),
-            knowledge=context.knowledge or _empty_knowledge(),
+            knowledge=context.knowledge  or _empty_knowledge(),
             processing_time_ms=round(context.elapsed_ms, 2),
             model_version=PROJECT_VERSION,
             analysis_type=context.analysis_type,
@@ -574,15 +480,16 @@ class AIPipeline:
         )
 
 
+def _parse_token(token: str) -> dict[str, str]:
+    """Parses 'PREFIX|key=val|key=val' abort tokens into a dict."""
+    parts = token.split("|")[1:]   # skip the prefix segment
+    return dict(kv.split("=", 1) for kv in parts if "=" in kv)
+
+
 # =============================================================================
 # SECTION 5 — MODULE-LEVEL DEFAULT INSTANCE
 # =============================================================================
 
-# Ready-to-use singleton for callers that don't need custom configuration.
-#
-#   from ai_pipeline import default_pipeline
-#   response = default_pipeline.run("/path/to/image.jpg")
-#
 default_pipeline: AIPipeline = AIPipeline()
 
 
@@ -599,10 +506,9 @@ if __name__ == "__main__":
     print(f"{'='*60}")
 
     pipeline = AIPipeline()
+    cfg      = get_config()
 
-    cfg = get_config()
     test_image: Optional[Path] = None
-
     if len(sys.argv) > 1:
         test_image = Path(sys.argv[1])
     else:
@@ -617,11 +523,13 @@ if __name__ == "__main__":
         print(f"{'='*60}\n")
         sys.exit(0)
 
-    print(f"\n  Test image : {test_image.name}")
-    print(f"  Stages     : {' → '.join(s.name for s in pipeline._stages)}")
+    farmer = sys.argv[2] if len(sys.argv) > 2 else None
+    print(f"\n  Test image   : {test_image.name}")
+    print(f"  Farmer crop  : {farmer or '(none)'}")
+    print(f"  Stages       : {' → '.join(s.name for s in pipeline._stages)}")
     print(f"\n  Running pipeline ...")
 
-    response = pipeline.run(str(test_image))
+    response = pipeline.run(str(test_image), farmer_crop=farmer)
 
     print(f"\n  Result:")
     print(f"    success            : {response.success}")

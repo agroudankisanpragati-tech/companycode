@@ -1,0 +1,42 @@
+{
+  "id": "crop_help_001",
+  "page": "crop_recommendation",
+  "dialogueType": "help",
+  "title": "Crop Recommendation Help",
+  "version": "1.0.0",
+
+  "text": "कृपया अपनी भूमि, मौसम, पानी की उपलब्धता, मिट्टी की जानकारी तथा अन्य आवश्यक विवरण सही प्रकार से दर्ज करें। जितनी अधिक सटीक जानकारी देंगे, एआई उतनी ही बेहतर फसल अनुशंसा प्रदान करेगा।",
+
+  "repeat": {
+    "enabled": false,
+    "afterHours": 0
+  },
+
+  "voice": {
+    "enabled": true,
+    "provider": "offline",
+    "file": "crop_help_001.mp3",
+    "language": "hi",
+    "speed": 1.0,
+    "volume": 1.0
+  },
+
+  "avatar": {
+    "enabled": true,
+    "animation": "point",
+    "expression": "smile"
+  },
+
+  "display": {
+    "showSubtitle": true,
+    "showAvatar": true
+  },
+
+  "conditions": {
+    "firstVisit": false,
+    "loggedIn": true,
+    "internetRequired": false
+  },
+
+  "status": "active"
+}

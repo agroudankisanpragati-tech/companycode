@@ -1,0 +1,14 @@
+{
+    "crop_retry_001":  "Please check your information and try again. Giving correct details will help the AI give you a more accurate crop recommendation.",
+    "crop_result_001":  "Analysis is complete. Recommended crops based on your field conditions are shown on the screen. Please read the details, expected benefits, and suggestions for each crop carefully so you can make a better decision.",
+    "crop_replay_001":  "Let me guide you again. Please fill in your land, soil, weather, water availability, and other required details correctly. Our AI will analyse all this information and prepare the most suitable crop recommendations for you.",
+    "crop_welcome_001":  "Welcome to the Crop Recommendation page. This feature suggests suitable crops for you based on your land, weather, water availability, soil condition, and other farming details. Please fill in the correct information to get more accurate results.",
+    "crop_soil_001":  "Please select your field's soil type. If you do not know the soil type, use the Soil Health Analysis feature first. Choosing the right soil type will make the crop recommendation more accurate.",
+    "crop_season_001":  "Please select the current farming season. Choosing the right season will help the AI recommend suitable crops for your area and time.",
+    "crop_help_001":  "Please enter your land, weather, water availability, soil details, and other required information correctly. The more accurate information you provide, the better crop recommendation the AI will give.",
+    "crop_exit_001":  "Thank you for using the Crop Recommendation feature. You can now use any other feature or get a new crop recommendation with updated information. I will keep guiding you on the next page too.",
+    "crop_error_001":  "Sorry. Crop recommendation could not be prepared. Please check your information and try again. If the problem continues, try again after some time.",
+    "crop_processing_001":  "Please wait a moment. Our AI is analysing your land, weather, soil, water availability, and other farming details to prepare suitable crop recommendations for you.",
+    "crop_offline_001":  "No internet right now. If the required data and AI model are available on your device, the recommendation will continue. Otherwise please connect to the internet and try again.",
+    "crop_irrigation_001":  "Please select the correct option for water availability in your field. Providing information about adequate, limited, or rain-based irrigation will help the AI suggest a more suitable crop."
+}

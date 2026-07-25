@@ -1,0 +1,42 @@
+{
+  "id": "soil_upload_report_001",
+  "page": "soil_health",
+  "dialogueType": "upload_report",
+  "title": "Upload Soil Report",
+  "version": "1.0.0",
+
+  "text": "कृपया अपनी मिट्टी परीक्षण रिपोर्ट अपलोड करें। यदि आपके पास रिपोर्ट उपलब्ध नहीं है, तो आवश्यक जानकारी भरकर भी विश्लेषण कराया जा सकता है।",
+
+  "repeat": {
+    "enabled": false,
+    "afterHours": 0
+  },
+
+  "voice": {
+    "enabled": true,
+    "provider": "offline",
+    "file": "soil_upload_report_001.mp3",
+    "language": "hi",
+    "speed": 1.0,
+    "volume": 1.0
+  },
+
+  "avatar": {
+    "enabled": true,
+    "animation": "point",
+    "expression": "neutral"
+  },
+
+  "display": {
+    "showSubtitle": true,
+    "showAvatar": true
+  },
+
+  "conditions": {
+    "firstVisit": false,
+    "loggedIn": true,
+    "internetRequired": false
+  },
+
+  "status": "active"
+}

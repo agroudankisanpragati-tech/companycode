@@ -1,0 +1,85 @@
+{
+    "version": "1.0.0",
+    "enabled": true,
+    "mode": "basic",
+    "future_ai_sync": {
+        "enabled": false,
+        "model": null,
+        "endpoint": null
+    },
+    "mouth_shapes": {
+        "closed": {
+            "id": "closed",
+            "label": "Mouth Closed",
+            "asset": "avatar/expressions/neutral/neutral.webp",
+            "openness": 0.0
+        },
+        "slightly_open": {
+            "id": "slightly_open",
+            "label": "Slightly Open",
+            "asset": "avatar/expressions/speaking/speaking_01.webp",
+            "openness": 0.3
+        },
+        "open": {
+            "id": "open",
+            "label": "Mouth Open",
+            "asset": "avatar/expressions/speaking/speaking_02.webp",
+            "openness": 0.7
+        },
+        "wide_open": {
+            "id": "wide_open",
+            "label": "Wide Open",
+            "asset": "avatar/expressions/speaking/speaking_03.webp",
+            "openness": 1.0
+        }
+    },
+    "phoneme_map": {
+        "silence": "closed",
+        "A": "open",
+        "E": "slightly_open",
+        "I": "slightly_open",
+        "O": "open",
+        "U": "slightly_open",
+        "B": "closed",
+        "M": "closed",
+        "P": "closed",
+        "F": "slightly_open",
+        "V": "slightly_open",
+        "default": "slightly_open"
+    },
+    "speaking_events": {
+        "on_start": {
+            "expression": "speaking",
+            "animation": "speaking",
+            "mouth_shape": "slightly_open"
+        },
+        "on_stop": {
+            "expression": "neutral",
+            "animation": "idle",
+            "mouth_shape": "closed"
+        },
+        "on_pause": {
+            "expression": "neutral",
+            "mouth_shape": "closed"
+        }
+    },
+    "blink": {
+        "enabled": true,
+        "interval_min_ms": 2000,
+        "interval_max_ms": 6000,
+        "duration_ms": 160,
+        "expression": "blink"
+    },
+    "head_movement": {
+        "enabled": true,
+        "idle_sway": {
+            "enabled": true,
+            "amplitude_deg": 2.0,
+            "period_ms": 4000
+        },
+        "nod_on_agreement": true,
+        "shake_on_disagreement": true
+    },
+    "frame_rate": 24,
+    "sync_tolerance_ms": 50
+}

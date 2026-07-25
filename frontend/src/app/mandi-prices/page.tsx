@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { mandiApi, MandiPrice } from '@/services/mandibav';
 import { usePageContext } from '@/hooks/usePageContext';
+import { useVoiceGuide } from '@/hooks/useVoiceGuide';
 
 export default function MandiPricesPage() {
     const [commodity, setCommodity] = useState('');
@@ -11,6 +12,8 @@ export default function MandiPricesPage() {
     const [results, setResults] = useState<MandiPrice[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+
+    const voiceGuide = useVoiceGuide('mandi');
 
     // Register top market result with Root AI
     const topResult = results[0];
@@ -34,8 +37,10 @@ export default function MandiPricesPage() {
         try {
             const res = await mandiApi.getPrices({ commodity, state: stateName, market });
             setResults(res.data || []);
+            voiceGuide.triggerSuccess();
         } catch (err) {
             setError('Mandi API call failed. Configure NEXT_PUBLIC_MANDI_API_URL.');
+            voiceGuide.triggerError();
         } finally {
             setLoading(false);
         }

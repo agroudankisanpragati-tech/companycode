@@ -1,0 +1,14 @@
+{
+  "id": "common_replay_001",
+  "page": "common",
+  "dialogueType": "replay",
+  "title": "Common Replay",
+  "version": "1.0.0",
+  "text": "मैं पिछले संदेश को फिर से दोहरा रहा हूँ।",
+  "repeat": {"enabled": false, "afterHours": 0},
+  "voice": {"enabled": true, "provider": "offline", "file": "common_replay_001.mp3", "language": "hi", "speed": 1.0, "volume": 1.0},
+  "avatar": {"enabled": true, "animation": "wave", "expression": "smile"},
+  "display": {"showSubtitle": true, "showAvatar": true},
+  "conditions": {"firstVisit": false, "loggedIn": false, "internetRequired": false},
+  "status": "active"
+}

@@ -1,0 +1,42 @@
+{
+  "id": "register_welcome_001",
+  "page": "register",
+  "dialogueType": "welcome",
+  "title": "Register Welcome",
+  "version": "1.0.0",
+
+  "text": "किसान उन्नति में आपका स्वागत है। नया खाता बनाने के लिए कृपया अपनी आवश्यक जानकारी भरें। पंजीकरण पूरा होने के बाद आप सभी व्यक्तिगत कृषि सेवाओं और सुविधाओं का लाभ उठा सकेंगे।",
+
+  "repeat": {
+    "enabled": true,
+    "afterHours": 24
+  },
+
+  "voice": {
+    "enabled": true,
+    "provider": "offline",
+    "file": "register_welcome_001.mp3",
+    "language": "hi",
+    "speed": 1.0,
+    "volume": 1.0
+  },
+
+  "avatar": {
+    "enabled": true,
+    "animation": "wave",
+    "expression": "smile"
+  },
+
+  "display": {
+    "showSubtitle": true,
+    "showAvatar": true
+  },
+
+  "conditions": {
+    "firstVisit": true,
+    "loggedIn": false,
+    "internetRequired": false
+  },
+
+  "status": "active"
+}

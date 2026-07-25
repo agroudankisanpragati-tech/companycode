@@ -6,13 +6,14 @@
  * separate AIs. They are never exposed to the user.
  *
  * Routing is based on the IntentType already detected by intentEngine.ts.
- * No new routes or APIs are created — this is a pure internal service.
+ * Intent is detected EXACTLY ONCE in pragatiAIController and passed here.
+ * This router NEVER calls detectIntent() — Fix 4.
  *
  * Failover: if one module fails, only that domain returns an error.
  * All other modules continue working normally.
  */
 
-import { detectIntent, IntentType } from '../services/intentEngine';
+import { IntentType } from '../services/intentEngine';
 import { AgentContext, AgentResult, AgentName } from './types';
 import { runDiseaseAgent } from './diseaseAgent';
 import { runCropAgent } from './cropAgent';
@@ -27,6 +28,9 @@ import { runFarmDiaryAgent } from './farmDiaryAgent';
 import { runIrrigationAgent } from './irrigationAgent';
 import { runEmergencyAgent } from './emergencyAgent';
 import { runMachineryAgent } from './machineryAgent';
+import { createLogger } from '../utils/logger';
+
+const log = createLogger('agentRouter');
 
 /**
  * Maps intent types to the agent(s) that should handle them.
@@ -51,13 +55,19 @@ const INTENT_TO_AGENTS: Record<IntentType, AgentName[]> = {
   general:       ['WeatherAgent', 'SoilAgent', 'CropAgent', 'MarketAgent', 'GovernmentAgent', 'FarmDiaryAgent'],
 };
 
-/** Keyword-based secondary routing for seed/fertilizer queries */
-function detectSecondaryAgents(message: string): AgentName[] {
-  const lower = message.toLowerCase();
+/** Secondary routing for seed/fertilizer/diary helpers using shared context. */
+function detectSecondaryAgents(intent: IntentType, ctx: AgentContext): AgentName[] {
+  // Use pre-extracted entities and shared context only (Fix 2 / Fix 5)
+  const entities = ctx.entities;
+  const shared = ctx.shared;
   const agents: AgentName[] = [];
-  if (/seed|beej|variety|kism|nursery/i.test(lower)) agents.push('SeedAgent');
-  if (/fertilizer|khad|urea|dap|npk|compost|vermicompost/i.test(lower)) agents.push('FertilizerAgent');
-  if (/diary|task|schedule|aaj ka kaam|today.*task|farm.*log/i.test(lower)) agents.push('FarmDiaryAgent');
+
+  if (entities) {
+    if (entities.crop && (intent === 'general' || intent === 'crop')) agents.push('SeedAgent');
+    if (entities.fertilizer || intent === 'soil' || intent === 'crop') agents.push('FertilizerAgent');
+    if (shared?.activeCrops?.length || ctx.pageData?.farmDiaryData) agents.push('FarmDiaryAgent');
+  }
+
   return agents;
 }
 
@@ -83,7 +93,7 @@ async function runAgent(name: AgentName, ctx: AgentContext): Promise<AgentResult
     }
   } catch (err: any) {
     // Isolated failover — one agent failure does not affect others
-    console.error(`[AgentRouter] ${name} failed:`, err?.message);
+    log.error(`${name} failed`, { error: err?.message });
     return {
       agent: name,
       success: false,
@@ -94,18 +104,20 @@ async function runAgent(name: AgentName, ctx: AgentContext): Promise<AgentResult
 
 /**
  * Main dispatch function called by Pragati Root AI.
- * Returns an array of agent results to be injected into the AI context.
+ *
+ * IMPORTANT (Fix 4): intent is passed in — never re-detected here.
+ * The intent was already detected once in pragatiAIController.
+ *
+ * @param intent  - Already-detected intent (do NOT call detectIntent again)
+ * @param ctx     - Full agent context including pre-extracted entities
  */
 export async function dispatchAgents(
-  message: string,
-  ctx: Omit<AgentContext, 'message'>
+  intent:  IntentType,
+  ctx:     AgentContext,
 ): Promise<AgentResult[]> {
-  const intent = detectIntent(message);
-  const fullCtx: AgentContext = { ...ctx, message };
-
-  // Determine which agents to run
+  // Determine which agents to run using the already-detected intent
   const primaryAgents = INTENT_TO_AGENTS[intent] || [];
-  const secondaryAgents = detectSecondaryAgents(message);
+  const secondaryAgents = detectSecondaryAgents(intent, ctx);
 
   // Deduplicate
   const agentSet = new Set<AgentName>([...primaryAgents, ...secondaryAgents]);
@@ -117,9 +129,11 @@ export async function dispatchAgents(
 
   if (agentSet.size === 0) return [];
 
+  log.debug('Dispatching agents', { intent, agents: Array.from(agentSet) });
+
   // Run all matched agents in parallel (isolated failover per agent)
   const results = await Promise.all(
-    Array.from(agentSet).map(name => runAgent(name, fullCtx))
+    Array.from(agentSet).map(name => runAgent(name, ctx))
   );
 
   return results;

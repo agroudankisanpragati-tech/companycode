@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState, useCallback, lazy, Suspense } from 'react';
-import { useAIAssistant, Message } from '@/context/AIAssistantContext';
+import { getAssistantBranding, useAIAssistant, Message } from '@/context/AIAssistantContext';
 import { useAuth } from '@/context/AuthContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { resolveVoiceLang } from '@/services/languageEngine';
@@ -157,6 +157,7 @@ export default function AIAssistantWidget() {
   };
 
   const activeLang = AI_LANGUAGES.find(l => l.code === selectedLang) ?? AI_LANGUAGES[0];
+  const branding = getAssistantBranding();
 
   if (!isAuthenticated) return null;
 
@@ -175,8 +176,8 @@ export default function AIAssistantWidget() {
           <div className="flex items-center gap-2">
             <div className="flex h-7 w-7 items-center justify-center rounded-full bg-white/20"><FaRobot className="text-white text-xs" /></div>
             <div>
-              <div className="text-xs font-bold text-white leading-none">Pragati AI</div>
-              <div className="text-[10px] text-emerald-100">Agroudan Kisan Pragati</div>
+              <div className="text-xs font-bold text-white leading-none">{branding.title}</div>
+              <div className="text-[10px] text-emerald-100">{branding.subtitle}</div>
             </div>
           </div>
           <div className="flex items-center gap-1.5">

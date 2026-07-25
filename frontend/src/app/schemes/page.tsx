@@ -6,6 +6,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { fetchPublishedSchemes, GovtScheme, SchemeType } from '@/services/schemes';
 import { usePageContext } from '@/hooks/usePageContext';
+import { useVoiceGuide } from '@/hooks/useVoiceGuide';
 
 const INDIAN_STATES = [
     'Andhra Pradesh','Arunachal Pradesh','Assam','Bihar','Chhattisgarh',
@@ -33,6 +34,7 @@ export default function SchemesPage() {
 
     // Register government page context with Root AI
     usePageContext({ pageContext: 'government' });
+    useVoiceGuide('government_scheme');
 
     // Debounce search
     useEffect(() => {

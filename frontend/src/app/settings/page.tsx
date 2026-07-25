@@ -18,6 +18,7 @@ import {
 import { useLanguage } from '@/context/LanguageContext';
 import { useAccessibility } from '@/context/AccessibilityContext';
 import { LANGUAGES as ALL_LANGUAGES } from '@/i18n/languages';
+import { useVoiceGuide } from '@/hooks/useVoiceGuide';
 
 // ─── tiny helpers ────────────────────────────────────────────────────────────
 
@@ -100,6 +101,7 @@ export default function SettingsPage() {
 
   const { langCode, setLanguage } = useLanguage();
   const { largeText, toggleLargeText } = useAccessibility();
+  const voiceGuide = useVoiceGuide('app_settings');
 
   const [s, setS] = useState<UserSettings>(DEFAULT_SETTINGS);
   const [loading, setLoading] = useState(true);

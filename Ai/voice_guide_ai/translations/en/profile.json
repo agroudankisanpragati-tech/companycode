@@ -1,0 +1,14 @@
+{
+    "profile_replay_001":  "Let me guide you again. Keep your personal information, farm, and land details up to date. This will help the AI give you more accurate farming suggestions and services.",
+    "profile_personal_001":  "Your personal information is shown here. If any detail has changed, update it so your profile stays accurate.",
+    "profile_offline_001":  "No internet right now. You can view some information, but internet is needed to save new details.",
+    "profile_welcome_001":  "Welcome to the Profile page. Here you can view and update your personal information, farm, land, and farming-related details. Providing correct information will get you more accurate AI services.",
+    "profile_success_001":  "Congratulations. Your profile has been updated successfully. The AI will now give more accurate suggestions based on your latest information.",
+    "profile_save_001":  "Your information is being saved. Please wait a moment.",
+    "profile_exit_001":  "Thank you. Your profile is now up to date. You can use other features of the app. I will keep guiding you on the next page too.",
+    "profile_error_001":  "Sorry. Your profile could not be updated. Please check the information and try again.",
+    "profile_edit_001":  "You can now edit your profile information. Please fill in all details correctly so you can get more accurate AI services and farming suggestions in the future.",
+    "profile_land_details_001":  "Please fill in your land details.",
+    "profile_help_001":  "You can update your personal information, farm, land, and other details here. Please fill in all information correctly so the AI can give you better suggestions.",
+    "profile_land_001":  "View or update your land-related information here. Correct land details will help in better farming analysis and AI recommendations."
+}

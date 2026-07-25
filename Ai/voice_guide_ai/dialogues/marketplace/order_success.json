@@ -1,0 +1,35 @@
+{
+    "id":  "market_order_success_001",
+    "page":  "marketplace",
+    "dialogueType":  "order_success",
+    "title":  "Marketplace Order Success",
+    "version":  "1.0.0",
+    "text":  "आपका ऑर्डर सफलतापूर्वक दर्ज हो गया है।",
+    "repeat":  {
+                   "enabled":  false,
+                   "afterHours":  0
+               },
+    "voice":  {
+                  "enabled":  true,
+                  "provider":  "offline",
+                  "file":  "market_order_success_001.mp3",
+                  "language":  "hi",
+                  "speed":  1,
+                  "volume":  1
+              },
+    "avatar":  {
+                   "enabled":  true,
+                   "animation":  "success",
+                   "expression":  "happy"
+               },
+    "display":  {
+                    "showSubtitle":  true,
+                    "showAvatar":  true
+                },
+    "conditions":  {
+                       "firstVisit":  false,
+                       "loggedIn":  true,
+                       "internetRequired":  false
+                   },
+    "status":  "active"
+}

@@ -1,0 +1,42 @@
+{
+  "id": "weather_rain_alert_001",
+  "page": "weather",
+  "dialogueType": "rain_alert",
+  "title": "Rain Alert",
+  "version": "1.0.0",
+
+  "text": "आपके क्षेत्र में वर्षा की संभावना है। कृपया मौसम की जानकारी ध्यान से देखें और सिंचाई, छिड़काव तथा कटाई जैसे कृषि कार्य मौसम के अनुसार ही करें।",
+
+  "repeat": {
+    "enabled": false,
+    "afterHours": 0
+  },
+
+  "voice": {
+    "enabled": true,
+    "provider": "offline",
+    "file": "weather_rain_alert_001.mp3",
+    "language": "hi",
+    "speed": 1.0,
+    "volume": 1.0
+  },
+
+  "avatar": {
+    "enabled": true,
+    "animation": "warning",
+    "expression": "warning"
+  },
+
+  "display": {
+    "showSubtitle": true,
+    "showAvatar": true
+  },
+
+  "conditions": {
+    "firstVisit": false,
+    "loggedIn": true,
+    "internetRequired": false
+  },
+
+  "status": "active"
+}

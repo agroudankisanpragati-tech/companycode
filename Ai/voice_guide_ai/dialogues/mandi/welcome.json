@@ -1,0 +1,42 @@
+{
+  "id": "mandi_welcome_001",
+  "page": "mandi",
+  "dialogueType": "welcome",
+  "title": "Mandi Welcome",
+  "version": "1.0.0",
+
+  "text": "मंडी भाव पेज पर आपका स्वागत है। यहाँ आप विभिन्न मंडियों में अपनी फसलों के नवीनतम बाजार भाव, मूल्य परिवर्तन और बिक्री से जुड़ी महत्वपूर्ण जानकारी प्राप्त कर सकते हैं।",
+
+  "repeat": {
+    "enabled": true,
+    "afterHours": 24
+  },
+
+  "voice": {
+    "enabled": true,
+    "provider": "offline",
+    "file": "mandi_welcome_001.mp3",
+    "language": "hi",
+    "speed": 1.0,
+    "volume": 1.0
+  },
+
+  "avatar": {
+    "enabled": true,
+    "animation": "wave",
+    "expression": "smile"
+  },
+
+  "display": {
+    "showSubtitle": true,
+    "showAvatar": true
+  },
+
+  "conditions": {
+    "firstVisit": true,
+    "loggedIn": true,
+    "internetRequired": false
+  },
+
+  "status": "active"
+}

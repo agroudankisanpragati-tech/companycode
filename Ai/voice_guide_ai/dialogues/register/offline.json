@@ -1,0 +1,42 @@
+{
+  "id": "register_offline_001",
+  "page": "register",
+  "dialogueType": "offline",
+  "title": "Register Offline",
+  "version": "1.0.0",
+
+  "text": "अभी इंटरनेट उपलब्ध नहीं है। नया खाता बनाने के लिए कृपया इंटरनेट से जुड़ें और फिर पुनः प्रयास करें।",
+
+  "repeat": {
+    "enabled": false,
+    "afterHours": 0
+  },
+
+  "voice": {
+    "enabled": true,
+    "provider": "offline",
+    "file": "register_offline_001.mp3",
+    "language": "hi",
+    "speed": 1.0,
+    "volume": 1.0
+  },
+
+  "avatar": {
+    "enabled": true,
+    "animation": "warning",
+    "expression": "warning"
+  },
+
+  "display": {
+    "showSubtitle": true,
+    "showAvatar": true
+  },
+
+  "conditions": {
+    "firstVisit": false,
+    "loggedIn": false,
+    "internetRequired": true
+  },
+
+  "status": "active"
+}

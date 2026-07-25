@@ -1,0 +1,42 @@
+{
+  "id": "login_welcome_001",
+  "page": "login",
+  "dialogueType": "welcome",
+  "title": "Login Welcome",
+  "version": "1.0.0",
+
+  "text": "किसान उन्नति के लॉगिन पेज पर आपका स्वागत है। अपने खाते में सुरक्षित रूप से प्रवेश करने के लिए कृपया अपना मोबाइल नंबर दर्ज करें और प्राप्त ओटीपी का सत्यापन करें। लॉगिन करने के बाद आपको आपकी व्यक्तिगत कृषि जानकारी, सेवाएँ और सभी सुविधाओं का पूरा लाभ मिलेगा।",
+
+  "repeat": {
+    "enabled": true,
+    "afterHours": 24
+  },
+
+  "voice": {
+    "enabled": true,
+    "provider": "offline",
+    "file": "login_welcome_001.mp3",
+    "language": "hi",
+    "speed": 1.0,
+    "volume": 1.0
+  },
+
+  "avatar": {
+    "enabled": true,
+    "animation": "wave",
+    "expression": "smile"
+  },
+
+  "display": {
+    "showSubtitle": true,
+    "showAvatar": true
+  },
+
+  "conditions": {
+    "firstVisit": true,
+    "loggedIn": false,
+    "internetRequired": false
+  },
+
+  "status": "active"
+}

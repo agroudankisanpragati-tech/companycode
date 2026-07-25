@@ -1,0 +1,19 @@
+{
+    "version": "1.0.0",
+    "total": 13,
+    "expressions": [
+        {"id": "neutral",   "label": "Neutral",   "loop": false, "priority": 0},
+        {"id": "smile",     "label": "Smile",     "loop": false, "priority": 1},
+        {"id": "happy",     "label": "Happy",     "loop": false, "priority": 1},
+        {"id": "thinking",  "label": "Thinking",  "loop": false, "priority": 2},
+        {"id": "listening", "label": "Listening", "loop": false, "priority": 2},
+        {"id": "speaking",  "label": "Speaking",  "loop": true,  "priority": 3},
+        {"id": "warning",   "label": "Warning",   "loop": false, "priority": 4},
+        {"id": "error",     "label": "Error",     "loop": false, "priority": 5},
+        {"id": "success",   "label": "Success",   "loop": false, "priority": 1},
+        {"id": "goodbye",   "label": "Goodbye",   "loop": false, "priority": 1},
+        {"id": "confused",  "label": "Confused",  "loop": false, "priority": 2},
+        {"id": "blink",     "label": "Blink",     "loop": false, "priority": 0},
+        {"id": "loading",   "label": "Loading",   "loop": true,  "priority": 3}
+    ]
+}

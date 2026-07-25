@@ -1,0 +1,35 @@
+{
+    "id":  "settings_privacy_001",
+    "page":  "app_settings",
+    "dialogueType":  "privacy",
+    "title":  "App Settings Privacy",
+    "version":  "1.0.0",
+    "text":  "गोपनीयता विकल्प देखें।",
+    "repeat":  {
+                   "enabled":  false,
+                   "afterHours":  0
+               },
+    "voice":  {
+                  "enabled":  true,
+                  "provider":  "offline",
+                  "file":  "settings_privacy_001.mp3",
+                  "language":  "hi",
+                  "speed":  1,
+                  "volume":  1
+              },
+    "avatar":  {
+                   "enabled":  true,
+                   "animation":  "point",
+                   "expression":  "smile"
+               },
+    "display":  {
+                    "showSubtitle":  true,
+                    "showAvatar":  true
+                },
+    "conditions":  {
+                       "firstVisit":  false,
+                       "loggedIn":  true,
+                       "internetRequired":  false
+                   },
+    "status":  "active"
+}

@@ -1,0 +1,15 @@
+{
+    "settings_save_001":  "Changes are being saved.",
+    "settings_replay_001":  "Let me explain again. Please listen to the instructions carefully.",
+    "settings_privacy_001":  "View privacy options.",
+    "settings_welcome_001":  "Welcome to App Settings. I will help you through this section.",
+    "settings_voice_001":  "Choose voice settings.",
+    "settings_success_001":  "Your process has been completed successfully.",
+    "settings_offline_mode_001":  "Manage offline mode.",
+    "settings_exit_001":  "Do you want to exit this section?",
+    "settings_error_001":  "Sorry, something went wrong. Please try again.",
+    "settings_avatar_001":  "Choose avatar settings.",
+    "settings_notifications_001":  "Set up notifications.",
+    "settings_language_001":  "Choose language settings.",
+    "settings_help_001":  "If you need help, carefully choose from the given options and press replay if needed."
+}

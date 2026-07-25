@@ -1,0 +1,35 @@
+{
+  "id": "common_loading_001",
+  "page": "common",
+  "dialogueType": "loading",
+  "title": "Common Loading",
+  "version": "1.0.0",
+  "text": "कृपया प्रतीक्षा करें, डेटा लोड हो रहा है।",
+  "repeat": {
+    "enabled": false,
+    "afterHours": 0
+  },
+  "voice": {
+    "enabled": true,
+    "provider": "offline",
+    "file": "common_loading_001.mp3",
+    "language": "hi",
+    "speed": 1.0,
+    "volume": 1.0
+  },
+  "avatar": {
+    "enabled": true,
+    "animation": "loading",
+    "expression": "thinking"
+  },
+  "display": {
+    "showSubtitle": true,
+    "showAvatar": true
+  },
+  "conditions": {
+    "firstVisit": false,
+    "loggedIn": false,
+    "internetRequired": false
+  },
+  "status": "active"
+}

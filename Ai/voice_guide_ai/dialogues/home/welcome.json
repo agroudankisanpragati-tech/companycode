@@ -1,0 +1,42 @@
+{
+  "id": "home_welcome_001",
+  "page": "home",
+  "dialogueType": "welcome",
+  "title": "Home Welcome",
+  "version": "1.0.0",
+
+  "text": "नमस्कार! किसान उन्नति में आपका हार्दिक स्वागत है। मैं आपका डिजिटल मार्गदर्शक हूँ। इस प्लेटफ़ॉर्म का उपयोग करने में मैं आपकी सहायता करूँगा। यहाँ आप फसल रोग पहचान, फसल अनुशंसा, सरकारी योजनाएँ, मौसम की जानकारी, मंडी भाव, मिट्टी स्वास्थ्य विश्लेषण तथा अन्य कृषि सेवाओं का लाभ उठा सकते हैं। जब भी आप किसी नए पेज पर जाएंगे, मैं उस पेज की जानकारी सरल और आसान भाषा में समझाऊँगा। आइए, स्मार्ट खेती की इस यात्रा की शुरुआत करते हैं।",
+
+  "repeat": {
+    "enabled": true,
+    "afterHours": 24
+  },
+
+  "voice": {
+    "enabled": true,
+    "provider": "offline",
+    "file": "home_welcome_001.mp3",
+    "language": "hi",
+    "speed": 1.0,
+    "volume": 1.0
+  },
+
+  "avatar": {
+    "enabled": true,
+    "animation": "wave",
+    "expression": "smile"
+  },
+
+  "display": {
+    "showSubtitle": true,
+    "showAvatar": true
+  },
+
+  "conditions": {
+    "firstVisit": true,
+    "loggedIn": false,
+    "internetRequired": false
+  },
+
+  "status": "active"
+}

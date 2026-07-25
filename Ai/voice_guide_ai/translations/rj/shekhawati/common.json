@@ -1,0 +1,16 @@
+{
+    "common_retry_001":  "एक बार फेर कोशिश करो।",
+    "common_processing_001":  "थोड़ो रुको, जाणकारी तैयार हो रही हो।",
+    "common_permission_required_001":  "इण सुविधा खातर इजाजत जरूरी हो।",
+    "common_saving_001":  "डेटा सेव हो रह्यो हो।",
+    "common_upload_success_001":  "अपलोड सफल रह्यो।",
+    "common_update_available_001":  "नवो अपडेट आयो हो।",
+    "common_session_expired_001":  "थारो सत्र खतम हो गयो।",
+    "common_download_success_001":  "डाउनलोड सफल रह्यो।",
+    "common_data_not_found_001":  "कोई डेटा कोनी मिल्यो।",
+    "common_access_denied_001":  "पहुंच नकारी गई।",
+    "common_exit_001":  "के थे इण हिस्से सूं बाहर जाणा चावो?",
+    "common_offline_001":  "अबार इंटरनेट कोनी। कनेक्शन चालू करकर फेर कोशिश करो।",
+    "common_no_internet_001":  "इंटरनेट कोनी।",
+    "common_maintenance_001":  "सिस्टम रखरखाव में हो।"
+}

@@ -9,6 +9,31 @@ function authHeaders(): Record<string, string> {
   return token ? { Authorization: `Bearer ${token}` } : {};
 }
 
+// Translate low-level fetch errors into actionable messages.
+// "Failed to fetch" / ERR_CONNECTION_REFUSED means the Node backend is not
+// running on port 4000 — NOT an internet problem. The AI models are local.
+function classifyFetchError(err: unknown): string {
+  const msg = err instanceof Error ? err.message : String(err);
+  const lower = msg.toLowerCase();
+
+  if (lower.includes('failed to fetch') || lower.includes('networkerror') || lower.includes('econnrefused')) {
+    return 'Backend server is not running. Please start the Node.js backend (port 4000) and try again.';
+  }
+  if (lower.includes('aborted') || lower.includes('abort')) {
+    return 'AbortError';
+  }
+  if (lower.includes('timeout') || lower.includes('timed out')) {
+    return 'Request timed out. The AI server (FastAPI) may be slow to respond. Please try again.';
+  }
+  if (lower.includes('503') || lower.includes('service unavailable')) {
+    return 'FastAPI AI server is not running. Please start the Python FastAPI server (port 8000) and try again.';
+  }
+  if (lower.includes('crop verification') || lower.includes('uploaded image belongs')) {
+    return msg; // pass through — already a user-friendly message from the server
+  }
+  return msg || 'Disease scan failed. Please try again.';
+}
+
 export function useDisease() {
   const abortRef = useRef<AbortController | null>(null);
 
@@ -49,6 +74,11 @@ export function useDisease() {
       const json = await safeJson(res);
       if (!res.ok) throw new Error(json.error || `Scan failed (HTTP ${res.status})`);
       return { ...json.data, source: json.source, engine: json.engine, similarityScore: json.similarityScore };
+    } catch (err: unknown) {
+      if (err instanceof Error && err.name === 'AbortError') throw err;
+      const classified = classifyFetchError(err);
+      if (classified === 'AbortError') throw new DOMException('Aborted', 'AbortError');
+      throw new Error(classified);
     } finally {
       clearInterval(stepTimer);
     }

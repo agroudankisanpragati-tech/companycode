@@ -3,6 +3,10 @@ import { DiseaseKnowledgeBase } from '../models/DiseaseKnowledgeBase';
 import { DiseasePestSolution } from '../models/DiseasePestSolution';
 import type { Document } from 'mongoose';
 import { isCropSupportedByYolo, callYoloPredict, YoloPrediction } from './yoloService';
+import { createLogger } from '../utils/logger';
+import { createExactSafeRegex, createSafeRegex } from '../utils/regex';
+
+const log = createLogger('diseaseService');
 
 const SIMILARITY_THRESHOLD = 0.80;
 const KB_PROMOTE_THRESHOLD = 3; // auto-promote after 3 helpful feedbacks
@@ -35,8 +39,8 @@ type CacheResult = (Omit<IDiseaseRecommendation, keyof Document> & { _id: any; s
 export async function searchCache(cropName: string, diseaseName: string): Promise<CacheResult> {
   if (!cropName && !diseaseName) return null;
   const filter: any = {};
-  if (cropName) filter.cropName = new RegExp(cropName, 'i');
-  if (diseaseName) filter.diseaseName = new RegExp(diseaseName, 'i');
+  if (cropName) filter.cropName = createSafeRegex(cropName);
+  if (diseaseName) filter.diseaseName = createSafeRegex(diseaseName);
   const hit = await DiseaseRecommendation.findOne(filter).sort({ createdAt: -1 }).lean();
   if (!hit) return null;
   const score = (stringSimilarity(hit.cropName, cropName || '') + stringSimilarity(hit.diseaseName, diseaseName || '')) / 2;
@@ -47,7 +51,7 @@ export async function searchCache(cropName: string, diseaseName: string): Promis
 /** Step 2 — search DiseaseKnowledgeBase (permanent knowledge store) */
 export async function searchKnowledgeBase(cropName: string, diseaseName: string) {
   const candidates = await DiseaseKnowledgeBase.find({
-    ...(cropName ? { cropName: new RegExp(cropName, 'i') } : {}),
+    ...(cropName ? { cropName: createSafeRegex(cropName) } : {}),
   }).lean();
 
   let best: any = null; let bestScore = 0;
@@ -146,8 +150,8 @@ export async function getAdvisoryFromKnowledgeBase(
   // ── Priority 1: Admin-curated DiseasePestSolution ─────────────────────────
   try {
     const dps = await DiseasePestSolution.findOne({
-      cropName:        { $regex: `^${cropName.trim()}$`,    $options: 'i' },
-      diseasePestName: { $regex: `^${diseaseName.trim()}$`, $options: 'i' },
+      cropName:        createExactSafeRegex(cropName.trim()),
+      diseasePestName: createExactSafeRegex(diseaseName.trim()),
       status: 'published',
     }).lean();
 
@@ -177,13 +181,13 @@ export async function getAdvisoryFromKnowledgeBase(
       };
     }
   } catch (err: any) {
-    console.warn('[Advisory] DPS lookup failed (non-fatal):', err?.message);
+    log.warn('DPS lookup failed (non-fatal)', { error: err?.message });
   }
 
   // ── Priority 2: DiseaseKnowledgeBase ─────────────────────────────────────
   try {
     const candidates = await DiseaseKnowledgeBase.find({
-      cropName: { $regex: cropName.trim(), $options: 'i' },
+      cropName: createSafeRegex(cropName.trim()),
     }).lean();
 
     let best: any = null;
@@ -224,7 +228,7 @@ export async function getAdvisoryFromKnowledgeBase(
       source:                   'knowledge_base',
     };
   } catch (err: any) {
-    console.warn('[Advisory] KB lookup failed (non-fatal):', err?.message);
+    log.warn('KB lookup failed (non-fatal)', { error: err?.message });
     return null;
   }
 }
@@ -250,7 +254,14 @@ export type AIDetectionResult = {
 
 /**
  * YOLO-only disease detection.
- * OpenAI Vision is NOT used anywhere in this function.
+ *
+ * Authority model:
+ *   - cropHint is SECONDARY metadata (farmer selection) — optional.
+ *   - Crop Verification AI (EfficientNet, Python side) is PRIMARY.
+ *   - When cropHint is absent, YOLO runs without a crop filter and
+ *     uses the verified crop returned in the prediction result.
+ *   - When cropHint is present but the crop is not in the YOLO index,
+ *     YOLO still runs without a filter rather than aborting.
  */
 export async function runHybridDiseaseDetection(
   imagePath: string,
@@ -260,27 +271,40 @@ export async function runHybridDiseaseDetection(
   engine: 'yolo';
   result: AIDetectionResult | null;
   yoloRaw?: YoloPrediction;
+  error?: string;
 }> {
-  console.log(`[Disease] Received cropName: '${cropHint || ''}'`);
+  log.debug('runHybridDiseaseDetection', { cropHint: cropHint || '(none)' });
 
-  const cropSupported = cropHint ? await isCropSupportedByYolo(cropHint) : false;
-  console.log(`[Disease] Crop supported by YOLO: ${cropSupported}`);
-
-  if (!cropSupported) {
-    console.log(`[Disease] Fallback reason: crop '${cropHint}' not found in YOLO index`);
-    return { engine: 'yolo', result: null };
+  // Determine the effective hint to send to YOLO for class filtering.
+  // If the farmer provided a crop name AND it exists in the YOLO index,
+  // pass it as a filter hint. Otherwise run without a filter — the
+  // Crop Verification AI on the Python side will have already verified
+  // the crop and will override it in the prediction result.
+  let effectiveCropHint: string | undefined;
+  if (cropHint) {
+    const supported = await isCropSupportedByYolo(cropHint);
+    effectiveCropHint = supported ? cropHint : undefined;
+    log.debug('Crop hint resolution', { cropHint, supported, effectiveCropHint: effectiveCropHint || '(none — running unfiltered)' });
   }
 
-  console.log(`[Disease] Sending to YOLO: imagePath=${imagePath}, cropHint=${cropHint}`);
-  const yoloResult = await callYoloPredict(imagePath, cropHint);
-  console.log(`[Disease] YOLO raw result: ${JSON.stringify(yoloResult)}`);
+  // Pass farmerCrop separately so Python-side EfficientNet can validate it.
+  // effectiveCropHint is used only for YOLO class filtering.
+  const yoloResult = await callYoloPredict(imagePath, effectiveCropHint, cropHint);
 
   if (!yoloResult) {
-    console.log(`[Disease] Fallback reason: YOLO returned null for crop '${cropHint}'`);
+    log.debug('YOLO returned null', { effectiveCropHint });
     return { engine: 'yolo', result: null };
   }
 
-  console.log(`[Disease] YOLO prediction: class=${yoloResult.class_name}, confidence=${yoloResult.confidence}%, category=${yoloResult.category}`);
+  // Surface crop-mismatch / low-confidence errors returned by the Python
+  // Crop Verification stage (fastapi_server.py returns success:false with error)
+  if (!yoloResult.success) {
+    const errMsg = (yoloResult as any).error as string | undefined;
+    log.warn('Crop verification rejected by Python side', { error: errMsg });
+    return { engine: 'yolo', result: null, error: errMsg };
+  }
+
+  log.debug('YOLO prediction', { className: yoloResult.class_name, confidence: yoloResult.confidence, category: yoloResult.category });
 
   const isHealthy =
     yoloResult.category === 'healthy' ||
@@ -290,7 +314,7 @@ export async function runHybridDiseaseDetection(
     .replace(/[^a-zA-Z0-9]/g, '_')
     .replace(/_+/g, '_');
   const diseaseRaw = yoloResult.class_name
-    .replace(new RegExp(`^${cropPrefix}_?`, 'i'), '')
+    .replace(createSafeRegex(`^${cropPrefix}_?`, 'i'), '')
     .replace(/_/g, ' ')
     .trim();
 
@@ -298,9 +322,11 @@ export async function runHybridDiseaseDetection(
   const severity = conf >= 90 ? 'high' : conf >= 70 ? 'medium' : 'low';
   const diseaseName = isHealthy ? 'Healthy' : (diseaseRaw || yoloResult.class_name);
 
-  console.log(`[Disease] Final disease: '${diseaseName}', severity: ${severity}, confidence: ${conf}%`);
+  log.debug('Final disease mapped', { diseaseName, severity, confidence: conf });
 
   const mapped: AIDetectionResult = {
+    // Use the VERIFIED crop from YOLO result (Python side has already applied
+    // EfficientNet verification and overridden the crop field)
     cropName: yoloResult.crop || cropHint || 'Unknown Crop',
     cropNameHindi: '',
     diseaseName,
@@ -325,7 +351,7 @@ export async function runHybridDiseaseDetection(
 export async function autoSaveToKnowledgeBase(aiResult: AIDetectionResult, imageUrl?: string) {
   try {
     await DiseaseKnowledgeBase.findOneAndUpdate(
-      { cropName: new RegExp(`^${aiResult.cropName}$`, 'i'), diseaseName: new RegExp(`^${aiResult.diseaseName}$`, 'i') },
+      { cropName: createExactSafeRegex(aiResult.cropName), diseaseName: createExactSafeRegex(aiResult.diseaseName) },
       {
         $setOnInsert: {
           cropName: aiResult.cropName,
@@ -354,7 +380,7 @@ export async function autoSaveToKnowledgeBase(aiResult: AIDetectionResult, image
       { upsert: true, new: true, setDefaultsOnInsert: true }
     );
   } catch (err) {
-    console.error('KB auto-save error:', err);
+    log.error('KB auto-save error', { error: String(err) });
   }
 }
 
@@ -362,7 +388,7 @@ export async function autoSaveToKnowledgeBase(aiResult: AIDetectionResult, image
 export async function handleFeedbackForKB(knowledgeBaseId: string | undefined, cropName: string, diseaseName: string, isHelpful: boolean) {
   const filter = knowledgeBaseId
     ? { _id: knowledgeBaseId }
-    : { cropName: new RegExp(`^${cropName}$`, 'i'), diseaseName: new RegExp(`^${diseaseName}$`, 'i') };
+    : { cropName: createExactSafeRegex(cropName), diseaseName: createExactSafeRegex(diseaseName) };
 
   const update: any = isHelpful
     ? { $inc: { helpfulCount: 1 } }

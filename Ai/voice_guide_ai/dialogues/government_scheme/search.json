@@ -1,0 +1,42 @@
+{
+  "id": "scheme_search_001",
+  "page": "government_scheme",
+  "dialogueType": "search",
+  "title": "Search Scheme",
+  "version": "1.0.0",
+
+  "text": "कृपया कुछ क्षण प्रतीक्षा करें। आपकी जानकारी के आधार पर उपयुक्त सरकारी योजनाओं की खोज की जा रही है।",
+
+  "repeat": {
+    "enabled": false,
+    "afterHours": 0
+  },
+
+  "voice": {
+    "enabled": true,
+    "provider": "offline",
+    "file": "scheme_search_001.mp3",
+    "language": "hi",
+    "speed": 1.0,
+    "volume": 1.0
+  },
+
+  "avatar": {
+    "enabled": true,
+    "animation": "loading",
+    "expression": "thinking"
+  },
+
+  "display": {
+    "showSubtitle": true,
+    "showAvatar": true
+  },
+
+  "conditions": {
+    "firstVisit": false,
+    "loggedIn": true,
+    "internetRequired": false
+  },
+
+  "status": "active"
+}

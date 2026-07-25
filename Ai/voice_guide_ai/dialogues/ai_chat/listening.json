@@ -1,0 +1,42 @@
+{
+  "id": "ai_chat_listening_001",
+  "page": "ai_chat",
+  "dialogueType": "listening",
+  "title": "Listening",
+  "version": "1.0.0",
+
+  "text": "मैं आपकी बात सुन रहा हूँ। कृपया अपना प्रश्न स्पष्ट रूप से बोलें या लिखें।",
+
+  "repeat": {
+    "enabled": false,
+    "afterHours": 0
+  },
+
+  "voice": {
+    "enabled": true,
+    "provider": "offline",
+    "file": "ai_chat_listening_001.mp3",
+    "language": "hi",
+    "speed": 1.0,
+    "volume": 1.0
+  },
+
+  "avatar": {
+    "enabled": true,
+    "animation": "listening",
+    "expression": "thinking"
+  },
+
+  "display": {
+    "showSubtitle": true,
+    "showAvatar": true
+  },
+
+  "conditions": {
+    "firstVisit": false,
+    "loggedIn": true,
+    "internetRequired": false
+  },
+
+  "status": "active"
+}

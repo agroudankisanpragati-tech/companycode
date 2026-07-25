@@ -1,0 +1,12 @@
+{
+    "weather_replay_001":  "Let me guide you again. Select your location or allow location access. After that, you will see current weather, upcoming forecast, chance of rain, and important weather-related farming suggestions.",
+    "weather_rain_alert_001":  "There is a chance of rain in your area. Please check the weather information carefully and do farming activities like irrigation, spraying, and harvesting according to the weather.",
+    "weather_error_001":  "Sorry, something went wrong. Please try again.",
+    "weather_welcome_001":  "Welcome to the Weather Information page. Here you can get current weather for your area, forecast for upcoming days, and important weather-related farming suggestions.",
+    "weather_warning_001":  "A weather warning has been issued for your area. Please carefully read the information and farming advice shown on the screen and take necessary precautions.",
+    "weather_offline_001":  "No internet right now. If recent weather information is available on your device, it will be shown. Please connect to the internet for the latest weather.",
+    "weather_current_001":  "Current weather for your area is being shown. Please carefully check the temperature, humidity, wind speed, and other weather-related information.",
+    "weather_exit_001":  "Thank you for using the Weather Information feature. You can now use any other feature or come back here to check the latest weather when conditions change. I will keep guiding you on the next page too.",
+    "weather_help_001":  "To see the correct weather for your area, allow location access or select your district. After that, you will see current weather, temperature, chance of rain, and farming suggestions.",
+    "weather_forecast_001":  "Weather forecast for the next few days is shown on your screen. Please carefully check the temperature, chance of rain, and upcoming weather changes so you can plan your farming activities better."
+}

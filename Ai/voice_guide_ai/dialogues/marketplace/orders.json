@@ -1,0 +1,35 @@
+{
+    "id": "market_orders_001",
+    "page": "marketplace",
+    "dialogueType": "orders",
+    "title": "Marketplace Orders",
+    "version": "1.0.0",
+    "text": "आपके ऑर्डर यहाँ दिखाई देंगे। ऑर्डर की स्थिति जाँचने के लिए टैप करें।",
+    "repeat": {
+        "enabled": false,
+        "afterHours": 0
+    },
+    "voice": {
+        "enabled": true,
+        "provider": "offline",
+        "file": "market_orders_001.mp3",
+        "language": "hi",
+        "speed": 1,
+        "volume": 1
+    },
+    "avatar": {
+        "enabled": true,
+        "animation": "point",
+        "expression": "neutral"
+    },
+    "display": {
+        "showSubtitle": true,
+        "showAvatar": true
+    },
+    "conditions": {
+        "firstVisit": false,
+        "loggedIn": true,
+        "internetRequired": false
+    },
+    "status": "active"
+}

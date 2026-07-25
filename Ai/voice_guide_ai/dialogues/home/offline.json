@@ -1,0 +1,35 @@
+{
+    "id":  "home_offline_001",
+    "page":  "home",
+    "dialogueType":  "offline",
+    "title":  "Home Offline",
+    "version":  "1.0.0",
+    "text":  "अभी इंटरनेट उपलब्ध नहीं है। कृपया कनेक्शन चालू करके फिर से प्रयास करें।",
+    "repeat":  {
+                   "enabled":  false,
+                   "afterHours":  0
+               },
+    "voice":  {
+                  "enabled":  true,
+                  "provider":  "offline",
+                  "file":  "home_offline_001.mp3",
+                  "language":  "hi",
+                  "speed":  1,
+                  "volume":  1
+              },
+    "avatar":  {
+                   "enabled":  true,
+                   "animation":  "warning",
+                   "expression":  "warning"
+               },
+    "display":  {
+                    "showSubtitle":  true,
+                    "showAvatar":  true
+                },
+    "conditions":  {
+                       "firstVisit":  false,
+                       "loggedIn":  false,
+                       "internetRequired":  false
+                   },
+    "status":  "active"
+}

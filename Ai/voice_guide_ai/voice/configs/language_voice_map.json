@@ -1,0 +1,238 @@
+{
+  "version": "1.0.0",
+  "map": {
+    "hi": {
+      "language_name": "Hindi",
+      "native_name": "हिन्दी",
+      "voice_id": "hi-IN-SwaraNeural",
+      "fallback_voice_id": "hi-IN-MadhurNeural",
+      "gender": "Female",
+      "accent": "Indian",
+      "provider": "edge_tts",
+      "rtl": false,
+      "audio_path_segment": "hi"
+    },
+    "en": {
+      "language_name": "English",
+      "native_name": "English",
+      "voice_id": "en-IN-NeerjaNeural",
+      "fallback_voice_id": "en-IN-PrabhatNeural",
+      "gender": "Female",
+      "accent": "Indian",
+      "provider": "edge_tts",
+      "rtl": false,
+      "audio_path_segment": "en"
+    },
+    "gu": {
+      "language_name": "Gujarati",
+      "native_name": "ગુજરાતી",
+      "voice_id": "gu-IN-DhwaniNeural",
+      "fallback_voice_id": "gu-IN-NiranjanNeural",
+      "gender": "Female",
+      "accent": "Indian",
+      "provider": "edge_tts",
+      "rtl": false,
+      "audio_path_segment": "gu"
+    },
+    "pa": {
+      "language_name": "Punjabi",
+      "native_name": "ਪੰਜਾਬੀ",
+      "voice_id": "pa-IN-OjasNeural",
+      "fallback_voice_id": "hi-IN-SwaraNeural",
+      "gender": "Male",
+      "accent": "Indian",
+      "provider": "edge_tts",
+      "rtl": false,
+      "audio_path_segment": "pa"
+    },
+    "mr": {
+      "language_name": "Marathi",
+      "native_name": "मराठी",
+      "voice_id": "mr-IN-AarohiNeural",
+      "fallback_voice_id": "mr-IN-ManoharNeural",
+      "gender": "Female",
+      "accent": "Indian",
+      "provider": "edge_tts",
+      "rtl": false,
+      "audio_path_segment": "mr"
+    },
+    "ta": {
+      "language_name": "Tamil",
+      "native_name": "தமிழ்",
+      "voice_id": "ta-IN-PallaviNeural",
+      "fallback_voice_id": "ta-IN-ValluvarNeural",
+      "gender": "Female",
+      "accent": "Indian",
+      "provider": "edge_tts",
+      "rtl": false,
+      "audio_path_segment": "ta"
+    },
+    "te": {
+      "language_name": "Telugu",
+      "native_name": "తెలుగు",
+      "voice_id": "te-IN-ShrutiNeural",
+      "fallback_voice_id": "te-IN-MohanNeural",
+      "gender": "Female",
+      "accent": "Indian",
+      "provider": "edge_tts",
+      "rtl": false,
+      "audio_path_segment": "te"
+    },
+    "kn": {
+      "language_name": "Kannada",
+      "native_name": "ಕನ್ನಡ",
+      "voice_id": "kn-IN-SapnaNeural",
+      "fallback_voice_id": "kn-IN-GaganNeural",
+      "gender": "Female",
+      "accent": "Indian",
+      "provider": "edge_tts",
+      "rtl": false,
+      "audio_path_segment": "kn"
+    },
+    "ml": {
+      "language_name": "Malayalam",
+      "native_name": "മലയാളം",
+      "voice_id": "ml-IN-SobhanaNeural",
+      "fallback_voice_id": "ml-IN-MidhunNeural",
+      "gender": "Female",
+      "accent": "Indian",
+      "provider": "edge_tts",
+      "rtl": false,
+      "audio_path_segment": "ml"
+    },
+    "bn": {
+      "language_name": "Bengali",
+      "native_name": "বাংলা",
+      "voice_id": "bn-IN-TanishaaNeural",
+      "fallback_voice_id": "bn-IN-BashkarNeural",
+      "gender": "Female",
+      "accent": "Indian",
+      "provider": "edge_tts",
+      "rtl": false,
+      "audio_path_segment": "bn"
+    },
+    "ur": {
+      "language_name": "Urdu",
+      "native_name": "اردو",
+      "voice_id": "ur-IN-GulNeural",
+      "fallback_voice_id": "ur-PK-AsadNeural",
+      "gender": "Female",
+      "accent": "Indian",
+      "provider": "edge_tts",
+      "rtl": true,
+      "audio_path_segment": "ur"
+    },
+    "od": {
+      "language_name": "Odia",
+      "native_name": "ଓଡ଼ିଆ",
+      "voice_id": "hi-IN-SwaraNeural",
+      "fallback_voice_id": "hi-IN-SwaraNeural",
+      "gender": "Female",
+      "accent": "Indian",
+      "provider": "edge_tts",
+      "rtl": false,
+      "audio_path_segment": "od",
+      "note": "No native Odia Edge-TTS voice; using Hindi fallback"
+    },
+    "as": {
+      "language_name": "Assamese",
+      "native_name": "অসমীয়া",
+      "voice_id": "hi-IN-SwaraNeural",
+      "fallback_voice_id": "hi-IN-SwaraNeural",
+      "gender": "Female",
+      "accent": "Indian",
+      "provider": "edge_tts",
+      "rtl": false,
+      "audio_path_segment": "as",
+      "note": "No native Assamese Edge-TTS voice; using Hindi fallback"
+    },
+    "rj/bagri": {
+      "language_name": "Bagri",
+      "native_name": "बागड़ी",
+      "voice_id": "hi-IN-SwaraNeural",
+      "fallback_voice_id": "hi-IN-MadhurNeural",
+      "gender": "Female",
+      "accent": "Rajasthani",
+      "provider": "edge_tts",
+      "rtl": false,
+      "audio_path_segment": "rj/bagri"
+    },
+    "rj/marwari": {
+      "language_name": "Marwari",
+      "native_name": "मारवाड़ी",
+      "voice_id": "hi-IN-SwaraNeural",
+      "fallback_voice_id": "hi-IN-MadhurNeural",
+      "gender": "Female",
+      "accent": "Rajasthani",
+      "provider": "edge_tts",
+      "rtl": false,
+      "audio_path_segment": "rj/marwari"
+    },
+    "rj/mewari": {
+      "language_name": "Mewari",
+      "native_name": "मेवाड़ी",
+      "voice_id": "hi-IN-SwaraNeural",
+      "fallback_voice_id": "hi-IN-MadhurNeural",
+      "gender": "Female",
+      "accent": "Rajasthani",
+      "provider": "edge_tts",
+      "rtl": false,
+      "audio_path_segment": "rj/mewari"
+    },
+    "rj/dhundhari": {
+      "language_name": "Dhundhari",
+      "native_name": "ढूंढाड़ी",
+      "voice_id": "hi-IN-SwaraNeural",
+      "fallback_voice_id": "hi-IN-MadhurNeural",
+      "gender": "Female",
+      "accent": "Rajasthani",
+      "provider": "edge_tts",
+      "rtl": false,
+      "audio_path_segment": "rj/dhundhari"
+    },
+    "rj/hadoti": {
+      "language_name": "Hadoti",
+      "native_name": "हाड़ौती",
+      "voice_id": "hi-IN-SwaraNeural",
+      "fallback_voice_id": "hi-IN-MadhurNeural",
+      "gender": "Female",
+      "accent": "Rajasthani",
+      "provider": "edge_tts",
+      "rtl": false,
+      "audio_path_segment": "rj/hadoti"
+    },
+    "rj/shekhawati": {
+      "language_name": "Shekhawati",
+      "native_name": "शेखावाटी",
+      "voice_id": "hi-IN-SwaraNeural",
+      "fallback_voice_id": "hi-IN-MadhurNeural",
+      "gender": "Female",
+      "accent": "Rajasthani",
+      "provider": "edge_tts",
+      "rtl": false,
+      "audio_path_segment": "rj/shekhawati"
+    },
+    "rj/mewati": {
+      "language_name": "Mewati",
+      "native_name": "मेवाती",
+      "voice_id": "hi-IN-SwaraNeural",
+      "fallback_voice_id": "hi-IN-MadhurNeural",
+      "gender": "Female",
+      "accent": "Rajasthani",
+      "provider": "edge_tts",
+      "rtl": false,
+      "audio_path_segment": "rj/mewati"
+    },
+    "rj/wagdi": {
+      "language_name": "Wagdi",
+      "native_name": "वागड़ी",
+      "voice_id": "hi-IN-SwaraNeural",
+      "fallback_voice_id": "hi-IN-MadhurNeural",
+      "gender": "Female",
+      "accent": "Rajasthani",
+      "provider": "edge_tts",
+      "rtl": false,
+      "audio_path_segment": "rj/wagdi"
+    }
+  }
+}

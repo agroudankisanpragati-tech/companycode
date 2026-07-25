@@ -1,0 +1,11 @@
+{
+    "chat_response_001":  "Answer is ready.",
+    "ai_chat_replay_001":  "Let me guide you again. Write or say anything related to farming. I will try to give you the best answer based on your profile and available information.",
+    "ai_chat_welcome_001":  "Hello! I am Pragati AI. I can help you with all your farming questions — crops, government schemes, weather, mandi prices, soil health, disease detection, and farming decisions. You can type or speak to ask me anything.",
+    "ai_chat_response_001":  "Your question has been answered. Please read the information shown on the screen carefully. If you need more details or have another question, feel free to ask.",
+    "ai_chat_offline_001":  "No internet right now. If offline AI features are available, they will be used. Otherwise please connect to the internet and try again.",
+    "ai_chat_exit_001":  "Thank you for using Pragati AI. Whenever you need help with farming, come back and ask. I am always here for you.",
+    "ai_chat_error_001":  "Sorry. I am unable to answer your question right now. Please try again after some time or ask in a different way.",
+    "ai_chat_listening_001":  "I am listening. Please speak or type your question clearly.",
+    "ai_chat_help_001":  "You can ask anything about farming — crop selection, disease detection, organic treatment, government schemes, weather, mandi prices, fertilizer, irrigation, or any farming problem."
+}

@@ -22,6 +22,7 @@ import { resolveVoiceLang } from '@/services/languageEngine';
 import { useReportCache } from '@/hooks/useReportCache';
 import { useNotification } from '@/hooks/useNotification';
 import { usePageContext } from '@/hooks/usePageContext';
+import { useVoiceGuide } from '@/hooks/useVoiceGuide';
 
 import { ScanResult, HistoryItem } from '@/components/disease/types';
 
@@ -70,7 +71,7 @@ function ScanSteps({ hasImage, hasCrop }: { hasImage: boolean; hasCrop: boolean 
     <div className="flex items-center gap-1 rounded-2xl border border-gray-100 bg-white px-4 py-3 shadow-sm">
       <StepBadge n={1} label="Upload Photo" active={!hasImage} done={hasImage} />
       <StepDivider />
-      <StepBadge n={2} label="Crop Name" active={hasImage && !hasCrop} done={hasCrop} />
+      <StepBadge n={2} label="Crop (Optional)" active={false} done={hasCrop} />
       <StepDivider />
       <StepBadge n={3} label="Scan" active={hasImage} done={false} />
     </div>
@@ -86,6 +87,7 @@ export default function DiseaseDetectionPage() {
   const { langCode } = useLanguage();
   const { notify } = useNotification();
   const reportCache = useReportCache('disease');
+  const voiceGuide = useVoiceGuide('disease_detection');
   // Voice lang always derived from global language context
   const voiceLang = resolveVoiceLang(langCode);
 
@@ -202,23 +204,36 @@ export default function DiseaseDetectionPage() {
     setFile(null); setPreview(null); setResult(null); setError(''); setFeedback(null);
   };
 
+  // Fire-and-forget Voice Guide trigger — never blocks disease detection
+  const triggerVoiceGuide = (action: () => Promise<void>) => {
+    void action().catch(() => { /* Voice Guide unavailable — continue */ });
+  };
+
   const scan = async () => {
     if (!isAuthenticated) { router.push('/auth/login'); return; }
     if (!file) { toast.warning('Please upload or capture a crop image first.'); return; }
-    if (offline) { toast.error('No internet connection. Please connect and try again.'); return; }
+    // NOTE: Do NOT block on navigator.onLine — disease detection is fully local.
+    // navigator.onLine can be false on LAN-only setups even when localhost:4000 is reachable.
+    // The actual connectivity error will surface from the fetch call with an accurate message.
 
     setScanning(true); setError(''); setResult(null); setScanStep(0);
 
     try {
+      // ── Offline AI pipeline: Crop Verification → Disease Detection → Knowledge Base ──
+      // Voice Guide is OPTIONAL and fires ASYNCHRONOUSLY — never before or during inference.
       const data = await apiScan(file, cropEnglish, (s: number) => setScanStep(s));
       setBaseResult(data);
       setResult(data);
       toast.success('✅ Prediction completed!');
+      // Voice Guide executes AFTER response — fire-and-forget, never blocks
+      triggerVoiceGuide(() => voiceGuide.triggerSuccess());
     } catch (e: any) {
       if (e.name === 'AbortError') return;
       const msg = e.message || 'Disease scan failed. Please try again.';
       setError(msg);
       toast.error(msg);
+      // Voice Guide executes AFTER error — fire-and-forget, never blocks
+      triggerVoiceGuide(() => voiceGuide.triggerError());
     } finally {
       setScanning(false);
       setScanStep(0);
@@ -239,6 +254,8 @@ export default function DiseaseDetectionPage() {
   const reset = () => {
     setFile(null); setPreview(null); setResult(null); setBaseResult(null);
     setError(''); setCropDisplay(''); setCropEnglish(''); setFeedback(null); setFeedbackComment(''); setFeedbackCorrectDisease(''); setShowReport(false);
+    // Voice Guide is optional — fire-and-forget, never blocks reset
+    triggerVoiceGuide(() => voiceGuide.triggerButton('retry') as unknown as Promise<void>);
   };
 
   const handleTranslated = (lang: string, data: Record<string, any>) => {
@@ -391,19 +408,17 @@ export default function DiseaseDetectionPage() {
                   {/* Scan CTA */}
                   <button
                     onClick={scan}
-                    disabled={!file || scanning || offline || !isAuthenticated}
+                    disabled={!file || scanning || !isAuthenticated}
                     className="w-full rounded-2xl bg-gradient-to-r from-rose-600 to-orange-500 py-5 text-lg font-extrabold text-white shadow-xl shadow-rose-200 hover:shadow-rose-300 hover:scale-[1.01] active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed disabled:scale-100 disabled:shadow-none transition-all flex items-center justify-center gap-3"
                   >
                     <FaMicroscope size={20} />
                     {!isAuthenticated
                       ? 'Login to Scan'
-                      : offline
-                      ? 'No Internet — Cannot Scan'
                       : !file
                       ? 'Upload a Photo to Scan'
                       : 'Scan for Disease'
                     }
-                    {file && isAuthenticated && !offline && <FaArrowRight size={16} />}
+                    {file && isAuthenticated && <FaArrowRight size={16} />}
                   </button>
                 </>
               )}

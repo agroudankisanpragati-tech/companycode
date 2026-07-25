@@ -7,6 +7,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { FcGoogle } from 'react-icons/fc';
 import { useAuth, type UserRole } from '@/context/AuthContext';
+import { useVoiceGuide } from '@/hooks/useVoiceGuide';
 
 export default function RegisterContent() {
   const router = useRouter();
@@ -16,6 +17,8 @@ export default function RegisterContent() {
   const roleParam: UserRole = searchParams?.get('role') === 'shopkeeper' ? 'shopkeeper' : 'farmer';
   const isShopkeeper = roleParam === 'shopkeeper';
   const googleRegisterUrl = `/api/auth/google?role=${roleParam}`;
+
+  useVoiceGuide('register');
 
   const [name, setName] = useState('');
   const [shopName, setShopName] = useState('');

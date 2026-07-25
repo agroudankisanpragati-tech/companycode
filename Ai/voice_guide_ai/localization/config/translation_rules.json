@@ -1,0 +1,18 @@
+{
+  "placeholder_pattern": "\\{[a-zA-Z_][a-zA-Z0-9_]*\\}",
+  "known_placeholders": [
+    "name", "crop", "district", "state", "temperature",
+    "price", "market", "scheme", "date", "time",
+    "count", "amount", "unit", "language", "page"
+  ],
+  "modules": [
+    "ai_chat", "app_settings", "common", "crop_recommendation",
+    "disease_detection", "government_scheme", "home", "language_popup",
+    "login", "mandi", "marketplace", "profile", "register",
+    "soil_health", "weather"
+  ],
+  "encoding": "utf-8",
+  "max_text_length": 2000,
+  "allow_empty_values": false,
+  "strict_key_validation": true
+}

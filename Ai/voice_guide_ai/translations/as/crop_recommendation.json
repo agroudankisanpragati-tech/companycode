@@ -1,0 +1,14 @@
+{
+    "crop_recommendation_welcome_001": "শস্য পৰামৰ্শ পেজত আপোনাক স্বাগতম। আপোনাৰ মাটি আৰু বতৰ অনুযায়ী শস্যৰ পৰামৰ্শ পাওক।",
+    "crop_recommendation_replay_001": "মই পুনৰ বুজাওঁ।",
+    "crop_recommendation_help_001": "মাটিৰ প্ৰকাৰ, ঋতু আৰু জলসিঞ্চন নিৰ্বাচন কৰক।",
+    "crop_recommendation_error_001": "শস্য পৰামৰ্শ পাব পৰা নগ'ল। পুনৰ চেষ্টা কৰক।",
+    "crop_recommendation_offline_001": "ইন্টাৰনেট সংযোগ নাই।",
+    "crop_recommendation_exit_001": "ধন্যবাদ।",
+    "crop_recommendation_result_001": "আপোনাৰ বাবে শস্যৰ পৰামৰ্শ।",
+    "crop_recommendation_processing_001": "শস্যৰ পৰামৰ্শ বিশ্লেষণ হৈছে।",
+    "crop_recommendation_retry_001": "পুনৰ চেষ্টা কৰক।",
+    "crop_recommendation_soil_selection_001": "মাটিৰ প্ৰকাৰ নিৰ্বাচন কৰক।",
+    "crop_recommendation_season_selection_001": "ঋতু নিৰ্বাচন কৰক।",
+    "crop_recommendation_irrigation_selection_001": "জলসিঞ্চনৰ প্ৰকাৰ নিৰ্বাচন কৰক।"
+}

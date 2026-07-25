@@ -1,0 +1,42 @@
+{
+  "id": "profile_personal_001",
+  "page": "profile",
+  "dialogueType": "personal_details",
+  "title": "Personal Details",
+  "version": "1.0.0",
+
+  "text": "यहाँ आपकी व्यक्तिगत जानकारी प्रदर्शित की गई है। यदि कोई जानकारी बदल गई है, तो उसे अपडेट करें ताकि आपकी प्रोफ़ाइल हमेशा सही रहे।",
+
+  "repeat": {
+    "enabled": false,
+    "afterHours": 0
+  },
+
+  "voice": {
+    "enabled": true,
+    "provider": "offline",
+    "file": "profile_personal_001.mp3",
+    "language": "hi",
+    "speed": 1.0,
+    "volume": 1.0
+  },
+
+  "avatar": {
+    "enabled": true,
+    "animation": "point",
+    "expression": "neutral"
+  },
+
+  "display": {
+    "showSubtitle": true,
+    "showAvatar": true
+  },
+
+  "conditions": {
+    "firstVisit": false,
+    "loggedIn": true,
+    "internetRequired": false
+  },
+
+  "status": "active"
+}

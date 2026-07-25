@@ -1,14 +1,28 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { FaTimes, FaSearch, FaCheck, FaLeaf } from 'react-icons/fa';
 import { useLanguage } from '@/context/LanguageContext';
+import { useVoiceGuideContext } from '@/context/VoiceGuideContext';
 
 export default function LanguagePopup() {
   const { languages, langCode, setLanguage, dismissPopup, t } = useLanguage();
+  const guide = useVoiceGuideContext();
   const [selected, setSelected] = useState(langCode);
   const [query, setQuery] = useState('');
   const [saving, setSaving] = useState(false);
+
+  // Play welcome on mount (pre-auth)
+  useEffect(() => {
+    const timer = setTimeout(() => guide.playPreAuth('welcome', langCode), 800);
+    return () => clearTimeout(timer);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Play language_selected when selection changes
+  const handleSelect = useCallback((code: string) => {
+    setSelected(code);
+    guide.playPreAuth('language_selected', code);
+  }, [guide]);
 
   const filtered = languages.filter(
     (l) =>
@@ -21,7 +35,18 @@ export default function LanguagePopup() {
     await setLanguage(selected, true);
     dismissPopup();
     setSaving(false);
+    window.dispatchEvent(new CustomEvent('voice-guide-button', { detail: { button: 'continue' } }));
   }, [selected, setLanguage, dismissPopup]);
+
+  const handleSkip = useCallback(() => {
+    dismissPopup();
+    window.dispatchEvent(new CustomEvent('voice-guide-button', { detail: { button: 'skip' } }));
+  }, [dismissPopup]);
+
+  const handleClose = useCallback(() => {
+    dismissPopup();
+    window.dispatchEvent(new CustomEvent('voice-guide-button', { detail: { button: 'close' } }));
+  }, [dismissPopup]);
 
   return (
     <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fadeIn">
@@ -41,7 +66,7 @@ export default function LanguagePopup() {
           </p>
           {/* Dismiss X */}
           <button
-            onClick={dismissPopup}
+            onClick={handleClose}
             className="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transition-colors"
             aria-label="Close"
           >
@@ -71,7 +96,7 @@ export default function LanguagePopup() {
               return (
                 <button
                   key={lang.code}
-                  onClick={() => setSelected(lang.code)}
+                  onClick={() => handleSelect(lang.code)}
                   className={`relative flex items-center gap-3 px-3 py-3 rounded-xl border-2 text-left transition-all duration-150 ${
                     active
                       ? 'border-emerald-500 bg-emerald-50 shadow-sm'
@@ -100,7 +125,7 @@ export default function LanguagePopup() {
         {/* Footer actions */}
         <div className="flex items-center justify-between gap-3 px-6 py-4 border-t border-gray-100 bg-gray-50 flex-shrink-0">
           <button
-            onClick={dismissPopup}
+            onClick={handleSkip}
             className="px-5 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-600 hover:bg-gray-100 transition-colors font-medium"
           >
             {t('language', 'skipBtn', 'Skip')}

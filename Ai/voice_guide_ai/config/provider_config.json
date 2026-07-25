@@ -1,0 +1,36 @@
+{
+    "version": "1.0.0",
+    "providers": {
+        "edge_tts": {
+            "enabled": true,
+            "priority": 1,
+            "timeout_seconds": 10,
+            "retry_count": 2
+        },
+        "piper": {
+            "enabled": false,
+            "priority": 2,
+            "executable": "voice_models/piper/piper.exe",
+            "models_dir": "voice_models/voices"
+        },
+        "web_speech": {
+            "enabled": true,
+            "priority": 3,
+            "fallback_only": true
+        },
+        "offline_cache": {
+            "enabled": true,
+            "priority": 0,
+            "cache_dir": "voice/cache/offline"
+        }
+    },
+    "fallback_order": ["offline_cache", "edge_tts", "piper", "web_speech"],
+    "language_provider_map": {
+        "hi": "edge_tts", "en": "edge_tts", "gu": "edge_tts", "pa": "edge_tts",
+        "mr": "edge_tts", "ta": "edge_tts", "te": "edge_tts", "kn": "edge_tts",
+        "ml": "edge_tts", "bn": "edge_tts", "ur": "edge_tts", "od": "edge_tts",
+        "as": "edge_tts", "rj/bagri": "edge_tts", "rj/marwari": "edge_tts",
+        "rj/mewari": "edge_tts", "rj/dhundhari": "edge_tts", "rj/hadoti": "edge_tts",
+        "rj/shekhawati": "edge_tts", "rj/mewati": "edge_tts", "rj/wagdi": "edge_tts"
+    }
+}

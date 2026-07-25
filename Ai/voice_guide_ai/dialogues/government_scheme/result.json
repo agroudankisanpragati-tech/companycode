@@ -1,0 +1,42 @@
+{
+  "id": "scheme_result_001",
+  "page": "government_scheme",
+  "dialogueType": "result",
+  "title": "Government Scheme Result",
+  "version": "1.0.0",
+
+  "text": "विश्लेषण सफलतापूर्वक पूरा हो गया है। आपकी स्क्रीन पर आपके लिए उपयुक्त सरकारी योजनाओं की सूची प्रदर्शित कर दी गई है। कृपया प्रत्येक योजना की पात्रता, लाभ, आवश्यक दस्तावेज़ और आवेदन प्रक्रिया को ध्यानपूर्वक पढ़ें।",
+
+  "repeat": {
+    "enabled": false,
+    "afterHours": 0
+  },
+
+  "voice": {
+    "enabled": true,
+    "provider": "offline",
+    "file": "scheme_result_001.mp3",
+    "language": "hi",
+    "speed": 1.0,
+    "volume": 1.0
+  },
+
+  "avatar": {
+    "enabled": true,
+    "animation": "success",
+    "expression": "happy"
+  },
+
+  "display": {
+    "showSubtitle": true,
+    "showAvatar": true
+  },
+
+  "conditions": {
+    "firstVisit": false,
+    "loggedIn": true,
+    "internetRequired": false
+  },
+
+  "status": "active"
+}

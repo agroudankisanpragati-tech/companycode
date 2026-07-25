@@ -1,0 +1,35 @@
+{
+    "id":  "common_processing_001",
+    "page":  "common",
+    "dialogueType":  "processing",
+    "title":  "Common Processing",
+    "version":  "1.0.0",
+    "text":  "कृपया प्रतीक्षा करें, जानकारी संसाधित की जा रही है।",
+    "repeat":  {
+                   "enabled":  false,
+                   "afterHours":  0
+               },
+    "voice":  {
+                  "enabled":  true,
+                  "provider":  "offline",
+                  "file":  "common_processing_001.mp3",
+                  "language":  "hi",
+                  "speed":  1,
+                  "volume":  1
+              },
+    "avatar":  {
+                   "enabled":  true,
+                   "animation":  "loading",
+                   "expression":  "thinking"
+               },
+    "display":  {
+                    "showSubtitle":  true,
+                    "showAvatar":  true
+                },
+    "conditions":  {
+                       "firstVisit":  false,
+                       "loggedIn":  true,
+                       "internetRequired":  false
+                   },
+    "status":  "active"
+}

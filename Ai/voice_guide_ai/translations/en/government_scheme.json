@@ -1,0 +1,13 @@
+{
+    "scheme_replay_001":  "Let me guide you again. Fill in your details correctly. Our system will search for government schemes based on your eligibility. In the results, carefully read the benefits, eligibility, and application process for each scheme.",
+    "scheme_offline_001":  "No internet right now. If scheme data is available on your device, it will be shown. Otherwise please connect to the internet and try again.",
+    "scheme_result_001":  "Analysis is complete. A list of suitable government schemes for you is shown on your screen. Please carefully read the eligibility, benefits, required documents, and application process for each scheme.",
+    "scheme_welcome_001":  "Welcome to the Government Schemes page. Here you can find information about various central and state government farming schemes based on your eligibility. Fill in the correct details to see a list of schemes suitable for you.",
+    "scheme_search_001":  "Please wait a moment. Suitable government schemes are being searched based on your information.",
+    "scheme_help_001":  "Please fill in your required details like state, district, age, occupation, and other information correctly. Based on this, suitable government schemes will be shown for you.",
+    "scheme_documents_001":  "Documents required for the selected scheme are shown on your screen. Keep all required documents ready before applying so the application process goes smoothly.",
+    "scheme_application_001":  "You can now start the application process. Please fill in all information carefully and upload the required documents. Check all details once before submitting the application.",
+    "scheme_eligibility_001":  "Eligibility for each scheme is being checked based on your information. Please carefully read the eligibility conditions shown in the results and apply only for schemes you qualify for.",
+    "scheme_exit_001":  "Thank you for checking government schemes. You can now use any other feature or come back to this page later for new scheme information. I will keep guiding you on the next page too.",
+    "scheme_error_001":  "Sorry. Government scheme information could not be fetched right now. Please try again after some time or check your details."
+}

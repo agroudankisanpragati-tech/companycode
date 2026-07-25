@@ -7,6 +7,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { FcGoogle } from 'react-icons/fc';
 import { useAuth, type UserRole } from '@/context/AuthContext';
+import { useVoiceGuide } from '@/hooks/useVoiceGuide';
 
 export default function LoginContent() {
   const router = useRouter();
@@ -14,6 +15,7 @@ export default function LoginContent() {
   const roleParam: UserRole = searchParams?.get('role') === 'shopkeeper' ? 'shopkeeper' : 'farmer';
 
   const { login } = useAuth();
+  const voiceGuide = useVoiceGuide('login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -44,6 +46,7 @@ export default function LoginContent() {
           ? "Incorrect email or password. Please register if you don't have an account."
           : msg || 'Login failed. Please try again.'
       );
+      voiceGuide.triggerError();
     } finally {
       setLoading(false);
     }

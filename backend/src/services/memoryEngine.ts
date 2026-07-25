@@ -28,6 +28,9 @@ import { UserSettings } from '../models/UserSettings';
 import { FarmerProfileData } from '../models/FarmerProfileData';
 import { normalizeKey } from './languageDictionaryService';
 import { extractCandidateWords, processBatchUnknownWords } from './aliasEngine';
+import { createLogger } from '../utils/logger';
+
+const log = createLogger('memoryEngine');
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -116,7 +119,7 @@ export async function loadMemoryContext(userId: string): Promise<MemoryContext> 
       lastActivePageContext: memory.preferences?.lastActivePageContext,
     };
   } catch (err: any) {
-    console.error('[MemoryEngine] loadMemoryContext error (non-fatal):', err?.message);
+    log.warn('loadMemoryContext error (non-fatal)', { error: err?.message });
     return {
       recentHistory: [],
       preferences: { selectedLang: 'hi', voiceEnabled: false, preferredTopics: [] },
@@ -200,7 +203,7 @@ export async function writeMemoryTurn(input: MemoryWriteInput): Promise<void> {
     runAliasEngineAsync(userMessage, pageContext, langCode);
 
   } catch (err: any) {
-    console.error('[MemoryEngine] writeMemoryTurn error (non-fatal):', err?.message);
+    log.warn('writeMemoryTurn error (non-fatal)', { error: err?.message });
   }
 }
 
@@ -227,7 +230,7 @@ export async function updateLanguagePreference(
       { upsert: true }
     );
   } catch (err: any) {
-    console.error('[MemoryEngine] updateLanguagePreference error (non-fatal):', err?.message);
+    log.warn('updateLanguagePreference error (non-fatal)', { error: err?.message });
   }
 }
 

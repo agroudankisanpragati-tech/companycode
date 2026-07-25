@@ -9,6 +9,9 @@ import fs from 'fs';
 import path from 'path';
 import FormData from 'form-data';
 import axios, { AxiosError } from 'axios';
+import { createLogger } from '../utils/logger';
+
+const log = createLogger('yoloService');
 
 const YOLO_BASE_URL = process.env.YOLO_SERVICE_URL || 'http://localhost:8000';
 const YOLO_TIMEOUT_MS = parseInt(process.env.YOLO_TIMEOUT_MS || '15000', 10);
@@ -108,29 +111,34 @@ export async function isCropSupportedByYolo(cropHint: string): Promise<boolean> 
 export async function callYoloPredict(
   imagePath: string,
   cropHint?: string,
+  farmerCrop?: string,
 ): Promise<YoloPrediction | null> {
   try {
     if (!fs.existsSync(imagePath)) {
-      console.error(`[YOLO] Image file not found: ${imagePath}`);
+      log.error('Image file not found', { imagePath });
       return null;
     }
 
     const form = new FormData();
-    // Detect content type from extension — handles .jpg.jpeg double-extension filenames
     const ext = imagePath.toLowerCase();
     const contentType = ext.endsWith('.png') ? 'image/png'
       : ext.endsWith('.webp') ? 'image/webp'
       : 'image/jpeg';
 
     form.append('image', fs.createReadStream(imagePath), {
-      filename: 'upload.jpg',  // always send a clean filename to FastAPI
+      filename: 'upload.jpg',
       contentType,
     });
     if (cropHint) {
       form.append('crop_hint', cropHint);
     }
+    // farmer_crop is SECONDARY metadata — Python side uses it only for
+    // mismatch validation against EfficientNet. Never used for YOLO filtering.
+    if (farmerCrop) {
+      form.append('farmer_crop', farmerCrop);
+    }
 
-    console.log(`[YOLO] Sending predict request: crop=${cropHint}, file=${imagePath}`);
+    log.debug('Sending predict request', { cropHint, farmerCrop, imagePath });
 
     const res = await axios.post<YoloPrediction>(`${YOLO_BASE_URL}/predict`, form, {
       headers: form.getHeaders(),
@@ -138,21 +146,38 @@ export async function callYoloPredict(
     });
 
     if (res.data?.success) {
-      console.log(`[YOLO] Prediction: ${res.data.class_name} (${res.data.confidence}%)`);
+      log.debug('Prediction complete', { className: res.data.class_name, confidence: res.data.confidence });
       return res.data;
     }
-    console.error('[YOLO] Unexpected response shape:', JSON.stringify(res.data).slice(0, 200));
+
+    // Python side returned success:false (crop mismatch or low confidence)
+    // Return the response as-is so diseaseService can surface the error message
+    if (res.data && (res.data as any).error) {
+      log.warn('Python crop verification rejected', { error: (res.data as any).error });
+      return res.data;  // caller checks success flag
+    }
+
+    log.error('Unexpected response shape', { response: JSON.stringify(res.data).slice(0, 200) });
     return null;
   } catch (err) {
     const axiosErr = err as AxiosError<{ detail: string }>;
     const status = axiosErr.response?.status;
     const detail = axiosErr.response?.data?.detail || axiosErr.message;
+    const code = (axiosErr as any).code || (axiosErr.cause as any)?.code;
 
     if (status === 422) {
-      console.log(`[YOLO] Crop not in training data (422): ${detail}`);
+      log.debug('Crop not in training data (422)', { detail });
       return null;
     }
-    console.error(`[YOLO] Predict failed (${status || 'no response'}): ${detail}`);
+    if (code === 'ECONNREFUSED' || detail?.toLowerCase().includes('econnrefused')) {
+      log.error('FastAPI server not running (ECONNREFUSED) — start with: cd Ai && python fastapi_server.py', { url: YOLO_BASE_URL });
+      return null;
+    }
+    if (axiosErr.code === 'ECONNABORTED' || detail?.toLowerCase().includes('timeout')) {
+      log.error(`FastAPI server timed out after ${YOLO_TIMEOUT_MS}ms`, { detail });
+      return null;
+    }
+    log.error('Predict failed', { status: status || 'no response', detail, code });
     return null;
   }
 }

@@ -1,0 +1,42 @@
+{
+  "id": "ai_chat_help_001",
+  "page": "ai_chat",
+  "dialogueType": "help",
+  "title": "Pragati AI Help",
+  "version": "1.0.0",
+
+  "text": "आप खेती से जुड़ा कोई भी प्रश्न पूछ सकते हैं। उदाहरण के लिए फसल चयन, रोग पहचान, जैविक उपचार, सरकारी योजनाएँ, मौसम, मंडी भाव, उर्वरक, सिंचाई या खेती की किसी भी समस्या के बारे में जानकारी प्राप्त कर सकते हैं।",
+
+  "repeat": {
+    "enabled": false,
+    "afterHours": 0
+  },
+
+  "voice": {
+    "enabled": true,
+    "provider": "offline",
+    "file": "ai_chat_help_001.mp3",
+    "language": "hi",
+    "speed": 1.0,
+    "volume": 1.0
+  },
+
+  "avatar": {
+    "enabled": true,
+    "animation": "point",
+    "expression": "smile"
+  },
+
+  "display": {
+    "showSubtitle": true,
+    "showAvatar": true
+  },
+
+  "conditions": {
+    "firstVisit": false,
+    "loggedIn": true,
+    "internetRequired": false
+  },
+
+  "status": "active"
+}

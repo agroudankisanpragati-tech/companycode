@@ -1,0 +1,51 @@
+{
+  "formats": {
+    "hi": {
+      "date": "DD/MM/YYYY",
+      "time": "HH:mm",
+      "decimal_separator": ".",
+      "thousands_separator": ",",
+      "currency": "₹",
+      "currency_position": "prefix",
+      "temperature_unit": "°C"
+    },
+    "en": {
+      "date": "DD/MM/YYYY",
+      "time": "HH:mm",
+      "decimal_separator": ".",
+      "thousands_separator": ",",
+      "currency": "₹",
+      "currency_position": "prefix",
+      "temperature_unit": "°C"
+    },
+    "gu": {
+      "date": "DD/MM/YYYY",
+      "time": "HH:mm",
+      "decimal_separator": ".",
+      "thousands_separator": ",",
+      "currency": "₹",
+      "currency_position": "prefix",
+      "temperature_unit": "°C"
+    },
+    "pa": {
+      "date": "DD/MM/YYYY",
+      "time": "HH:mm",
+      "decimal_separator": ".",
+      "thousands_separator": ",",
+      "currency": "₹",
+      "currency_position": "prefix",
+      "temperature_unit": "°C"
+    },
+    "ur": {
+      "date": "DD/MM/YYYY",
+      "time": "HH:mm",
+      "decimal_separator": ".",
+      "thousands_separator": ",",
+      "currency": "₹",
+      "currency_position": "prefix",
+      "temperature_unit": "°C",
+      "rtl": true
+    }
+  },
+  "default_format": "hi"
+}

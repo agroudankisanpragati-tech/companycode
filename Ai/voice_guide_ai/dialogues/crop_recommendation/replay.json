@@ -1,0 +1,42 @@
+{
+  "id": "crop_replay_001",
+  "page": "crop_recommendation",
+  "dialogueType": "replay",
+  "title": "Replay Crop Recommendation Guide",
+  "version": "1.0.0",
+
+  "text": "मैं आपको फिर से मार्गदर्शन देता हूँ। कृपया अपनी भूमि, मिट्टी, मौसम, पानी की उपलब्धता तथा अन्य आवश्यक जानकारी सही प्रकार से भरें। हमारा एआई इन सभी जानकारियों का विश्लेषण करके आपके लिए सबसे उपयुक्त फसलों की अनुशंसा तैयार करेगा।",
+
+  "repeat": {
+    "enabled": false,
+    "afterHours": 0
+  },
+
+  "voice": {
+    "enabled": true,
+    "provider": "offline",
+    "file": "crop_replay_001.mp3",
+    "language": "hi",
+    "speed": 1.0,
+    "volume": 1.0
+  },
+
+  "avatar": {
+    "enabled": true,
+    "animation": "point",
+    "expression": "smile"
+  },
+
+  "display": {
+    "showSubtitle": true,
+    "showAvatar": true
+  },
+
+  "conditions": {
+    "firstVisit": false,
+    "loggedIn": true,
+    "internetRequired": false
+  },
+
+  "status": "active"
+}

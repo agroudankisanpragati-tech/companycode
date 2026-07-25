@@ -1,0 +1,35 @@
+{
+    "id":  "settings_welcome_001",
+    "page":  "app_settings",
+    "dialogueType":  "welcome",
+    "title":  "App Settings Welcome",
+    "version":  "1.0.0",
+    "text":  "App Settings अनुभाग में आपका स्वागत है। मैं इस चरण में आपकी सहायता करूँगा।",
+    "repeat":  {
+                   "enabled":  true,
+                   "afterHours":  24
+               },
+    "voice":  {
+                  "enabled":  true,
+                  "provider":  "offline",
+                  "file":  "settings_welcome_001.mp3",
+                  "language":  "hi",
+                  "speed":  1,
+                  "volume":  1
+              },
+    "avatar":  {
+                   "enabled":  true,
+                   "animation":  "wave",
+                   "expression":  "smile"
+               },
+    "display":  {
+                    "showSubtitle":  true,
+                    "showAvatar":  true
+                },
+    "conditions":  {
+                       "firstVisit":  true,
+                       "loggedIn":  true,
+                       "internetRequired":  false
+                   },
+    "status":  "active"
+}

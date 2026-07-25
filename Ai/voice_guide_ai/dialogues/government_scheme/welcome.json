@@ -1,0 +1,42 @@
+{
+  "id": "scheme_welcome_001",
+  "page": "government_scheme",
+  "dialogueType": "welcome",
+  "title": "Government Scheme Welcome",
+  "version": "1.0.0",
+
+  "text": "सरकारी योजनाएँ पेज पर आपका स्वागत है। यहाँ आप अपनी पात्रता के अनुसार केंद्र और राज्य सरकार की विभिन्न कृषि योजनाओं की जानकारी प्राप्त कर सकते हैं। सही जानकारी भरने पर आपको आपके लिए उपयुक्त योजनाओं की सूची दिखाई जाएगी।",
+
+  "repeat": {
+    "enabled": true,
+    "afterHours": 24
+  },
+
+  "voice": {
+    "enabled": true,
+    "provider": "offline",
+    "file": "scheme_welcome_001.mp3",
+    "language": "hi",
+    "speed": 1.0,
+    "volume": 1.0
+  },
+
+  "avatar": {
+    "enabled": true,
+    "animation": "wave",
+    "expression": "smile"
+  },
+
+  "display": {
+    "showSubtitle": true,
+    "showAvatar": true
+  },
+
+  "conditions": {
+    "firstVisit": true,
+    "loggedIn": true,
+    "internetRequired": false
+  },
+
+  "status": "active"
+}

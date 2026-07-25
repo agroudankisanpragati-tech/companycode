@@ -1,0 +1,28 @@
+{
+  "version": "1.0.0",
+  "languages": {
+    "hi":           { "name": "Hindi",      "native": "हिन्दी",       "rtl": false, "path_segment": "hi" },
+    "en":           { "name": "English",    "native": "English",      "rtl": false, "path_segment": "en" },
+    "gu":           { "name": "Gujarati",   "native": "ગુજરાતી",      "rtl": false, "path_segment": "gu" },
+    "pa":           { "name": "Punjabi",    "native": "ਪੰਜਾਬੀ",       "rtl": false, "path_segment": "pa" },
+    "mr":           { "name": "Marathi",    "native": "मराठी",        "rtl": false, "path_segment": "mr" },
+    "ta":           { "name": "Tamil",      "native": "தமிழ்",        "rtl": false, "path_segment": "ta" },
+    "te":           { "name": "Telugu",     "native": "తెలుగు",       "rtl": false, "path_segment": "te" },
+    "kn":           { "name": "Kannada",    "native": "ಕನ್ನಡ",        "rtl": false, "path_segment": "kn" },
+    "ml":           { "name": "Malayalam",  "native": "മലയാളം",       "rtl": false, "path_segment": "ml" },
+    "bn":           { "name": "Bengali",    "native": "বাংলা",        "rtl": false, "path_segment": "bn" },
+    "ur":           { "name": "Urdu",       "native": "اردو",         "rtl": true,  "path_segment": "ur" },
+    "od":           { "name": "Odia",       "native": "ଓଡ଼ିଆ",        "rtl": false, "path_segment": "od" },
+    "as":           { "name": "Assamese",   "native": "অসমীয়া",      "rtl": false, "path_segment": "as" },
+    "rj/bagri":     { "name": "Bagri",      "native": "बागड़ी",       "rtl": false, "path_segment": "rj/bagri" },
+    "rj/marwari":   { "name": "Marwari",    "native": "मारवाड़ी",     "rtl": false, "path_segment": "rj/marwari" },
+    "rj/mewari":    { "name": "Mewari",     "native": "मेवाड़ी",      "rtl": false, "path_segment": "rj/mewari" },
+    "rj/dhundhari": { "name": "Dhundhari",  "native": "ढूंढाड़ी",     "rtl": false, "path_segment": "rj/dhundhari" },
+    "rj/hadoti":    { "name": "Hadoti",     "native": "हाड़ौती",      "rtl": false, "path_segment": "rj/hadoti" },
+    "rj/shekhawati":{ "name": "Shekhawati", "native": "शेखावाटी",    "rtl": false, "path_segment": "rj/shekhawati" },
+    "rj/mewati":    { "name": "Mewati",     "native": "मेवाती",       "rtl": false, "path_segment": "rj/mewati" },
+    "rj/wagdi":     { "name": "Wagdi",      "native": "वागड़ी",       "rtl": false, "path_segment": "rj/wagdi" }
+  },
+  "default": "hi",
+  "fallback": "en"
+}

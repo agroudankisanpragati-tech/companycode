@@ -17,8 +17,11 @@ import {
 } from '../services/diseaseService';
 import { translateObject, SUPPORTED_LANGUAGES } from '../services/translationService';
 import { fetchCropsFromYolo } from '../services/yoloService';
+import { createLogger } from '../utils/logger';
+import { createExactSafeRegex, createSafeRegex } from '../utils/regex';
 
 const router = express.Router();
+const log = createLogger('diseaseRoute');
 
 const uploadsDir = path.join(process.cwd(), 'uploads', 'disease');
 if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true });
@@ -56,12 +59,10 @@ router.get('/supported-crops', async (_req, res: Response) => {
 
 router.post('/scan', authenticate, upload.single('image'), async (req: AuthenticatedRequest, res: Response) => {
   try {
-    const cropHint = req.body.cropName as string | undefined;
+    // cropName is SECONDARY metadata — optional. Crop Verification AI is PRIMARY.
+    const cropHint = (req.body.cropName as string | undefined)?.trim() || undefined;
     const userId   = req.user!.userId;
 
-    if (!cropHint?.trim()) {
-      return res.status(400).json({ success: false, error: 'Crop name is required before scanning.' });
-    }
     if (!req.file) {
       return res.status(400).json({ success: false, error: 'Image file is required' });
     }
@@ -69,30 +70,48 @@ router.post('/scan', authenticate, upload.single('image'), async (req: Authentic
     const savedImageUrl = imgUrl(req.file.filename);
 
     // ── Step 1: YOLO Classification — the ONLY prediction source ─────────────
+    // cropHint is passed only for YOLO class filtering — never as a hard requirement.
+    // Crop Verification AI (EfficientNet) has already run on the Python side and
+    // will have validated/overridden the crop before YOLO runs.
     let yoloResult: Awaited<ReturnType<typeof runHybridDiseaseDetection>>;
     try {
+      log.info('Disease scan: request received', { userId, cropHint: cropHint || '(none)', file: req.file.filename });
+      log.info('Disease scan: image validated', { path: req.file.path, size: req.file.size });
+      log.info('Disease scan: crop verification + YOLO prediction started');
       yoloResult = await runHybridDiseaseDetection(req.file.path, '', cropHint);
     } catch (err: any) {
-      console.error('[Disease Scan] YOLO error:', err?.message);
+      const msg = err?.message || '';
+      const lower = msg.toLowerCase();
+      let userError = 'Disease detection failed. Please try again.';
+      if (lower.includes('econnrefused') || lower.includes('connect')) {
+        userError = 'FastAPI AI server is not running. Please start the Python FastAPI server (port 8000) and try again.';
+      } else if (lower.includes('timeout') || lower.includes('econnaborted')) {
+        userError = 'FastAPI AI server timed out. The model may still be loading. Please try again in a moment.';
+      }
+      log.error('YOLO/FastAPI error', { error: msg, stack: err?.stack });
       return res.status(500).json({
         success: false,
-        error: 'Disease detection failed. Please try again.',
+        error: userError,
         predictionSource: 'YOLOv8 Classification Model',
       });
     }
 
-    // ── Step 2: Crop not supported by YOLO ───────────────────────────────────
+    // ── Step 2: YOLO returned no result ──────────────────────────────────────
+    // Happens when the image is not a recognisable crop leaf, the crop is not
+    // in the YOLO training dataset, or Crop Verification returned a mismatch.
     if (!yoloResult.result) {
       return res.status(422).json({
         success: false,
         predictionSource: 'YOLOv8 Classification Model',
-        error: 'This crop is not yet supported by the AgroDhan AI model. Please upload a clearer image or select a supported crop.',
+        error: yoloResult.error || 'Unable to identify the crop in this image. Please upload a clear leaf image of a supported crop.',
       });
     }
 
     const prediction  = yoloResult.result;
     const yoloRaw     = yoloResult.yoloRaw;
     const confidence  = prediction.confidenceScore;
+
+    log.info('Disease scan: YOLO prediction received', { crop: prediction.cropName, disease: prediction.diseaseName, confidence });
 
     // ── Step 3: Low-confidence guard ─────────────────────────────────────────
     if (confidence < YOLO_CONFIDENCE_THRESHOLD) {
@@ -110,10 +129,12 @@ router.post('/scan', authenticate, upload.single('image'), async (req: Authentic
 
     // ── Step 4: Knowledge Base advisory lookup using YOLO labels ─────────────
     // YOLO provides: cropName, diseaseName — KB provides: symptoms, treatment, prevention
+    log.info('Disease scan: knowledge base search started', { crop: prediction.cropName, disease: prediction.diseaseName });
     const advisory = await getAdvisoryFromKnowledgeBase(
       prediction.cropName,
       prediction.diseaseName
     );
+    log.info('Disease scan: knowledge base search complete', { found: !!advisory });
 
     // ── Step 5: Build final record — prediction from YOLO, advisory from KB ──
     const isHealthy = prediction.diseaseType === 'Healthy';
@@ -167,7 +188,7 @@ router.post('/scan', authenticate, upload.single('image'), async (req: Authentic
         !isHealthy ? autoSaveToKnowledgeBase(prediction, savedImageUrl) : Promise.resolve(),
       ]);
     } catch (saveErr: any) {
-      console.error('[Disease Scan] DB save failed:', saveErr?.message);
+      log.error('DB save failed', { error: saveErr?.message });
       // Return result even if DB save fails
       return res.json({
         success: true,
@@ -179,7 +200,8 @@ router.post('/scan', authenticate, upload.single('image'), async (req: Authentic
       });
     }
 
-    console.log(`[Disease Scan] Engine: yolo | Crop: ${prediction.cropName} | Result: ${prediction.diseaseName} | Confidence: ${confidence}%`);
+    log.info('Disease scan complete', { engine: 'yolo', crop: prediction.cropName, result: prediction.diseaseName, confidence });
+    log.info('Disease scan: response sent', { savedId: saved?._id });
 
     return res.json({
       success: true,
@@ -191,7 +213,7 @@ router.post('/scan', authenticate, upload.single('image'), async (req: Authentic
     });
 
   } catch (error: any) {
-    console.error('[Disease Scan] Unhandled error:', error?.message, error?.stack);
+    log.error('Unhandled error', { error: error?.message, stack: error?.stack });
     return res.status(500).json({
       success: false,
       predictionSource: 'YOLOv8 Classification Model',
@@ -258,7 +280,7 @@ router.post('/translate', authenticate, async (req: AuthenticatedRequest, res: R
 
     return res.json({ success: true, cached: false, language, data: translated });
   } catch (error: any) {
-    console.error('Disease translate error:', error);
+    log.error('Disease translate error', { error: error?.message || String(error) });
     res.status(500).json({ success: false, error: error?.message || 'Translation failed' });
   }
 });
@@ -297,11 +319,11 @@ router.get('/admin/knowledge-base', authenticate, requireAdmin, async (req: Auth
     const { search, category, cropName } = req.query as Record<string, string>;
     const filter: any = {};
     if (search) filter.$or = [
-      { cropName: new RegExp(search, 'i') },
-      { diseaseName: new RegExp(search, 'i') },
+      { cropName: createSafeRegex(search) },
+      { diseaseName: createSafeRegex(search) },
     ];
-    if (category) filter.cropCategory = new RegExp(category, 'i');
-    if (cropName) filter.cropName = new RegExp(cropName, 'i');
+    if (category) filter.cropCategory = createSafeRegex(category);
+    if (cropName) filter.cropName = createSafeRegex(cropName);
 
     const [data, total, totalCrops, totalDiseaseImages, totalHealthyImages, totalScans] = await Promise.all([
       DiseaseKnowledgeBase.find(filter).sort({ cropName: 1 }).skip((page - 1) * limit).limit(limit),
@@ -456,14 +478,14 @@ router.get('/admin/disease-pest-knowledge', authenticate, requireAdmin, async (r
 
     const filter: any = {};
     if (search) filter.$or = [
-      { cropName:    new RegExp(search, 'i') },
-      { diseaseName: new RegExp(search, 'i') },
-      { tags:        new RegExp(search, 'i') },
+      { cropName:    createSafeRegex(search) },
+      { diseaseName: createSafeRegex(search) },
+      { tags:        createSafeRegex(search) },
     ];
-    if (category) filter.diseaseType   = new RegExp(category, 'i');
+    if (category) filter.diseaseType   = createSafeRegex(category);
     if (severity) filter.severityLevel = severity;
     if (status)   filter.status        = status;
-    if (cropName) filter.cropName      = new RegExp(cropName, 'i');
+    if (cropName) filter.cropName      = createSafeRegex(cropName);
 
     const [data, total] = await Promise.all([
       DiseaseKnowledgeBase.find(filter).sort({ updatedAt: -1 }).skip((page - 1) * limit).limit(limit).lean(),
@@ -505,8 +527,8 @@ router.post('/admin/disease-pest-knowledge', authenticate, requireAdmin, dkUploa
     try {
       // Duplicate check — open update mode hint
       const existing = await DiseaseKnowledgeBase.findOne({
-        cropName:    new RegExp(`^${req.body.cropName?.trim()}$`, 'i'),
-        diseaseName: new RegExp(`^${req.body.diseaseName?.trim()}$`, 'i'),
+        cropName:    createExactSafeRegex(String(req.body.cropName || '').trim()),
+        diseaseName: createExactSafeRegex(String(req.body.diseaseName || '').trim()),
       });
       if (existing) {
         return res.status(409).json({
@@ -663,7 +685,7 @@ router.get('/admin/disease-pest-knowledge/export/json', authenticate, requireAdm
   try {
     const { cropName, status } = req.query as Record<string, string>;
     const filter: any = {};
-    if (cropName) filter.cropName = new RegExp(cropName, 'i');
+    if (cropName) filter.cropName = createSafeRegex(cropName);
     if (status)   filter.status   = status;
     const data = await DiseaseKnowledgeBase.find(filter).lean();
     res.setHeader('Content-Disposition', 'attachment; filename="disease-pest-knowledge.json"');
@@ -686,7 +708,7 @@ router.post('/admin/disease-pest-knowledge/import/json', authenticate, requireAd
       if (!r.cropName || !r.diseaseName) { errors++; continue; }
       try {
         const result = await DiseaseKnowledgeBase.findOneAndUpdate(
-          { cropName: new RegExp(`^${r.cropName.trim()}$`, 'i'), diseaseName: new RegExp(`^${r.diseaseName.trim()}$`, 'i') },
+          { cropName: createExactSafeRegex(r.cropName.trim()), diseaseName: createExactSafeRegex(r.diseaseName.trim()) },
           { ...r, updatedBy: req.user?.userId, source: r.source || 'admin' },
           { upsert: true, new: true, setDefaultsOnInsert: true }
         );

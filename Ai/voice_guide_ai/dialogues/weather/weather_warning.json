@@ -1,0 +1,42 @@
+{
+  "id": "weather_warning_001",
+  "page": "weather",
+  "dialogueType": "weather_warning",
+  "title": "Weather Warning",
+  "version": "1.0.0",
+
+  "text": "आपके क्षेत्र के लिए मौसम संबंधी चेतावनी जारी की गई है। कृपया स्क्रीन पर प्रदर्शित जानकारी और कृषि सलाह को ध्यान से पढ़ें तथा आवश्यक सावधानियाँ अपनाएँ।",
+
+  "repeat": {
+    "enabled": false,
+    "afterHours": 0
+  },
+
+  "voice": {
+    "enabled": true,
+    "provider": "offline",
+    "file": "weather_warning_001.mp3",
+    "language": "hi",
+    "speed": 1.0,
+    "volume": 1.0
+  },
+
+  "avatar": {
+    "enabled": true,
+    "animation": "warning",
+    "expression": "warning"
+  },
+
+  "display": {
+    "showSubtitle": true,
+    "showAvatar": true
+  },
+
+  "conditions": {
+    "firstVisit": false,
+    "loggedIn": true,
+    "internetRequired": false
+  },
+
+  "status": "active"
+}

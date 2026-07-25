@@ -1,0 +1,42 @@
+{
+  "id": "ai_chat_error_001",
+  "page": "ai_chat",
+  "dialogueType": "error",
+  "title": "AI Error",
+  "version": "1.0.0",
+
+  "text": "क्षमा करें। इस समय मैं आपके प्रश्न का उत्तर देने में असमर्थ हूँ। कृपया कुछ समय बाद पुनः प्रयास करें या अपना प्रश्न दूसरे तरीके से पूछें।",
+
+  "repeat": {
+    "enabled": false,
+    "afterHours": 0
+  },
+
+  "voice": {
+    "enabled": true,
+    "provider": "offline",
+    "file": "ai_chat_error_001.mp3",
+    "language": "hi",
+    "speed": 1.0,
+    "volume": 1.0
+  },
+
+  "avatar": {
+    "enabled": true,
+    "animation": "warning",
+    "expression": "warning"
+  },
+
+  "display": {
+    "showSubtitle": true,
+    "showAvatar": true
+  },
+
+  "conditions": {
+    "firstVisit": false,
+    "loggedIn": true,
+    "internetRequired": false
+  },
+
+  "status": "active"
+}

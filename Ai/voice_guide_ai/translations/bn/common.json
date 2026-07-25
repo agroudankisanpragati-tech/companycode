@@ -1,0 +1,16 @@
+{
+    "common_retry_001":  "আবার চেষ্টা করুন।",
+    "common_processing_001":  "অপেক্ষা করুন, তথ্য প্রক্রিয়া করা হচ্ছে।",
+    "common_permission_required_001":  "এই সুবিধার জন্য অনুমতি প্রয়োজন।",
+    "common_saving_001":  "ডেটা সংরক্ষণ হচ্ছে।",
+    "common_upload_success_001":  "আপলোড সফল হয়েছে।",
+    "common_update_available_001":  "নতুন আপডেট পাওয়া গেছে।",
+    "common_session_expired_001":  "আপনার সেশন শেষ হয়ে গেছে।",
+    "common_download_success_001":  "ডাউনলোড সফল হয়েছে।",
+    "common_data_not_found_001":  "কোনো ডেটা পাওয়া যায়নি।",
+    "common_access_denied_001":  "প্রবেশাধিকার অস্বীকৃত।",
+    "common_exit_001":  "আপনি কি এই বিভাগ থেকে বের হতে চান?",
+    "common_offline_001":  "এখন ইন্টারনেট নেই। সংযোগ চালু করে আবার চেষ্টা করুন।",
+    "common_no_internet_001":  "ইন্টারনেট নেই।",
+    "common_maintenance_001":  "সিস্টেম রক্ষণাবেক্ষণে আছে।"
+}

@@ -1,0 +1,42 @@
+{
+  "id": "disease_replay_001",
+  "page": "disease_detection",
+  "dialogueType": "replay",
+  "title": "Replay Disease Detection Guide",
+  "version": "1.0.0",
+
+  "text": "मैं आपको फिर से मार्गदर्शन देता हूँ। फसल की स्पष्ट तस्वीर कैमरे से लें या गैलरी से चुनें। सुनिश्चित करें कि प्रभावित पत्तियाँ या पौधे का भाग साफ़ दिखाई दे। तस्वीर अपलोड करने के बाद हमारा एआई उसका विश्लेषण करके संभावित रोग और उसके उपचार की जानकारी आपकी स्क्रीन पर प्रदर्शित करेगा।",
+
+  "repeat": {
+    "enabled": false,
+    "afterHours": 0
+  },
+
+  "voice": {
+    "enabled": true,
+    "provider": "offline",
+    "file": "disease_replay_001.mp3",
+    "language": "hi",
+    "speed": 1.0,
+    "volume": 1.0
+  },
+
+  "avatar": {
+    "enabled": true,
+    "animation": "point",
+    "expression": "smile"
+  },
+
+  "display": {
+    "showSubtitle": true,
+    "showAvatar": true
+  },
+
+  "conditions": {
+    "firstVisit": false,
+    "loggedIn": true,
+    "internetRequired": false
+  },
+
+  "status": "active"
+}

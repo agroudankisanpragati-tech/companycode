@@ -1,0 +1,42 @@
+{
+  "id": "scheme_documents_001",
+  "page": "government_scheme",
+  "dialogueType": "documents",
+  "title": "Required Documents",
+  "version": "1.0.0",
+
+  "text": "चयनित योजना के लिए आवश्यक दस्तावेज़ आपकी स्क्रीन पर प्रदर्शित किए गए हैं। आवेदन करने से पहले सभी आवश्यक दस्तावेज़ तैयार रखें, ताकि आवेदन प्रक्रिया बिना किसी परेशानी के पूरी हो सके।",
+
+  "repeat": {
+    "enabled": false,
+    "afterHours": 0
+  },
+
+  "voice": {
+    "enabled": true,
+    "provider": "offline",
+    "file": "scheme_documents_001.mp3",
+    "language": "hi",
+    "speed": 1.0,
+    "volume": 1.0
+  },
+
+  "avatar": {
+    "enabled": true,
+    "animation": "point",
+    "expression": "neutral"
+  },
+
+  "display": {
+    "showSubtitle": true,
+    "showAvatar": true
+  },
+
+  "conditions": {
+    "firstVisit": false,
+    "loggedIn": true,
+    "internetRequired": false
+  },
+
+  "status": "active"
+}

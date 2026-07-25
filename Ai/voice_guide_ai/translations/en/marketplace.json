@@ -1,0 +1,13 @@
+{
+    "market_payment_001":  "Choose a payment option.",
+    "market_order_success_001":  "Your order has been placed successfully.",
+    "market_product_details_001":  "Product details are being shown.",
+    "market_search_001":  "Please enter the information needed to search.",
+    "market_replay_001":  "Let me explain again. Please listen to the instructions carefully.",
+    "market_offline_001":  "No internet right now. Please turn on your connection and try again.",
+    "market_categories_001":  "Please select a category.",
+    "market_cart_001":  "Your cart is ready.",
+    "market_checkout_001":  "Checkout process is starting.",
+    "market_exit_001":  "Do you want to exit this section?",
+    "market_error_001":  "Sorry, something went wrong. Please try again."
+}

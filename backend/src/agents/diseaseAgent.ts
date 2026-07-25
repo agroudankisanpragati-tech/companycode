@@ -6,28 +6,34 @@
  *   2. Disease KB (DiseaseKnowledgeBase) — confidence 0.80
  *   3. Pest KB (PestKnowledgeBase)       — confidence 0.75
  *   4. Static KB (hardcoded common)      — confidence 0.60
- * Response: structured via responseGenerator (cause, symptoms, severity,
- *   confidence, organic, chemical, prevention, fertilizer, irrigation,
- *   warnings, next steps)
- * Never communicates directly with the user.
+ *
+ * Fix 2: reads crop/disease from ctx.entities — no local parsing
  */
 
 import { AgentContext, AgentResult } from './types';
 import { searchDiseaseKB } from '../services/knowledgeBaseSearch';
 import { generateDiseaseResponse } from '../services/responseGenerator';
+import { buildErrorResult } from '../services/fallbackManager';
+import { createLogger } from '../utils/logger';
+
+const log = createLogger('diseaseAgent');
 
 export async function runDiseaseAgent(ctx: AgentContext): Promise<AgentResult> {
   try {
-    const { message, pageData } = ctx;
+    const { message, pageData, entities } = ctx;
 
+    // Fix 2: use pre-extracted entities; pageData takes priority (live scan result)
     const cropName =
       pageData?.diseaseResult?.cropName ||
       pageData?.cropData?.cropName ||
-      extractCropFromMessage(message);
+      entities?.crop ||
+      '';
 
     const diseaseName =
       pageData?.diseaseResult?.diseaseName ||
-      extractDiseaseFromMessage(message);
+      entities?.disease ||
+      entities?.pest ||
+      '';
 
     const yoloConf: number | undefined =
       pageData?.diseaseResult?.confidence !== undefined
@@ -36,16 +42,18 @@ export async function runDiseaseAgent(ctx: AgentContext): Promise<AgentResult> {
 
     const hasImage = !!(pageData?.diseaseResult?.diseaseName);
 
-    // ── Priority KB search: Admin → Disease → Pest → Static ──────────────
+    log.debug('DiseaseAgent running', { cropName, diseaseName, hasImage });
+
+    // Priority KB search: Admin → Disease → Pest → Static
     const kbResult = await searchDiseaseKB(cropName, diseaseName);
 
-    // ── Structured response generation ────────────────────────────────────
+    // Structured response generation
     const response = generateDiseaseResponse(kbResult, yoloConf, cropName, hasImage);
 
     // No image and no KB hit — ask for image
     if (response.needsImage && !hasImage) {
       return {
-        agent: 'DiseaseAgent',
+        agent:   'DiseaseAgent',
         success: true,
         data: {
           needsImage:  true,
@@ -59,10 +67,10 @@ export async function runDiseaseAgent(ctx: AgentContext): Promise<AgentResult> {
       };
     }
 
-    // KB miss — no match found
+    // KB miss
     if (!kbResult.found) {
       return {
-        agent: 'DiseaseAgent',
+        agent:   'DiseaseAgent',
         success: true,
         data: {
           needsImage:  !hasImage,
@@ -77,79 +85,19 @@ export async function runDiseaseAgent(ctx: AgentContext): Promise<AgentResult> {
 
     // Full structured response
     return {
-      agent: 'DiseaseAgent',
+      agent:   'DiseaseAgent',
       success: true,
       data: {
         ...kbResult.data,
-        confidence:  response.confidence,
-        kbSource:    kbResult.source,
+        confidence: response.confidence,
+        kbSource:   kbResult.source,
         yoloConf,
         structuredResponse: { english: response.english, hindi: response.hindi },
       },
       summary: kbResult.summary,
     };
   } catch (err: any) {
-    return {
-      agent: 'DiseaseAgent',
-      success: false,
-      error: 'Disease information is temporarily unavailable. Please try the Disease Detection page directly.',
-    };
+    log.error('DiseaseAgent error', { error: err?.message });
+    return buildErrorResult('DiseaseAgent', 'disease', err);
   }
-}
-
-function extractCropFromMessage(msg: string): string {
-  const crops = [
-    'wheat', 'rice', 'tomato', 'corn', 'maize', 'cotton', 'sugarcane',
-    'potato', 'onion', 'mustard', 'gram', 'soybean', 'moong', 'mung',
-    'bajra', 'jowar', 'groundnut', 'chilli', // ===== AI Supported Crops =====
-  'black_gram',
-  'green_gram',
-  'corn_maize',
-  'tomato',
-  'pearl_millet _bajra',
-  'wheat',
-
-  // ===== English =====
-  'black gram',
-  'green gram',
-  'corn',
-  'maize',
-  'pearl millet',
-
-  // ===== Hindi / Hinglish =====
-  'urad',
-  'udad',
-  'moong',
-  'mung',
-  'makka',
-  'tamatar',
-  'bajra',
-  'gehu',
-  'gehun',
-
-  // ===== Other existing crops =====
-  'rice',
-  'cotton',
-  'sugarcane',
-  'potato',
-  'onion',
-  'mustard',
-  'gram',
-  'soybean',
-  'jowar',
-  'groundnut',
-  'chilli',
-  'brinjal','brinjal',
-  ];
-  const lower = msg.toLowerCase();
-  return crops.find(c => lower.includes(c)) || '';
-}
-
-function extractDiseaseFromMessage(msg: string): string {
-  const diseases = [
-    'blight', 'rust', 'wilt', 'rot', 'mildew', 'mosaic', 'leaf spot',
-    'fungus', 'aphid', 'borer', 'yellow mosaic', 'bacterial', 'powdery',
-  ];
-  const lower = msg.toLowerCase();
-  return diseases.find(d => lower.includes(d)) || '';
 }

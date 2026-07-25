@@ -20,6 +20,7 @@ import { DiseaseKnowledgeBase } from '../models/DiseaseKnowledgeBase';
 import { CropKnowledgeBase } from '../models/CropKnowledgeBase';
 import { PestKnowledgeBase } from '../models/PestKnowledgeBase';
 import { GovtScheme } from '../models/GovtScheme';
+import { createSafeRegex } from '../utils/regex';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -96,8 +97,8 @@ export async function searchDiseaseKB(
   // Priority 1: Admin KB (DiseasePestSolution)
   try {
     const filter: any = { status: 'published' };
-    if (crop)    filter.cropName        = new RegExp(crop, 'i');
-    if (disease) filter.diseasePestName = new RegExp(disease, 'i');
+    if (crop)    filter.cropName        = createSafeRegex(crop);
+    if (disease) filter.diseasePestName = createSafeRegex(disease);
 
     const dps = await DiseasePestSolution.findOne(filter).lean() as any;
     if (dps) {
@@ -132,8 +133,8 @@ export async function searchDiseaseKB(
   // Priority 2: Disease KB
   try {
     const kbFilter: any = {};
-    if (crop)    kbFilter.cropName    = new RegExp(crop, 'i');
-    if (disease) kbFilter.diseaseName = new RegExp(disease, 'i');
+    if (crop)    kbFilter.cropName    = createSafeRegex(crop);
+    if (disease) kbFilter.diseaseName = createSafeRegex(disease);
 
     const kb = await DiseaseKnowledgeBase.findOne(kbFilter).lean() as any;
     if (kb) {
@@ -160,8 +161,8 @@ export async function searchDiseaseKB(
   // Priority 3: Pest KB
   try {
     const pestFilter: any = {};
-    if (crop)    pestFilter.cropName  = new RegExp(crop, 'i');
-    if (disease) pestFilter.pestName  = new RegExp(disease, 'i');
+    if (crop)    pestFilter.cropName  = createSafeRegex(crop);
+    if (disease) pestFilter.pestName  = createSafeRegex(disease);
 
     const pest = await PestKnowledgeBase.findOne(pestFilter).lean() as any;
     if (pest) {
@@ -211,9 +212,9 @@ export async function searchCropKB(
   if (!cropName?.trim()) return NOT_FOUND;
 
   try {
-    const filter: any = { cropName: new RegExp(cropName, 'i'), status: 'active' };
-    if (soilType) filter.soilType = new RegExp(soilType, 'i');
-    if (season)   filter.season   = new RegExp(season, 'i');
+    const filter: any = { cropName: createSafeRegex(cropName), status: 'active' };
+    if (soilType) filter.soilType = createSafeRegex(soilType);
+    if (season)   filter.season   = createSafeRegex(season);
 
     const entry = await CropKnowledgeBase.findOne(filter)
       .sort({ suitabilityScore: -1 })
@@ -258,15 +259,15 @@ export async function searchSchemeKB(
     const filter: any = { status: 'published' };
     if (keyword) {
       filter.$or = [
-        { title:    new RegExp(keyword, 'i') },
-        { summary:  new RegExp(keyword, 'i') },
-        { tags:     new RegExp(keyword, 'i') },
-        { keywords: new RegExp(keyword, 'i') },
+        { title:    createSafeRegex(keyword) },
+        { summary:  createSafeRegex(keyword) },
+        { tags:     createSafeRegex(keyword) },
+        { keywords: createSafeRegex(keyword) },
       ];
     } else if (state) {
       filter.$or = [
         { schemeType: 'central' },
-        { state: new RegExp(state, 'i') },
+        { state: createSafeRegex(state) },
       ];
     }
 

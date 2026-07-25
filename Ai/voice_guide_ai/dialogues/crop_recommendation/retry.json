@@ -1,0 +1,42 @@
+{
+  "id": "crop_retry_001",
+  "page": "crop_recommendation",
+  "dialogueType": "retry",
+  "title": "Retry Recommendation",
+  "version": "1.0.0",
+
+  "text": "कृपया अपनी जानकारी की पुनः जाँच करें और दोबारा प्रयास करें। सही विवरण देने पर एआई अधिक सटीक फसल अनुशंसा प्रदान करेगा।",
+
+  "repeat": {
+    "enabled": false,
+    "afterHours": 0
+  },
+
+  "voice": {
+    "enabled": true,
+    "provider": "offline",
+    "file": "crop_retry_001.mp3",
+    "language": "hi",
+    "speed": 1.0,
+    "volume": 1.0
+  },
+
+  "avatar": {
+    "enabled": true,
+    "animation": "point",
+    "expression": "neutral"
+  },
+
+  "display": {
+    "showSubtitle": true,
+    "showAvatar": true
+  },
+
+  "conditions": {
+    "firstVisit": false,
+    "loggedIn": true,
+    "internetRequired": false
+  },
+
+  "status": "active"
+}

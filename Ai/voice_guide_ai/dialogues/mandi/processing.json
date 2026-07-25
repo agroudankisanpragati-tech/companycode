@@ -1,0 +1,42 @@
+{
+  "id": "mandi_processing_001",
+  "page": "mandi",
+  "dialogueType": "processing",
+  "title": "Processing Mandi Prices",
+  "version": "1.0.0",
+
+  "text": "कृपया कुछ क्षण प्रतीक्षा करें। आपके द्वारा चुनी गई फसल और मंडी के नवीनतम बाजार भाव प्राप्त किए जा रहे हैं।",
+
+  "repeat": {
+    "enabled": false,
+    "afterHours": 0
+  },
+
+  "voice": {
+    "enabled": true,
+    "provider": "offline",
+    "file": "mandi_processing_001.mp3",
+    "language": "hi",
+    "speed": 1.0,
+    "volume": 1.0
+  },
+
+  "avatar": {
+    "enabled": true,
+    "animation": "loading",
+    "expression": "thinking"
+  },
+
+  "display": {
+    "showSubtitle": true,
+    "showAvatar": true
+  },
+
+  "conditions": {
+    "firstVisit": false,
+    "loggedIn": true,
+    "internetRequired": false
+  },
+
+  "status": "active"
+}

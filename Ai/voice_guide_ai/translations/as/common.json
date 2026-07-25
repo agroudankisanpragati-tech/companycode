@@ -1,0 +1,19 @@
+{
+    "common_error_001": "ক্ষমা কৰিব, এতিয়া কিছু সমস্যা হৈছে। পুনৰ চেষ্টা কৰক।",
+    "common_offline_001": "এতিয়া ইন্টাৰনেট নাই। সংযোগ চালু কৰি পুনৰ চেষ্টা কৰক।",
+    "common_loading_001": "লোড হৈছে। অনুগ্ৰহ কৰি অপেক্ষা কৰক।",
+    "common_processing_001": "প্ৰক্ৰিয়া চলিছে।",
+    "common_success_001": "সফলভাৱে সম্পন্ন হৈছে।",
+    "common_exit_001": "ধন্যবাদ।",
+    "common_retry_001": "পুনৰ চেষ্টা কৰক।",
+    "common_saving_001": "সংৰক্ষণ হৈছে।",
+    "common_session_expired_001": "ছেছন শেষ হৈছে। পুনৰ লগইন কৰক।",
+    "common_no_internet_001": "ইন্টাৰনেট সংযোগ নাই।",
+    "common_permission_required_001": "অনুমতি প্ৰয়োজন।",
+    "common_access_denied_001": "প্ৰৱেশ অস্বীকাৰ কৰা হৈছে।",
+    "common_data_not_found_001": "তথ্য পোৱা নগ'ল।",
+    "common_maintenance_001": "ৰক্ষণাবেক্ষণ চলিছে।",
+    "common_update_available_001": "আপডেট উপলব্ধ।",
+    "common_download_success_001": "ডাউনলোড সফল হৈছে।",
+    "common_upload_success_001": "আপলোড সফল হৈছে।"
+}

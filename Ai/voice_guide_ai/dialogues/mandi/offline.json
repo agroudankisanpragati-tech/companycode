@@ -1,0 +1,42 @@
+{
+  "id": "mandi_offline_001",
+  "page": "mandi",
+  "dialogueType": "offline",
+  "title": "Mandi Offline",
+  "version": "1.0.0",
+
+  "text": "अभी इंटरनेट उपलब्ध नहीं है। यदि हाल के मंडी भाव आपके डिवाइस में उपलब्ध हैं, तो वही प्रदर्शित किए जाएंगे। नवीनतम जानकारी के लिए कृपया इंटरनेट से जुड़ें।",
+
+  "repeat": {
+    "enabled": false,
+    "afterHours": 0
+  },
+
+  "voice": {
+    "enabled": true,
+    "provider": "offline",
+    "file": "mandi_offline_001.mp3",
+    "language": "hi",
+    "speed": 1.0,
+    "volume": 1.0
+  },
+
+  "avatar": {
+    "enabled": true,
+    "animation": "warning",
+    "expression": "warning"
+  },
+
+  "display": {
+    "showSubtitle": true,
+    "showAvatar": true
+  },
+
+  "conditions": {
+    "firstVisit": false,
+    "loggedIn": true,
+    "internetRequired": false
+  },
+
+  "status": "active"
+}

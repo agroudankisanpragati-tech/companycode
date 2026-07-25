@@ -1,0 +1,48 @@
+{
+  "version": "1.0.0",
+  "default_provider": "edge_tts",
+  "providers": {
+    "edge_tts": {
+      "enabled": true,
+      "priority": 1,
+      "requires_internet": true
+    },
+    "offline": {
+      "enabled": true,
+      "priority": 2,
+      "requires_internet": false
+    }
+  },
+  "global_defaults": {
+    "speed": "+0%",
+    "pitch": "+0Hz",
+    "volume": "+0%",
+    "format": "mp3",
+    "sample_rate": 24000,
+    "bitrate": "128k",
+    "channels": 1
+  },
+  "language_overrides": {
+    "hi":              { "speed": "+0%",  "pitch": "+0Hz",  "volume": "+0%" },
+    "en":              { "speed": "+0%",  "pitch": "+0Hz",  "volume": "+0%" },
+    "gu":              { "speed": "+0%",  "pitch": "+0Hz",  "volume": "+0%" },
+    "pa":              { "speed": "+0%",  "pitch": "+0Hz",  "volume": "+0%" },
+    "mr":              { "speed": "+0%",  "pitch": "+0Hz",  "volume": "+0%" },
+    "ta":              { "speed": "+0%",  "pitch": "+0Hz",  "volume": "+0%" },
+    "te":              { "speed": "+0%",  "pitch": "+0Hz",  "volume": "+0%" },
+    "kn":              { "speed": "+0%",  "pitch": "+0Hz",  "volume": "+0%" },
+    "ml":              { "speed": "+0%",  "pitch": "+0Hz",  "volume": "+0%" },
+    "bn":              { "speed": "+0%",  "pitch": "+0Hz",  "volume": "+0%" },
+    "ur":              { "speed": "+0%",  "pitch": "+0Hz",  "volume": "+0%" },
+    "od":              { "speed": "+0%",  "pitch": "+0Hz",  "volume": "+0%" },
+    "as":              { "speed": "+0%",  "pitch": "+0Hz",  "volume": "+0%" },
+    "rj/bagri":        { "speed": "-5%",  "pitch": "+0Hz",  "volume": "+0%" },
+    "rj/marwari":      { "speed": "-5%",  "pitch": "+0Hz",  "volume": "+0%" },
+    "rj/mewari":       { "speed": "-5%",  "pitch": "+0Hz",  "volume": "+0%" },
+    "rj/dhundhari":    { "speed": "-5%",  "pitch": "+0Hz",  "volume": "+0%" },
+    "rj/hadoti":       { "speed": "-5%",  "pitch": "+0Hz",  "volume": "+0%" },
+    "rj/shekhawati":   { "speed": "-5%",  "pitch": "+0Hz",  "volume": "+0%" },
+    "rj/mewati":       { "speed": "-5%",  "pitch": "+0Hz",  "volume": "+0%" },
+    "rj/wagdi":        { "speed": "-5%",  "pitch": "+0Hz",  "volume": "+0%" }
+  }
+}

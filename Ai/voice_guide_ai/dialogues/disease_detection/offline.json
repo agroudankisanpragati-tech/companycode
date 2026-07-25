@@ -1,0 +1,42 @@
+{
+  "id": "disease_offline_001",
+  "page": "disease_detection",
+  "dialogueType": "offline",
+  "title": "Disease Detection Offline",
+  "version": "1.0.0",
+
+  "text": "अभी इंटरनेट उपलब्ध नहीं है। यदि आपका रोग पहचान मॉडल ऑफ़लाइन उपलब्ध है, तो विश्लेषण जारी रहेगा। अन्यथा कृपया इंटरनेट से जुड़कर पुनः प्रयास करें।",
+
+  "repeat": {
+    "enabled": false,
+    "afterHours": 0
+  },
+
+  "voice": {
+    "enabled": true,
+    "provider": "offline",
+    "file": "disease_offline_001.mp3",
+    "language": "hi",
+    "speed": 1.0,
+    "volume": 1.0
+  },
+
+  "avatar": {
+    "enabled": true,
+    "animation": "warning",
+    "expression": "warning"
+  },
+
+  "display": {
+    "showSubtitle": true,
+    "showAvatar": true
+  },
+
+  "conditions": {
+    "firstVisit": false,
+    "loggedIn": true,
+    "internetRequired": false
+  },
+
+  "status": "active"
+}

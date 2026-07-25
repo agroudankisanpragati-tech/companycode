@@ -6,8 +6,10 @@ import crypto from 'crypto';
 import nodemailer from 'nodemailer';
 import { User } from '../models/User';
 import { authenticate, AuthenticatedRequest } from '../middleware/auth';
+import { createLogger } from '../utils/logger';
 
 const router = express.Router();
+const log = createLogger('authRoute');
 
 type OtpRecord = {
   code: string;
@@ -102,7 +104,7 @@ const sendOtpEmail = async (email: string, code: string) => {
   const transport = getEmailTransport();
 
   if (!transport) {
-    console.log(`[auth] OTP for ${email}: ${code}`);
+    log.warn('SMTP unavailable for OTP delivery', { email });
     return { delivered: false, devOtp: code };
   }
 

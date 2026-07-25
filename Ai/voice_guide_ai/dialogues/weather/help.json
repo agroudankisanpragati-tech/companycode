@@ -1,0 +1,42 @@
+{
+  "id": "weather_help_001",
+  "page": "weather",
+  "dialogueType": "help",
+  "title": "Weather Help",
+  "version": "1.0.0",
+
+  "text": "अपने क्षेत्र का सही मौसम देखने के लिए स्थान की अनुमति दें या अपना जिला चुनें। इसके बाद आपको वर्तमान मौसम, तापमान, वर्षा की संभावना और खेती के लिए आवश्यक सुझाव दिखाई देंगे।",
+
+  "repeat": {
+    "enabled": false,
+    "afterHours": 0
+  },
+
+  "voice": {
+    "enabled": true,
+    "provider": "offline",
+    "file": "weather_help_001.mp3",
+    "language": "hi",
+    "speed": 1.0,
+    "volume": 1.0
+  },
+
+  "avatar": {
+    "enabled": true,
+    "animation": "point",
+    "expression": "smile"
+  },
+
+  "display": {
+    "showSubtitle": true,
+    "showAvatar": true
+  },
+
+  "conditions": {
+    "firstVisit": false,
+    "loggedIn": true,
+    "internetRequired": false
+  },
+
+  "status": "active"
+}

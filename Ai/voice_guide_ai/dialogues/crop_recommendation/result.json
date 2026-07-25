@@ -1,0 +1,42 @@
+{
+  "id": "crop_result_001",
+  "page": "crop_recommendation",
+  "dialogueType": "result",
+  "title": "Crop Recommendation Result",
+  "version": "1.0.0",
+
+  "text": "विश्लेषण सफलतापूर्वक पूरा हो गया है। आपकी स्क्रीन पर आपके खेत की परिस्थितियों के अनुसार अनुशंसित फसलें प्रदर्शित कर दी गई हैं। कृपया प्रत्येक फसल के साथ दी गई जानकारी, संभावित लाभ और सुझावों को ध्यान से पढ़ें, ताकि आप बेहतर निर्णय ले सकें।",
+
+  "repeat": {
+    "enabled": false,
+    "afterHours": 0
+  },
+
+  "voice": {
+    "enabled": true,
+    "provider": "offline",
+    "file": "crop_result_001.mp3",
+    "language": "hi",
+    "speed": 1.0,
+    "volume": 1.0
+  },
+
+  "avatar": {
+    "enabled": true,
+    "animation": "success",
+    "expression": "happy"
+  },
+
+  "display": {
+    "showSubtitle": true,
+    "showAvatar": true
+  },
+
+  "conditions": {
+    "firstVisit": false,
+    "loggedIn": true,
+    "internetRequired": false
+  },
+
+  "status": "active"
+}

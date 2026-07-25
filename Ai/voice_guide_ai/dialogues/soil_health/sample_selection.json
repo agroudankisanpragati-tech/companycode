@@ -1,0 +1,42 @@
+{
+  "id": "soil_sample_001",
+  "page": "soil_health",
+  "dialogueType": "sample_selection",
+  "title": "Soil Sample Selection",
+  "version": "1.0.0",
+
+  "text": "कृपया अपनी मिट्टी की रिपोर्ट चुनें या मिट्टी से संबंधित आवश्यक जानकारी दर्ज करें। सही जानकारी देने पर विश्लेषण अधिक सटीक होगा।",
+
+  "repeat": {
+    "enabled": false,
+    "afterHours": 0
+  },
+
+  "voice": {
+    "enabled": true,
+    "provider": "offline",
+    "file": "soil_sample_001.mp3",
+    "language": "hi",
+    "speed": 1.0,
+    "volume": 1.0
+  },
+
+  "avatar": {
+    "enabled": true,
+    "animation": "point",
+    "expression": "neutral"
+  },
+
+  "display": {
+    "showSubtitle": true,
+    "showAvatar": true
+  },
+
+  "conditions": {
+    "firstVisit": false,
+    "loggedIn": true,
+    "internetRequired": false
+  },
+
+  "status": "active"
+}

@@ -1,0 +1,42 @@
+{
+  "id": "register_success_001",
+  "page": "register",
+  "dialogueType": "success",
+  "title": "Register Success",
+  "version": "1.0.0",
+
+  "text": "बधाई हो! आपका पंजीकरण सफलतापूर्वक पूरा हो गया है। अब आप किसान उन्नति की सभी सेवाओं का लाभ उठा सकते हैं। आइए, आपके डैशबोर्ड पर चलते हैं।",
+
+  "repeat": {
+    "enabled": false,
+    "afterHours": 0
+  },
+
+  "voice": {
+    "enabled": true,
+    "provider": "offline",
+    "file": "register_success_001.mp3",
+    "language": "hi",
+    "speed": 1.0,
+    "volume": 1.0
+  },
+
+  "avatar": {
+    "enabled": true,
+    "animation": "success",
+    "expression": "happy"
+  },
+
+  "display": {
+    "showSubtitle": true,
+    "showAvatar": true
+  },
+
+  "conditions": {
+    "firstVisit": false,
+    "loggedIn": true,
+    "internetRequired": false
+  },
+
+  "status": "active"
+}

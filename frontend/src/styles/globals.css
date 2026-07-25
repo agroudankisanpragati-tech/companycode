@@ -264,3 +264,23 @@ input[type="radio"] {
 [dir="rtl"] .flex-row { flex-direction: row-reverse; }
 [dir="rtl"] .text-left { text-align: right; }
 [dir="rtl"] .text-right { text-align: left; }
+
+/* ── Voice Guide Avatar ──────────────────────────────────────────────────────── */
+@keyframes vg-bar {
+  0%, 100% { transform: scaleY(0.4); }
+  50%       { transform: scaleY(1.0); }
+}
+.vg-bar {
+  display: inline-block;
+  width: 3px;
+  border-radius: 2px;
+  background: #22c55e;
+  animation: vg-bar 0.8s ease-in-out infinite;
+  transform-origin: bottom;
+}
+/* Ensure avatar never overlaps bottom nav on mobile */
+@media (max-width: 640px) {
+  .vg-avatar-root {
+    bottom: 72px !important;
+  }
+}

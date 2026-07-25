@@ -1,0 +1,42 @@
+{
+  "id": "home_help_001",
+  "page": "home",
+  "dialogueType": "help",
+  "title": "Home Help",
+  "version": "1.0.0",
+
+  "text": "मैं आपकी सहायता के लिए हमेशा उपलब्ध हूँ। इस होम पेज से आप फसल रोग पहचान, फसल अनुशंसा, सरकारी योजनाएँ, मौसम, मंडी भाव, मिट्टी स्वास्थ्य, बाज़ार और प्रगति AI जैसी सुविधाओं तक पहुँच सकते हैं। किसी भी सुविधा का उपयोग करने के लिए उसके आइकन या मेनू पर क्लिक करें। यदि आपको किसी भी समय सहायता चाहिए, तो रिप्ले बटन दबाकर मेरा मार्गदर्शन फिर से सुन सकते हैं।",
+
+  "repeat": {
+    "enabled": true,
+    "afterHours": 0
+  },
+
+  "voice": {
+    "enabled": true,
+    "provider": "offline",
+    "file": "home_help_001.mp3",
+    "language": "hi",
+    "speed": 1.0,
+    "volume": 1.0
+  },
+
+  "avatar": {
+    "enabled": true,
+    "animation": "point",
+    "expression": "smile"
+  },
+
+  "display": {
+    "showSubtitle": true,
+    "showAvatar": true
+  },
+
+  "conditions": {
+    "firstVisit": false,
+    "loggedIn": false,
+    "internetRequired": false
+  },
+
+  "status": "active"
+}
