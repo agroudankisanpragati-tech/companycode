@@ -1,8 +1,8 @@
 # =============================================================================
 # AKP — Agroudan Kisan Pragati
 # File: crop_verifier.py
-# Purpose: EfficientNet-B0 crop verification — PRIMARY authority for crop
-#          identity in the AI pipeline. Runs before YOLO disease detection.
+# Purpose: EfficientNet-B0 crop verification — SECONDARY validation layer.
+#          Runs before YOLO disease detection to warn on crop mismatches.
 #
 # DESIGN:
 #   • Single Responsibility — only loads the EfficientNet model and runs
@@ -12,6 +12,8 @@
 #     so the pipeline can skip verification rather than crash.
 #   • Confidence threshold — low-confidence predictions are rejected with
 #     a clear "upload clearer image" message rather than a wrong crop guess.
+#   • AUTHORITY: Farmer-selected crop is PRIMARY. This verifier is SECONDARY.
+#     A mismatch produces a warning only — never blocks disease detection.
 #
 # Dependencies: torch, torchvision, Pillow
 # =============================================================================
@@ -147,8 +149,9 @@ def verify(
     """
     Runs EfficientNet-B0 on the image and returns the predicted crop.
 
-    This is the PRIMARY authority for crop identity. The result must be
-    used by all downstream pipeline stages — never the farmer's raw input.
+    This is a SECONDARY advisory layer. The farmer-selected crop is PRIMARY.
+    The result is used only to warn on mismatch — never to override the
+    farmer's selection or block disease detection.
 
     Args:
         image_path:           Path to the image file.

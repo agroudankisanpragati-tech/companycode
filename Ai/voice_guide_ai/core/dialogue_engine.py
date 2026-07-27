@@ -1,29 +1,14 @@
 """
 Voice Guide AI — Dialogue Engine.
 
-The central controller that orchestrates the entire dialogue lifecycle:
+RC-2 FIX: DialogueEngine is now a pure dialogue selector / state machine.
+  * play()  → loads dialogue, validates, transitions state, calls player.play()
+  * player.play() emits VOICE_EVENT_PLAY → DialogueRuntime._handle_voice_event
+    → VoiceEngine.play()  (single pipeline)
+  * DialogueEngine NEVER calls VoiceEngine or AudioPlayer directly.
 
-  * Load dialogue JSON (via DialogueSelector)
-  * Load translation JSON (via LanguageManager inside selector)
-  * Validate dialogue (via Validator / DialogueCondition)
-  * Select dialogue (via DialogueSelector)
-  * Check conditions (via DialogueCondition)
-  * Maintain history (via DialogueHistory)
-  * Maintain runtime state (via DialogueStateMachine)
-  * Play / Pause / Resume / Stop / Replay
-  * Error recovery
-  * Avatar event generation (via DialoguePlayer)
-  * Voice event generation (via DialoguePlayer)
-
-Usage::
-
-    engine = DialogueEngine()
-    engine.set_language("hi")
-    result = engine.play("home", "welcome")
-    engine.pause()
-    engine.resume()
-    engine.replay()
-    engine.stop()
+Thread-safety: NOT thread-safe by design.
+  DialogueRuntime._CommandQueue ensures only one thread ever calls this class.
 """
 
 from __future__ import annotations
@@ -85,10 +70,23 @@ class EngineResult:
 
 class DialogueEngine:
     """
-    Main controller for the Voice Guide AI dialogue system.
+    Dialogue selector, validator, and state machine.
 
-    Thread-safety: this class is NOT thread-safe by design.
-    Use one instance per session/user.
+    Responsibilities (ONLY):
+      - Load dialogue JSON via DialogueSelector
+      - Validate dialogue
+      - Check conditions
+      - Maintain history
+      - Maintain state machine
+      - Call DialoguePlayer.play() which emits voice/avatar events
+
+    NOT responsible for:
+      - Audio playback (VoiceEngine / AudioPlayer)
+      - Thread management
+      - HTTP communication
+
+    Thread-safety: NOT thread-safe.
+    Only called from DialogueRuntime._CommandQueue worker thread.
     """
 
     def __init__(
@@ -113,10 +111,7 @@ class DialogueEngine:
         self._sm       = state_machine or DialogueStateMachine()
         self._val      = validator or Validator()
 
-        # Runtime context injected by the caller (user role, page, etc.)
         self._context: dict[str, Any] = {}
-
-        # Current dialogue being played
         self._current_dialogue: Optional[dict[str, Any]] = None
         self._current_page: Optional[str] = None
         self._previous_page: Optional[str] = None
@@ -129,13 +124,6 @@ class DialogueEngine:
     # ── Language ──────────────────────────────────────────────────────────────
 
     def set_language(self, language_code: str) -> EngineResult:
-        """
-        Change the active language.
-
-        Raises
-        ------
-        UnsupportedLanguageError — if the code is not supported
-        """
         try:
             validated = self._lm.validate(language_code)
             self._language = validated
@@ -151,21 +139,17 @@ class DialogueEngine:
             return self._error_result("set_language", exc)
 
     def get_language(self) -> str:
-        """Return the currently active language code."""
         return self._language
 
     # ── Context ───────────────────────────────────────────────────────────────
 
     def set_context(self, key: str, value: Any) -> None:
-        """Inject a runtime context value used by condition evaluation."""
         self._context[key] = value
 
     def update_context(self, data: dict[str, Any]) -> None:
-        """Bulk-update the runtime context."""
         self._context.update(data)
 
     def get_context(self) -> dict[str, Any]:
-        """Return a copy of the current runtime context."""
         return dict(self._context)
 
     # ── Core playback ─────────────────────────────────────────────────────────
@@ -180,25 +164,18 @@ class DialogueEngine:
         """
         Load, validate, and play a dialogue.
 
-        Parameters
-        ----------
-        page          : page identifier (e.g. ``"login"``, ``"home"``)
-        dialogue_type : dialogue type (e.g. ``"welcome"``, ``"error"``)
-        context       : additional runtime context for condition evaluation
-
-        Returns
-        -------
-        EngineResult with success flag, dialogue metadata, and events
+        RC-2 FIX: This method calls self._player.play(dialogue) which emits
+        VOICE_EVENT_PLAY.  DialogueRuntime._handle_voice_event receives that
+        event and calls VoiceEngine.play().  This method does NOT call
+        VoiceEngine or AudioPlayer directly — single pipeline enforced.
         """
-        # Merge caller context
         if context:
             self._context.update(context)
         self._context.setdefault("language", self._language)
         self._context["page"] = page
 
         try:
-            # Reset any prior active playback before beginning a new dialogue.
-            if self._sm.state in {
+            _stoppable = {
                 DialogueState.PLAYING,
                 DialogueState.LISTENING,
                 DialogueState.THINKING,
@@ -207,26 +184,24 @@ class DialogueEngine:
                 DialogueState.WARNING,
                 DialogueState.STOPPED,
                 DialogueState.ERROR,
-            }:
+                DialogueState.LOADING,
+                DialogueState.READY,
+            }
+            if self._sm.state in _stoppable:
                 self._player.stop()
                 self._sm.force(DialogueState.IDLE)
 
-            # Transition to LOADING
             self._sm.transition(DialogueState.LOADING)
 
-            # Load dialogue
             dialogue = self._selector.get_dialogue(
                 page, dialogue_type, language=self._language
             )
 
-            # Transition to READY
             self._sm.transition(DialogueState.READY)
 
-            # Evaluate conditions
             if not self._condition.check(dialogue, self._context):
                 _log.info(
-                    "Dialogue conditions not met: page=%s type=%s",
-                    page, dialogue_type,
+                    "Dialogue conditions not met: page=%s type=%s", page, dialogue_type
                 )
                 self._sm.force(DialogueState.IDLE)
                 return EngineResult(
@@ -239,13 +214,11 @@ class DialogueEngine:
                     error_code="CONDITION_NOT_MET",
                 )
 
-            # Transition to PLAYING
             self._sm.transition(DialogueState.PLAYING)
 
-            # Play
+            # RC-2: player.play() emits VOICE_EVENT_PLAY → single audio pipeline.
             self._player.play(dialogue)
 
-            # Record history
             self._history.record(
                 dialogue_id=dialogue.get("id", ""),
                 current_page=page,
@@ -253,9 +226,8 @@ class DialogueEngine:
                 previous_page=self._previous_page,
             )
 
-            # Update page tracking
-            self._previous_page = self._current_page
-            self._current_page  = page
+            self._previous_page    = self._current_page
+            self._current_page     = page
             self._current_dialogue = dialogue
 
             _log.info(
@@ -292,13 +264,6 @@ class DialogueEngine:
             return self._recover_error("play", exc, DialogueState.ERROR)
 
     def pause(self) -> EngineResult:
-        """
-        Pause the currently playing dialogue.
-
-        Returns
-        -------
-        EngineResult
-        """
         try:
             self._sm.transition(DialogueState.WAITING)
             success = self._player.pause()
@@ -314,13 +279,6 @@ class DialogueEngine:
             return self._error_result("pause", exc)
 
     def resume(self) -> EngineResult:
-        """
-        Resume a paused dialogue.
-
-        Returns
-        -------
-        EngineResult
-        """
         try:
             self._sm.transition(DialogueState.PLAYING)
             success = self._player.resume()
@@ -336,13 +294,7 @@ class DialogueEngine:
             return self._error_result("resume", exc)
 
     def stop(self) -> EngineResult:
-        """
-        Stop playback and return to STOPPED state.
-
-        Returns
-        -------
-        EngineResult
-        """
+        """Idempotent stop — safe to call when already stopped."""
         try:
             self._sm.transition(DialogueState.STOPPED)
             success = self._player.stop()
@@ -354,20 +306,20 @@ class DialogueEngine:
                 language=self._language,
                 state=self._sm.state.value,
             )
-        except DialogueStateError as exc:
-            # Force stop even on illegal transition
+        except DialogueStateError:
+            # Already stopped — force and return success.
             self._player.stop()
             self._sm.force(DialogueState.STOPPED)
-            return self._error_result("stop", exc)
+            self._current_dialogue = None
+            return EngineResult(
+                success=True,
+                operation="stop",
+                page=self._current_page,
+                language=self._language,
+                state=self._sm.state.value,
+            )
 
     def replay(self) -> EngineResult:
-        """
-        Replay the last played dialogue.
-
-        Returns
-        -------
-        EngineResult — error result if no history exists
-        """
         last = self._history.last()
         if last is None:
             return EngineResult(
@@ -392,12 +344,8 @@ class DialogueEngine:
                 error_code="MAX_REPLAY_REACHED",
             )
 
-        # HistoryEntry stores dialogue_id; replay by page only (welcome fallback)
-        # Derive dialogue_type from history entry's dialogue_id safely
-        # dialogue_id format: {page}_{type}_{seq} e.g. home_welcome_001
         parts = last.dialogue_id.split("_")
-        page = last.current_page
-        # Reconstruct type: everything between first and last segment
+        page  = last.current_page
         if len(parts) >= 3:
             dtype = "_".join(parts[1:-1])
         elif len(parts) == 2:
@@ -409,91 +357,60 @@ class DialogueEngine:
     # ── State transitions ─────────────────────────────────────────────────────
 
     def set_listening(self) -> EngineResult:
-        """Transition to LISTENING state and emit avatar listen event."""
         try:
             self._sm.transition(DialogueState.LISTENING)
             self._player.emit_listening()
-            return EngineResult(
-                success=True, operation="set_listening",
-                state=self._sm.state.value,
-            )
+            return EngineResult(success=True, operation="set_listening", state=self._sm.state.value)
         except DialogueStateError as exc:
             return self._error_result("set_listening", exc)
 
     def set_thinking(self) -> EngineResult:
-        """Transition to THINKING state and emit avatar think event."""
         try:
             self._sm.transition(DialogueState.THINKING)
             self._player.emit_thinking()
-            return EngineResult(
-                success=True, operation="set_thinking",
-                state=self._sm.state.value,
-            )
+            return EngineResult(success=True, operation="set_thinking", state=self._sm.state.value)
         except DialogueStateError as exc:
             return self._error_result("set_thinking", exc)
 
     def set_success(self) -> EngineResult:
-        """Transition to SUCCESS state and emit avatar success event."""
         try:
             self._sm.transition(DialogueState.SUCCESS)
             self._player.emit_success()
-            return EngineResult(
-                success=True, operation="set_success",
-                state=self._sm.state.value,
-            )
+            return EngineResult(success=True, operation="set_success", state=self._sm.state.value)
         except DialogueStateError as exc:
             return self._error_result("set_success", exc)
 
     def set_offline(self) -> EngineResult:
-        """Transition to OFFLINE state."""
         try:
             self._sm.transition(DialogueState.OFFLINE)
-            return EngineResult(
-                success=True, operation="set_offline",
-                state=self._sm.state.value,
-            )
-        except DialogueStateError as exc:
+        except DialogueStateError:
             self._sm.force(DialogueState.OFFLINE)
-            return EngineResult(
-                success=True, operation="set_offline",
-                state=self._sm.state.value,
-            )
+        return EngineResult(success=True, operation="set_offline", state=self._sm.state.value)
 
     def exit(self) -> EngineResult:
-        """Transition to EXIT state, stop playback, and clean up."""
         self._player.stop()
         self._sm.force(DialogueState.EXIT)
         _log.info("DialogueEngine exiting.")
-        return EngineResult(
-            success=True, operation="exit",
-            state=self._sm.state.value,
-        )
+        return EngineResult(success=True, operation="exit", state=self._sm.state.value)
 
     def reset(self) -> EngineResult:
-        """Reset engine to IDLE state without clearing history."""
         self._player.stop()
         self._sm.reset()
         self._current_dialogue = None
         _log.info("DialogueEngine reset to IDLE.")
-        return EngineResult(
-            success=True, operation="reset",
-            state=self._sm.state.value,
-        )
+        return EngineResult(success=True, operation="reset", state=self._sm.state.value)
 
     # ── Inspection ────────────────────────────────────────────────────────────
 
     @property
     def state(self) -> DialogueState:
-        """Current dialogue state."""
         return self._sm.state
 
     @property
     def history(self) -> DialogueHistory:
-        """Access the history store directly."""
         return self._history
 
     def get_status(self) -> dict[str, Any]:
-        """Return a full status snapshot of the engine."""
         last = self._history.last()
         return {
             "state":            self._sm.state.value,
@@ -510,11 +427,9 @@ class DialogueEngine:
     # ── Callback registration ─────────────────────────────────────────────────
 
     def on_avatar_event(self, callback: EventCallback) -> None:
-        """Register a callback for avatar events from the player."""
         self._player.on_avatar_event(callback)
 
     def on_voice_event(self, callback: EventCallback) -> None:
-        """Register a callback for voice/audio events from the player."""
         self._player.on_voice_event(callback)
 
     # ── Error recovery ────────────────────────────────────────────────────────
@@ -525,24 +440,15 @@ class DialogueEngine:
         exc: Exception,
         target_state: DialogueState = DialogueState.ERROR,
     ) -> EngineResult:
-        """
-        Attempt to recover from an error by forcing the target state.
-
-        Emits an avatar error event and logs the exception.
-        """
         _log.error("Engine error during '%s': %s", operation, exc, exc_info=True)
-
         try:
             self._sm.force(target_state)
-        except Exception:  # noqa: BLE001
+        except Exception:
             pass
-
         try:
             self._player.emit_error(str(exc))
-        except Exception:  # noqa: BLE001
+        except Exception:
             pass
-
-        error_code = getattr(exc, "code", "UNKNOWN_ERROR")
         return EngineResult(
             success=False,
             operation=operation,
@@ -550,11 +456,10 @@ class DialogueEngine:
             language=self._language,
             state=self._sm.state.value,
             error=str(exc),
-            error_code=error_code,
+            error_code=getattr(exc, "code", "UNKNOWN_ERROR"),
         )
 
     def _error_result(self, operation: str, exc: Exception) -> EngineResult:
-        """Build an error EngineResult without changing state."""
         _log.warning("Engine warning during '%s': %s", operation, exc)
         return EngineResult(
             success=False,

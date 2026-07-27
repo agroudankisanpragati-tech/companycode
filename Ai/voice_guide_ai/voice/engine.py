@@ -2,12 +2,23 @@
 Voice Guide AI — Voice Engine.
 
 Central facade that wires together:
-  * BatchGenerator  (MP3 generation)
+  * EdgeTTSGenerator  (MP3 generation — always in background)
   * PlaybackController (audio + subtitle playback)
   * Cache validation
   * Metadata management
 
-This is the single entry point for all voice operations.
+ROOT CAUSE FIX (RC-1):
+  The original engine called generate_one() SYNCHRONOUSLY inside play().
+  When edge-tts was unavailable or slow, the HTTP request blocked for the
+  full retry duration (3 × 2 s = 6 s+), causing the 8 000 ms bridge timeout.
+
+  New contract:
+    * play() checks the cache first.
+    * If the file exists → play immediately (< 1 ms).
+    * If the file is missing → return False immediately, then fire a
+      background thread to generate it.  The HTTP response is already
+      gone before generation starts.
+    * generate_one() is still available for explicit batch use.
 """
 
 from __future__ import annotations
@@ -28,8 +39,12 @@ from voice.utils.filename_generator import FilenameGenerator
 
 _log = get_logger("voice.engine")
 
-_CONFIGS_DIR = Path("voice") / "configs"
-_METADATA_DIR = Path("voice") / "metadata"
+_CONFIGS_DIR   = Path("voice") / "configs"
+_METADATA_DIR  = Path("voice") / "metadata"
+
+# Maximum number of concurrent background generation threads.
+_MAX_BG_WORKERS = 4
+_bg_semaphore   = threading.Semaphore(_MAX_BG_WORKERS)
 
 
 class VoiceEngine:
@@ -48,11 +63,11 @@ class VoiceEngine:
         base_dir: Optional[Path] = None,
         max_workers: int = 4,
     ) -> None:
-        self._base = base_dir or Path(__file__).resolve().parent.parent
+        self._base        = base_dir or Path(__file__).resolve().parent.parent
         self._max_workers = max_workers
-        self._filename = FilenameGenerator(self._base)
-        self._controller = PlaybackController(self._base)
-        self._generator = EdgeTTSGenerator(
+        self._filename    = FilenameGenerator(self._base)
+        self._controller  = PlaybackController(self._base)
+        self._generator   = EdgeTTSGenerator(
             base_dir=self._base,
             configs_dir=self._base / _CONFIGS_DIR,
         )
@@ -93,7 +108,7 @@ class VoiceEngine:
         text: str,
         force: bool = False,
     ) -> GenerationResult:
-        """Generate a single MP3 file."""
+        """Generate a single MP3 file synchronously (for batch/admin use)."""
         return self._generator.generate(
             language=language,
             module=module,
@@ -101,6 +116,55 @@ class VoiceEngine:
             text=text,
             force=force,
         )
+
+    def _generate_background(
+        self,
+        language: str,
+        module: str,
+        dialogue_id: str,
+        text: str,
+    ) -> None:
+        """
+        Fire-and-forget background generation.
+
+        Acquires a semaphore slot so we never flood the system with
+        concurrent TTS requests.  Logs result but never raises.
+        """
+        def _worker() -> None:
+            acquired = _bg_semaphore.acquire(blocking=False)
+            if not acquired:
+                _log.debug(
+                    "Background generation skipped (semaphore full): %s/%s/%s",
+                    language, module, dialogue_id,
+                )
+                return
+            try:
+                result = self._generator.generate(
+                    language=language,
+                    module=module,
+                    dialogue_id=dialogue_id,
+                    text=text,
+                )
+                if result.success:
+                    _log.info(
+                        "Background generation complete: %s/%s/%s",
+                        language, module, dialogue_id,
+                    )
+                else:
+                    _log.warning(
+                        "Background generation failed: %s/%s/%s — %s",
+                        language, module, dialogue_id, result.error,
+                    )
+            except Exception as exc:
+                _log.warning(
+                    "Background generation exception: %s/%s/%s — %s",
+                    language, module, dialogue_id, exc,
+                )
+            finally:
+                _bg_semaphore.release()
+
+        t = threading.Thread(target=_worker, daemon=True, name=f"bg-tts-{dialogue_id}")
+        t.start()
 
     def is_cached(self, language: str, module: str, dialogue_id: str) -> bool:
         """Return True if a valid cached MP3 exists."""
@@ -122,40 +186,55 @@ class VoiceEngine:
         """
         Play the MP3 for language/module/dialogue_id.
 
-        If the file does not exist and *auto_generate* is True and *text*
-        is provided, generates it first.
+        RC-1 FIX: This method NEVER blocks on audio generation.
+
+        Decision tree:
+          1. File exists and is valid  → play immediately, return True.
+          2. File missing, text given  → queue background generation,
+                                         return False immediately.
+          3. File missing, no text     → log warning, return False.
+
+        The HTTP response is returned to the caller before any generation
+        work begins.  When the file is eventually generated it will be
+        available for the next play() call (cache hit).
 
         Parameters
         ----------
         language      : language code
         module        : page/module name
         dialogue_id   : dialogue identifier
-        text          : subtitle text (also used for auto-generation)
+        text          : subtitle text (also used for background generation)
         rtl           : right-to-left subtitle flag
         duration_s    : audio duration hint for subtitle timing
-        auto_generate : generate MP3 if missing (requires text)
+        auto_generate : queue background generation if file is missing
         """
         path = self._filename.audio_path(language, module, dialogue_id)
 
-        if not FileUtils.is_non_empty(path) or not AudioValidator.validate(path).valid:
-            if auto_generate and text:
-                _log.info("Auto-generating: %s/%s/%s", language, module, dialogue_id)
-                result = self.generate_one(language, module, dialogue_id, text)
-                if not result.success:
-                    _log.error("Auto-generation failed: %s", result.error)
-                    return False
-            else:
-                _log.error("Audio not found and auto_generate=False: %s", path)
-                return False
+        if FileUtils.is_non_empty(path) and AudioValidator.validate(path).valid:
+            # Cache hit — play immediately
+            return self._controller.play(
+                language=language,
+                module=module,
+                dialogue_id=dialogue_id,
+                text=text,
+                rtl=rtl,
+                duration_s=duration_s,
+            )
 
-        return self._controller.play(
-            language=language,
-            module=module,
-            dialogue_id=dialogue_id,
-            text=text,
-            rtl=rtl,
-            duration_s=duration_s,
-        )
+        # Cache miss
+        if auto_generate and text:
+            _log.info(
+                "Audio not cached — queuing background generation: %s/%s/%s",
+                language, module, dialogue_id,
+            )
+            self._generate_background(language, module, dialogue_id, text)
+        else:
+            _log.warning(
+                "Audio not found and auto_generate=False (or no text): %s", path
+            )
+
+        # Return False immediately — do NOT block
+        return False
 
     def pause(self) -> None:
         self._controller.pause()
@@ -279,8 +358,6 @@ class VoiceEngine:
                 parts = rel.parts
                 if len(parts) < 3:
                     continue
-                # parts: (language, [dialect,] module, dialogue_id.mp3)
-                # Handle rj/marwari/module/id.mp3 → 4 parts
                 if len(parts) == 4:
                     language = f"{parts[0]}/{parts[1]}"
                     module = parts[2]
@@ -291,22 +368,22 @@ class VoiceEngine:
                     dialogue_id = parts[2].replace(".mp3", "")
 
                 entries[mp3.as_posix()] = {
-                    "language": language,
-                    "module": module,
+                    "language":    language,
+                    "module":      module,
                     "dialogue_id": dialogue_id,
-                    "duration_s": AudioUtils.estimate_duration_seconds(mp3),
-                    "size_bytes": mp3.stat().st_size,
-                    "checksum": ChecksumUtil.compute_file(mp3) or "",
+                    "duration_s":  AudioUtils.estimate_duration_seconds(mp3),
+                    "size_bytes":  mp3.stat().st_size,
+                    "checksum":    ChecksumUtil.compute_file(mp3) or "",
                 }
             except Exception as exc:
                 _log.warning("Cannot index %s: %s", mp3, exc)
 
         import datetime
         index = {
-            "version": "1.0.0",
+            "version":      "1.0.0",
             "generated_at": datetime.datetime.now().isoformat(),
-            "total_files": len(entries),
-            "entries": entries,
+            "total_files":  len(entries),
+            "entries":      entries,
         }
         FileUtils.write_json(self._base / _METADATA_DIR / "audio_index.json", index)
         _log.info("Audio index rebuilt: %d files", len(entries))

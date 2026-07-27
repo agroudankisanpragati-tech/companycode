@@ -131,6 +131,11 @@ export type ScanResult = {
 
   // Feedback
   feedback?: 'helpful' | 'not_helpful' | null;
+
+  // Crop Verification advisory (requirement 6)
+  // Set when EfficientNet predicts a different crop than the farmer selected.
+  // Never blocks disease detection — advisory only.
+  crop_mismatch_warning?: string | null;
 };
 
 export type HistoryItem = ScanResult & { createdAt: string };

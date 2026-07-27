@@ -29,7 +29,7 @@ function classifyFetchError(err: unknown): string {
     return 'FastAPI AI server is not running. Please start the Python FastAPI server (port 8000) and try again.';
   }
   if (lower.includes('crop verification') || lower.includes('uploaded image belongs')) {
-    return msg; // pass through — already a user-friendly message from the server
+    return 'Please select a crop before scanning.'; // pass through as user-friendly message
   }
   return msg || 'Disease scan failed. Please try again.';
 }
@@ -50,7 +50,7 @@ export function useDisease() {
 
   const scan = useCallback(async (
     file: File,
-    cropName?: string,
+    cropName: string,
     onStep?: (step: number) => void
   ) => {
     abortRef.current?.abort();
@@ -58,7 +58,9 @@ export function useDisease() {
 
     const fd = new FormData();
     fd.append('image', file);
-    if (cropName?.trim()) fd.append('cropName', cropName.trim());
+    // cropName is MANDATORY — farmer-selected crop is the only source of truth
+    fd.append('cropName', cropName.trim());
+    fd.append('farmerCrop', cropName.trim());
 
     let step = 0;
     onStep?.(step);
@@ -73,7 +75,12 @@ export function useDisease() {
       });
       const json = await safeJson(res);
       if (!res.ok) throw new Error(json.error || `Scan failed (HTTP ${res.status})`);
-      return { ...json.data, source: json.source, engine: json.engine, similarityScore: json.similarityScore };
+      return {
+        ...json.data,
+        source: json.source,
+        engine: json.engine,
+        similarityScore: json.similarityScore,
+      };
     } catch (err: unknown) {
       if (err instanceof Error && err.name === 'AbortError') throw err;
       const classified = classifyFetchError(err);

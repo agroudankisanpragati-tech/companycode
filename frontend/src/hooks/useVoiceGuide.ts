@@ -31,7 +31,7 @@ export function useVoiceGuide(pageKey?: string): UseVoiceGuideReturn {
 
   const resolvedPage = pageKey || guide.currentPage;
 
-  // Auto-trigger welcome on mount once per page
+  // Auto-trigger openPage on mount once per page
   // IMPORTANT: gated on bridgeOnline — never fires a network call if bridge is down.
   // Disease Detection must never wait for this.
   useEffect(() => {
@@ -45,10 +45,9 @@ export function useVoiceGuide(pageKey?: string): UseVoiceGuideReturn {
     return () => {
       mountedRef.current = false;
       triggeredRef.current = false;
-      // Play exit dialogue on unmount if bridge is online
-      if (guide.bridgeOnline && pageKey) {
-        guide.play(pageKey, 'exit').catch(() => {});
-      }
+      // Exit dialogue is handled by VoiceGuideNavigator on pathname change.
+      // Do NOT play exit here — this cleanup fires on React Strict Mode
+      // double-mount and hot-reload, causing spurious exit dialogues.
     };
   }, [guide.ready, guide.bridgeOnline, pageKey]); // eslint-disable-line react-hooks/exhaustive-deps
 

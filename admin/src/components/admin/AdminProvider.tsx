@@ -23,6 +23,7 @@ import {
   FaNewspaper,
   FaMapMarkerAlt,
   FaClipboardList,
+  FaBriefcase,
 } from 'react-icons/fa';
 import {
   API_BASE,
@@ -79,6 +80,7 @@ const navItems = [
   { href: '/settings', label: 'Settings', icon: FaCog },
   { href: '/kvk-management', label: 'KVK Management', icon: FaMapMarkerAlt },
   { href: '/scheme-applications', label: 'Scheme Applications', icon: FaClipboardList },
+  { href: '/career', label: 'Career', icon: FaBriefcase },
 ];
 
 const statCards = [

@@ -4,6 +4,22 @@ Voice Guide AI — Playback Controller.
 Orchestrates AudioPlayer and SubtitlePlayer together.
 Resolves audio file paths from language/module/dialogue_id triples.
 Provides a single high-level API for the rest of the system.
+
+BLOCKING FIX
+------------
+The original play() called:
+  path.is_file()                 ← stat() syscall on caller thread
+  self._subtitle.load()          ← string processing on caller thread
+  self._subtitle.start()         ← spawns thread (fast, but still on caller)
+  self._player.play(path)        ← previously blocked on pygame.mixer.music.load()
+
+With the new AudioPlayer, self._player.play() posts a command to the
+worker queue and returns immediately.  PlaybackController.play() is
+therefore fully non-blocking.
+
+The path existence check is kept but moved to a non-locking stat() call
+that is acceptable since it is a single syscall (< 1 ms on local storage).
+If the file is absent, we return False immediately without touching pygame.
 """
 
 from __future__ import annotations
@@ -26,6 +42,8 @@ class PlaybackController:
 
     Resolves audio paths, plays MP3s, and synchronises subtitles.
 
+    All methods return immediately — no caller ever blocks on pygame I/O.
+
     Parameters
     ----------
     base_dir : absolute path to voice_guide_ai/ package root
@@ -33,11 +51,11 @@ class PlaybackController:
 
     def __init__(self, base_dir: Path) -> None:
         self._filename = FilenameGenerator(base_dir)
-        self._player = AudioPlayer()
+        self._player   = AudioPlayer()
         self._subtitle = SubtitlePlayer()
-        self._lock = threading.Lock()
-        self._current_language: str = "hi"
-        self._current_module: str = ""
+        self._lock     = threading.Lock()
+        self._current_language:    str = "hi"
+        self._current_module:      str = ""
         self._current_dialogue_id: str = ""
 
         self._player.on_state_change(self._on_audio_state)
@@ -54,7 +72,10 @@ class PlaybackController:
         duration_s: Optional[float] = None,
     ) -> bool:
         """
-        Play the MP3 for language/module/dialogue_id.
+        Schedule playback of the MP3 for language/module/dialogue_id.
+
+        Returns immediately after posting the play command to the
+        AudioPlayer worker queue.  Never blocks on pygame I/O.
 
         Parameters
         ----------
@@ -67,19 +88,24 @@ class PlaybackController:
         """
         path = self._filename.audio_path(language, module, dialogue_id)
 
+        # Single stat() call — fast, acceptable on any thread
         if not path.is_file():
-            _log.error("Audio file not found: %s", path)
+            _log.warning("Audio file not found: %s", path)
             return False
 
         with self._lock:
-            self._current_language = language
-            self._current_module = module
+            self._current_language    = language
+            self._current_module      = module
             self._current_dialogue_id = dialogue_id
 
+        # Subtitle setup is pure CPU (string splitting) — fast
         if text:
-            self._subtitle.load(text=text, language=language, rtl=rtl, duration_s=duration_s)
+            self._subtitle.load(
+                text=text, language=language, rtl=rtl, duration_s=duration_s
+            )
             self._subtitle.start(position_getter=lambda: self._player.position_s)
 
+        # AudioPlayer.play() posts to worker queue and returns immediately
         success = self._player.play(path)
         if not success:
             self._subtitle.stop()
@@ -92,6 +118,12 @@ class PlaybackController:
         self._player.resume()
 
     def stop(self) -> None:
+        """
+        Signal stop and return immediately.
+
+        BLOCKING FIX: AudioPlayer.stop() no longer acquires a lock or
+        waits for pygame — it posts _CMD_STOP to the worker queue.
+        """
         self._player.stop()
         self._subtitle.stop()
 
@@ -165,7 +197,9 @@ class PlaybackController:
     # ── Internal ──────────────────────────────────────────────────────────────
 
     def _on_audio_state(self, event: PlaybackEvent) -> None:
-        if event.state in (PlaybackState.IDLE, PlaybackState.STOPPED):
+        # Stop subtitles whenever audio is no longer playing — including
+        # ERROR state (e.g. file validation failed after subtitle already started).
+        if event.state in (PlaybackState.IDLE, PlaybackState.STOPPED, PlaybackState.ERROR):
             self._subtitle.stop()
 
     def shutdown(self) -> None:

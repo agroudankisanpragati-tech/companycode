@@ -1,10 +1,12 @@
 /**
  * Voice Guide Routes — Integration Layer
  *
- * Proxies Voice Guide AI bridge (Python FastAPI on port 8002) and
- * enriches every request with the authenticated user's context so
- * the AI runtime knows login state, language, and profile completeness.
+ * RC-4 FIX: /initialize calls open_page() internally via _bg_initialize.
+ *   The backend route must NOT call /page after /initialize — that would
+ *   create a duplicate play.  Removed the separate /page call from the
+ *   initialize handler.
  *
+ * All other routes are unchanged in API shape.
  * Mounted at /api/voice-guide
  */
 
@@ -20,8 +22,6 @@ const log = createLogger('voice-guide');
 
 const BRIDGE_URL = process.env.VOICE_GUIDE_BRIDGE_URL || 'http://localhost:8002';
 
-// Cold-start timeout is longer — Python RuntimeManager init can take 8–12 s.
-// Subsequent requests use the fast timeout.
 const BRIDGE_TIMEOUT_COLD = parseInt(process.env.VOICE_GUIDE_BRIDGE_TIMEOUT_COLD_MS || '15000', 10);
 const BRIDGE_TIMEOUT_FAST = parseInt(process.env.VOICE_GUIDE_BRIDGE_TIMEOUT_MS || '8000', 10);
 
@@ -48,13 +48,11 @@ async function bridgeRequest(
     const data = await res.json().catch(() => ({}));
     return { ok: res.ok, data, status: res.status };
   } catch (err: any) {
-    const isAbort = err.name === 'AbortError';
+    const isAbort   = err.name === 'AbortError';
     const isRefused = err.code === 'ECONNREFUSED' || err.cause?.code === 'ECONNREFUSED';
 
-    // Always log the real error so it appears in server logs
     log.error('[bridge] request failed', {
-      method,
-      path,
+      method, path,
       error: err.message,
       code: err.code ?? err.cause?.code,
       type: isAbort ? 'timeout' : isRefused ? 'connection_refused' : 'unknown',
@@ -88,16 +86,14 @@ async function bridgeRequest(
 }
 
 // ── Error response helper ─────────────────────────────────────────────────────
-// In development: include the real error message.
-// In production:  return a safe generic message.
 
 function bridgeError(res: Response, result: { ok: boolean; data: unknown; status: number }): Response {
   const data = result.data as any;
   const payload: Record<string, unknown> = { success: false };
 
   if (IS_DEV) {
-    payload.error = data?.error ?? 'Voice Guide unavailable';
-    payload.detail = data?.detail ?? null;
+    payload.error      = data?.error ?? 'Voice Guide unavailable';
+    payload.detail     = data?.detail ?? null;
     payload.bridge_url = BRIDGE_URL;
   } else {
     payload.error = 'Voice Guide unavailable';
@@ -106,7 +102,7 @@ function bridgeError(res: Response, result: { ok: boolean; data: unknown; status
   return res.status(result.status).json(payload);
 }
 
-// ── Build user conditions for the runtime ────────────────────────────────────
+// ── Build user conditions ─────────────────────────────────────────────────────
 
 async function buildConditions(userId: string): Promise<Record<string, unknown>> {
   try {
@@ -117,12 +113,12 @@ async function buildConditions(userId: string): Promise<Record<string, unknown>>
     ]);
 
     return {
-      logged_in: true,
+      logged_in:               true,
       farmer_profile_complete: !!(profile as any)?.isComplete,
-      location_available: !!(profile as any)?.location,
-      language: (settings as any)?.appLanguage || 'hi',
-      role: (user as any)?.role || 'farmer',
-      permission_granted: true,
+      location_available:      !!(profile as any)?.location,
+      language:                (settings as any)?.appLanguage || 'hi',
+      role:                    (user as any)?.role || 'farmer',
+      permission_granted:      true,
     };
   } catch {
     return { logged_in: true, farmer_profile_complete: false, location_available: false };
@@ -130,7 +126,6 @@ async function buildConditions(userId: string): Promise<Record<string, unknown>>
 }
 
 // ── GET /api/voice-guide/health — NO auth required ───────────────────────────
-// Health check must be reachable before the user has a valid token.
 
 router.get('/health', async (_req, res: Response) => {
   const result = await bridgeRequest('GET', '/health', undefined, BRIDGE_TIMEOUT_FAST);
@@ -142,43 +137,44 @@ router.get('/health', async (_req, res: Response) => {
 router.use(authenticate);
 
 // ── POST /api/voice-guide/initialize ─────────────────────────────────────────
+// RC-4 FIX: This endpoint calls /voice-guide/initialize on the bridge which
+// internally runs: update_conditions → set_language → open_page → play().
+// We do NOT call /voice-guide/page separately — that would duplicate the play.
 router.post('/initialize', async (req: AuthenticatedRequest, res: Response) => {
   try {
     const { page = 'home', language } = req.body as { page?: string; language?: string };
 
     const conditions = await buildConditions(req.user!.userId);
 
-    // Run conditions + session start in parallel; use cold timeout for session/start
-    const [conditionsResult, runtimeResult] = await Promise.all([
-      bridgeRequest('POST', '/voice-guide/conditions', { conditions }),
+    // RC-8 FIX: Do NOT call /voice-guide/conditions separately here.
+    // _bg_initialize already calls rt.update_conditions(conditions) internally.
+    // Calling it here too creates a race: two concurrent condition updates
+    // before open_page() runs, causing duplicate page_opened events.
+    //
+    // Only start the session (fast health-check equivalent) in parallel with
+    // the avatar config fetch, then call /initialize which handles everything.
+    const [runtimeResult, avatarResult] = await Promise.all([
       bridgeRequest('POST', '/voice-guide/session/start', {}, BRIDGE_TIMEOUT_COLD),
+      bridgeRequest('GET', '/voice-guide/avatar/config'),
     ]);
 
-    if (!conditionsResult.ok) {
-      log.error('[initialize] conditions failed', { status: conditionsResult.status, data: conditionsResult.data });
-      return bridgeError(res, conditionsResult);
-    }
     if (!runtimeResult.ok) {
-      log.error('[initialize] session/start failed', { status: runtimeResult.status, data: runtimeResult.data });
+      log.error('[initialize] session/start failed', { status: runtimeResult.status });
       return bridgeError(res, runtimeResult);
     }
-
-    // Fetch avatar config + dialogue + page in parallel
-    const [avatarResult, dialogueResult, pageResult] = await Promise.all([
-      bridgeRequest('GET', '/voice-guide/avatar/config'),
-      bridgeRequest('GET', `/voice-guide/dialogue/${encodeURIComponent(page)}/welcome?lang=${encodeURIComponent(language || 'hi')}`),
-      bridgeRequest('POST', '/voice-guide/page', { page, language }),
-    ]);
-
     if (!avatarResult.ok) {
       log.warn('[initialize] avatar config failed — continuing', { status: avatarResult.status });
     }
-    if (!dialogueResult.ok) {
-      log.warn('[initialize] dialogue fetch failed — continuing', { status: dialogueResult.status });
-    }
-    if (!pageResult.ok) {
-      log.error('[initialize] page open failed', { status: pageResult.status, data: pageResult.data });
-      return bridgeError(res, pageResult);
+
+    // /initialize on the bridge calls: update_conditions → set_language → open_page → play.
+    // This is the single authoritative initialization path.
+    const initResult = await bridgeRequest(
+      'POST', '/voice-guide/initialize', { page, language, conditions }
+    );
+
+    if (!initResult.ok) {
+      log.error('[initialize] bridge initialize failed', { status: initResult.status });
+      return bridgeError(res, initResult);
     }
 
     log.info('[initialize] success', { page, language, userId: req.user!.userId });
@@ -187,9 +183,8 @@ router.post('/initialize', async (req: AuthenticatedRequest, res: Response) => {
       success: true,
       data: {
         runtime: runtimeResult.data,
-        avatar: avatarResult.data,
-        dialogue: dialogueResult.data,
-        page: pageResult.data,
+        avatar:  avatarResult.data,
+        page:    initResult.data,
       },
     });
   } catch (err: any) {
@@ -213,14 +208,14 @@ router.post('/page', async (req: AuthenticatedRequest, res: Response) => {
 
     const result = await bridgeRequest('POST', '/voice-guide/page', { page, language });
     if (!result.ok) {
-      log.error('[page] bridge error', { page, status: result.status, data: result.data });
+      log.error('[page] bridge error', { page, status: result.status });
       return bridgeError(res, result);
     }
 
     log.debug('[page] opened', { page, language, userId: req.user!.userId });
     return res.status(result.status).json(result.data);
   } catch (err: any) {
-    log.error('[page] unhandled exception', { error: err.message, stack: err.stack });
+    log.error('[page] unhandled exception', { error: err.message });
     return res.status(503).json({
       success: false,
       error: IS_DEV ? err.message : 'Voice Guide unavailable',
@@ -244,12 +239,12 @@ router.post('/play', async (req: AuthenticatedRequest, res: Response) => {
       page, dialogue_type, language, priority, context,
     });
     if (!result.ok) {
-      log.error('[play] bridge error', { page, dialogue_type, status: result.status, data: result.data });
+      log.error('[play] bridge error', { page, dialogue_type, status: result.status });
       return bridgeError(res, result);
     }
     return res.status(result.status).json(result.data);
   } catch (err: any) {
-    log.error('[play] unhandled exception', { error: err.message, stack: err.stack });
+    log.error('[play] unhandled exception', { error: err.message });
     return res.status(503).json({
       success: false,
       error: IS_DEV ? err.message : 'Voice Guide unavailable',
@@ -263,12 +258,12 @@ router.post('/replay', async (req: AuthenticatedRequest, res: Response) => {
     const { dialogue_id } = req.body as { dialogue_id?: string };
     const result = await bridgeRequest('POST', '/voice-guide/replay', { dialogue_id });
     if (!result.ok) {
-      log.error('[replay] bridge error', { status: result.status, data: result.data });
+      log.error('[replay] bridge error', { status: result.status });
       return bridgeError(res, result);
     }
     return res.status(result.status).json(result.data);
   } catch (err: any) {
-    log.error('[replay] unhandled exception', { error: err.message, stack: err.stack });
+    log.error('[replay] unhandled exception', { error: err.message });
     return res.status(503).json({
       success: false,
       error: IS_DEV ? err.message : 'Voice Guide unavailable',

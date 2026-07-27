@@ -216,11 +216,17 @@ class RuntimeManager:
         """
         Change the active language across the entire runtime.
 
-        Immediately updates session, condition context, dialogue runtime,
-        and invalidates the translation cache for the old language.
-        Dispatches language_changed event.
+        RC-4 FIX: Guard against no-op language changes.  If the requested
+        language is already the current language, return immediately without
+        dispatching language_changed or calling set_language on subsystems.
+        This prevents the rj/mewati → en → rj/mewati triple-fire that
+        occurred when /conditions, /language, and /page all ran in parallel
+        during /initialize.
         """
         old_language = self._session_manager.current_language
+        if old_language == language:
+            _log.debug("set_language: no-op, already '%s'", language)
+            return {"success": True, "operation": "set_language", "language": language}
         self._session_manager.set_language(language)
         self._condition_manager.set("language", language)
         self._cache_manager.invalidate_language(old_language)

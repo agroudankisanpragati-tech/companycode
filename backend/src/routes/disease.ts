@@ -55,13 +55,17 @@ router.get('/supported-crops', async (_req, res: Response) => {
 
 // ─── FARMER: Scan disease from uploaded image ─────────────────────────────────
 // Pipeline: YOLO (prediction) → Knowledge Base (advisory) → persist → respond
-// YOLO is the ONLY prediction engine. Pragati AI / LLM never predicts disease.
+// YOLO is the ONLY prediction engine. Crop Verification AI is NOT used.
 
 router.post('/scan', authenticate, upload.single('image'), async (req: AuthenticatedRequest, res: Response) => {
   try {
-    // cropName is SECONDARY metadata — optional. Crop Verification AI is PRIMARY.
-    const cropHint = (req.body.cropName as string | undefined)?.trim() || undefined;
-    const userId   = req.user!.userId;
+    // cropName is MANDATORY — reject immediately if missing
+    const cropName = (req.body.cropName as string | undefined)?.trim();
+    if (!cropName) {
+      return res.status(400).json({ success: false, error: 'Please select a crop before scanning.' });
+    }
+
+    const userId = req.user!.userId;
 
     if (!req.file) {
       return res.status(400).json({ success: false, error: 'Image file is required' });
@@ -70,15 +74,14 @@ router.post('/scan', authenticate, upload.single('image'), async (req: Authentic
     const savedImageUrl = imgUrl(req.file.filename);
 
     // ── Step 1: YOLO Classification — the ONLY prediction source ─────────────
-    // cropHint is passed only for YOLO class filtering — never as a hard requirement.
-    // Crop Verification AI (EfficientNet) has already run on the Python side and
-    // will have validated/overridden the crop before YOLO runs.
+    // cropName is passed as the class filter — disease search is restricted
+    // to this crop's classes only. No cross-crop search. No auto-detection.
     let yoloResult: Awaited<ReturnType<typeof runHybridDiseaseDetection>>;
     try {
-      log.info('Disease scan: request received', { userId, cropHint: cropHint || '(none)', file: req.file.filename });
+      log.info('Disease scan: request received', { userId, cropName, file: req.file.filename });
       log.info('Disease scan: image validated', { path: req.file.path, size: req.file.size });
-      log.info('Disease scan: crop verification + YOLO prediction started');
-      yoloResult = await runHybridDiseaseDetection(req.file.path, '', cropHint);
+      log.info('Disease scan: YOLO prediction started', { cropName });
+      yoloResult = await runHybridDiseaseDetection(req.file.path, '', cropName);
     } catch (err: any) {
       const msg = err?.message || '';
       const lower = msg.toLowerCase();
@@ -97,13 +100,11 @@ router.post('/scan', authenticate, upload.single('image'), async (req: Authentic
     }
 
     // ── Step 2: YOLO returned no result ──────────────────────────────────────
-    // Happens when the image is not a recognisable crop leaf, the crop is not
-    // in the YOLO training dataset, or Crop Verification returned a mismatch.
     if (!yoloResult.result) {
       return res.status(422).json({
         success: false,
         predictionSource: 'YOLOv8 Classification Model',
-        error: yoloResult.error || 'Unable to identify the crop in this image. Please upload a clear leaf image of a supported crop.',
+        error: yoloResult.error || 'Unable to identify the disease in this image. Please upload a clear leaf image.',
       });
     }
 
@@ -189,7 +190,6 @@ router.post('/scan', authenticate, upload.single('image'), async (req: Authentic
       ]);
     } catch (saveErr: any) {
       log.error('DB save failed', { error: saveErr?.message });
-      // Return result even if DB save fails
       return res.json({
         success: true,
         predictionSource: 'YOLOv8 Classification Model',

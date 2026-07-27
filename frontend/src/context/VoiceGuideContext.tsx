@@ -31,6 +31,8 @@ declare global {
       providerMounted: boolean;
       bridgeOnline: boolean;
       ready: boolean;
+      _bridgeOnline: boolean;
+      _ready: boolean;
       initializeVoiceGuide: () => void;
       openPage: (page?: string) => void;
       play: (page: string, dialogueType: string) => void;
@@ -175,6 +177,12 @@ export function VoiceGuideProvider({ children }: { children: ReactNode }) {
   const lastSpokenTextRef = useRef<string>('');
   const audioUnlockedRef = useRef(false);
   const pendingPlayRef = useRef<string>('');
+  // Stable ref to always-current controls — avoids stale closures in effects
+  const controlsRef = useRef<{
+    initializeVoiceGuide: (page?: string) => Promise<void>;
+    openPage: (page?: string) => Promise<void>;
+    play: (page: string, dialogueType: string) => Promise<void>;
+  } | null>(null);
 
   const getToken = useCallback(
     () => (typeof window !== 'undefined' ? localStorage.getItem('authToken') : null),
@@ -240,17 +248,19 @@ export function VoiceGuideProvider({ children }: { children: ReactNode }) {
   // of Disease Detection (localhost:8000 FastAPI / localhost:4000 Node).
   // A failed bridge check NEVER blocks or affects AI inference.
   // /health is public — no token required.
+  // NOTE: No state in deps — uses functional updater to avoid re-registering
+  // the 30-second interval every time `ready` flips.
 
   const checkBridge = useCallback(async () => {
     const res = await vgApi('GET', '/health');
     setBridgeOnline(res.success);
-    if (res.success && !ready) setReady(true);
+    if (res.success) setReady(prev => prev ? prev : true);
     if (!res.success) {
       // Voice Guide bridge is down — expected when bridge is not started.
       // Disease Detection continues to work fully offline without Voice Guide.
       console.warn('[VoiceGuide] bridge unavailable (Voice Guide is optional):', res.error);
     }
-  }, [ready]);
+  }, []); // stable — no deps
 
   // ── Show subtitle with auto-dismiss ──────────────────────────────────────
 
@@ -476,21 +486,40 @@ export function VoiceGuideProvider({ children }: { children: ReactNode }) {
   }, []);
 
   // ── Init: check bridge on mount ───────────────────────────────────────────
+  // Keep controlsRef current so window.__VOICE_GUIDE__ always calls the
+  // latest version without re-running the mount effect on every render.
 
   useEffect(() => {
+    controlsRef.current = { initializeVoiceGuide, openPage, play };
+  }, [initializeVoiceGuide, openPage, play]);
+
+  // Mount effect runs ONCE — registers the global registry and emits the
+  // provider_mounted event a single time. bridgeOnline/ready are read via
+  // refs inside the registry callbacks so they stay current without
+  // causing the effect to re-run.
+  useEffect(() => {
     if (typeof window === 'undefined') return;
-    const registry = {
+    window.__VOICE_GUIDE__ = {
       providerMounted: true,
-      bridgeOnline,
-      ready,
-      initializeVoiceGuide: () => { void initializeVoiceGuide(); },
-      openPage: (page?: string) => { void openPage(page); },
-      play: (page: string, dialogueType: string) => { void play(page, dialogueType); },
-    };
-    window.__VOICE_GUIDE__ = registry;
-    emitRuntimeEvent('provider_mounted', { ready, bridgeOnline, isAuthenticated });
+      get bridgeOnline() { return window.__VOICE_GUIDE__?._bridgeOnline ?? false; },
+      get ready() { return window.__VOICE_GUIDE__?._ready ?? false; },
+      _bridgeOnline: false,
+      _ready: false,
+      initializeVoiceGuide: () => { void controlsRef.current?.initializeVoiceGuide(); },
+      openPage: (page?: string) => { void controlsRef.current?.openPage(page); },
+      play: (page: string, dialogueType: string) => { void controlsRef.current?.play(page, dialogueType); },
+    } as any;
+    emitRuntimeEvent('provider_mounted', { isAuthenticated });
     console.info('[VoiceGuide] provider mounted');
-  }, [bridgeOnline, emitRuntimeEvent, initializeVoiceGuide, isAuthenticated, openPage, play, ready]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // intentionally runs once on mount only
+
+  // Keep the registry's live values in sync without re-running the mount effect
+  useEffect(() => {
+    if (typeof window === 'undefined' || !window.__VOICE_GUIDE__) return;
+    (window.__VOICE_GUIDE__ as any)._bridgeOnline = bridgeOnline;
+    (window.__VOICE_GUIDE__ as any)._ready = ready;
+  }, [bridgeOnline, ready]);
 
   useEffect(() => {
     // Check bridge on mount regardless of auth — /health is public.
@@ -512,6 +541,10 @@ export function VoiceGuideProvider({ children }: { children: ReactNode }) {
   }, []);
 
   // ── React to language changes ─────────────────────────────────────────────
+  // Single effect reacting to langCode state — the language-changed custom
+  // event is NOT also handled here to avoid double /language calls.
+  // (LanguageContext dispatches language-changed AND updates langCode state;
+  //  handling both would send /language twice for every user language change.)
 
   useEffect(() => {
     if (!isAuthenticated || !bridgeOnline) return;
@@ -519,7 +552,6 @@ export function VoiceGuideProvider({ children }: { children: ReactNode }) {
     if (!token) return;
     vgApi('POST', '/language', { language: langCode }, token).then((res) => {
       if (res.success) {
-        // Bridge returns translated text for the current page in the new language
         const text: string = (res.data as any)?.text || '';
         if (text) {
           showSubtitle(text);
@@ -528,33 +560,9 @@ export function VoiceGuideProvider({ children }: { children: ReactNode }) {
         }
       }
     }).catch(() => {});
-    // Reset lastPageRef so the next openPage call is not de-duped
-    lastPageRef.current = '';
+    // Do NOT reset lastPageRef here — VoiceGuideNavigator handles the
+    // page re-open after a language change via its own pathname effect.
   }, [langCode, isAuthenticated, bridgeOnline, getToken, showSubtitle, speakText]);
-
-  // ── React to language-changed custom event ────────────────────────────────
-
-  useEffect(() => {
-    const handler = (e: Event) => {
-      const code = (e as CustomEvent<{ code: string }>).detail?.code;
-      if (!code || !isAuthenticated) return;
-      const token = getToken();
-      if (!token) return;
-      vgApi('POST', '/language', { language: code }, token).then((res) => {
-        if (res.success) {
-          const text: string = (res.data as any)?.text || '';
-          if (text) {
-            showSubtitle(text);
-            setAvatarState('wave');
-            setTimeout(() => speakText(text, code), 300);
-          }
-        }
-      }).catch(() => {});
-      lastPageRef.current = '';
-    };
-    window.addEventListener('language-changed', handler);
-    return () => window.removeEventListener('language-changed', handler);
-  }, [isAuthenticated, getToken, showSubtitle, speakText]);
 
   // ── React to online/offline ───────────────────────────────────────────────
   // NOTE: navigator.onLine reflects internet connectivity, NOT localhost.
@@ -606,31 +614,19 @@ export function VoiceGuideProvider({ children }: { children: ReactNode }) {
     return () => window.removeEventListener('voice-guide-runtime-event', handleRuntimeEvent as EventListener);
   }, []);
 
-  // ── React to page navigation (popstate + pushState intercept) ────────────
-
-  useEffect(() => {
-    if (!isAuthenticated || !bridgeOnline) return;
-
-    const handleNav = () => {
-      setTimeout(() => openPage(), 300);
-    };
-
-    window.addEventListener('popstate', handleNav);
-
-    // Intercept Next.js router navigation via custom event
-    window.addEventListener('voice-guide-navigate', handleNav);
-
-    return () => {
-      window.removeEventListener('popstate', handleNav);
-      window.removeEventListener('voice-guide-navigate', handleNav);
-    };
-  }, [isAuthenticated, bridgeOnline, openPage]);
+  // ── Page navigation is handled exclusively by VoiceGuideNavigator ────────────
+  // VoiceGuideNavigator listens to pathname changes (Next.js App Router)
+  // and calls openPage() / play(exit) at the right time.
+  // We do NOT also listen to popstate here — that would cause two openPage
+  // calls for every navigation (one from Navigator, one from here).
 
   // ── Open page on first auth + bridge ready ────────────────────────────────
 
   useEffect(() => {
     if (!isAuthenticated || !bridgeOnline || !ready || initAttemptedRef.current) return;
+    if (typeof window !== 'undefined' && (window as any).__VG_INIT_DONE__) return;
     initAttemptedRef.current = true;
+    if (typeof window !== 'undefined') (window as any).__VG_INIT_DONE__ = true;
     void initializeVoiceGuide();
   }, [isAuthenticated, bridgeOnline, ready, initializeVoiceGuide]);
 

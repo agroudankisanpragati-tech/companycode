@@ -255,13 +255,9 @@ export type AIDetectionResult = {
 /**
  * YOLO-only disease detection.
  *
- * Authority model:
- *   - cropHint is SECONDARY metadata (farmer selection) — optional.
- *   - Crop Verification AI (EfficientNet, Python side) is PRIMARY.
- *   - When cropHint is absent, YOLO runs without a crop filter and
- *     uses the verified crop returned in the prediction result.
- *   - When cropHint is present but the crop is not in the YOLO index,
- *     YOLO still runs without a filter rather than aborting.
+ * cropHint is the farmer-selected crop (MANDATORY).
+ * YOLO is filtered to only the classes belonging to that crop.
+ * No Crop Verification AI (EfficientNet) is involved.
  */
 export async function runHybridDiseaseDetection(
   imagePath: string,
@@ -275,11 +271,9 @@ export async function runHybridDiseaseDetection(
 }> {
   log.debug('runHybridDiseaseDetection', { cropHint: cropHint || '(none)' });
 
-  // Determine the effective hint to send to YOLO for class filtering.
-  // If the farmer provided a crop name AND it exists in the YOLO index,
-  // pass it as a filter hint. Otherwise run without a filter — the
-  // Crop Verification AI on the Python side will have already verified
-  // the crop and will override it in the prediction result.
+  // Resolve whether the farmer-selected crop exists in the YOLO index.
+  // If it does, pass it as a class filter. If YOLO doesn't know it,
+  // run unfiltered rather than aborting — the result will still be valid.
   let effectiveCropHint: string | undefined;
   if (cropHint) {
     const supported = await isCropSupportedByYolo(cropHint);
@@ -287,20 +281,16 @@ export async function runHybridDiseaseDetection(
     log.debug('Crop hint resolution', { cropHint, supported, effectiveCropHint: effectiveCropHint || '(none — running unfiltered)' });
   }
 
-  // Pass farmerCrop separately so Python-side EfficientNet can validate it.
-  // effectiveCropHint is used only for YOLO class filtering.
-  const yoloResult = await callYoloPredict(imagePath, effectiveCropHint, cropHint);
+  const yoloResult = await callYoloPredict(imagePath, effectiveCropHint);
 
   if (!yoloResult) {
     log.debug('YOLO returned null', { effectiveCropHint });
     return { engine: 'yolo', result: null };
   }
 
-  // Surface crop-mismatch / low-confidence errors returned by the Python
-  // Crop Verification stage (fastapi_server.py returns success:false with error)
   if (!yoloResult.success) {
     const errMsg = (yoloResult as any).error as string | undefined;
-    log.warn('Crop verification rejected by Python side', { error: errMsg });
+    log.warn('YOLO returned error response', { error: errMsg });
     return { engine: 'yolo', result: null, error: errMsg };
   }
 
@@ -310,7 +300,7 @@ export async function runHybridDiseaseDetection(
     yoloResult.category === 'healthy' ||
     yoloResult.class_name.toLowerCase().includes('healthy');
 
-  const cropPrefix = (yoloResult.crop || cropHint || '')
+  const cropPrefix = (cropHint || yoloResult.crop || '')
     .replace(/[^a-zA-Z0-9]/g, '_')
     .replace(/_+/g, '_');
   const diseaseRaw = yoloResult.class_name
@@ -325,9 +315,8 @@ export async function runHybridDiseaseDetection(
   log.debug('Final disease mapped', { diseaseName, severity, confidence: conf });
 
   const mapped: AIDetectionResult = {
-    // Use the VERIFIED crop from YOLO result (Python side has already applied
-    // EfficientNet verification and overridden the crop field)
-    cropName: yoloResult.crop || cropHint || 'Unknown Crop',
+    // Farmer-selected crop is the ONLY source of truth.
+    cropName: cropHint || yoloResult.crop || 'Unknown Crop',
     cropNameHindi: '',
     diseaseName,
     diseaseNameHindi: '',

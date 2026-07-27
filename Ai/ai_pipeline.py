@@ -3,21 +3,20 @@
 # File: ai_pipeline.py
 # Purpose: Modular, stage-based prediction workflow.
 #
-# NEW PRODUCTION PIPELINE:
+# PIPELINE:
 #   Image
-#     ↓  ValidationStage          — path + format + size checks
-#     ↓  PreprocessingStage       — load + validate pixel data
-#     ↓  CropVerificationStage    — EfficientNet-B0 crop identity (PRIMARY)
-#     ↓  PredictionStage          — YOLO inference (uses VERIFIED crop only)
-#     ↓  KnowledgeStage           — MongoDB lookup (uses VERIFIED crop only)
-#     ↓  FormatterStage           — build final JSON-ready response
+#     ↓  ValidationStage    — path + format + size checks
+#     ↓  PreprocessingStage — load + validate pixel data
+#     ↓  PredictionStage    — YOLO inference (farmer crop — MANDATORY)
+#     ↓  KnowledgeStage     — MongoDB lookup (farmer crop only)
+#     ↓  FormatterStage     — build final JSON-ready response
 #     ↓
 #   ControllerResponse
 #
 # AUTHORITY MODEL:
-#   CropVerificationStage is the PRIMARY authority for crop identity.
-#   farmer_crop is SECONDARY metadata used only for mismatch validation.
-#   YOLO, KnowledgeBase, and Pragati AI all receive the VERIFIED crop.
+#   Farmer-selected crop is the ONLY source of truth.
+#   Crop Verification AI (EfficientNet) is NOT used in this pipeline.
+#   YOLO and KnowledgeBase both receive the farmer-selected crop.
 #
 # DESIGN:
 #   • Every stage implements PipelineStage (Single Responsibility).
@@ -26,7 +25,7 @@
 #   • A stage sets context.failed = True + context.error to abort early.
 #
 # Dependencies: ai_controller.py, inference_service.py, knowledge_service.py,
-#               crop_verification_stage.py, preprocessing.py, config.py, logger.py
+#               preprocessing.py, config.py, logger.py
 # =============================================================================
 
 from __future__ import annotations
@@ -56,10 +55,6 @@ from preprocessing import load_image, validate_array
 
 log = get_logger(__name__)
 
-# Abort token prefixes written by CropVerificationStage
-_MISMATCH_TOKEN  = "CROP_MISMATCH"
-_LOW_CONF_TOKEN  = "CROP_LOW_CONFIDENCE"
-
 
 # =============================================================================
 # SECTION 1 — PIPELINE CONTEXT
@@ -76,13 +71,11 @@ class PipelineContext:
         language        — Desired language for knowledge content.
         weights_path    — Optional model weights path override.
         device          — Optional device override.
-        farmer_crop     — Crop selected by the farmer (SECONDARY metadata only).
-                          Used only for mismatch validation. Never passed to YOLO.
-        verified_crop   — Crop confirmed by EfficientNet (PRIMARY authority).
-                          Set by CropVerificationStage. Used by all downstream stages.
+        farmer_crop     — Crop selected by the farmer (MANDATORY, only source of truth).
+                          Used by YOLO and KnowledgeBase.
         t_start         — perf_counter timestamp at pipeline entry.
         failed          — True if any stage has aborted the pipeline.
-        error           — Abort token string (if failed).
+        error           — Abort reason string (if failed).
         prediction_dict — Raw PredictionResult dict from InferenceService.
         knowledge_dict  — Raw KnowledgeResult dict from KnowledgeService.
         prediction      — Typed PredictionPayload (built by FormatterStage).
@@ -93,8 +86,7 @@ class PipelineContext:
     language:        str                         = "en"
     weights_path:    Optional[str]               = None
     device:          Optional[str]               = None
-    farmer_crop:     Optional[str]               = None   # SECONDARY — farmer's selection
-    verified_crop:   Optional[str]               = None   # PRIMARY — EfficientNet result
+    farmer_crop:     Optional[str]               = None
     t_start:         float                       = field(default_factory=time.perf_counter)
     failed:          bool                        = False
     error:           Optional[str]               = None
@@ -196,12 +188,11 @@ class PreprocessingStage(PipelineStage):
 
 class PredictionStage(PipelineStage):
     """
-    Stage 4 — Runs YOLO inference via InferenceService.
+    Stage 3 — Runs YOLO inference via InferenceService.
 
-    IMPORTANT: Uses context.verified_crop (set by CropVerificationStage)
-    to override the crop in prediction_dict. This ensures YOLO's crop
-    metadata is always the EfficientNet-verified crop, never the raw
-    farmer input.
+    Uses context.farmer_crop (MANDATORY, only source of truth) for the
+    crop field in prediction_dict. Disease detection always uses the
+    farmer-selected crop. No Crop Verification AI is involved.
 
     Args:
         inference_service: InferenceService instance (injectable for testing).
@@ -223,14 +214,12 @@ class PredictionStage(PipelineStage):
 
         prediction_dict: dict = response.data or {}
 
-        # ── Requirement 2 & 3: override crop with VERIFIED crop ─────────────
-        # YOLO's own crop label is replaced by the EfficientNet-verified crop.
-        # This ensures the disease model never uses the farmer's raw selection.
-        if context.verified_crop:
-            prediction_dict = {**prediction_dict, "crop": context.verified_crop}
+        # Farmer crop is the ONLY source of truth — always inject it
+        if context.farmer_crop:
+            prediction_dict = {**prediction_dict, "crop": context.farmer_crop}
             log.debug(
-                "PredictionStage: crop overridden with verified='%s'",
-                context.verified_crop,
+                "PredictionStage: crop set to farmer selection='%s'",
+                context.farmer_crop,
             )
 
         context.prediction_dict = prediction_dict
@@ -246,10 +235,10 @@ class PredictionStage(PipelineStage):
 
 class KnowledgeStage(PipelineStage):
     """
-    Stage 5 — Queries MongoDB for agronomic knowledge via KnowledgeService.
+    Stage 4 — Queries MongoDB for agronomic knowledge via KnowledgeService.
 
-    Uses prediction_dict which already has the verified crop injected by
-    PredictionStage. Knowledge lookup therefore always uses verified crop.
+    Uses prediction_dict which already has the farmer crop injected by
+    PredictionStage. Knowledge lookup therefore always uses farmer crop.
 
     Args:
         knowledge_service: KnowledgeService instance (injectable for testing).
@@ -286,7 +275,7 @@ class KnowledgeStage(PipelineStage):
 
 
 class FormatterStage(PipelineStage):
-    """Stage 6 — Builds typed PredictionPayload and KnowledgePayload."""
+    """Stage 5 — Builds typed PredictionPayload and KnowledgePayload."""
 
     @property
     def name(self) -> str:
@@ -317,10 +306,11 @@ class AIPipeline:
     Default stage order:
       1. ValidationStage
       2. PreprocessingStage
-      3. CropVerificationStage   ← NEW: EfficientNet-B0 (PRIMARY crop authority)
-      4. PredictionStage         ← uses verified_crop, never farmer_crop
-      5. KnowledgeStage          ← uses verified_crop via prediction_dict
-      6. FormatterStage
+      3. PredictionStage  ← YOLO (farmer crop — MANDATORY, only source of truth)
+      4. KnowledgeStage   ← farmer crop via prediction_dict
+      5. FormatterStage
+
+    Crop Verification AI (EfficientNet) is NOT part of this pipeline.
 
     Args:
         stages: Ordered list of PipelineStage instances. If None, the
@@ -339,13 +329,11 @@ class AIPipeline:
         if stages is not None:
             self._stages = stages
         else:
-            from crop_verification_stage import CropVerificationStage
             _inference = InferenceService()
             _knowledge = KnowledgeService()
             self._stages: list[PipelineStage] = [
                 ValidationStage(),
                 PreprocessingStage(),
-                CropVerificationStage(),              # PRIMARY crop authority
                 PredictionStage(inference_service=_inference),
                 KnowledgeStage(knowledge_service=_knowledge),
                 FormatterStage(),
@@ -378,9 +366,9 @@ class AIPipeline:
             language:      Desired language for knowledge content.
             weights_path:  Optional model weights path override.
             device:        Optional device override.
-            farmer_crop:   Crop selected by the farmer (SECONDARY metadata).
-                           Used only for mismatch validation against EfficientNet.
-                           Never passed directly to YOLO or KnowledgeBase.
+            farmer_crop:   Crop selected by the farmer (MANDATORY).
+                           Used by YOLO and KnowledgeBase.
+                           No Crop Verification AI is involved.
 
         Returns:
             ControllerResponse — always returned, never raises.
@@ -439,35 +427,13 @@ class AIPipeline:
     # ------------------------------------------------------------------
 
     def _build_response(self, context: PipelineContext) -> ControllerResponse:
-        """
-        Converts the final PipelineContext into a ControllerResponse.
-
-        Parses structured abort tokens from CropVerificationStage to
-        produce human-readable error messages.
-        """
+        """Converts the final PipelineContext into a ControllerResponse."""
         if context.failed:
-            error_msg = context.error or "Unknown pipeline error"
-
-            # ── Requirement 5: crop mismatch ────────────────────────────────
-            if error_msg.startswith(_MISMATCH_TOKEN):
-                parts     = _parse_token(error_msg)
-                predicted = parts.get("predicted", "Unknown")
-                selected  = parts.get("selected", "Unknown")
-                human_msg = (
-                    f"Uploaded image belongs to {predicted}. "
-                    f"Please upload {selected} leaf or change crop selection."
-                )
-                return _error_response(human_msg, context.analysis_type, context.elapsed_ms)
-
-            # ── Requirement 6: low confidence ───────────────────────────────
-            if error_msg.startswith(_LOW_CONF_TOKEN):
-                return _error_response(
-                    "Unable to verify crop. Please upload a clearer leaf image.",
-                    context.analysis_type,
-                    context.elapsed_ms,
-                )
-
-            return _error_response(error_msg, context.analysis_type, context.elapsed_ms)
+            return _error_response(
+                context.error or "Unknown pipeline error",
+                context.analysis_type,
+                context.elapsed_ms,
+            )
 
         return ControllerResponse(
             success=True,
@@ -478,12 +444,6 @@ class AIPipeline:
             analysis_type=context.analysis_type,
             error=None,
         )
-
-
-def _parse_token(token: str) -> dict[str, str]:
-    """Parses 'PREFIX|key=val|key=val' abort tokens into a dict."""
-    parts = token.split("|")[1:]   # skip the prefix segment
-    return dict(kv.split("=", 1) for kv in parts if "=" in kv)
 
 
 # =============================================================================

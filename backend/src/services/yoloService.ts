@@ -111,7 +111,6 @@ export async function isCropSupportedByYolo(cropHint: string): Promise<boolean> 
 export async function callYoloPredict(
   imagePath: string,
   cropHint?: string,
-  farmerCrop?: string,
 ): Promise<YoloPrediction | null> {
   try {
     if (!fs.existsSync(imagePath)) {
@@ -132,13 +131,8 @@ export async function callYoloPredict(
     if (cropHint) {
       form.append('crop_hint', cropHint);
     }
-    // farmer_crop is SECONDARY metadata — Python side uses it only for
-    // mismatch validation against EfficientNet. Never used for YOLO filtering.
-    if (farmerCrop) {
-      form.append('farmer_crop', farmerCrop);
-    }
 
-    log.debug('Sending predict request', { cropHint, farmerCrop, imagePath });
+    log.debug('Sending predict request', { cropHint, imagePath });
 
     const res = await axios.post<YoloPrediction>(`${YOLO_BASE_URL}/predict`, form, {
       headers: form.getHeaders(),
@@ -150,11 +144,9 @@ export async function callYoloPredict(
       return res.data;
     }
 
-    // Python side returned success:false (crop mismatch or low confidence)
-    // Return the response as-is so diseaseService can surface the error message
     if (res.data && (res.data as any).error) {
-      log.warn('Python crop verification rejected', { error: (res.data as any).error });
-      return res.data;  // caller checks success flag
+      log.warn('YOLO returned error response', { error: (res.data as any).error });
+      return res.data;
     }
 
     log.error('Unexpected response shape', { response: JSON.stringify(res.data).slice(0, 200) });

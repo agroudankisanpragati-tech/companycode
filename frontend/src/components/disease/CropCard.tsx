@@ -421,8 +421,8 @@ export default function CropCard({ value, onChange, selectedLangCode, onLangChan
       {/* Crop Name Input + Voice */}
       <div>
         <label className="mb-1.5 block text-sm font-bold text-slate-700 dark:text-slate-200">
-          🌾 Crop Name{' '}
-          <span className="font-normal text-slate-400 dark:text-slate-500 text-xs">(Optional — improves accuracy)</span>
+          🌾 Crop Name <span className="text-red-500">*</span>
+          <span className="ml-1 font-normal text-slate-400 dark:text-slate-500 text-xs">(Required)</span>
         </label>
         <div className="flex gap-2">
           <div className="relative flex-1">

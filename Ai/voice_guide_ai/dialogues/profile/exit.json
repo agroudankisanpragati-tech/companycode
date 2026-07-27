@@ -34,7 +34,7 @@
 
   "conditions": {
     "firstVisit": false,
-    "loggedIn": true,
+    "loggedIn": false,
     "internetRequired": false
   },
 

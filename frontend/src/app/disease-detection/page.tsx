@@ -69,11 +69,11 @@ function AuthGate({ onLogin }: { onLogin: () => void }) {
 function ScanSteps({ hasImage, hasCrop }: { hasImage: boolean; hasCrop: boolean }) {
   return (
     <div className="flex items-center gap-1 rounded-2xl border border-gray-100 bg-white px-4 py-3 shadow-sm">
-      <StepBadge n={1} label="Upload Photo" active={!hasImage} done={hasImage} />
+      <StepBadge n={1} label="Select Crop *" active={!hasCrop} done={hasCrop} />
       <StepDivider />
-      <StepBadge n={2} label="Crop (Optional)" active={false} done={hasCrop} />
+      <StepBadge n={2} label="Upload Photo" active={hasCrop && !hasImage} done={hasImage} />
       <StepDivider />
-      <StepBadge n={3} label="Scan" active={hasImage} done={false} />
+      <StepBadge n={3} label="Scan" active={hasCrop && hasImage} done={false} />
     </div>
   );
 }
@@ -211,6 +211,7 @@ export default function DiseaseDetectionPage() {
 
   const scan = async () => {
     if (!isAuthenticated) { router.push('/auth/login'); return; }
+    if (!cropEnglish) { toast.warning('Please select a crop before scanning.'); return; }
     if (!file) { toast.warning('Please upload or capture a crop image first.'); return; }
     // NOTE: Do NOT block on navigator.onLine — disease detection is fully local.
     // navigator.onLine can be false on LAN-only setups even when localhost:4000 is reachable.
@@ -219,7 +220,8 @@ export default function DiseaseDetectionPage() {
     setScanning(true); setError(''); setResult(null); setScanStep(0);
 
     try {
-      // ── Offline AI pipeline: Crop Verification → Disease Detection → Knowledge Base ──
+      // ── Disease Detection pipeline: YOLO → Knowledge Base → Pragati AI ──
+      // Farmer-selected crop is the ONLY source of truth.
       // Voice Guide is OPTIONAL and fires ASYNCHRONOUSLY — never before or during inference.
       const data = await apiScan(file, cropEnglish, (s: number) => setScanStep(s));
       setBaseResult(data);
@@ -408,17 +410,19 @@ export default function DiseaseDetectionPage() {
                   {/* Scan CTA */}
                   <button
                     onClick={scan}
-                    disabled={!file || scanning || !isAuthenticated}
+                    disabled={!file || !cropEnglish || scanning || !isAuthenticated}
                     className="w-full rounded-2xl bg-gradient-to-r from-rose-600 to-orange-500 py-5 text-lg font-extrabold text-white shadow-xl shadow-rose-200 hover:shadow-rose-300 hover:scale-[1.01] active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed disabled:scale-100 disabled:shadow-none transition-all flex items-center justify-center gap-3"
                   >
                     <FaMicroscope size={20} />
                     {!isAuthenticated
                       ? 'Login to Scan'
+                      : !cropEnglish
+                      ? 'Select a Crop to Scan'
                       : !file
                       ? 'Upload a Photo to Scan'
                       : 'Scan for Disease'
                     }
-                    {file && isAuthenticated && <FaArrowRight size={16} />}
+                    {file && cropEnglish && isAuthenticated && <FaArrowRight size={16} />}
                   </button>
                 </>
               )}

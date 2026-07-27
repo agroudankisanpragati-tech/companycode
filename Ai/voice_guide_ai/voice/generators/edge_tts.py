@@ -34,8 +34,12 @@ from voice.utils.filename_generator import FilenameGenerator
 _log = get_logger("voice.generators.edge_tts")
 
 _VOICES_CONFIG_NAME = "voices.json"
-_RETRY_ATTEMPTS = 3
-_RETRY_DELAY_S = 2.0
+# RC-1 FIX: Synchronous retries inside generate() caused HTTP timeouts.
+# generate() now makes exactly ONE attempt and returns immediately on failure.
+# Retry logic lives in the background worker (VoiceEngine._generate_background)
+# which runs after the HTTP response has already been sent.
+_RETRY_ATTEMPTS = 1
+_RETRY_DELAY_S  = 0.0
 
 
 @dataclass
@@ -182,61 +186,53 @@ class EdgeTTSGenerator:
         pitch    = self._voice_cfg.get_pitch(language)
         volume   = self._voice_cfg.get_volume(language)
 
-        last_error: Optional[str] = None
-        for attempt in range(1, _RETRY_ATTEMPTS + 1):
-            try:
-                future = asyncio.run_coroutine_threadsafe(
-                    self._synthesise(text, voice_id, rate, pitch, volume, out_path),
-                    self._loop,
-                )
-                future.result(timeout=60)
+        # RC-1 FIX: Single attempt only.  No blocking retries.
+        try:
+            future = asyncio.run_coroutine_threadsafe(
+                self._synthesise(text, voice_id, rate, pitch, volume, out_path),
+                self._loop,
+            )
+            future.result(timeout=60)
 
-                validation = AudioValidator.validate(out_path)
-                if not validation.valid:
-                    raise RuntimeError(f"Generated file invalid: {validation.error}")
+            validation = AudioValidator.validate(out_path)
+            if not validation.valid:
+                raise RuntimeError(f"Generated file invalid: {validation.error}")
 
-                checksum = ChecksumUtil.compute_file(out_path) or ""
-                duration = AudioUtils.estimate_duration_seconds(out_path)
-                size     = out_path.stat().st_size
+            checksum = ChecksumUtil.compute_file(out_path) or ""
+            duration = AudioUtils.estimate_duration_seconds(out_path)
+            size     = out_path.stat().st_size
 
-                _log.info(
-                    "Generated: %s/%s/%s (%.2fs, %d bytes, attempt %d)",
-                    language, module, dialogue_id, duration, size, attempt,
-                )
-                return GenerationResult(
-                    success=True,
-                    language=language,
-                    module=module,
-                    dialogue_id=dialogue_id,
-                    path=str(out_path),
-                    duration_s=duration,
-                    size_bytes=size,
-                    checksum=checksum,
-                    cached=False,
-                    attempts=attempt,
-                )
+            _log.info(
+                "Generated: %s/%s/%s (%.2fs, %d bytes)",
+                language, module, dialogue_id, duration, size,
+            )
+            return GenerationResult(
+                success=True,
+                language=language,
+                module=module,
+                dialogue_id=dialogue_id,
+                path=str(out_path),
+                duration_s=duration,
+                size_bytes=size,
+                checksum=checksum,
+                cached=False,
+                attempts=1,
+            )
 
-            except Exception as exc:
-                last_error = str(exc)
-                _log.warning(
-                    "Generation attempt %d/%d failed for %s/%s/%s: %s",
-                    attempt, _RETRY_ATTEMPTS, language, module, dialogue_id, exc,
-                )
-                if attempt < _RETRY_ATTEMPTS:
-                    time.sleep(_RETRY_DELAY_S * attempt)
-
-        _log.error(
-            "Generation failed after %d attempts: %s/%s/%s — %s",
-            _RETRY_ATTEMPTS, language, module, dialogue_id, last_error,
-        )
-        return GenerationResult(
-            success=False,
-            language=language,
-            module=module,
-            dialogue_id=dialogue_id,
-            error=last_error,
-            attempts=_RETRY_ATTEMPTS,
-        )
+        except Exception as exc:
+            # Log once — no retry loop
+            _log.warning(
+                "Generation failed for %s/%s/%s: %s",
+                language, module, dialogue_id, exc,
+            )
+            return GenerationResult(
+                success=False,
+                language=language,
+                module=module,
+                dialogue_id=dialogue_id,
+                error=str(exc),
+                attempts=1,
+            )
 
     def is_cached(self, language: str, module: str, dialogue_id: str) -> bool:
         """Return True if a valid cached MP3 exists for this triple."""

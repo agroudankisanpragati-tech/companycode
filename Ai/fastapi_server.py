@@ -2,8 +2,9 @@
 # AKP — Agroudan Kisan Pragati
 # File: fastapi_server.py
 # Purpose: FastAPI inference service. Loads best.pt once at startup.
-#          Supports crop-aware filtered prediction — only classes belonging
-#          to the selected crop are considered, eliminating cross-crop confusion.
+#          Crop-aware filtered prediction — farmer-selected crop is MANDATORY.
+#          Disease search is restricted to the selected crop's classes only.
+#          Crop Verification (EfficientNet) is NOT used in this pipeline.
 #
 # Run: python fastapi_server.py
 # =============================================================================
@@ -219,22 +220,21 @@ def get_crops():
 
 @app.post("/predict")
 async def predict_endpoint(
-    image:       UploadFile    = File(...),
-    crop_hint:   Optional[str] = Form(None),
-    farmer_crop: Optional[str] = Form(None),
+    image:     UploadFile = File(...),
+    crop_hint: str        = Form(...),
 ):
     """
     Crop-aware prediction endpoint.
 
-    - farmer_crop (optional): the crop selected by the farmer in the UI.
-      Passed to the AI pipeline for mismatch validation against EfficientNet.
-      If the uploaded image does not match farmer_crop, the pipeline returns
-      an error before YOLO runs. farmer_crop is NEVER used directly for
-      disease detection — only for validation.
-    - crop_hint (optional): legacy YOLO class-filter hint. Still supported
-      for backward compatibility.
-    - Returns top-5 filtered predictions for the verified crop only.
+    - crop_hint (MANDATORY): the crop selected by the farmer in the UI.
+      Disease detection is restricted to this crop's classes only.
+      No cross-crop search. No auto-detection. No Crop Verification AI.
+    - Returns top-5 filtered predictions for the selected crop only.
     """
+    # Validate crop_hint is not blank
+    if not crop_hint or not crop_hint.strip():
+        raise HTTPException(status_code=400, detail="Please select a crop before scanning.")
+
     # Accept image by content-type OR by file extension (handles multipart quirks)
     filename = image.filename or "upload.jpg"
     ext = Path(filename).suffix.lower()
@@ -249,19 +249,15 @@ async def predict_endpoint(
             detail=f"Only image files are accepted (got content_type={image.content_type!r}, ext={ext!r})"
         )
 
-    # Resolve crop for YOLO class filtering (legacy crop_hint path)
-    crop_key: Optional[str] = None
-    allowed_class_ids: Optional[set[int]] = None
-
-    if crop_hint:
-        crop_key = _resolve_crop_key(crop_hint)
-        if crop_key is None:
-            raise HTTPException(
-                status_code=422,
-                detail=f"Crop '{crop_hint}' not found in YOLO training data. Use general knowledge base fallback.",
-            )
-        allowed_class_ids = _crop_class_ids[crop_key]
-        log.info("Crop-filtered predict: %s → %d allowed classes", crop_hint, len(allowed_class_ids))
+    # Resolve farmer-selected crop to YOLO class filter — MANDATORY
+    crop_key = _resolve_crop_key(crop_hint.strip())
+    if crop_key is None:
+        raise HTTPException(
+            status_code=422,
+            detail=f"Crop '{crop_hint}' not found in YOLO training data.",
+        )
+    allowed_class_ids: set[int] = _crop_class_ids[crop_key]
+    log.info("Crop-filtered predict: %s → %d allowed classes", crop_hint, len(allowed_class_ids))
 
     suffix = ext if ext in valid_exts else ".jpg"
     tmp_path: Optional[str] = None
@@ -271,71 +267,11 @@ async def predict_endpoint(
             shutil.copyfileobj(image.file, tmp)
             tmp_path = tmp.name
 
-        log.info("[predict] ↓ Request received | farmer_crop=%s crop_hint=%s file=%s",
-                 farmer_crop or "(none)", crop_hint or "(none)", filename)
+        log.info("[predict] ↓ Request received | crop=%s file=%s", crop_hint, filename)
         log.info("[predict] ↓ Image validated | tmp=%s size=%d bytes",
                  tmp_path, os.path.getsize(tmp_path))
-
-        # ── Crop Verification (PRIMARY authority) ──────────────────────────────────
-        # Runs EfficientNet-B0 BEFORE YOLO. farmer_crop is used only for
-        # mismatch validation — never passed to the disease model.
-        if farmer_crop:
-            log.info("[predict] ↓ Crop verification started | farmer_crop=%s", farmer_crop)
-            try:
-                from crop_verifier import crops_match, verify as _verify_crop
-                cv = _verify_crop(tmp_path)
-                if cv.success:
-                    log.info(
-                        "[predict] ↓ Crop verified | predicted='%s' conf=%.2f%% farmer='%s'",
-                        cv.predicted_crop, cv.confidence, farmer_crop,
-                    )
-                    # Requirement 6: low confidence
-                    if cv.low_confidence:
-                        log.warning("[predict] Crop verification: low confidence=%.2f%% — rejecting", cv.confidence)
-                        return JSONResponse(
-                            status_code=200,
-                            content={
-                                "success": False,
-                                "error": "Unable to verify crop. Please upload a clearer leaf image.",
-                            },
-                        )
-                    # Requirement 5: mismatch → stop pipeline
-                    if not crops_match(cv.predicted_crop, farmer_crop):
-                        log.warning(
-                            "[predict] Crop mismatch: predicted='%s' farmer='%s' — rejecting",
-                            cv.predicted_crop, farmer_crop,
-                        )
-                        return JSONResponse(
-                            status_code=200,
-                            content={
-                                "success": False,
-                                "error": (
-                                    f"Uploaded image belongs to {cv.predicted_crop}. "
-                                    f"Please upload {farmer_crop} leaf or change crop selection."
-                                ),
-                            },
-                        )
-                    # Verification passed — use verified crop for YOLO filtering
-                    verified_key = _resolve_crop_key(cv.predicted_crop)
-                    if verified_key:
-                        allowed_class_ids = _crop_class_ids[verified_key]
-                        log.info(
-                            "[predict] YOLO filter updated to verified crop '%s' → %d classes",
-                            cv.predicted_crop, len(allowed_class_ids),
-                        )
-                else:
-                    log.warning("[predict] CropVerifier unavailable: %s — skipping verification", cv.error)
-            except ImportError as exc:
-                log.warning("[predict] CropVerifier import failed (skipping): %s", exc)
-            except Exception as exc:
-                import traceback
-                log.warning("[predict] CropVerification skipped (error): %s", exc)
-                log.warning("[predict] CropVerification traceback:\n%s", traceback.format_exc())
-        else:
-            log.info("[predict] ↓ Crop verification skipped (no farmer_crop provided)")
-
-        log.info("[predict] ↓ Disease prediction started | allowed_classes=%s",
-                 len(allowed_class_ids) if allowed_class_ids is not None else "all")
+        log.info("[predict] ↓ Disease prediction started | crop=%s allowed_classes=%d",
+                 crop_hint, len(allowed_class_ids))
 
         result = _run_crop_filtered_predict(tmp_path, allowed_class_ids)
 

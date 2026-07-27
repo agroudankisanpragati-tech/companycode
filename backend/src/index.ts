@@ -39,12 +39,14 @@ import voiceEngineRoutes from './routes/voiceEngine';
 import voiceGuideRoutes from './routes/voiceGuide';
 import pragatiAIRoutes from './routes/pragatiAI';
 import supportRoutes from './routes/support';
+import careerRoutes from './routes/career';
 import { ensureBootstrapAdmin } from './utils/bootstrapAdmin';
 import { ensureSeededSchemes } from './utils/seedSchemes';
 import { bilingualErrorHandler, requestTimeout } from './middleware/errorHandler';
 import { languageContextMiddleware } from './middleware/languageContext';
 import healthRoutes from './routes/health';
 import { logger } from './utils/logger';
+import { bridgeManager } from './services/voiceGuideBridgeManager';
 
 dotenv.config({ override: true });
 
@@ -162,6 +164,7 @@ app.use('/api/voice-engine', voiceEngineRoutes);
 app.use('/api/voice-guide', voiceGuideRoutes);
 app.use('/api/pragati-ai', pragatiAIRoutes);
 app.use('/api/support', supportRoutes);
+app.use('/api/career', careerRoutes);
 
 // Health Check
 app.use('/api/health', healthRoutes);
@@ -173,6 +176,7 @@ const startServer = async () => {
   await connectDB();
   await ensureBootstrapAdmin();
   await ensureSeededSchemes();
+  await bridgeManager.ensureBridgeRunning();
 
   const server = app.listen(PORT, () => {
     logger.info('Kisan Unnati Backend started', { port: PORT, env: process.env.NODE_ENV || 'development' });

@@ -147,10 +147,11 @@ class DialoguePlayer:
             "timestamp":   Helper.current_timestamp(),
         })
 
-        # Voice event
+        # Voice event — include page so _handle_voice_event uses the correct module
         self._emit_voice({
             "type":        VOICE_EVENT_PLAY,
             "dialogue_id": dialogue_id,
+            "page":        page,
             "text":        text,
             "audio_file":  audio_file,
             "language":    language,

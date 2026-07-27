@@ -1,4 +1,4 @@
-import type { Overview, AdminUser, Recommendation, Listing, SessionUser, GovtScheme, GalleryItem, UserSummary, UserPagination, CropKnowledge, CropKnowledgeSummary, DiseaseRecord, DiseaseKnowledgeSummary, PestRecord, PestKnowledgeSummary, FarmerStory, FarmerStorySummary, BlogPost, DPKRecord, DPKListResponse, SchemeApplication, SchemeApplicationListResponse } from './admin-types';
+import type { Overview, AdminUser, Recommendation, Listing, SessionUser, GovtScheme, GalleryItem, UserSummary, UserPagination, CropKnowledge, CropKnowledgeSummary, DiseaseRecord, DiseaseKnowledgeSummary, PestRecord, PestKnowledgeSummary, FarmerStory, FarmerStorySummary, BlogPost, DPKRecord, DPKListResponse, SchemeApplication, SchemeApplicationListResponse, KVKRecord, KVKListResponse, DictionaryEntry, DictionaryListResponse, ReviewQueueResponse, DKRecord, DKListResponse } from './admin-types';
 
 // In development the Next.js rewrite proxy forwards /api/* → http://localhost:4000/api/*
 // In production NEXT_PUBLIC_API_URL points to the live backend.
@@ -366,11 +366,7 @@ export const deletePestRecord = (token: string, id: string) =>
 
 // ─── KVK Management API ──────────────────────────────────────────────────────
 
-import type { KVKRecord, KVKListResponse } from './admin-types';
-
 // ─── Language Dictionary API ────────────────────────────────────────────────────────────────
-
-import type { DictionaryEntry, DictionaryListResponse, ReviewQueueResponse } from './admin-types';
 
 export const fetchDictionaryEntries = (
   token: string,
@@ -467,8 +463,6 @@ export const deleteKVK = (token: string, id: string) =>
   requestJson<{ success: boolean; message: string }>(`/kvk/admin/${id}`, token, { method: 'DELETE' });
 
 // ─── Disease & Pest Knowledge Management API ──────────────────────────────────
-
-import type { DKRecord, DKListResponse } from './admin-types';
 
 export const fetchDKRecords = (
   token: string,
@@ -595,3 +589,92 @@ export const importDPKJson = (token: string, records: any[]) =>
     `${DPK_BASE}/import/json`, token, { method: 'POST', body: JSON.stringify({ data: records }) }
   );
 
+
+// ─── Career Management API ───────────────────────────────────────────────────
+
+export type InternCertificate = {
+  _id: string;
+  internId: string;
+  certificateNumber: string;
+  name: string;
+  collegeName: string;
+  internshipDomain: string;
+  internshipType: 'Paid' | 'Unpaid';
+  duration: string;
+  startDate: string;
+  endDate: string;
+  email?: string;
+  phone?: string;
+  remarks?: string;
+  certificateDescription: string;
+  verificationUrl: string;
+  qrCodeUrl: string;
+  pdfUrl: string;
+  status: 'active' | 'revoked';
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type CertificateAsset = {
+  companyLogo: string;
+  founderSignature: string;
+  companySeal: string;
+  companyLogoExists?: boolean;
+  founderSignatureExists?: boolean;
+  companySealExists?: boolean;
+  uploadedAt: string;
+};
+
+export type CareerStats = {
+  total: number;
+  paid: number;
+  unpaid: number;
+  generated: number;
+};
+
+export type CertificateListResponse = {
+  success: boolean;
+  data: InternCertificate[];
+  pagination: { total: number; page: number; limit: number; pages: number };
+};
+
+export const fetchCareerStats = (token: string) =>
+  requestJson<{ success: boolean; data: CareerStats }>('/career/admin/stats', token);
+
+export const fetchCertificateAssets = (token: string) =>
+  requestJson<{ success: boolean; data: CertificateAsset }>('/career/admin/assets', token);
+
+export const uploadCertificateAssets = (token: string, formData: FormData) =>
+  requestFormData<{ success: boolean; data: CertificateAsset }>('/career/admin/assets', token, formData);
+
+export const fetchCertificates = (
+  token: string,
+  params: { page?: number; limit?: number; search?: string; internshipType?: string; domain?: string; year?: string } = {}
+) => {
+  const q = new URLSearchParams();
+  if (params.page)           q.set('page',           String(params.page));
+  if (params.limit)          q.set('limit',          String(params.limit));
+  if (params.search)         q.set('search',         params.search);
+  if (params.internshipType) q.set('internshipType', params.internshipType);
+  if (params.domain)         q.set('domain',         params.domain);
+  if (params.year)           q.set('year',           params.year);
+  const qs = q.toString();
+  return requestJson<CertificateListResponse>(`/career/admin/certificates${qs ? '?' + qs : ''}`, token);
+};
+
+export const createCertificate = (token: string, data: Record<string, string>) =>
+  requestJson<{ success: boolean; data: InternCertificate }>('/career/admin/certificates', token, {
+    method: 'POST',
+    body: JSON.stringify(data),
+  });
+
+export const regenerateCertificate = (token: string, id: string) =>
+  requestJson<{ success: boolean; data: InternCertificate }>(`/career/admin/certificates/${id}/regenerate`, token, {
+    method: 'POST',
+  });
+
+export const deleteCertificate = (token: string, id: string) =>
+  requestJson<{ success: boolean; message: string }>(`/career/admin/certificates/${id}`, token, { method: 'DELETE' });
+
+export const verifyCertificatePublic = (certificateNumber: string) =>
+  fetch(`${API_BASE}/career/verify/${certificateNumber}`).then(r => r.json());

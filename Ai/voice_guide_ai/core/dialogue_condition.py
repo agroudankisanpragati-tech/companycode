@@ -147,14 +147,14 @@ class DialogueCondition:
         # firstVisit: if True, only play on first visit; if False, only on return
         first_visit_required = conditions.get("firstVisit")
         if first_visit_required is True:
-            if not bool(ctx.get("first_visit", True)):
+            if not bool(ctx.get("first_visit", False)):
                 _log.debug(
                     "Dialogue '%s' requires first_visit but ctx.first_visit=False",
                     dialogue_id,
                 )
                 return False
         elif first_visit_required is False:
-            if bool(ctx.get("first_visit", True)):
+            if bool(ctx.get("first_visit", False)):
                 _log.debug(
                     "Dialogue '%s' requires return_visit but ctx.first_visit=True",
                     dialogue_id,

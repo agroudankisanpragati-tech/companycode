@@ -153,15 +153,18 @@ class ControllerResponse:
         processing_time_ms — Total wall-clock time for the full pipeline in ms.
         model_version      — Project version string from constants.py.
         analysis_type      — The analysis type that was performed.
-        error              — None on success; human-readable reason on failure.
+        error                 — None on success; human-readable reason on failure.
+        crop_mismatch_warning — Advisory warning when AI predicts a different crop
+                                than the farmer selected. Pipeline always continues;
+                                frontend shows this as a non-blocking advisory.
     """
-    success:            bool
-    prediction:         PredictionPayload
-    knowledge:          KnowledgePayload
-    processing_time_ms: float
-    model_version:      str
-    analysis_type:      str
-    error:              Optional[str] = None
+    success:               bool
+    prediction:            PredictionPayload
+    knowledge:             KnowledgePayload
+    processing_time_ms:    float
+    model_version:         str
+    analysis_type:         str
+    error:                 Optional[str] = None
 
     def to_dict(self) -> dict:
         """
@@ -202,10 +205,10 @@ class ControllerResponse:
                 "images":               self.knowledge.images,
                 "found":                self.knowledge.found,
             },
-            "processing_time_ms": round(self.processing_time_ms, 2),
-            "model_version":      self.model_version,
-            "analysis_type":      self.analysis_type,
-            "error":              self.error,
+            "processing_time_ms":    round(self.processing_time_ms, 2),
+            "model_version":          self.model_version,
+            "analysis_type":          self.analysis_type,
+            "error":                  self.error,
         }
 
 
