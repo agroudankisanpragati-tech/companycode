@@ -716,71 +716,119 @@ const LANG_NAMES: Record<string, string> = {
     as: 'Assamese', ur: 'Urdu', pa: 'Punjabi',
 };
 
-router.post('/seva-mitra-chat', async (req, res) => {
-    try {
-        const { step, profile, userInput } = req.body as {
-            step: number;
-            profile: Record<string, string>;
-            userInput?: string;
-        };
+// ─── Seva Mitra: static fallback replies (used when OpenRouter is unavailable) ─
+const SEVA_MITRA_FALLBACK: Record<string | number, Record<string, string>> = {
+    1:   { hi: 'राम राम सा! क्या आप पहली बार आए हैं?', en: 'Ram Ram! Is this your first visit?', marwari: 'राम राम सा! क्या आप पहली बार आया सा?' },
+    '1b':{ hi: 'कृपया अपना 10 अंक का मोबाइल नंबर दर्ज करें:', en: 'Please enter your 10-digit mobile number:', marwari: 'आपनो 10 अंक को मोबाइल नंबर दाओ सा:' },
+    2:   { hi: 'आपका नाम क्या है?', en: 'What is your name?', marwari: 'आपनो नाम बताओ सा?' },
+    3:   { hi: 'धन्यवाद! अपना व्यवसाय चुनें:', en: 'Thanks! Please select your occupation:', marwari: 'घणो खम्मा! धंधो चुनो:' },
+    4:   { hi: 'अपनी आयु वर्ग चुनें:', en: 'Please select your age group:', marwari: 'उमर बताओ सा:' },
+    5:   { hi: 'अपनी सालाना पारिवारिक आय चुनें:', en: 'Select your annual family income:', marwari: 'सालाना कमाई बताओ सा:' },
+    6:   { hi: 'अब राज्य, जिला, श्रेणी और भूमि विवरण भरें:', en: 'Now fill in state, district, category and land details:', marwari: 'जिलो, जात और ज़मीन बताओ सा:' },
+    61:  { hi: 'अपना मोबाइल नंबर दें ताकि आपकी जानकारी सेव हो सके:', en: 'Share your mobile number to save your profile:', marwari: 'मोबाइल नंबर दाओ सा ताकि जानकारी सेव हो जावे:' },
+    7:   { hi: 'आपकी योग्य योजनाएं खोजी जा रही हैं...', en: 'Searching eligible schemes for you...', marwari: 'थारे सारू योजनाएं खोजी जा रही है सा...' },
+};
 
-        const apiKey = process.env.OPENAI_API_KEY;
-        if (!apiKey) {
-            return res.status(503).json({ success: false, error: 'AI not configured' });
+router.post('/seva-mitra-chat', async (req, res) => {
+    const { step, profile, userInput } = req.body as {
+        step: number | string;
+        profile: Record<string, string>;
+        userInput?: string;
+    };
+
+    const langCode = (profile?.language || 'hi').toLowerCase();
+    const langName = LANG_NAMES[langCode] || langCode;
+    const name = profile?.name || '';
+
+    // ── Helper: build static fallback reply for this step ──────────────────
+    const buildFallback = (): string => {
+        const bucket = SEVA_MITRA_FALLBACK[step];
+        if (bucket) return bucket[langCode] || bucket['hi'];
+        return langCode === 'en'
+            ? 'Please continue with the next step.'
+            : 'कृपया अगला चरण जारी रखें।';
+    };
+
+    const apiKey = process.env.OPENAI_API_KEY;
+    if (!apiKey) {
+        // No key configured — return fallback immediately, no 503
+        console.warn('[seva-mitra-chat] OPENAI_API_KEY not set — using static fallback');
+        return res.json({ success: true, reply: buildFallback() });
+    }
+
+    const stepPrompts: Record<string | number, string> = {
+        1:   `The user just selected language "${langName}". Greet them warmly in ${langName} and ask: "Are you visiting for the first time?" Give two clear options: Yes (first time) / No (returning user). Use local greeting style.`,
+        '1b': `Ask the user in ${langName} to enter their 10-digit mobile number so you can load their saved profile. Keep it short and friendly.`,
+        2:   `Ask the user in ${langName} to tell you their name. Keep it warm and short.`,
+        3:   `The user's name is "${name}". Greet them by name in ${langName} and ask them to select their occupation/profession. Keep it short.`,
+        4:   `Ask the user "${name}" in ${langName} to select their age group. Keep it short.`,
+        5:   `Ask the user "${name}" in ${langName} to select their annual family income range. Keep it short.`,
+        6:   `Tell the user "${name}" in ${langName} this is almost the last step — ask them to select their state, district, social category, and land details. Keep it short.`,
+        61:  `Ask the user "${name}" in ${langName} to share their 10-digit mobile number so their profile can be saved for future visits. Keep it short and reassuring about privacy.`,
+        7:   `Tell the user "${name}" in ${langName} that you are now searching the database for eligible government schemes based on their profile. Sound enthusiastic and helpful. Keep it short.`,
+    };
+
+    const prompt = stepPrompts[step] || `Respond helpfully in ${langName} to: "${userInput}"`;
+
+    try {
+        // 8-second hard timeout — prevents the frontend from hanging
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 8000);
+
+        let response: globalThis.Response;
+        try {
+            response = await fetch(
+                `${process.env.OPENAI_BASE_URL || 'https://api.openai.com/v1'}/chat/completions`,
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${apiKey}`,
+                        'HTTP-Referer': process.env.FRONTEND_URL || 'http://localhost:3000',
+                        'X-Title': 'Seva Mitra AI',
+                    },
+                    body: JSON.stringify({
+                        model: process.env.OPENAI_MODEL || 'gpt-4o-mini',
+                        messages: [{
+                            role: 'system',
+                            content: `You are Seva Mitra, an AI assistant helping Indian citizens discover government schemes. Always respond ONLY in ${langName}. Be warm, concise, and use local cultural greetings where appropriate. Never switch languages.`,
+                        }, {
+                            role: 'user',
+                            content: prompt,
+                        }],
+                        temperature: 0.5,
+                        max_tokens: 200,
+                    }),
+                    signal: controller.signal,
+                }
+            );
+        } finally {
+            clearTimeout(timeoutId);
         }
 
-        const langCode = (profile?.language || 'hi').toLowerCase();
-        const langName = LANG_NAMES[langCode] || langCode;
-        const name = profile?.name || '';
-
-        const stepPrompts: Record<string | number, string> = {
-            1:   `The user just selected language "${langName}". Greet them warmly in ${langName} and ask: "Are you visiting for the first time?" Give two clear options: Yes (first time) / No (returning user). Use local greeting style.`,
-            '1b': `Ask the user in ${langName} to enter their 10-digit mobile number so you can load their saved profile. Keep it short and friendly.`,
-            2:   `Ask the user in ${langName} to tell you their name. Keep it warm and short. (This is the name collection step — do NOT ask about occupation.)`,
-            3:   `The user's name is "${name}". Greet them by name in ${langName} and ask them to select their occupation/profession. Keep it short.`,
-            4:   `Ask the user "${name}" in ${langName} to select their age group. Keep it short.`,
-            5:   `Ask the user "${name}" in ${langName} to select their annual family income range. Keep it short.`,
-            6:   `Tell the user "${name}" in ${langName} this is almost the last step — ask them to select their state, district, social category, and land details. Keep it short.`,
-            61:  `Ask the user "${name}" in ${langName} to share their 10-digit mobile number so their profile can be saved for future visits. Keep it short and reassuring about privacy.`,
-            7:   `Tell the user "${name}" in ${langName} that you are now searching the database for eligible government schemes based on their profile. Sound enthusiastic and helpful. Keep it short.`,
-        };
-
-        const prompt = stepPrompts[step] || `Respond helpfully in ${langName} to: "${userInput}"`;
-
-        const response = await fetch(
-            `${process.env.OPENAI_BASE_URL || 'https://api.openai.com/v1'}/chat/completions`,
-            {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${apiKey}`,
-                    'HTTP-Referer': process.env.FRONTEND_URL || 'http://localhost:3000',
-                    'X-Title': 'Seva Mitra AI',
-                },
-                body: JSON.stringify({
-                    model: process.env.OPENAI_MODEL || 'openai/gpt-4o-mini',
-                    messages: [{
-                        role: 'system',
-                        content: `You are Seva Mitra, an AI assistant helping Indian citizens discover government schemes. Always respond ONLY in ${langName}. Be warm, concise, and use local cultural greetings where appropriate. Never switch languages.`,
-                    }, {
-                        role: 'user',
-                        content: prompt,
-                    }],
-                    temperature: 0.5,
-                    max_tokens: 200,
-                }),
-            }
-        );
-
         if (!response.ok) {
-            return res.status(502).json({ success: false, error: 'AI API error' });
+            let upstreamError = `upstream ${response.status}`;
+            try {
+                const errBody = await response.json() as any;
+                upstreamError = errBody?.error?.message || errBody?.error || JSON.stringify(errBody);
+            } catch { /* non-JSON body */ }
+            console.error('[seva-mitra-chat] OpenRouter error', response.status, upstreamError);
+            // Return fallback with 200 so the frontend speaks immediately
+            return res.json({ success: true, reply: buildFallback() });
         }
 
         const data = await response.json() as any;
         const reply = data.choices?.[0]?.message?.content?.trim() || '';
+        if (!reply) {
+            console.error('[seva-mitra-chat] Empty reply from OpenRouter');
+            return res.json({ success: true, reply: buildFallback() });
+        }
         return res.json({ success: true, reply });
     } catch (err: any) {
-        return res.status(500).json({ success: false, error: err.message });
+        const isTimeout = err?.name === 'AbortError';
+        console.error('[seva-mitra-chat]', isTimeout ? 'Timeout' : 'Exception', err?.message);
+        // Always return 200 with fallback — never let a dead AI key break the chat
+        return res.json({ success: true, reply: buildFallback() });
     }
 });
 

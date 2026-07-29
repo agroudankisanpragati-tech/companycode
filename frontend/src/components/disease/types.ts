@@ -1,4 +1,4 @@
-// Maps to DiseaseRecommendation (scan result) + DiseaseKnowledgeBase (enriched KB)
+// Maps to DiseaseRecommendation (scan result) enriched from Disease & Pest Management
 export type ScanResult = {
   // Core identity
   _id?: string;
@@ -22,12 +22,12 @@ export type ScanResult = {
   severityLevel: string;
   affectedPlantPart?: string;
 
-  // Description
-  description: string;
+  // Description — stored as { en, hi } object OR legacy plain string
+  description: any;
   descriptionHindi?: string;
 
-  // Symptoms — new + legacy fields
-  symptoms?: string;
+  // Symptoms — { en, hi } object OR legacy plain string
+  symptoms?: any;
   symptomsHindi?: string;
   leafSymptoms?: string;
   stemSymptoms?: string;
@@ -44,21 +44,21 @@ export type ScanResult = {
   highRiskConditions?: string;
   suitableClimate?: string;
 
-  // Organic treatment — new + legacy
-  organicSolution?: string;
-  organicTreatment?: string;
+  // Organic treatment — { en, hi } object OR legacy plain string
+  organicSolution?: any;
+  organicTreatment?: any;
   organicTreatmentHindi?: string;
   preparationMethod?: string;
   usageInstructions?: string;
   frequency?: string;
   safetyNotes?: string;
 
-  // Chemical treatment — new + legacy
-  chemicalSolution?: string;
-  chemicalTreatment?: string;
+  // Chemical treatment — { en, hi } object OR legacy plain string
+  chemicalSolution?: any;
+  chemicalTreatment?: any;
   chemicalTreatmentHindi?: string;
-  treatmentDescription?: string;
-  treatment?: string;
+  treatmentDescription?: any;
+  treatment?: any;
   chemicalName?: string;
   activeIngredient?: string;
   dosage?: string;
@@ -71,26 +71,26 @@ export type ScanResult = {
   applicationMethod?: string;
   precautions?: string;
 
-  // Prevention — new + legacy
-  prevention?: string;
+  // Prevention — { en, hi } object OR legacy plain string
+  prevention?: any;
   preventionHindi?: string;
-  preventionMethods?: string;
-  preventionDescription?: string;
+  preventionMethods?: any;
+  preventionDescription?: any;
   beforeDisease?: string;
   duringDisease?: string;
   afterRecovery?: string;
 
-  // Actions
-  recommendedActions?: string;
+  // Actions — { en, hi } object OR legacy plain string
+  recommendedActions?: any;
   recommendedActionsHindi?: string;
 
-  // Knowledge base enrichment
-  recommendedProducts?: string;
-  farmerAdvice?: string;
-  urgentPrevention?: string;
-  recoveryTips?: string;
-  dos?: string;
-  donts?: string;
+  // Knowledge base enrichment — { en, hi } objects OR legacy plain strings
+  recommendedProducts?: any;
+  farmerAdvice?: any;
+  urgentPrevention?: any;
+  recoveryTips?: any;
+  dos?: any;
+  donts?: any;
   governmentAdvisory?: string;
   referenceLinks?: string[];
 
@@ -132,31 +132,54 @@ export type ScanResult = {
   // Feedback
   feedback?: 'helpful' | 'not_helpful' | null;
 
-  // Crop Verification advisory (requirement 6)
-  // Set when EfficientNet predicts a different crop than the farmer selected.
-  // Never blocks disease detection — advisory only.
   crop_mismatch_warning?: string | null;
 };
 
 export type HistoryItem = ScanResult & { createdAt: string };
 
-// ─── Field resolvers — handle both old and new schema ─────────────────────────
+// ─── Language picker ──────────────────────────────────────────────────────────
+// Resolves { en, hi } objects OR legacy plain strings.
+// Rule: langCode === 'en' → .en  |  anything else → .hi (fallback to .en)
+// Never translates. Never mixes. Reads exactly what is stored in MongoDB.
+export function pickField(field: any, langCode: string): string {
+  if (!field) return '';
+  if (typeof field === 'string') return field;         // legacy plain string
+  if (typeof field !== 'object') return String(field);
+  if (langCode === 'en') return field.en || '';
+  return field.hi || field.en || '';                   // non-English → hi, fallback en
+}
 
-export function resolveSymptoms(r: ScanResult): string {
-  return [r.symptoms, r.symptomsDescription, r.leafSymptoms, r.stemSymptoms, r.rootSymptoms, r.fruitSymptoms]
+// ─── Field resolvers — language-aware, handle both old and new schema ─────────
+
+export function resolveSymptoms(r: ScanResult, langCode = 'en'): string {
+  const main = pickField(r.symptoms, langCode);
+  if (main) return main;
+  // Legacy fallback fields (always plain English strings)
+  return [r.symptomsDescription, r.leafSymptoms, r.stemSymptoms, r.rootSymptoms, r.fruitSymptoms]
     .filter(Boolean).join('\n') || '';
 }
 
-export function resolveOrganic(r: ScanResult): string {
-  return r.organicSolution || r.organicTreatment || '';
+export function resolveOrganic(r: ScanResult, langCode = 'en'): string {
+  return pickField(r.organicSolution, langCode) || pickField(r.organicTreatment, langCode) || '';
 }
 
-export function resolveChemical(r: ScanResult): string {
-  return r.chemicalSolution || r.chemicalTreatment || r.treatmentDescription || r.treatment || '';
+export function resolveChemical(r: ScanResult, langCode = 'en'): string {
+  return (
+    pickField(r.chemicalSolution, langCode) ||
+    pickField(r.chemicalTreatment, langCode) ||
+    pickField(r.treatmentDescription, langCode) ||
+    pickField(r.treatment, langCode) ||
+    ''
+  );
 }
 
-export function resolvePrevention(r: ScanResult): string {
-  return r.prevention || r.preventionMethods || r.preventionDescription || '';
+export function resolvePrevention(r: ScanResult, langCode = 'en'): string {
+  return (
+    pickField(r.prevention, langCode) ||
+    pickField(r.preventionMethods, langCode) ||
+    pickField(r.preventionDescription, langCode) ||
+    ''
+  );
 }
 
 export function resolveCauses(r: ScanResult): string {

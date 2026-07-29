@@ -275,7 +275,7 @@ class RuntimeManager:
             "conditions": self._condition_manager.get_context(),
             "cache_stats": self._cache_manager.stats(),
             "offline": self._offline_manager.get_status(),
-            "events": self._event_dispatcher.get_history(),
+            "events": self._event_dispatcher.get_history(event_type="page_opened"),
         }
 
     # ── Subsystem accessors ───────────────────────────────────────────────────

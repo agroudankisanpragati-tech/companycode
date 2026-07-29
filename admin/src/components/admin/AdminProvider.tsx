@@ -67,8 +67,6 @@ const navItems = [
   { href: '/blogs', label: 'Blogs', icon: FaNewspaper },
   { href: '/dashboard', label: 'Dashboard', icon: FaChartLine },
   { href: '/crop-knowledge-base', label: 'Crop Knowledge Base', icon: FaDatabase },
-  { href: '/disease-knowledge-base', label: 'Disease Knowledge Base', icon: FaMicroscope },
-  { href: '/pest-knowledge-base', label: 'Pest Knowledge Base', icon: FaBug },
   { href: '/disease-pest-knowledge', label: 'Disease & Pest Mgmt', icon: FaDatabase },
   { href: '/create-scheme', label: 'Govt Schemes', icon: FaLeaf },
   { href: '/create-gallery', label: 'Gallery', icon: FaPhotoVideo },

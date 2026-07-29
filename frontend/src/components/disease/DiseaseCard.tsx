@@ -2,7 +2,8 @@
 
 import { lazy, Suspense } from 'react';
 import { FaLeaf, FaClock, FaRobot } from 'react-icons/fa';
-import { ScanResult } from './types';
+import { useLanguage } from '@/context/LanguageContext';
+import { ScanResult, pickField } from './types';
 
 const VoicePlayer = lazy(() => import('@/components/VoicePlayer'));
 
@@ -29,13 +30,18 @@ interface Props {
 }
 
 export default function DiseaseCard({ result, voiceLang, uploadedPreview }: Props) {
+  const { langCode } = useLanguage();
   const sev = result.severityLevel?.toLowerCase() || 'low';
   const gradient = SEV_GRADIENT[sev] || SEV_GRADIENT.low;
   const src = SOURCE_CONFIG[result.source || 'ai'] || SOURCE_CONFIG.ai;
 
-  const speakText = result.diseaseNameHindi
-    ? `${result.diseaseNameHindi}। ${result.descriptionHindi || result.description}`
-    : `${result.diseaseName}. ${result.description}`;
+  // Resolve description in the active language
+  const resolvedDescription = pickField(result.description, langCode);
+
+  // Speech reads exactly what is displayed — same language, no mixing
+  const speakText = langCode !== 'en'
+    ? `${result.diseaseNameHindi || result.diseaseName}। ${resolvedDescription}`
+    : `${result.diseaseName}. ${resolvedDescription}`;
 
   const predTime = result.createdAt
     ? new Date(result.createdAt).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })
@@ -87,11 +93,8 @@ export default function DiseaseCard({ result, voiceLang, uploadedPreview }: Prop
               <p className="mt-0.5 text-xs italic text-slate-400">{result.scientificName}</p>
             )}
 
-            {/* Description */}
-            <p className="mt-3 text-sm leading-relaxed text-slate-300">{result.description}</p>
-            {result.descriptionHindi && (
-              <p className="mt-1.5 text-sm leading-relaxed text-slate-400 italic">{result.descriptionHindi}</p>
-            )}
+            {/* Description — shows active language only */}
+            <p className="mt-3 text-sm leading-relaxed text-slate-300">{resolvedDescription}</p>
 
             {/* Voice */}
             <Suspense fallback={null}>

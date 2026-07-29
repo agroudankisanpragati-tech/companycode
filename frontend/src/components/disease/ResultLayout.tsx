@@ -1,6 +1,6 @@
 'use client';
 
-import { ScanResult, resolveSymptoms, resolveOrganic, resolveChemical, resolvePrevention, resolveCauses } from './types';
+import { ScanResult, pickField, resolveSymptoms, resolveOrganic, resolveChemical, resolvePrevention, resolveCauses } from './types';
 import DiseaseCard from './DiseaseCard';
 import ConfidenceCard from './ConfidenceCard';
 import DiseaseKnowledgeSection from './DiseaseKnowledgeSection';
@@ -12,6 +12,7 @@ import {
 } from './InfoCards';
 import AILanguageSelector from '@/components/AILanguageSelector';
 import NearestKVKWidget from '@/components/kvk/NearestKVKWidget';
+import { useLanguage } from '@/context/LanguageContext';
 
 interface Props {
   result: ScanResult;
@@ -29,11 +30,16 @@ interface Props {
 }
 
 export default function ResultLayout({ result, baseResult, uploadedPreview, voiceLang, onTranslated, onReset, onFeedback, feedback, feedbackComment = '', feedbackCorrectDisease = '', onFeedbackCommentChange, onFeedbackCorrectDiseaseChange }: Props) {
-  const symptoms   = resolveSymptoms(result);
-  const organic    = resolveOrganic(result);
-  const chemical   = resolveChemical(result);
-  const prevention = resolvePrevention(result);
+  const { langCode } = useLanguage();
+
+  const symptoms   = resolveSymptoms(result, langCode);
+  const organic    = resolveOrganic(result, langCode);
+  const chemical   = resolveChemical(result, langCode);
+  const prevention = resolvePrevention(result, langCode);
   const causes     = resolveCauses(result);
+
+  const recommendedActions  = pickField(result.recommendedActions, langCode);
+  const recommendedProducts = pickField(result.recommendedProducts, langCode);
 
   return (
     <div className="space-y-4">
@@ -45,7 +51,7 @@ export default function ResultLayout({ result, baseResult, uploadedPreview, voic
       <ConfidenceCard result={result} />
 
       {/* Symptoms */}
-      {symptoms && <SymptomsCard symptoms={symptoms} symptomsHindi={result.symptomsHindi} voiceLang={voiceLang} />}
+      {symptoms && <SymptomsCard symptoms={symptoms} voiceLang={voiceLang} />}
 
       {/* Disease Cause */}
       {(causes || result.spreadPattern || result.weatherConditions || result.highRiskConditions || result.suitableClimate) && (
@@ -67,7 +73,6 @@ export default function ResultLayout({ result, baseResult, uploadedPreview, voic
       {organic && (
         <OrganicDetailCard
           treatment={organic}
-          treatmentHindi={result.organicTreatmentHindi}
           preparationMethod={result.preparationMethod}
           usageInstructions={result.usageInstructions}
           frequency={result.frequency}
@@ -80,7 +85,6 @@ export default function ResultLayout({ result, baseResult, uploadedPreview, voic
       {chemical && (
         <ChemicalDetailCard
           treatment={chemical}
-          treatmentHindi={result.chemicalTreatmentHindi}
           chemicalName={result.chemicalName}
           activeIngredient={result.activeIngredient}
           dosage={result.dosage}
@@ -97,7 +101,6 @@ export default function ResultLayout({ result, baseResult, uploadedPreview, voic
       {prevention && (
         <PreventionPhasesCard
           prevention={prevention}
-          preventionHindi={result.preventionHindi}
           beforeDisease={result.beforeDisease}
           duringDisease={result.duringDisease}
           afterRecovery={result.afterRecovery}
@@ -106,12 +109,12 @@ export default function ResultLayout({ result, baseResult, uploadedPreview, voic
       )}
 
       {/* Recommended Actions */}
-      {result.recommendedActions && (
-        <ActionsCard actions={result.recommendedActions} actionsHindi={result.recommendedActionsHindi} />
+      {recommendedActions && (
+        <ActionsCard actions={recommendedActions} />
       )}
 
       {/* Recommended Products */}
-      {result.recommendedProducts && <ProductsCard products={result.recommendedProducts} />}
+      {recommendedProducts && <ProductsCard products={recommendedProducts} />}
 
       {/* Nearest Input Shop */}
       {result.nearbyShop && <NearbyShopCard shop={result.nearbyShop} />}

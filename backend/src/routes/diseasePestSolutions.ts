@@ -4,9 +4,12 @@ import path from 'path';
 import fs from 'fs';
 import { AuthenticatedRequest, authenticate, requireAdmin } from '../middleware/auth';
 import { DiseasePestSolution } from '../models/DiseasePestSolution';
+import { normalizeLabel, normalizeAILabel } from '../services/diseaseService';
 import { createExactSafeRegex, createSafeRegex } from '../utils/regex';
+import { createLogger } from '../utils/logger';
 
 const router = express.Router();
+const log = createLogger('diseasePestSolutions');
 
 const uploadsDir = path.join(process.cwd(), 'uploads', 'dps');
 if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true });
@@ -26,6 +29,22 @@ const upload = multer({
 const imgUrl = (f: string) => `/uploads/dps/${f}`;
 const parseTags = (v: any): string[] =>
   !v ? [] : Array.isArray(v) ? v : String(v).split(',').map((s: string) => s.trim()).filter(Boolean);
+
+// Build a { en, hi } MLString from FormData fields named `key_en` and `key_hi`.
+// Falls back gracefully: if only one language is provided, the other is empty string.
+function mlFromBody(b: any, key: string): { en: string; hi: string } {
+  return {
+    en: (b[`${key}_en`] ?? '').trim(),
+    hi: (b[`${key}_hi`] ?? '').trim(),
+  };
+}
+
+// The ML content fields that have separate _en / _hi inputs in the Admin form
+const ML_FIELDS = [
+  'description', 'symptoms', 'organicSolution', 'chemicalSolution',
+  'urgentPrevention', 'recoveryTips', 'preventiveMeasures',
+  'dos', 'donts', 'recommendedProducts', 'farmerAdvice',
+] as const;
 
 // LIST
 router.get('/', authenticate, requireAdmin, async (req: AuthenticatedRequest, res: Response) => {
@@ -77,22 +96,16 @@ router.post('/', authenticate, requireAdmin, upload.array('referenceImages', 10)
       const files = (req.files as Express.Multer.File[]) || [];
       const images = files.map(f => imgUrl(f.filename));
       const b = req.body;
+      const mlData: Record<string, { en: string; hi: string }> = {};
+      ML_FIELDS.forEach(k => { mlData[k] = mlFromBody(b, k); });
       const record = await DiseasePestSolution.create({
         cropName:          b.cropName?.trim(),
         recordType:        b.recordType,
         diseasePestName:   b.diseasePestName?.trim(),
+        aiLabel:           b.aiLabel?.trim() || undefined,
+        aliases:           parseTags(b.aliases),
         severity:          b.severity || 'medium',
-        description:       b.description,
-        symptoms:          b.symptoms,
-        organicSolution:   b.organicSolution,
-        chemicalSolution:  b.chemicalSolution,
-        urgentPrevention:  b.urgentPrevention,
-        recoveryTips:      b.recoveryTips,
-        preventiveMeasures:b.preventiveMeasures,
-        dos:               b.dos,
-        donts:             b.donts,
-        recommendedProducts: b.recommendedProducts,
-        farmerAdvice:      b.farmerAdvice,
+        ...mlData,
         referenceImages:   images,
         tags:              parseTags(b.tags),
         keywords:          parseTags(b.keywords),
@@ -120,12 +133,18 @@ router.put('/:id', authenticate, requireAdmin, upload.array('referenceImages', 1
       const update: any = {
         referenceImages: [...(existing.referenceImages || []), ...newImages],
       };
-      const fields = ['cropName','recordType','diseasePestName','severity','description','symptoms',
-        'organicSolution','chemicalSolution','urgentPrevention','recoveryTips','preventiveMeasures',
-        'dos','donts','recommendedProducts','farmerAdvice','status'];
-      fields.forEach(f => { if (b[f] !== undefined) update[f] = b[f]; });
+      // Plain scalar fields
+      const scalarFields = ['cropName','recordType','diseasePestName','aiLabel','severity','status'];
+      scalarFields.forEach(f => { if (b[f] !== undefined) update[f] = b[f]; });
+      // Multilingual fields — only update if at least one language key is present
+      ML_FIELDS.forEach(k => {
+        if (b[`${k}_en`] !== undefined || b[`${k}_hi`] !== undefined) {
+          update[k] = mlFromBody(b, k);
+        }
+      });
       if (b.tags)     update.tags     = parseTags(b.tags);
       if (b.keywords) update.keywords = parseTags(b.keywords);
+      if (b.aliases)  update.aliases  = parseTags(b.aliases);
 
       const updated = await DiseasePestSolution.findByIdAndUpdate(req.params.id, update, { new: true, runValidators: true });
       res.json({ success: true, data: updated });
@@ -186,7 +205,7 @@ router.post('/import/json', authenticate, requireAdmin, async (req: Authenticate
   } catch (e: any) { res.status(500).json({ success: false, error: e.message }); }
 });
 
-// PUBLIC LOOKUP (used by Disease Detection in next prompt)
+// PUBLIC LOOKUP by cropName + diseasePestName (exact, case-insensitive)
 router.get('/lookup/:cropName/:diseasePestName', async (req, res: Response) => {
   try {
     const { cropName, diseasePestName } = req.params;
@@ -197,6 +216,50 @@ router.get('/lookup/:cropName/:diseasePestName', async (req, res: Response) => {
     }).lean();
     if (!record) return res.status(404).json({ success: false, error: 'Not found' });
     res.json({ success: true, data: record });
+  } catch (e: any) { res.status(500).json({ success: false, error: e.message }); }
+});
+
+// PUBLIC LOOKUP by raw AI label (e.g. "Black_Gram_Cercospora_Leaf_Spot")
+// Lookup order: aiLabel exact → diseasePestName normalized → aliases → fuzzy
+router.get('/lookup/by-label/:aiLabel', async (req, res: Response) => {
+  try {
+    const rawLabel = decodeURIComponent(req.params.aiLabel);
+    const normRaw  = normalizeLabel(rawLabel);
+
+    log.info('[DPS lookup/by-label]', { collection: 'diseasepestsolutions', rawLabel, normRaw });
+
+    // Try to extract crop from label (first 1-3 words before known disease terms)
+    // We fetch all published records and match in-memory for flexibility
+    const allPublished = await DiseasePestSolution.find({ status: 'published' }).lean();
+
+    // 1. Exact aiLabel match
+    let match = allPublished.find(d => d.aiLabel && normalizeLabel(d.aiLabel) === normRaw) ?? null;
+    if (match) {
+      log.info('[DPS lookup/by-label] hit: aiLabel', { docId: (match as any)._id?.toString() });
+      return res.json({ success: true, data: match });
+    }
+
+    // 2. Normalize: strip crop prefix from each record and compare
+    match = allPublished.find(d => {
+      const stripped = normalizeAILabel(rawLabel, d.cropName);
+      return normalizeLabel(d.diseasePestName) === stripped;
+    }) ?? null;
+    if (match) {
+      log.info('[DPS lookup/by-label] hit: normalized diseasePestName', { docId: (match as any)._id?.toString() });
+      return res.json({ success: true, data: match });
+    }
+
+    // 3. Aliases
+    match = allPublished.find(d =>
+      (d.aliases || []).some(a => normalizeLabel(a) === normRaw)
+    ) ?? null;
+    if (match) {
+      log.info('[DPS lookup/by-label] hit: alias', { docId: (match as any)._id?.toString() });
+      return res.json({ success: true, data: match });
+    }
+
+    log.warn('[DPS lookup/by-label] FAIL: document not found', { rawLabel, normRaw });
+    return res.status(404).json({ success: false, error: `No published DPS record found for AI label: ${rawLabel}` });
   } catch (e: any) { res.status(500).json({ success: false, error: e.message }); }
 });
 

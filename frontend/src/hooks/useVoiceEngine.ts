@@ -83,7 +83,11 @@ export interface VoiceEngineControls {
 
 // ─── API helper ───────────────────────────────────────────────────────────────
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || '';
+// Strip trailing /api so we never produce /api/api/... double-prefix.
+// NEXT_PUBLIC_API_URL is "http://localhost:4000/api" — the route path already
+// includes /api, so we need the bare origin+prefix without the segment.
+const _RAW_API = process.env.NEXT_PUBLIC_API_URL || '';
+const API_BASE = _RAW_API.endsWith('/api') ? _RAW_API.slice(0, -4) : _RAW_API;
 
 async function prepareTTS(
   text: string,

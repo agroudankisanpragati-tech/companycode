@@ -2,8 +2,8 @@
 # AKP — Agroudan Kisan Pragati
 # File: knowledge_base/disease_ai.py
 # Purpose: Disease AI module handler for the Knowledge Router.
-#          Queries DiseaseKnowledgeBase and PestKnowledgeBase.
-#          Supports context-aware follow-up queries and structured responses.
+#          Queries Disease & Pest Management (diseasepestsolutions) ONLY.
+#          DiseaseKnowledgeBase and PestKnowledgeBase are NOT used.
 # =============================================================================
 
 from __future__ import annotations
@@ -63,36 +63,29 @@ def handle(request: dict[str, Any]) -> dict[str, Any]:
         return build_response(_MODULE_ID, intent, lang, msg, suggestions=suggestions,
                               fallback_reason="low_confidence")
 
-    # ── KB Search: disease collection ────────────────────────────────
+    # ── KB Search: Disease & Pest Management (diseasepestsolutions) ONLY ───
+    # DiseaseKnowledgeBase and PestKnowledgeBase are NOT queried.
     search_text = resolved_text or text
     docs = []
     collection_hit = ""
 
     if search_text:
         docs = _query_collection(
-            "diseaseknowledgebases",
-            {"$or": [
-                {"diseaseName": {"$regex": _escape(search_text[:60]), "$options": "i"}},
-                {"cropName":    {"$regex": _escape(search_text[:40]), "$options": "i"}},
-                {"description": {"$regex": _escape(search_text[:40]), "$options": "i"}},
+            "diseasepestsolutions",
+            {"$and": [
+                {"status": "published"},
+                {"$or": [
+                    {"diseasePestName": {"$regex": _escape(search_text[:60]), "$options": "i"}},
+                    {"cropName":        {"$regex": _escape(search_text[:40]), "$options": "i"}},
+                    {"description":     {"$regex": _escape(search_text[:40]), "$options": "i"}},
+                    {"aliases":         {"$regex": _escape(search_text[:60]), "$options": "i"}},
+                    {"tags":            {"$regex": _escape(search_text[:40]), "$options": "i"}},
+                ]},
             ]},
             limit=3,
         )
         if docs:
-            collection_hit = "diseaseknowledgebases"
-
-    # ── KB Search: pest collection (fallback) ────────────────────────
-    if not docs and search_text:
-        docs = _query_collection(
-            "pestknowledgebases",
-            {"$or": [
-                {"pestName": {"$regex": _escape(search_text[:60]), "$options": "i"}},
-                {"cropName": {"$regex": _escape(search_text[:40]), "$options": "i"}},
-            ]},
-            limit=3,
-        )
-        if docs:
-            collection_hit = "pestknowledgebases"
+            collection_hit = "diseasepestsolutions"
 
     # ── Build structured response ─────────────────────────────────────
     if docs:

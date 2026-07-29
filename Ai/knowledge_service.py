@@ -45,7 +45,7 @@ class MongoDBConfig:
     """
     uri:        str = field(default_factory=lambda: os.getenv("MONGO_URI", os.getenv("MONGODB_URI", "mongodb://localhost:27017")))
     db_name:    str = field(default_factory=lambda: os.getenv("MONGO_DB_NAME", "kisan-pragati"))
-    collection: str = field(default_factory=lambda: os.getenv("MONGO_COLLECTION", "diseaseknowledgebases"))
+    collection: str = field(default_factory=lambda: os.getenv("MONGO_COLLECTION", "diseasepestsolutions"))
     timeout_ms: int = field(default_factory=lambda: int(os.getenv("MONGO_TIMEOUT_MS", "5000")))
 
 
@@ -124,27 +124,13 @@ def _map_document(doc: dict, crop: str, category: str, class_name: str) -> Knowl
             return [str(v) for v in val if v]
         return []
 
-    symptoms = _str("symptoms")
-    if not symptoms:
-        parts = [_str("symptomsDescription"), _str("leafSymptoms"), _str("stemSymptoms"),
-                 _str("rootSymptoms"), _str("fruitSymptoms")]
-        symptoms = "\n".join(p for p in parts if p)
-
-    organic   = _str("organicSolution") or _str("organicTreatment")
-    chemical  = _str("chemicalSolution") or _str("chemicalTreatment")
-
-    prevention = _str("prevention")
-    if not prevention:
-        parts = [_str("preventionMethods"), _str("preventionDescription")]
-        prevention = "\n".join(p for p in parts if p)
-
-    affected_part = _str("affectedPlantPart") or _str("cropCategory")
-    images        = _list("diseaseImages") + _list("imageGallery")
-    videos        = _list("videoLinks")
-    references    = _list("referenceLinks")
-    rec_actions   = _str("recommendedActions")
-    if rec_actions and rec_actions not in references:
-        references.append(rec_actions)
+    # diseasepestsolutions field mapping
+    symptoms  = _str("symptoms")
+    organic   = _str("organicSolution")
+    chemical  = _str("chemicalSolution")
+    prevention = _str("preventiveMeasures")
+    images    = _list("referenceImages")
+    references = _list("tags")
 
     return KnowledgeResult(
         found=True,
@@ -153,16 +139,16 @@ def _map_document(doc: dict, crop: str, category: str, class_name: str) -> Knowl
         class_name=class_name,
         description=_str("description"),
         symptoms=symptoms,
-        causes=_str("causes") or _str("diseaseType"),
+        causes=_str("recordType"),
         organic_solution=organic,
         chemical_solution=chemical,
         prevention=prevention,
-        severity=_str("severityLevel"),
-        affected_part=affected_part,
-        scientific_name=_str("scientificName"),
+        severity=_str("severity"),
+        affected_part="",
+        scientific_name="",
         recommended_products=_str("recommendedProducts"),
         images=images,
-        videos=videos,
+        videos=[],
         references=references,
         language="en",
         error=None,
@@ -269,10 +255,12 @@ class KnowledgeService:
         projection = {"_id": 0}
 
         if crop and class_name:
+            # 1. Exact aiLabel match (YOLO raw class_name stored by admin)
             doc = collection.find_one(
                 {
-                    "cropName":    {"$regex": f"^{_escape(crop)}$",       "$options": "i"},
-                    "diseaseName": {"$regex": f"^{_escape(class_name)}$", "$options": "i"},
+                    "cropName":        {"$regex": f"^{_escape(crop)}$",       "$options": "i"},
+                    "aiLabel":         {"$regex": f"^{_escape(class_name)}$", "$options": "i"},
+                    "status":          "published",
                 },
                 projection,
             )
@@ -280,10 +268,25 @@ class KnowledgeService:
                 return doc
 
         if crop and class_name:
+            # 2. Exact diseasePestName match
             doc = collection.find_one(
                 {
-                    "cropName":    {"$regex": f"^{_escape(crop)}$", "$options": "i"},
-                    "diseaseName": {"$regex": _escape(class_name),  "$options": "i"},
+                    "cropName":        {"$regex": f"^{_escape(crop)}$",       "$options": "i"},
+                    "diseasePestName": {"$regex": f"^{_escape(class_name)}$", "$options": "i"},
+                    "status":          "published",
+                },
+                projection,
+            )
+            if doc:
+                return doc
+
+        if crop and class_name:
+            # 3. Partial diseasePestName match
+            doc = collection.find_one(
+                {
+                    "cropName":        {"$regex": f"^{_escape(crop)}$", "$options": "i"},
+                    "diseasePestName": {"$regex": _escape(class_name),  "$options": "i"},
+                    "status":          "published",
                 },
                 projection,
             )
@@ -291,8 +294,9 @@ class KnowledgeService:
                 return doc
 
         if crop:
+            # 4. Crop-only fallback
             doc = collection.find_one(
-                {"cropName": {"$regex": f"^{_escape(crop)}$", "$options": "i"}},
+                {"cropName": {"$regex": f"^{_escape(crop)}$", "$options": "i"}, "status": "published"},
                 projection,
             )
             if doc:

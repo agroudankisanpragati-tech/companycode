@@ -6,7 +6,11 @@ import {
   FaCheckCircle, FaTimesCircle, FaHeartbeat, FaLightbulb,
   FaChevronDown, FaChevronUp, FaDatabase, FaRobot,
 } from 'react-icons/fa';
-import { ScanResult, resolveSymptoms, resolveOrganic, resolveChemical, resolvePrevention } from './types';
+import { useLanguage } from '@/context/LanguageContext';
+import {
+  ScanResult, pickField,
+  resolveSymptoms, resolveOrganic, resolveChemical, resolvePrevention,
+} from './types';
 
 // ─── Expandable Knowledge Card ────────────────────────────────────────────────
 
@@ -152,40 +156,23 @@ interface Props {
 }
 
 export default function DiseaseKnowledgeSection({ result }: Props) {
-  const symptoms   = resolveSymptoms(result);
-  const organic    = resolveOrganic(result);
-  const chemical   = resolveChemical(result);
-  const prevention = resolvePrevention(result);
+  const { langCode } = useLanguage();
 
-  // Derive Do's / Don'ts — now typed on ScanResult
-  const dos   = result.dos   || '';
-  const donts = result.donts || '';
+  // All text resolved using the active language code
+  const description      = pickField(result.description, langCode);
+  const symptoms         = resolveSymptoms(result, langCode);
+  const organic          = resolveOrganic(result, langCode);
+  const chemical         = resolveChemical(result, langCode);
+  const prevention       = resolvePrevention(result, langCode);
+  const dos              = pickField(result.dos, langCode);
+  const donts            = pickField(result.donts, langCode);
+  const recoveryTips     = pickField(result.recoveryTips, langCode) || result.recoveryTime || result.cropCareTips || result.farmingPractices || '';
+  const urgentPrevention = pickField(result.urgentPrevention, langCode) || pickField(result.recommendedActions, langCode) || result.beforeDisease || '';
+  const farmerAdvice     = pickField(result.farmerAdvice, langCode) || result.importantNotes || '';
+  const precautions      = result.safetyInstructions || result.safetyNotes || result.precautions || '';
 
-  // Recovery tips — typed field first, then legacy fallbacks
-  const recoveryTips = result.recoveryTips
-    || result.recoveryTime
-    || result.cropCareTips
-    || result.farmingPractices
-    || '';
-
-  // Urgent prevention — typed field first, then legacy fallbacks
-  const urgentPrevention = result.urgentPrevention
-    || result.recommendedActions
-    || result.beforeDisease
-    || '';
-
-  // Farmer advice — typed field
-  const farmerAdvice = result.farmerAdvice || result.importantNotes || '';
-
-  // Precautions — from safetyInstructions or safetyNotes or precautions
-  const precautions = result.safetyInstructions
-    || result.safetyNotes
-    || result.precautions
-    || '';
-
-  // Check if there's any knowledge to show
   const hasKnowledge = !!(
-    result.description || symptoms || organic || chemical ||
+    description || symptoms || organic || chemical ||
     prevention || urgentPrevention || recoveryTips || precautions || dos || donts || farmerAdvice
   );
 
@@ -197,7 +184,7 @@ export default function DiseaseKnowledgeSection({ result }: Props) {
       <div className="flex items-center justify-between gap-3 px-1">
         <div>
           <h2 className="text-base font-extrabold text-slate-800 dark:text-slate-100 flex items-center gap-2">
-            <span className="text-lg">📖</span> Disease Knowledge Base
+            <span className="text-lg">📖</span> Disease &amp; Pest Information
           </h2>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
             Complete guide — tap any card to expand
@@ -207,7 +194,7 @@ export default function DiseaseKnowledgeSection({ result }: Props) {
       </div>
 
       {/* 1. Disease Description */}
-      {result.description && (
+      {description && (
         <KnowledgeCard
           icon={<FaLightbulb className="text-yellow-600" size={15} />}
           title="Disease Description"
@@ -218,13 +205,8 @@ export default function DiseaseKnowledgeSection({ result }: Props) {
           defaultOpen={true}
         >
           <p className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-line">
-            {result.description}
+            {description}
           </p>
-          {result.descriptionHindi && (
-            <p className="mt-3 text-sm text-slate-600 dark:text-slate-400 italic leading-relaxed border-t border-yellow-100 dark:border-yellow-800 pt-3">
-              {result.descriptionHindi}
-            </p>
-          )}
         </KnowledgeCard>
       )}
 
@@ -239,15 +221,7 @@ export default function DiseaseKnowledgeSection({ result }: Props) {
           bgColor="bg-amber-50/60 dark:bg-amber-900/20"
           defaultOpen={true}
         >
-          <BulletList
-            text={symptoms}
-            bulletClass="h-2 w-2 rounded-full bg-amber-500 mt-1"
-          />
-          {result.symptomsHindi && (
-            <p className="mt-3 text-sm text-amber-800 dark:text-amber-300 italic whitespace-pre-line border-t border-amber-100 dark:border-amber-800 pt-3">
-              {result.symptomsHindi}
-            </p>
-          )}
+          <BulletList text={symptoms} bulletClass="h-2 w-2 rounded-full bg-amber-500 mt-1" />
         </KnowledgeCard>
       )}
 
@@ -261,15 +235,7 @@ export default function DiseaseKnowledgeSection({ result }: Props) {
           borderColor="border-green-200 dark:border-green-800"
           bgColor="bg-green-50/60 dark:bg-green-900/20"
         >
-          <BulletList
-            text={organic}
-            bulletClass="h-2 w-2 rounded-full bg-green-500 mt-1"
-          />
-          {result.organicTreatmentHindi && (
-            <p className="mt-3 text-sm text-green-800 dark:text-green-300 italic whitespace-pre-line border-t border-green-100 dark:border-green-800 pt-3">
-              {result.organicTreatmentHindi}
-            </p>
-          )}
+          <BulletList text={organic} bulletClass="h-2 w-2 rounded-full bg-green-500 mt-1" />
         </KnowledgeCard>
       )}
 
@@ -283,15 +249,7 @@ export default function DiseaseKnowledgeSection({ result }: Props) {
           borderColor="border-blue-200 dark:border-blue-800"
           bgColor="bg-blue-50/60 dark:bg-blue-900/20"
         >
-          <BulletList
-            text={chemical}
-            bulletClass="h-2 w-2 rounded-full bg-blue-500 mt-1"
-          />
-          {result.chemicalTreatmentHindi && (
-            <p className="mt-3 text-sm text-blue-800 dark:text-blue-300 italic whitespace-pre-line border-t border-blue-100 dark:border-blue-800 pt-3">
-              {result.chemicalTreatmentHindi}
-            </p>
-          )}
+          <BulletList text={chemical} bulletClass="h-2 w-2 rounded-full bg-blue-500 mt-1" />
           {(result.dosage || result.sprayTiming || result.waitingPeriod) && (
             <div className="mt-3 grid grid-cols-1 sm:grid-cols-3 gap-2 border-t border-blue-100 dark:border-blue-800 pt-3">
               {result.dosage && (
@@ -327,15 +285,7 @@ export default function DiseaseKnowledgeSection({ result }: Props) {
           borderColor="border-orange-200 dark:border-orange-800"
           bgColor="bg-orange-50/60 dark:bg-orange-900/20"
         >
-          <BulletList
-            text={urgentPrevention}
-            bulletClass="h-2 w-2 rounded-full bg-orange-500 mt-1"
-          />
-          {result.recommendedActionsHindi && (
-            <p className="mt-3 text-sm text-orange-800 dark:text-orange-300 italic whitespace-pre-line border-t border-orange-100 dark:border-orange-800 pt-3">
-              {result.recommendedActionsHindi}
-            </p>
-          )}
+          <BulletList text={urgentPrevention} bulletClass="h-2 w-2 rounded-full bg-orange-500 mt-1" />
         </KnowledgeCard>
       )}
 
@@ -349,10 +299,7 @@ export default function DiseaseKnowledgeSection({ result }: Props) {
           borderColor="border-pink-200 dark:border-pink-800"
           bgColor="bg-pink-50/60 dark:bg-pink-900/20"
         >
-          <BulletList
-            text={recoveryTips}
-            bulletClass="h-2 w-2 rounded-full bg-pink-500 mt-1"
-          />
+          <BulletList text={recoveryTips} bulletClass="h-2 w-2 rounded-full bg-pink-500 mt-1" />
         </KnowledgeCard>
       )}
 
@@ -366,10 +313,7 @@ export default function DiseaseKnowledgeSection({ result }: Props) {
           borderColor="border-teal-200 dark:border-teal-800"
           bgColor="bg-teal-50/60 dark:bg-teal-900/20"
         >
-          <BulletList
-            text={precautions}
-            bulletClass="h-2 w-2 rounded-full bg-teal-500 mt-1"
-          />
+          <BulletList text={precautions} bulletClass="h-2 w-2 rounded-full bg-teal-500 mt-1" />
         </KnowledgeCard>
       )}
 
@@ -383,15 +327,7 @@ export default function DiseaseKnowledgeSection({ result }: Props) {
           borderColor="border-indigo-200 dark:border-indigo-800"
           bgColor="bg-indigo-50/60 dark:bg-indigo-900/20"
         >
-          <BulletList
-            text={prevention}
-            bulletClass="h-2 w-2 rounded-full bg-indigo-500 mt-1"
-          />
-          {result.preventionHindi && (
-            <p className="mt-3 text-sm text-indigo-800 dark:text-indigo-300 italic whitespace-pre-line border-t border-indigo-100 dark:border-indigo-800 pt-3">
-              {result.preventionHindi}
-            </p>
-          )}
+          <BulletList text={prevention} bulletClass="h-2 w-2 rounded-full bg-indigo-500 mt-1" />
         </KnowledgeCard>
       )}
 
@@ -419,10 +355,7 @@ export default function DiseaseKnowledgeSection({ result }: Props) {
           borderColor="border-yellow-300 dark:border-yellow-700"
           bgColor="bg-yellow-50/60 dark:bg-yellow-900/20"
         >
-          <BulletList
-            text={farmerAdvice}
-            bulletClass="h-2 w-2 rounded-full bg-yellow-500 mt-1"
-          />
+          <BulletList text={farmerAdvice} bulletClass="h-2 w-2 rounded-full bg-yellow-500 mt-1" />
         </KnowledgeCard>
       )}
     </div>

@@ -1,0 +1,42 @@
+{
+  "id": "disease_success_001",
+  "page": "disease_detection",
+  "dialogueType": "success",
+  "title": "Disease Detection Success",
+  "version": "1.0.0",
+
+  "text": "विश्लेषण सफलतापूर्वक पूरा हो गया है। आपकी स्क्रीन पर संभावित रोग से संबंधित जानकारी प्रदर्शित कर दी गई है। कृपया रोग का नाम, लक्षण, संभावित कारण तथा उपचार के सुझाव ध्यानपूर्वक पढ़ें।",
+
+  "repeat": {
+    "enabled": false,
+    "afterHours": 0
+  },
+
+  "voice": {
+    "enabled": true,
+    "provider": "offline",
+    "file": "disease_success_001.mp3",
+    "language": "hi",
+    "speed": 1.0,
+    "volume": 1.0
+  },
+
+  "avatar": {
+    "enabled": true,
+    "animation": "speaking",
+    "expression": "smile"
+  },
+
+  "display": {
+    "showSubtitle": true,
+    "showAvatar": true
+  },
+
+  "conditions": {
+    "firstVisit": false,
+    "loggedIn": true,
+    "internetRequired": false
+  },
+
+  "status": "active"
+}

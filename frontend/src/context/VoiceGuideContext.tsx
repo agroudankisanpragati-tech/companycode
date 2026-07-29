@@ -325,6 +325,9 @@ export function VoiceGuideProvider({ children }: { children: ReactNode }) {
 
         if (events.length) {
           events.forEach((event: Record<string, unknown>) => {
+            // Skip error events from history — these are stale and should not
+            // be re-emitted on initialize (they cause spurious console.error calls)
+            if (event.event_type === 'error') return;
             emitRuntimeEvent((event.event_type as string) || 'runtime_event', {
               ...(event.payload as Record<string, unknown> | undefined),
               event_type: event.event_type,

@@ -13,6 +13,8 @@ type DPSRecord = {
   cropName: string;
   recordType: string;
   diseasePestName: string;
+  aiLabel?: string;
+  aliases?: string[];
   severity: string;
   description?: string;
   symptoms?: string;
@@ -34,7 +36,8 @@ type DPSRecord = {
 };
 
 const EMPTY: Partial<DPSRecord> = {
-  cropName: '', recordType: 'Disease', diseasePestName: '', severity: 'medium',
+  cropName: '', recordType: 'Disease', diseasePestName: '', aiLabel: '', aliases: [],
+  severity: 'medium',
   description: '', symptoms: '', organicSolution: '', chemicalSolution: '',
   urgentPrevention: '', recoveryTips: '', preventiveMeasures: '',
   dos: '', donts: '', recommendedProducts: '', farmerAdvice: '',
@@ -246,6 +249,25 @@ export default function DiseasePestKnowledgePage() {
                 <option value="published">Published</option>
               </select>
             </label>
+          </div>
+
+          <div className="rounded-2xl border border-white/10 bg-white/5 p-4 space-y-3">
+            <p className="text-xs font-semibold text-cyan-300">🤖 AI Matching (optional but recommended)</p>
+            <div className="grid gap-4 md:grid-cols-2">
+              <label className="space-y-1.5 text-sm text-slate-300">
+                <span>AI Label (raw YOLO class_name)</span>
+                <input className="admin-input w-full" placeholder="e.g. Black_Gram_Cercospora_Leaf_Spot"
+                  value={(form.aiLabel as string) || ''} onChange={e => f('aiLabel', e.target.value)} />
+                <span className="text-xs text-slate-500">Exact YOLO prediction label for guaranteed match</span>
+              </label>
+              <label className="space-y-1.5 text-sm text-slate-300">
+                <span>Aliases (comma-separated)</span>
+                <input className="admin-input w-full" placeholder="e.g. cercospora, leaf spot, CLS"
+                  value={(form.aliases || []).join(', ')}
+                  onChange={e => f('aliases', e.target.value.split(',').map((s: string) => s.trim()).filter(Boolean))} />
+                <span className="text-xs text-slate-500">Alternative names for fuzzy matching</span>
+              </label>
+            </div>
           </div>
 
           {ta('description', 'Description', 3)}

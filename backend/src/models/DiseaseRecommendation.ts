@@ -13,20 +13,33 @@ export interface IDiseaseRecommendation extends Document {
   diseaseName: string;
   diseaseType: string;
   severityLevel: string;
-  symptoms: string;
-  organicTreatment: string;
-  chemicalTreatment: string;
-  treatment: string;            // combined fallback
-  prevention: string;
-  description: string;
-  recommendedActions?: string;
+  // Advisory text fields — stored as { en, hi } objects (Mixed) for offline multilingual
+  symptoms: any;
+  organicTreatment: any;
+  chemicalTreatment: any;
+  treatment: any;
+  prevention: any;
+  description: any;
+  recommendedActions?: any;
+  urgentPrevention?: any;
+  recoveryTips?: any;
+  dos?: any;
+  donts?: any;
+  recommendedProducts?: any;
+  recommendedFertilizer?: any;
+  recommendedBioProduct?: any;
+  recommendedOrganicProduct?: any;
+  extraFarmerAdvice?: any;
+  suitableWeather?: any;
+  diseaseImages?: string[];
+  tags?: string[];
   confidenceScore?: number;
   imageUrl?: string;
   source: 'cache' | 'knowledge_base' | 'ai' | 'yolo';
-  predictionSource: string;     // always 'YOLOv8 Classification Model'
-  yoloTop5?: IYoloTop5[];       // top-5 YOLO predictions
+  predictionSource: string;
+  yoloTop5?: IYoloTop5[];
   similarityScore?: number;
-  knowledgeBaseId?: string;     // linked KB entry if matched
+  knowledgeBaseId?: string;
   feedback?: 'helpful' | 'not_helpful' | null;
   comment?: string;
   correctDisease?: string;
@@ -35,6 +48,8 @@ export interface IDiseaseRecommendation extends Document {
   updatedAt: Date;
 }
 
+const mlField = { type: Schema.Types.Mixed };
+
 const DiseaseRecommendationSchema = new Schema<IDiseaseRecommendation>(
   {
     userId: { type: String, index: true },
@@ -42,13 +57,26 @@ const DiseaseRecommendationSchema = new Schema<IDiseaseRecommendation>(
     diseaseName: { type: String, required: true },
     diseaseType: { type: String },
     severityLevel: { type: String },
-    symptoms: { type: String },
-    organicTreatment: { type: String },
-    chemicalTreatment: { type: String },
-    treatment: { type: String },
-    prevention: { type: String },
-    description: { type: String },
-    recommendedActions: { type: String },
+    // Advisory text — Mixed so { en, hi } objects are stored as-is
+    symptoms:           mlField,
+    organicTreatment:   mlField,
+    chemicalTreatment:  mlField,
+    treatment:          mlField,
+    prevention:         mlField,
+    description:        mlField,
+    recommendedActions: mlField,
+    urgentPrevention:          mlField,
+    recoveryTips:              mlField,
+    dos:                       mlField,
+    donts:                     mlField,
+    recommendedProducts:       mlField,
+    recommendedFertilizer:     mlField,
+    recommendedBioProduct:     mlField,
+    recommendedOrganicProduct: mlField,
+    extraFarmerAdvice:         mlField,
+    suitableWeather:           mlField,
+    diseaseImages:             [{ type: String }],
+    tags:                      [{ type: String }],
     confidenceScore: { type: Number },
     imageUrl: { type: String },
     source: { type: String, enum: ['cache', 'knowledge_base', 'ai', 'yolo'], default: 'ai' },

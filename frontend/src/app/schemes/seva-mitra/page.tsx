@@ -158,12 +158,33 @@ export default function SevaMitraPage() {
 
     // 🔊 Premium Natural Indian Female Voice Readout
     const speakText = useCallback((textToSpeak: string) => {
-        if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
+        console.log('[TTS] speakText called, text:', textToSpeak.slice(0, 60));
+
+        if (typeof window === 'undefined' || !('speechSynthesis' in window)) {
+            console.warn('[TTS] EARLY RETURN — speechSynthesis not available');
+            return;
+        }
+
+        const ss = window.speechSynthesis;
+
+        // Always get the freshest voice list — never rely on stale closure
+        const voices = ss.getVoices();
+        console.log('[TTS] voices available:', voices.length);
+
+        // If voices haven't loaded yet, wait for voiceschanged then retry once
+        if (voices.length === 0) {
+            console.warn('[TTS] EARLY RETURN — voices empty, scheduling retry on voiceschanged');
+            const prev = ss.onvoiceschanged;
+            ss.onvoiceschanged = () => {
+                ss.onvoiceschanged = prev ?? null;
+                // setTimeout defers speak() past the voiceschanged dispatch.
+                // Chromium silently drops speak() called synchronously inside voiceschanged.
+                setTimeout(() => speakTextRef.current(textToSpeak), 0);
+            };
+            return;
+        }
 
         try {
-            window.speechSynthesis.cancel();
-            window.speechSynthesis.resume();
-
             // Format conversational Indian phrasing
             const cleanText = textToSpeak
                 .replace(/([0-9]+)\s*lakhs?/gi, '$1 लाख रुपये')
@@ -178,55 +199,73 @@ export default function SevaMitraPage() {
             const utterance = new SpeechSynthesisUtterance(cleanText);
             utterance.lang = 'hi-IN';
 
-            // Tuned for natural Indian Female cadence (Swara / Kalpana style)
             if (voiceGender === 'female') {
                 utterance.rate = 0.92;
-                utterance.pitch = 1.25; // Warm, natural female pitch
+                utterance.pitch = 1.25;
             } else {
                 utterance.rate = 0.88;
                 utterance.pitch = 0.95;
             }
 
-            const voices = availableVoices.length > 0 ? availableVoices : window.speechSynthesis.getVoices();
-
-            // Find top Indian Female Voice (Microsoft Swara Online Natural / Google Hindi Female / Kalpana)
-            let selectedVoice = null;
-
+            // Find best Indian voice
+            let selectedVoice: SpeechSynthesisVoice | undefined;
             if (voiceGender === 'female') {
-                selectedVoice = voices.find(v => 
-                    v.name.includes('Swara') || 
-                    v.name.includes('Kalpana') || 
-                    (v.name.includes('Google') && v.lang.includes('hi')) || 
+                selectedVoice = voices.find(v =>
+                    v.name.includes('Swara') ||
+                    v.name.includes('Kalpana') ||
+                    (v.name.includes('Google') && v.lang.includes('hi')) ||
                     v.name.includes('Heera') ||
                     v.name.includes('Neerja') ||
                     (v.lang.toLowerCase().includes('hi') && !v.name.includes('Hemant'))
                 );
             } else {
-                selectedVoice = voices.find(v => v.name.includes('Hemant') || (v.lang.toLowerCase().includes('hi') && v.name.includes('Male')));
+                selectedVoice = voices.find(v =>
+                    v.name.includes('Hemant') ||
+                    (v.lang.toLowerCase().includes('hi') && v.name.toLowerCase().includes('male'))
+                );
             }
-
-            // Fallback to any Indian voice
+            // Fallback to any Hindi / Indian English voice
             if (!selectedVoice) {
-                selectedVoice = voices.find(v => v.lang.toLowerCase() === 'hi-in' || v.lang.toLowerCase().includes('hi') || v.lang.includes('en-IN'));
+                selectedVoice = voices.find(v =>
+                    v.lang.toLowerCase() === 'hi-in' ||
+                    v.lang.toLowerCase().startsWith('hi') ||
+                    v.lang.includes('en-IN')
+                );
             }
 
-            if (selectedVoice) {
-                utterance.voice = selectedVoice;
+            console.log('[TTS] selectedVoice:', selectedVoice?.name ?? 'none (browser default)');
+
+            if (selectedVoice) utterance.voice = selectedVoice;
+
+            utterance.onstart  = () => { console.log('[TTS] onstart fired'); setIsSpeaking(true); };
+            utterance.onend    = () => { console.log('[TTS] onend fired');   setIsSpeaking(false); };
+            utterance.onerror  = (e) => { console.error('[TTS] onerror:', e.error); setIsSpeaking(false); };
+            utterance.onpause  = () => console.log('[TTS] onpause');
+            utterance.onresume = () => console.log('[TTS] onresume');
+
+            // Cancel only if already speaking, then speak in the same task.
+            // Do NOT use setTimeout after cancel() — Chromium drops the utterance
+            // if cancel() and speak() land in different microtask/macrotask boundaries
+            // while onvoiceschanged is still firing.
+            if (ss.speaking || ss.pending) {
+                console.log('[TTS] cancelling previous speech before speaking');
+                ss.cancel();
             }
+            console.log('[TTS] calling ss.speak()');
+            ss.speak(utterance);
+            console.log('[TTS] ss.speak() returned — pending:', ss.pending, 'speaking:', ss.speaking);
 
-            utterance.onstart = () => setIsSpeaking(true);
-            utterance.onend = () => setIsSpeaking(false);
-            utterance.onerror = () => setIsSpeaking(false);
-
-            window.speechSynthesis.speak(utterance);
         } catch (err) {
-            console.error('TTS error:', err);
+            console.error('[TTS] exception in speakText:', err);
             setIsSpeaking(false);
         }
-    }, [availableVoices, voiceGender]);
+    }, [voiceGender]);
 
-    // Keep speakTextRef always pointing to latest speakText (avoids stale closure in callbacks)
-    useEffect(() => { speakTextRef.current = speakText; });
+    // Keep speakTextRef always pointing to latest speakText (avoids stale closure in async callbacks)
+    useEffect(() => {
+        speakTextRef.current = speakText;
+        console.log('[TTS] speakTextRef updated');
+    }, [speakText]);
 
     // ──────────────────────────────────────────────────────────────────────────
     // CONVERSATIONAL AI STATE MACHINE WITH REF SYNC
@@ -372,10 +411,6 @@ export default function SevaMitraPage() {
                 ]);
                 
                 updateStep(6);
-                speakText(profile.language === 'marwari'
-                    ? `जन आधार सत्यापित हो ग्यो सा! राम राम सा ${prof.name} जी। थारे सारू योजनाएं खोजी जा रही है सा।`
-                    : `जन आधार सत्यापित! राम राम सा ${prof.name} जी। आपके डेटाबेस से आपकी योग्य योजनाएं खोजी जा रही हैं...`);
-                
                 await fetchEligibleSchemes(newProfile);
             } else {
                 setJanaadhaarError(profile.language === 'marwari' ? 'गलत जन आधार / SSO आईडी सा।' : 'अवैध जन आधार / SSO आईडी। कृपया पुनः प्रयास करें।');
@@ -420,7 +455,6 @@ export default function SevaMitraPage() {
         setChatHistory([
             { sender: 'ai', text: startMsg }
         ]);
-        speakText(startMsg);
     };
 
     const handleApplyStepSubmit = async (stepIndex: number, text: string) => {
@@ -477,7 +511,6 @@ export default function SevaMitraPage() {
                 aiReply = profile.language === 'en' ? 'Please enter a valid 4-digit PIN.' : 'कृपया 4 अंकों का PIN दर्ज करें।';
                 setChatHistory(prev => [...prev, { sender: 'ai', text: aiReply }]);
                 setChatLoading(false);
-                speakText(aiReply);
                 return;
             }
             currentData.pin = text;
@@ -524,7 +557,6 @@ export default function SevaMitraPage() {
 
         setChatHistory(prev => [...prev, { sender: 'ai', text: aiReply }]);
         setChatLoading(false);
-        speakText(aiReply);
     };
 
     const [chatHistory, setChatHistory] = useState<Array<{ sender: 'ai' | 'user'; text: string }>>([
@@ -535,6 +567,36 @@ export default function SevaMitraPage() {
     ]);
     const [chatInput, setChatInput] = useState('');
     const [chatLoading, setChatLoading] = useState(false);
+
+    // ── AUTO-SPEAK: speak every new bot message automatically ─────────────────
+    // speakTextRef always points to the latest speakText (kept in sync above).
+    // Dependency array contains ONLY chatHistory — NOT speakText — so the effect
+    // never re-fires due to voice list changes, which would race with the
+    // cancel()+setTimeout(speak) pattern and silently drop utterances.
+    const lastSpokenIndexRef = useRef<number>(-1);
+    useEffect(() => {
+        console.log('[AutoSpeak] effect fired, chatHistory.length:', chatHistory.length);
+        if (chatHistory.length === 0) {
+            console.log('[AutoSpeak] EARLY RETURN — chatHistory empty');
+            return;
+        }
+        const lastIndex = chatHistory.length - 1;
+        const lastMsg = chatHistory[lastIndex];
+        console.log('[AutoSpeak] lastMsg.sender:', lastMsg.sender, '| lastIndex:', lastIndex, '| lastSpokenIndex:', lastSpokenIndexRef.current);
+        if (lastMsg.sender !== 'ai') {
+            console.log('[AutoSpeak] EARLY RETURN — last message is from user, not bot');
+            return;
+        }
+        if (lastIndex <= lastSpokenIndexRef.current) {
+            console.log('[AutoSpeak] EARLY RETURN — already spoken this index');
+            return;
+        }
+        lastSpokenIndexRef.current = lastIndex;
+        console.log('[AutoSpeak] scheduling speak for index', lastIndex, '| text:', lastMsg.text.slice(0, 60));
+        // No setTimeout needed — speakText no longer uses cancel()+deferred speak()
+        speakTextRef.current(lastMsg.text);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [chatHistory]);
 
     const [matchedSchemes, setMatchedSchemes] = useState<any[]>([]);
     const [matchLoading, setMatchLoading] = useState(false);
@@ -692,7 +754,6 @@ export default function SevaMitraPage() {
                     setChatHistory(prev => [...prev, { sender: 'ai', text: welcomeBack }]);
                     setChatLoading(false);
                     updateStep(7);
-                    speakText(welcomeBack);
                     fetchEligibleSchemes(restoredProfile);
                     return;
                 } else {
@@ -706,10 +767,8 @@ export default function SevaMitraPage() {
                         : `इस नंबर पर कोई प्रोफाइल नहीं मिली। नई प्रोफाइल बनाते हैं!`;
                     setChatHistory(prev => [...prev, { sender: 'ai', text: notFound }]);
                     setChatLoading(false);
-                    speakText(notFound);
                     const namePrompt = await fetchAIResponse(2, currentProf);
                     setChatHistory(prev => [...prev, { sender: 'ai', text: namePrompt }]);
-                    speakText(namePrompt);
                     return;
                 }
             }
@@ -776,7 +835,6 @@ export default function SevaMitraPage() {
         const aiReply = await fetchAIResponse(nextStep, currentProf);
         setChatHistory(prev => [...prev, { sender: 'ai', text: aiReply }]);
         setChatLoading(false);
-        speakText(aiReply);
     };
 
     // Text or Voice Submit Handler
@@ -820,6 +878,7 @@ export default function SevaMitraPage() {
 
     // Reset Flow
     const handleReset = () => {
+        lastSpokenIndexRef.current = -1;
         updateStep(0);
         setIsFirstTime(null);
         setPhoneInput('');
@@ -846,7 +905,6 @@ export default function SevaMitraPage() {
         setIsApplying(false);
         setApplyingScheme(null);
         setApplyStep(0);
-        speakText(init);
     };
 
     // Open Modal for Scheme Details

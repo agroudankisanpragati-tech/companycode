@@ -2,9 +2,9 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { FaBars, FaTimes, FaArrowRight, FaSignOutAlt, FaUserCircle } from 'react-icons/fa';
+import { FaBars, FaTimes, FaArrowRight, FaSignOutAlt, FaUserCircle, FaTachometerAlt, FaCog, FaChevronDown } from 'react-icons/fa';
 import { usePathname, useRouter } from 'next/navigation';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import LanguageSelector from '@/components/LanguageSelector';
 import { useAuth } from '@/context/AuthContext';
 
@@ -47,6 +47,24 @@ export default function Navbar() {
   const initials = user?.name
     ? user.name.split(' ').map((n: string) => n[0]).slice(0, 2).join('').toUpperCase()
     : 'U';
+
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const userMenuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (userMenuRef.current && !userMenuRef.current.contains(e.target as Node)) {
+        setUserMenuOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
+
+  const handleDashboard = () => {
+    setUserMenuOpen(false);
+    router.push('/dashboard/farmer');
+  };
 
   return (
     <nav
@@ -98,24 +116,54 @@ export default function Navbar() {
 
             {!isLoading && isAuthenticated ? (
               <>
-                <Link
-                  href="/dashboard/farmer/profile"
-                  title={user?.name}
-                  className="inline-flex items-center gap-2 rounded-full bg-white px-3 py-2 text-sm font-semibold text-emerald-700 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:bg-emerald-50"
-                >
-                  <span className="flex h-6 w-6 items-center justify-center rounded-full bg-emerald-600 text-xs text-white font-bold">
-                    {initials}
-                  </span>
-                  <span className="max-w-[90px] truncate">{user?.name}</span>
-                </Link>
-                <button
-                  onClick={handleLogout}
-                  aria-label="Logout"
-                  className="inline-flex items-center gap-2 rounded-full bg-red-50 px-4 py-2 text-sm font-semibold text-red-600 transition-all duration-200 hover:-translate-y-0.5 hover:bg-red-100"
-                >
-                  <FaSignOutAlt size={12} />
-                  Logout
-                </button>
+                <div ref={userMenuRef} className="relative">
+                  <button
+                    onClick={() => setUserMenuOpen((o) => !o)}
+                    title={user?.name}
+                    className="inline-flex items-center gap-2 rounded-full bg-white px-3 py-2 text-sm font-semibold text-emerald-700 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:bg-emerald-50"
+                  >
+                    <span className="flex h-6 w-6 items-center justify-center rounded-full bg-emerald-600 text-xs text-white font-bold">
+                      {initials}
+                    </span>
+                    <span className="max-w-[90px] truncate">{user?.name}</span>
+                    <FaChevronDown className={`text-[10px] text-gray-400 transition-transform ${userMenuOpen ? 'rotate-180' : ''}`} />
+                  </button>
+                  {userMenuOpen && (
+                    <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden z-50">
+                      <Link
+                        href="/dashboard/farmer/profile"
+                        onClick={() => setUserMenuOpen(false)}
+                        className="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-700 transition-colors"
+                      >
+                        <FaUserCircle size={14} className="text-emerald-500" />
+                        My Profile
+                      </Link>
+                      <button
+                        onClick={handleDashboard}
+                        className="w-full flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-700 transition-colors"
+                      >
+                        <FaTachometerAlt size={14} className="text-emerald-500" />
+                        Go to Dashboard
+                      </button>
+                      <Link
+                        href="/settings"
+                        onClick={() => setUserMenuOpen(false)}
+                        className="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-700 transition-colors"
+                      >
+                        <FaCog size={14} className="text-emerald-500" />
+                        Settings
+                      </Link>
+                      <div className="border-t border-gray-100" />
+                      <button
+                        onClick={() => { setUserMenuOpen(false); handleLogout(); }}
+                        className="w-full flex items-center gap-3 px-4 py-3 text-sm text-red-600 hover:bg-red-50 transition-colors"
+                      >
+                        <FaSignOutAlt size={14} />
+                        Logout
+                      </button>
+                    </div>
+                  )}
+                </div>
               </>
             ) : !isLoading ? (
               <>
@@ -190,7 +238,23 @@ export default function Navbar() {
                   className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-50 px-4 py-2.5 text-sm font-semibold text-emerald-700 transition hover:bg-emerald-100"
                 >
                   <FaUserCircle size={14} />
-                  {user?.name?.split(' ')[0] ?? 'Profile'}
+                  My Profile
+                </Link>
+                <Link
+                  href="/dashboard/farmer"
+                  onClick={() => setIsOpen(false)}
+                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-emerald-700"
+                >
+                  <FaTachometerAlt size={14} />
+                  Dashboard
+                </Link>
+                <Link
+                  href="/settings"
+                  onClick={() => setIsOpen(false)}
+                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-gray-50 px-4 py-2.5 text-sm font-semibold text-gray-700 transition hover:bg-gray-100"
+                >
+                  <FaCog size={14} />
+                  Settings
                 </Link>
                 <button
                   onClick={handleLogout}

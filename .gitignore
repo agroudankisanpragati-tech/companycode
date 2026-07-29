@@ -1,5 +1,4 @@
 backend/.env
-backend/.env
 
 **/node_modules/
 **/.next/

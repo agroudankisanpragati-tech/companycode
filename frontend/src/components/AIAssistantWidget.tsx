@@ -170,6 +170,8 @@ export default function AIAssistantWidget() {
         role="dialog"
         aria-label="Pragati AI chat"
         aria-hidden={!isOpen}
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        {...(!isOpen ? { inert: 'true' } as any : {})}
       >
         {/* Header */}
         <div className="flex items-center justify-between bg-gradient-to-r from-emerald-700 to-emerald-500 px-4 py-3 rounded-t-2xl">

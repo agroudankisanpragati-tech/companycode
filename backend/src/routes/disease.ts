@@ -3,9 +3,9 @@ import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
 import { AuthenticatedRequest, authenticate, requireAdmin } from '../middleware/auth';
-import { DiseaseKnowledgeBase } from '../models/DiseaseKnowledgeBase';
 import { DiseaseRecommendation } from '../models/DiseaseRecommendation';
 import { DiseasePestSolution } from '../models/DiseasePestSolution';
+// Disease & Pest Management (diseasepestsolutions) is the ONLY source of truth.
 import {
   searchCache,
   searchKnowledgeBase,
@@ -18,7 +18,7 @@ import {
 import { translateObject, SUPPORTED_LANGUAGES } from '../services/translationService';
 import { fetchCropsFromYolo } from '../services/yoloService';
 import { createLogger } from '../utils/logger';
-import { createExactSafeRegex, createSafeRegex } from '../utils/regex';
+import { createSafeRegex } from '../utils/regex';
 
 const router = express.Router();
 const log = createLogger('diseaseRoute');
@@ -129,20 +129,33 @@ router.post('/scan', authenticate, upload.single('image'), async (req: Authentic
     }
 
     // ── Step 4: Knowledge Base advisory lookup using YOLO labels ─────────────
-    // YOLO provides: cropName, diseaseName — KB provides: symptoms, treatment, prevention
-    log.info('Disease scan: knowledge base search started', { crop: prediction.cropName, disease: prediction.diseaseName });
+    // YOLO provides: cropName, diseaseName, rawAiLabel — KB provides advisory
+    log.info('Disease scan: knowledge base search started', { crop: prediction.cropName, disease: prediction.diseaseName, rawAiLabel: prediction.rawAiLabel });
     const advisory = await getAdvisoryFromKnowledgeBase(
       prediction.cropName,
-      prediction.diseaseName
+      prediction.diseaseName,
+      prediction.rawAiLabel,
     );
-    log.info('Disease scan: knowledge base search complete', { found: !!advisory });
+    log.info('Disease scan: knowledge base search complete', { found: !!advisory, knowledgeBaseId: advisory?.knowledgeBaseId || 'none' });
 
     // ── Step 5: Build final record — prediction from YOLO, advisory from KB ──
     const isHealthy = prediction.diseaseType === 'Healthy';
 
+    // Build { en, hi } description object.
+    // Use advisory.description (en) if present; otherwise YOLO fallback.
+    // Use advisory.descriptionHi (hi) if present; otherwise same fallback.
+    const fallbackDesc = isHealthy
+      ? `Your ${prediction.cropName} plant appears healthy. No disease detected.`
+      : `${prediction.diseaseName} detected on ${prediction.cropName} with ${confidence}% confidence by YOLOv8 Classification Model.`;
+
+    const resolvedDescription = {
+      en: advisory?.description   || fallbackDesc,
+      hi: advisory?.descriptionHi || advisory?.description || fallbackDesc,
+    };
+
     const record = {
       userId,
-      // Prediction fields — YOLO only
+      // Prediction fields — YOLO only (always plain English strings)
       cropName:         prediction.cropName,
       diseaseName:      prediction.diseaseName,
       diseaseType:      prediction.diseaseType,
@@ -157,26 +170,24 @@ router.post('/scan', authenticate, upload.single('image'), async (req: Authentic
       })),
       imageUrl:         savedImageUrl,
       source:           'yolo' as const,
-      // Advisory fields — Knowledge Base only (empty string if no KB match)
+      // Advisory fields — stored as { en, hi } objects for offline multilingual
       knowledgeBaseId:          advisory?.knowledgeBaseId    || '',
-      symptoms:                 advisory?.symptoms           || '',
-      organicTreatment:         advisory?.organicTreatment   || '',
-      chemicalTreatment:        advisory?.chemicalTreatment  || '',
+      symptoms:                 advisory ? { en: advisory.symptoms,           hi: advisory.symptomsHi           } : '',
+      organicTreatment:         advisory ? { en: advisory.organicTreatment,   hi: advisory.organicTreatmentHi   } : '',
+      chemicalTreatment:        advisory ? { en: advisory.chemicalTreatment,  hi: advisory.chemicalTreatmentHi  } : '',
       treatment:                advisory?.treatment          || '',
-      prevention:               advisory?.prevention         || '',
-      description:              advisory?.description        || (isHealthy
-        ? `Your ${prediction.cropName} plant appears healthy. No disease detected.`
-        : `${prediction.diseaseName} detected on ${prediction.cropName} with ${confidence}% confidence by YOLOv8 Classification Model.`),
-      recommendedActions:       advisory?.recommendedActions || '',
-      urgentPrevention:         advisory?.urgentPrevention   || '',
-      recoveryTips:             advisory?.recoveryTips       || '',
-      dos:                      advisory?.dos                || '',
-      donts:                    advisory?.donts              || '',
-      recommendedProducts:      advisory?.recommendedProducts || '',
+      prevention:               advisory ? { en: advisory.prevention,         hi: advisory.preventionHi         } : '',
+      description:              resolvedDescription,
+      recommendedActions:       advisory ? { en: advisory.recommendedActions, hi: advisory.recommendedActionsHi } : '',
+      urgentPrevention:         advisory ? { en: advisory.urgentPrevention,   hi: advisory.urgentPreventionHi   } : '',
+      recoveryTips:             advisory ? { en: advisory.recoveryTips,       hi: advisory.recoveryTipsHi       } : '',
+      dos:                      advisory ? { en: advisory.dos,                hi: advisory.dosHi                } : '',
+      donts:                    advisory ? { en: advisory.donts,              hi: advisory.dontsHi              } : '',
+      recommendedProducts:      advisory ? { en: advisory.recommendedProducts,hi: advisory.recommendedProductsHi} : '',
       recommendedFertilizer:    advisory?.recommendedFertilizer || '',
       recommendedBioProduct:    advisory?.recommendedBioProduct || '',
       recommendedOrganicProduct: advisory?.recommendedOrganicProduct || '',
-      extraFarmerAdvice:        advisory?.extraFarmerAdvice  || '',
+      extraFarmerAdvice:        advisory ? { en: advisory.extraFarmerAdvice,  hi: advisory.extraFarmerAdviceHi  } : '',
       suitableWeather:          advisory?.suitableWeather    || '',
       tags:                     advisory?.tags               || [],
     };
@@ -310,128 +321,6 @@ router.post('/feedback', authenticate, async (req: AuthenticatedRequest, res: Re
   }
 });
 
-// ─── ADMIN: Knowledge Base CRUD ───────────────────────────────────────────────
-
-router.get('/admin/knowledge-base', authenticate, requireAdmin, async (req: AuthenticatedRequest, res: Response) => {
-  try {
-    const page = Math.max(1, parseInt(req.query.page as string) || 1);
-    const limit = Math.min(100, parseInt(req.query.limit as string) || 20);
-    const { search, category, cropName } = req.query as Record<string, string>;
-    const filter: any = {};
-    if (search) filter.$or = [
-      { cropName: createSafeRegex(search) },
-      { diseaseName: createSafeRegex(search) },
-    ];
-    if (category) filter.cropCategory = createSafeRegex(category);
-    if (cropName) filter.cropName = createSafeRegex(cropName);
-
-    const [data, total, totalCrops, totalDiseaseImages, totalHealthyImages, totalScans] = await Promise.all([
-      DiseaseKnowledgeBase.find(filter).sort({ cropName: 1 }).skip((page - 1) * limit).limit(limit),
-      DiseaseKnowledgeBase.countDocuments(filter),
-      DiseaseKnowledgeBase.distinct('cropName').then(r => r.length),
-      DiseaseKnowledgeBase.aggregate([{ $project: { count: { $size: '$diseaseImages' } } }, { $group: { _id: null, total: { $sum: '$count' } } }]).then(r => r[0]?.total || 0),
-      DiseaseKnowledgeBase.aggregate([{ $project: { count: { $size: '$healthyImages' } } }, { $group: { _id: null, total: { $sum: '$count' } } }]).then(r => r[0]?.total || 0),
-      DiseaseRecommendation.countDocuments(),
-    ]);
-
-    const totalRecords = await DiseaseKnowledgeBase.countDocuments();
-
-    res.json({
-      success: true, data,
-      pagination: { total, page, limit, pages: Math.ceil(total / limit) },
-      summary: { totalRecords, totalCrops, totalDiseaseImages, totalHealthyImages, totalRecommendations: totalScans },
-    });
-  } catch (error: any) {
-    res.status(500).json({ success: false, error: error?.message || 'Failed to fetch disease records' });
-  }
-});
-
-router.get('/admin/knowledge-base/:id', authenticate, requireAdmin, async (req: AuthenticatedRequest, res: Response) => {
-  try {
-    const record = await DiseaseKnowledgeBase.findById(req.params.id);
-    if (!record) return res.status(404).json({ success: false, error: 'Record not found' });
-    res.json({ success: true, data: record });
-  } catch (error: any) {
-    res.status(500).json({ success: false, error: error?.message || 'Failed to fetch record' });
-  }
-});
-
-const kbUpload = multer({
-  storage: multer.diskStorage({
-    destination: (_req, _file, cb) => cb(null, uploadsDir),
-    filename: (_req, file, cb) => cb(null, `${Date.now()}-${file.originalname.replace(/[^a-z0-9.]/gi, '-')}`),
-  }),
-  limits: { fileSize: 10 * 1024 * 1024 },
-  fileFilter: (_req, file, cb) => {
-    if (file.mimetype.startsWith('image/')) cb(null, true);
-    else cb(new Error('Only image files allowed'));
-  },
-});
-
-const kbUploadFields = kbUpload.fields([
-  { name: 'diseaseImages', maxCount: 10 },
-  { name: 'healthyImages', maxCount: 10 },
-  { name: 'imageGallery',  maxCount: 20 },
-]);
-
-router.post('/admin/knowledge-base', authenticate, requireAdmin, kbUploadFields,
-  async (req: AuthenticatedRequest, res: Response) => {
-    try {
-      const files = req.files as Record<string, Express.Multer.File[]> | undefined;
-      const diseaseImages = (files?.diseaseImages || []).map(f => imgUrl(f.filename));
-      const healthyImages = (files?.healthyImages || []).map(f => imgUrl(f.filename));
-      const imageGallery  = (files?.imageGallery  || []).map(f => imgUrl(f.filename));
-      const record = await DiseaseKnowledgeBase.create({
-        ...req.body,
-        diseaseImages, healthyImages, imageGallery,
-        createdBy: req.user?.userId,
-      });
-      res.status(201).json({ success: true, data: record });
-    } catch (error: any) {
-      if (error.code === 11000)
-        return res.status(400).json({ success: false, error: 'Disease record for this crop already exists' });
-      res.status(500).json({ success: false, error: error?.message || 'Failed to create record' });
-    }
-  }
-);
-
-router.put('/admin/knowledge-base/:id', authenticate, requireAdmin, kbUploadFields,
-  async (req: AuthenticatedRequest, res: Response) => {
-    try {
-      const existing = await DiseaseKnowledgeBase.findById(req.params.id);
-      if (!existing) return res.status(404).json({ success: false, error: 'Record not found' });
-      const files = req.files as Record<string, Express.Multer.File[]> | undefined;
-      const newDiseaseImages = (files?.diseaseImages || []).map(f => imgUrl(f.filename));
-      const newHealthyImages = (files?.healthyImages || []).map(f => imgUrl(f.filename));
-      const newGallery       = (files?.imageGallery  || []).map(f => imgUrl(f.filename));
-      const updated = await DiseaseKnowledgeBase.findByIdAndUpdate(
-        req.params.id,
-        {
-          ...req.body,
-          diseaseImages: [...(existing.diseaseImages || []), ...newDiseaseImages],
-          healthyImages: [...(existing.healthyImages || []), ...newHealthyImages],
-          imageGallery:  [...(existing.imageGallery  || []), ...newGallery],
-          updatedBy: req.user?.userId,
-        },
-        { new: true, runValidators: true }
-      );
-      res.json({ success: true, data: updated });
-    } catch (error: any) {
-      res.status(500).json({ success: false, error: error?.message || 'Failed to update record' });
-    }
-  }
-);
-
-router.delete('/admin/knowledge-base/:id', authenticate, requireAdmin, async (req: AuthenticatedRequest, res: Response) => {
-  try {
-    const record = await DiseaseKnowledgeBase.findByIdAndDelete(req.params.id);
-    if (!record) return res.status(404).json({ success: false, error: 'Record not found' });
-    res.json({ success: true, message: 'Record deleted successfully' });
-  } catch (error: any) {
-    res.status(500).json({ success: false, error: error?.message || 'Failed to delete record' });
-  }
-});
-
 // ─── ADMIN: Scan Recommendations list ────────────────────────────────────────
 
 router.get('/admin/recommendations', authenticate, requireAdmin, async (req: AuthenticatedRequest, res: Response) => {
@@ -445,279 +334,6 @@ router.get('/admin/recommendations', authenticate, requireAdmin, async (req: Aut
     res.json({ success: true, data, pagination: { total, page, limit, pages: Math.ceil(total / limit) } });
   } catch (error: any) {
     res.status(500).json({ success: false, error: error?.message || 'Failed to fetch recommendations' });
-  }
-});
-
-// ─── ADMIN: Disease & Pest Knowledge Management (new dedicated module) ────────
-// Uses the same DiseaseKnowledgeBase collection but exposed under a separate
-// route prefix so it is completely independent of the existing /admin/knowledge-base routes.
-
-const dkUpload = multer({
-  storage: multer.diskStorage({
-    destination: (_req, _file, cb) => cb(null, uploadsDir),
-    filename: (_req, file, cb) => cb(null, `dk-${Date.now()}-${file.originalname.replace(/[^a-z0-9.]/gi, '-')}`),
-  }),
-  limits: { fileSize: 10 * 1024 * 1024 },
-  fileFilter: (_req, file, cb) => {
-    if (file.mimetype.startsWith('image/')) cb(null, true);
-    else cb(new Error('Only image files allowed'));
-  },
-});
-
-const dkUploadFields = dkUpload.fields([
-  { name: 'diseaseImages', maxCount: 10 },
-  { name: 'referenceImages', maxCount: 10 },
-]);
-
-// LIST with search / filter / pagination
-router.get('/admin/disease-pest-knowledge', authenticate, requireAdmin, async (req: AuthenticatedRequest, res: Response) => {
-  try {
-    const page  = Math.max(1, parseInt(req.query.page  as string) || 1);
-    const limit = Math.min(100, parseInt(req.query.limit as string) || 20);
-    const { search, category, severity, status, cropName } = req.query as Record<string, string>;
-
-    const filter: any = {};
-    if (search) filter.$or = [
-      { cropName:    createSafeRegex(search) },
-      { diseaseName: createSafeRegex(search) },
-      { tags:        createSafeRegex(search) },
-    ];
-    if (category) filter.diseaseType   = createSafeRegex(category);
-    if (severity) filter.severityLevel = severity;
-    if (status)   filter.status        = status;
-    if (cropName) filter.cropName      = createSafeRegex(cropName);
-
-    const [data, total] = await Promise.all([
-      DiseaseKnowledgeBase.find(filter).sort({ updatedAt: -1 }).skip((page - 1) * limit).limit(limit).lean(),
-      DiseaseKnowledgeBase.countDocuments(filter),
-    ]);
-
-    const [totalCrops, totalPublished, totalDraft, totalAI] = await Promise.all([
-      DiseaseKnowledgeBase.distinct('cropName').then(r => r.length),
-      DiseaseKnowledgeBase.countDocuments({ status: 'published' }),
-      DiseaseKnowledgeBase.countDocuments({ status: 'draft' }),
-      DiseaseKnowledgeBase.countDocuments({ source: { $in: ['ai_auto', 'ai_verified'] } }),
-    ]);
-
-    res.json({
-      success: true,
-      data,
-      pagination: { total, page, limit, pages: Math.ceil(total / limit) },
-      summary: { total: await DiseaseKnowledgeBase.countDocuments(), totalCrops, totalPublished, totalDraft, totalAI },
-    });
-  } catch (error: any) {
-    res.status(500).json({ success: false, error: error?.message || 'Failed to fetch records' });
-  }
-});
-
-// GET single
-router.get('/admin/disease-pest-knowledge/:id', authenticate, requireAdmin, async (req: AuthenticatedRequest, res: Response) => {
-  try {
-    const record = await DiseaseKnowledgeBase.findById(req.params.id).lean();
-    if (!record) return res.status(404).json({ success: false, error: 'Record not found' });
-    res.json({ success: true, data: record });
-  } catch (error: any) {
-    res.status(500).json({ success: false, error: error?.message || 'Failed to fetch record' });
-  }
-});
-
-// CREATE
-router.post('/admin/disease-pest-knowledge', authenticate, requireAdmin, dkUploadFields,
-  async (req: AuthenticatedRequest, res: Response) => {
-    try {
-      // Duplicate check — open update mode hint
-      const existing = await DiseaseKnowledgeBase.findOne({
-        cropName:    createExactSafeRegex(String(req.body.cropName || '').trim()),
-        diseaseName: createExactSafeRegex(String(req.body.diseaseName || '').trim()),
-      });
-      if (existing) {
-        return res.status(409).json({
-          success: false,
-          error: 'A record for this Crop + Disease already exists.',
-          existingId: existing._id,
-        });
-      }
-
-      const files = req.files as Record<string, Express.Multer.File[]> | undefined;
-      const diseaseImages   = (files?.diseaseImages   || []).map(f => imgUrl(f.filename));
-      const referenceImages = (files?.referenceImages || []).map(f => imgUrl(f.filename));
-
-      const body = req.body;
-      const record = await DiseaseKnowledgeBase.create({
-        cropName:    body.cropName?.trim(),
-        diseaseName: body.diseaseName?.trim(),
-        scientificName: body.scientificName,
-        cropCategory:   body.cropCategory || 'General',
-        diseaseType:    body.diseaseType   || 'Disease',
-        severityLevel:  body.severityLevel || 'medium',
-        status:         body.status        || 'draft',
-        description:    body.description   || '',
-        symptoms:       body.symptoms,
-        symptomsDescription: body.symptoms,
-        causes:         body.causes,
-        organicSolution:  body.organicSolution,
-        organicTreatment: body.organicSolution,
-        chemicalSolution: body.chemicalSolution,
-        chemicalTreatment: body.chemicalSolution,
-        prevention:       body.prevention,
-        preventionMethods: body.prevention,
-        urgentPrevention:  body.urgentPrevention,
-        recoveryTips:      body.recoveryTips,
-        dos:               body.dos,
-        donts:             body.donts,
-        recommendedProducts:      body.recommendedProducts,
-        recommendedFertilizer:    body.recommendedFertilizer,
-        recommendedBioProduct:    body.recommendedBioProduct,
-        recommendedOrganicProduct: body.recommendedOrganicProduct,
-        extraFarmerAdvice: body.extraFarmerAdvice,
-        suitableWeather:   body.suitableWeather,
-        adminNotes:        body.adminNotes,
-        tags:     body.tags     ? (Array.isArray(body.tags)     ? body.tags     : body.tags.split(',').map((t: string) => t.trim()).filter(Boolean))     : [],
-        seoKeywords: body.seoKeywords ? (Array.isArray(body.seoKeywords) ? body.seoKeywords : body.seoKeywords.split(',').map((t: string) => t.trim()).filter(Boolean)) : [],
-        diseaseImages,
-        imageGallery: referenceImages,
-        healthyImages: [],
-        source: 'admin',
-        createdBy: req.user?.userId,
-      });
-      res.status(201).json({ success: true, data: record });
-    } catch (error: any) {
-      if (error.code === 11000)
-        return res.status(409).json({ success: false, error: 'A record for this Crop + Disease already exists.' });
-      res.status(500).json({ success: false, error: error?.message || 'Failed to create record' });
-    }
-  }
-);
-
-// UPDATE
-router.put('/admin/disease-pest-knowledge/:id', authenticate, requireAdmin, dkUploadFields,
-  async (req: AuthenticatedRequest, res: Response) => {
-    try {
-      const existing = await DiseaseKnowledgeBase.findById(req.params.id);
-      if (!existing) return res.status(404).json({ success: false, error: 'Record not found' });
-
-      const files = req.files as Record<string, Express.Multer.File[]> | undefined;
-      const newDiseaseImages   = (files?.diseaseImages   || []).map(f => imgUrl(f.filename));
-      const newReferenceImages = (files?.referenceImages || []).map(f => imgUrl(f.filename));
-
-      const body = req.body;
-      const parseTags = (v: any) => v ? (Array.isArray(v) ? v : v.split(',').map((t: string) => t.trim()).filter(Boolean)) : undefined;
-
-      const updateData: any = {
-        diseaseImages: [...(existing.diseaseImages || []), ...newDiseaseImages],
-        imageGallery:  [...(existing.imageGallery  || []), ...newReferenceImages],
-        updatedBy: req.user?.userId,
-      };
-
-      const textFields = [
-        'cropName','diseaseName','scientificName','cropCategory','diseaseType','severityLevel','status',
-        'description','symptoms','causes','organicSolution','chemicalSolution','prevention',
-        'urgentPrevention','recoveryTips','dos','donts','recommendedProducts','recommendedFertilizer',
-        'recommendedBioProduct','recommendedOrganicProduct','extraFarmerAdvice','suitableWeather','adminNotes',
-      ];
-      textFields.forEach(f => { if (body[f] !== undefined) updateData[f] = body[f]; });
-
-      // Keep legacy fields in sync
-      if (body.symptoms)          { updateData.symptomsDescription = body.symptoms; }
-      if (body.organicSolution)   { updateData.organicTreatment    = body.organicSolution; }
-      if (body.chemicalSolution)  { updateData.chemicalTreatment   = body.chemicalSolution; }
-      if (body.prevention)        { updateData.preventionMethods   = body.prevention; }
-
-      if (body.tags)        updateData.tags        = parseTags(body.tags);
-      if (body.seoKeywords) updateData.seoKeywords = parseTags(body.seoKeywords);
-
-      const updated = await DiseaseKnowledgeBase.findByIdAndUpdate(req.params.id, updateData, { new: true, runValidators: true });
-      res.json({ success: true, data: updated });
-    } catch (error: any) {
-      res.status(500).json({ success: false, error: error?.message || 'Failed to update record' });
-    }
-  }
-);
-
-// DELETE single
-router.delete('/admin/disease-pest-knowledge/:id', authenticate, requireAdmin, async (req: AuthenticatedRequest, res: Response) => {
-  try {
-    const record = await DiseaseKnowledgeBase.findByIdAndDelete(req.params.id);
-    if (!record) return res.status(404).json({ success: false, error: 'Record not found' });
-    res.json({ success: true, message: 'Record deleted' });
-  } catch (error: any) {
-    res.status(500).json({ success: false, error: error?.message || 'Failed to delete record' });
-  }
-});
-
-// BULK DELETE
-router.post('/admin/disease-pest-knowledge/bulk-delete', authenticate, requireAdmin, async (req: AuthenticatedRequest, res: Response) => {
-  try {
-    const { ids } = req.body;
-    if (!Array.isArray(ids) || ids.length === 0)
-      return res.status(400).json({ success: false, error: 'ids array required' });
-    const result = await DiseaseKnowledgeBase.deleteMany({ _id: { $in: ids } });
-    res.json({ success: true, deleted: result.deletedCount });
-  } catch (error: any) {
-    res.status(500).json({ success: false, error: error?.message || 'Bulk delete failed' });
-  }
-});
-
-// DUPLICATE
-router.post('/admin/disease-pest-knowledge/:id/duplicate', authenticate, requireAdmin, async (req: AuthenticatedRequest, res: Response) => {
-  try {
-    const original = await DiseaseKnowledgeBase.findById(req.params.id).lean();
-    if (!original) return res.status(404).json({ success: false, error: 'Record not found' });
-    const { _id, slug, createdAt, updatedAt, scanCount, helpfulCount, notHelpfulCount, ...rest } = original as any;
-    const copy = await DiseaseKnowledgeBase.create({
-      ...rest,
-      diseaseName: `${rest.diseaseName} (Copy)`,
-      status: 'draft',
-      source: 'admin',
-      createdBy: req.user?.userId,
-      scanCount: 0, helpfulCount: 0, notHelpfulCount: 0,
-    });
-    res.status(201).json({ success: true, data: copy });
-  } catch (error: any) {
-    if (error.code === 11000)
-      return res.status(409).json({ success: false, error: 'Duplicate already exists' });
-    res.status(500).json({ success: false, error: error?.message || 'Duplicate failed' });
-  }
-});
-
-// EXPORT JSON
-router.get('/admin/disease-pest-knowledge/export/json', authenticate, requireAdmin, async (req: AuthenticatedRequest, res: Response) => {
-  try {
-    const { cropName, status } = req.query as Record<string, string>;
-    const filter: any = {};
-    if (cropName) filter.cropName = createSafeRegex(cropName);
-    if (status)   filter.status   = status;
-    const data = await DiseaseKnowledgeBase.find(filter).lean();
-    res.setHeader('Content-Disposition', 'attachment; filename="disease-pest-knowledge.json"');
-    res.setHeader('Content-Type', 'application/json');
-    res.json({ exportedAt: new Date().toISOString(), count: data.length, data });
-  } catch (error: any) {
-    res.status(500).json({ success: false, error: error?.message || 'Export failed' });
-  }
-});
-
-// IMPORT JSON (bulk upsert)
-router.post('/admin/disease-pest-knowledge/import/json', authenticate, requireAdmin, async (req: AuthenticatedRequest, res: Response) => {
-  try {
-    const records: any[] = req.body.data || req.body;
-    if (!Array.isArray(records) || records.length === 0)
-      return res.status(400).json({ success: false, error: 'data array required' });
-
-    let created = 0, updated = 0, errors = 0;
-    for (const r of records) {
-      if (!r.cropName || !r.diseaseName) { errors++; continue; }
-      try {
-        const result = await DiseaseKnowledgeBase.findOneAndUpdate(
-          { cropName: createExactSafeRegex(r.cropName.trim()), diseaseName: createExactSafeRegex(r.diseaseName.trim()) },
-          { ...r, updatedBy: req.user?.userId, source: r.source || 'admin' },
-          { upsert: true, new: true, setDefaultsOnInsert: true }
-        );
-        if (result) { const isNew = (result as any).__v === 0; isNew ? created++ : updated++; }
-      } catch { errors++; }
-    }
-    res.json({ success: true, created, updated, errors, total: records.length });
-  } catch (error: any) {
-    res.status(500).json({ success: false, error: error?.message || 'Import failed' });
   }
 });
 

@@ -204,9 +204,14 @@ export default function DiseaseDetectionPage() {
     setFile(null); setPreview(null); setResult(null); setError(''); setFeedback(null);
   };
 
-  // Fire-and-forget Voice Guide trigger — never blocks disease detection
-  const triggerVoiceGuide = (action: () => Promise<void>) => {
-    void action().catch(() => { /* Voice Guide unavailable — continue */ });
+  // Fire-and-forget Voice Guide trigger — supports both Promise<void> and void
+  const triggerVoiceGuide = (action: () => Promise<void> | void) => {
+    try {
+      const result = action();
+      if (result && typeof (result as any).catch === 'function') {
+        (result as Promise<void>).catch(() => { /* Voice Guide unavailable — continue */ });
+      }
+    } catch { /* Voice Guide unavailable — continue */ }
   };
 
   const scan = async () => {
@@ -257,7 +262,7 @@ export default function DiseaseDetectionPage() {
     setFile(null); setPreview(null); setResult(null); setBaseResult(null);
     setError(''); setCropDisplay(''); setCropEnglish(''); setFeedback(null); setFeedbackComment(''); setFeedbackCorrectDisease(''); setShowReport(false);
     // Voice Guide is optional — fire-and-forget, never blocks reset
-    triggerVoiceGuide(() => voiceGuide.triggerButton('retry') as unknown as Promise<void>);
+    triggerVoiceGuide(() => voiceGuide.triggerButton('retry'));
   };
 
   const handleTranslated = (lang: string, data: Record<string, any>) => {

@@ -29,8 +29,8 @@ import diseaseRoutes from './routes/disease';
 import farmerStoriesRoutes from './routes/farmerStories';
 import shopkeeperRoutes from './routes/shopkeeper';
 import adminShopkeeperRoutes from './routes/adminShopkeeper';
-import pestKnowledgeRoutes from './routes/pestKnowledge';
 import diseasePestSolutionsRoutes from './routes/diseasePestSolutions';
+// pestKnowledge route removed — Disease & Pest Mgmt (diseasepestsolutions) is the only source
 import kvkRoutes from './routes/kvk';
 import languageDictionaryRoutes from './routes/languageDictionary';
 import languageEngineRoutes from './routes/languageEngine';
@@ -154,8 +154,8 @@ app.use('/api/disease', diseaseRoutes);
 app.use('/api/farmer-stories', farmerStoriesRoutes);
 app.use('/api/shopkeeper', shopkeeperRoutes);
 app.use('/api/admin/shopkeeper', adminShopkeeperRoutes);
-app.use('/api/admin/pest-knowledge', pestKnowledgeRoutes);
 app.use('/api/disease-pest-solutions', diseasePestSolutionsRoutes);
+// /api/pest-knowledge route removed — no longer registered
 app.use('/api/kvk', kvkRoutes);
 app.use('/api/language-dictionary', languageDictionaryRoutes);
 app.use('/api/language-engine', languageEngineRoutes);
