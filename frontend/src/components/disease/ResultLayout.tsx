@@ -1,17 +1,15 @@
 'use client';
 
-import { ScanResult, pickField, resolveSymptoms, resolveOrganic, resolveChemical, resolvePrevention, resolveCauses } from './types';
+import { ScanResult, pickField, resolveCauses } from './types';
 import DiseaseCard from './DiseaseCard';
 import ConfidenceCard from './ConfidenceCard';
 import DiseaseKnowledgeSection from './DiseaseKnowledgeSection';
 import {
-  SymptomsCard, OrganicDetailCard, ChemicalDetailCard, PreventionPhasesCard,
-  CauseCard, SeverityCard, ProductsCard, NearbyShopCard, ImagesCard,
-  FarmerGuidanceCard, RelatedDiseasesCard, FeedbackCard, ActionsCard,
+  CauseCard, SeverityCard, NearbyShopCard, ImagesCard,
+  FarmerGuidanceCard, RelatedDiseasesCard, FeedbackCard,
   AdvisoryCard, ReferencesCard, FaqsCard,
 } from './InfoCards';
 import AILanguageSelector from '@/components/AILanguageSelector';
-import NearestKVKWidget from '@/components/kvk/NearestKVKWidget';
 import { useLanguage } from '@/context/LanguageContext';
 
 interface Props {
@@ -32,14 +30,7 @@ interface Props {
 export default function ResultLayout({ result, baseResult, uploadedPreview, voiceLang, onTranslated, onReset, onFeedback, feedback, feedbackComment = '', feedbackCorrectDisease = '', onFeedbackCommentChange, onFeedbackCorrectDiseaseChange }: Props) {
   const { langCode } = useLanguage();
 
-  const symptoms   = resolveSymptoms(result, langCode);
-  const organic    = resolveOrganic(result, langCode);
-  const chemical   = resolveChemical(result, langCode);
-  const prevention = resolvePrevention(result, langCode);
-  const causes     = resolveCauses(result);
-
-  const recommendedActions  = pickField(result.recommendedActions, langCode);
-  const recommendedProducts = pickField(result.recommendedProducts, langCode);
+  const causes = resolveCauses(result);
 
   return (
     <div className="space-y-4">
@@ -50,10 +41,10 @@ export default function ResultLayout({ result, baseResult, uploadedPreview, voic
       {/* Confidence / Severity / Category metrics */}
       <ConfidenceCard result={result} />
 
-      {/* Symptoms */}
-      {symptoms && <SymptomsCard symptoms={symptoms} voiceLang={voiceLang} />}
+      {/* Severity visual indicator */}
+      <SeverityCard level={result.severityLevel} />
 
-      {/* Disease Cause */}
+      {/* Disease Cause & Spread */}
       {(causes || result.spreadPattern || result.weatherConditions || result.highRiskConditions || result.suitableClimate) && (
         <CauseCard
           causes={causes}
@@ -63,61 +54,14 @@ export default function ResultLayout({ result, baseResult, uploadedPreview, voic
         />
       )}
 
-      {/* Severity visual indicator */}
-      <SeverityCard level={result.severityLevel} />
-
-      {/* Disease Knowledge Base Section */}
+      {/*
+        ── Ordered Knowledge Section ──────────────────────────────────────────
+        Renders ALL 11 sections as Accordion in exact order:
+        1 Description  2 Symptoms  3 Organic  4 Chemical  5 Urgent Prevention
+        6 Recovery Tips  7 Preventive Measures  8 Do's & Don'ts
+        9 Recommended Products  10 Farmer Advice  11 Nearby KVK
+      */}
       <DiseaseKnowledgeSection result={result} />
-
-      {/* Organic Solution */}
-      {organic && (
-        <OrganicDetailCard
-          treatment={organic}
-          preparationMethod={result.preparationMethod}
-          usageInstructions={result.usageInstructions}
-          frequency={result.frequency}
-          safetyNotes={result.safetyNotes}
-          voiceLang={voiceLang}
-        />
-      )}
-
-      {/* Chemical Solution */}
-      {chemical && (
-        <ChemicalDetailCard
-          treatment={chemical}
-          chemicalName={result.chemicalName}
-          activeIngredient={result.activeIngredient}
-          dosage={result.dosage}
-          mixingMethod={result.mixingMethod}
-          sprayTiming={result.sprayTiming}
-          sprayInterval={result.sprayInterval}
-          waitingPeriod={result.waitingPeriod}
-          safetyInstructions={result.safetyInstructions || result.precautions}
-          protectiveEquipment={result.protectiveEquipment}
-        />
-      )}
-
-      {/* Preventive Measures */}
-      {prevention && (
-        <PreventionPhasesCard
-          prevention={prevention}
-          beforeDisease={result.beforeDisease}
-          duringDisease={result.duringDisease}
-          afterRecovery={result.afterRecovery}
-          voiceLang={voiceLang}
-        />
-      )}
-
-      {/* Recommended Actions */}
-      {recommendedActions && (
-        <ActionsCard actions={recommendedActions} />
-      )}
-
-      {/* Recommended Products */}
-      {recommendedProducts && <ProductsCard products={recommendedProducts} />}
-
-      {/* Nearest Input Shop */}
-      {result.nearbyShop && <NearbyShopCard shop={result.nearbyShop} />}
 
       {/* Knowledge Base Images */}
       {(result.diseaseImages?.length || result.healthyImages?.length || result.imageGallery?.length) ? (
@@ -150,9 +94,6 @@ export default function ResultLayout({ result, baseResult, uploadedPreview, voic
 
       {/* Reference Links */}
       {result.referenceLinks?.length ? <ReferencesCard links={result.referenceLinks} /> : null}
-
-      {/* Nearest KVK */}
-      <NearestKVKWidget />
 
       {/* Language selector */}
       {result._id && (

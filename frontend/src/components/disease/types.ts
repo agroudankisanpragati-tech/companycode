@@ -138,15 +138,42 @@ export type ScanResult = {
 export type HistoryItem = ScanResult & { createdAt: string };
 
 // ─── Language picker ──────────────────────────────────────────────────────────
-// Resolves { en, hi } objects OR legacy plain strings.
+// Resolves { en, hi } objects, legacy plain strings, and JSON-stringified objects.
 // Rule: langCode === 'en' → .en  |  anything else → .hi (fallback to .en)
-// Never translates. Never mixes. Reads exactly what is stored in MongoDB.
+// NEVER returns [object Object], JSON syntax, or literal \n characters.
 export function pickField(field: any, langCode: string): string {
-  if (!field) return '';
-  if (typeof field === 'string') return field;         // legacy plain string
-  if (typeof field !== 'object') return String(field);
-  if (langCode === 'en') return field.en || '';
-  return field.hi || field.en || '';                   // non-English → hi, fallback en
+  if (field === null || field === undefined) return '';
+
+  // Fix literal \n / \r\n escape sequences — convert to real newlines
+  const fixNl = (s: string): string =>
+    s.replace(/\\r\\n/g, '\n').replace(/\\n/g, '\n');
+
+  if (typeof field === 'string') {
+    const s = field.trim();
+    if (!s) return '';
+    // Detect legacy JSON-stringified object: '{"en":"...","hi":""}'  
+    if (s.startsWith('{')) {
+      try {
+        const parsed = JSON.parse(s);
+        if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+          const en = typeof parsed.en === 'string' ? parsed.en : '';
+          const hi = typeof parsed.hi === 'string' ? parsed.hi : '';
+          return fixNl(langCode === 'en' ? en : (hi || en));
+        }
+      } catch { /* not JSON — treat as plain text */ }
+    }
+    return fixNl(s);
+  }
+
+  // Reject arrays, numbers, booleans — only plain objects are valid multilingual fields
+  if (typeof field !== 'object' || Array.isArray(field)) return '';
+
+  // Proper { en, hi } object — extract only the string values, never coerce objects
+  const enRaw = field.en;
+  const hiRaw = field.hi;
+  const en = typeof enRaw === 'string' ? fixNl(enRaw) : '';
+  const hi = typeof hiRaw === 'string' ? fixNl(hiRaw) : '';
+  return langCode === 'en' ? en : (hi || en);
 }
 
 // ─── Field resolvers — language-aware, handle both old and new schema ─────────
@@ -167,8 +194,6 @@ export function resolveChemical(r: ScanResult, langCode = 'en'): string {
   return (
     pickField(r.chemicalSolution, langCode) ||
     pickField(r.chemicalTreatment, langCode) ||
-    pickField(r.treatmentDescription, langCode) ||
-    pickField(r.treatment, langCode) ||
     ''
   );
 }

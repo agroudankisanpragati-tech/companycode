@@ -40,7 +40,7 @@ function parseLines(text: string): string[] {
     .filter(Boolean);
 }
 
-export function SymptomsCard({ symptoms, symptomsHindi, voiceLang }: {
+export function SymptomsCard({ symptoms, voiceLang }: {
   symptoms: string; symptomsHindi?: string; voiceLang?: string;
 }) {
   const lines = parseLines(symptoms);
@@ -55,12 +55,9 @@ export function SymptomsCard({ symptoms, symptomsHindi, voiceLang }: {
         ))}
         {lines.length === 0 && <li className="text-sm text-amber-900 dark:text-amber-200 whitespace-pre-line">{symptoms}</li>}
       </ul>
-      {symptomsHindi && (
-        <p className="mt-3 text-sm text-amber-800 dark:text-amber-300 italic whitespace-pre-line border-t border-amber-100 dark:border-amber-800 pt-3">{symptomsHindi}</p>
-      )}
       {voiceLang && (
         <Suspense fallback={null}>
-          <VoicePlayer text={symptomsHindi || symptoms} lang={voiceLang} autoDetect={false} className="mt-3" />
+          <VoicePlayer text={symptoms} lang={voiceLang} autoDetect={false} className="mt-3" />
         </Suspense>
       )}
     </SectionCard>
@@ -99,7 +96,7 @@ export function CauseCard({ causes, spreadPattern, earlyWarningSigns, suitableWe
 
 // ─── Organic Solution ─────────────────────────────────────────────────────────
 
-export function OrganicCard({ treatment, treatmentHindi, voiceLang }: {
+export function OrganicCard({ treatment, voiceLang }: {
   treatment: string; treatmentHindi?: string; voiceLang?: string;
 }) {
   const lines = parseLines(treatment);
@@ -114,12 +111,9 @@ export function OrganicCard({ treatment, treatmentHindi, voiceLang }: {
         ))}
         {lines.length === 0 && <li className="text-sm text-green-900 dark:text-green-200 whitespace-pre-line">{treatment}</li>}
       </ul>
-      {treatmentHindi && (
-        <p className="mt-3 text-sm text-green-800 dark:text-green-300 italic whitespace-pre-line border-t border-green-100 dark:border-green-800 pt-3">{treatmentHindi}</p>
-      )}
       {voiceLang && (
         <Suspense fallback={null}>
-          <VoicePlayer text={treatmentHindi || treatment} lang={voiceLang} autoDetect={false} className="mt-3" />
+          <VoicePlayer text={treatment} lang={voiceLang} autoDetect={false} className="mt-3" />
         </Suspense>
       )}
     </SectionCard>
@@ -128,7 +122,7 @@ export function OrganicCard({ treatment, treatmentHindi, voiceLang }: {
 
 // ─── Chemical Solution ────────────────────────────────────────────────────────
 
-export function ChemicalCard({ treatment, treatmentHindi, dosage, applicationMethod, precautions }: {
+export function ChemicalCard({ treatment, dosage, applicationMethod, precautions }: {
   treatment: string; treatmentHindi?: string;
   dosage?: string; applicationMethod?: string; precautions?: string;
 }) {
@@ -144,9 +138,6 @@ export function ChemicalCard({ treatment, treatmentHindi, dosage, applicationMet
         ))}
         {lines.length === 0 && <li className="text-sm text-blue-900 dark:text-blue-200 whitespace-pre-line">{treatment}</li>}
       </ul>
-      {treatmentHindi && (
-        <p className="mt-3 text-sm text-blue-800 dark:text-blue-300 italic whitespace-pre-line border-t border-blue-100 dark:border-blue-800 pt-3">{treatmentHindi}</p>
-      )}
       {(dosage || applicationMethod || precautions) && (
         <div className="mt-3 grid grid-cols-1 sm:grid-cols-3 gap-2 border-t border-blue-100 dark:border-blue-800 pt-3">
           {dosage && (
@@ -175,7 +166,7 @@ export function ChemicalCard({ treatment, treatmentHindi, dosage, applicationMet
 
 // ─── Prevention ───────────────────────────────────────────────────────────────
 
-export function PreventionCard({ prevention, preventionHindi, voiceLang }: {
+export function PreventionCard({ prevention, voiceLang }: {
   prevention: string; preventionHindi?: string; voiceLang?: string;
 }) {
   const lines = parseLines(prevention);
@@ -190,12 +181,9 @@ export function PreventionCard({ prevention, preventionHindi, voiceLang }: {
         ))}
         {lines.length === 0 && <li className="text-sm text-teal-900 dark:text-teal-200 whitespace-pre-line">{prevention}</li>}
       </ul>
-      {preventionHindi && (
-        <p className="mt-3 text-sm text-teal-800 dark:text-teal-300 italic whitespace-pre-line border-t border-teal-100 dark:border-teal-800 pt-3">{preventionHindi}</p>
-      )}
       {voiceLang && (
         <Suspense fallback={null}>
-          <VoicePlayer text={preventionHindi || prevention} lang={voiceLang} autoDetect={false} className="mt-3" />
+          <VoicePlayer text={prevention} lang={voiceLang} autoDetect={false} className="mt-3" />
         </Suspense>
       )}
     </SectionCard>
@@ -204,7 +192,7 @@ export function PreventionCard({ prevention, preventionHindi, voiceLang }: {
 
 // ─── Recommended Actions ──────────────────────────────────────────────────────
 
-export function ActionsCard({ actions, actionsHindi }: { actions: string; actionsHindi?: string }) {
+export function ActionsCard({ actions }: { actions: string; actionsHindi?: string }) {
   const lines = parseLines(actions);
   return (
     <SectionCard emoji="⚡" title="Recommended Actions" titleHindi="तत्काल कार्रवाई" className="border-orange-200 dark:border-orange-800">
@@ -217,9 +205,6 @@ export function ActionsCard({ actions, actionsHindi }: { actions: string; action
         ))}
         {lines.length === 0 && <li className="text-sm text-orange-900 dark:text-orange-200 whitespace-pre-line">{actions}</li>}
       </ul>
-      {actionsHindi && (
-        <p className="mt-3 text-sm text-orange-800 dark:text-orange-300 italic whitespace-pre-line border-t border-orange-100 dark:border-orange-800 pt-3">{actionsHindi}</p>
-      )}
     </SectionCard>
   );
 }
@@ -482,7 +467,7 @@ export function SeverityCard({ level }: { level?: string }) {
 
 // ─── Organic Detail Card ──────────────────────────────────────────────────────
 
-export function OrganicDetailCard({ treatment, treatmentHindi, preparationMethod, usageInstructions, frequency, safetyNotes, voiceLang }: {
+export function OrganicDetailCard({ treatment, preparationMethod, usageInstructions, frequency, safetyNotes, voiceLang }: {
   treatment: string; treatmentHindi?: string;
   preparationMethod?: string; usageInstructions?: string;
   frequency?: string; safetyNotes?: string; voiceLang?: string;
@@ -506,9 +491,6 @@ export function OrganicDetailCard({ treatment, treatmentHindi, preparationMethod
         ))}
         {lines.length === 0 && <li className="text-sm text-green-900 whitespace-pre-line">{treatment}</li>}
       </ul>
-      {treatmentHindi && (
-        <p className="mb-3 text-sm text-green-800 italic whitespace-pre-line border-b border-green-100 pb-3">{treatmentHindi}</p>
-      )}
       {details.length > 0 && (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
           {details.map((d, i) => (
@@ -521,7 +503,7 @@ export function OrganicDetailCard({ treatment, treatmentHindi, preparationMethod
       )}
       {voiceLang && (
         <Suspense fallback={null}>
-          <VoicePlayer text={treatmentHindi || treatment} lang={voiceLang} autoDetect={false} className="mt-3" />
+          <VoicePlayer text={treatment} lang={voiceLang} autoDetect={false} className="mt-3" />
         </Suspense>
       )}
     </SectionCard>
@@ -530,7 +512,7 @@ export function OrganicDetailCard({ treatment, treatmentHindi, preparationMethod
 
 // ─── Chemical Detail Card ─────────────────────────────────────────────────────
 
-export function ChemicalDetailCard({ treatment, treatmentHindi, chemicalName, activeIngredient, dosage, mixingMethod, sprayTiming, sprayInterval, waitingPeriod, safetyInstructions, protectiveEquipment }: {
+export function ChemicalDetailCard({ treatment, chemicalName, activeIngredient, dosage, mixingMethod, sprayTiming, sprayInterval, waitingPeriod, safetyInstructions, protectiveEquipment }: {
   treatment: string; treatmentHindi?: string;
   chemicalName?: string; activeIngredient?: string; dosage?: string;
   mixingMethod?: string; sprayTiming?: string; sprayInterval?: string;
@@ -559,9 +541,6 @@ export function ChemicalDetailCard({ treatment, treatmentHindi, chemicalName, ac
         ))}
         {lines.length === 0 && <li className="text-sm text-blue-900 whitespace-pre-line">{treatment}</li>}
       </ul>
-      {treatmentHindi && (
-        <p className="mb-3 text-sm text-blue-800 italic whitespace-pre-line border-b border-blue-100 pb-3">{treatmentHindi}</p>
-      )}
       {grid.length > 0 && (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
           {grid.map((d, i) => (
@@ -584,7 +563,7 @@ export function ChemicalDetailCard({ treatment, treatmentHindi, chemicalName, ac
 
 // ─── Prevention Phases Card ───────────────────────────────────────────────────
 
-export function PreventionPhasesCard({ prevention, preventionHindi, beforeDisease, duringDisease, afterRecovery, voiceLang }: {
+export function PreventionPhasesCard({ prevention, beforeDisease, duringDisease, afterRecovery, voiceLang }: {
   prevention: string; preventionHindi?: string;
   beforeDisease?: string; duringDisease?: string; afterRecovery?: string; voiceLang?: string;
 }) {
@@ -634,12 +613,9 @@ export function PreventionPhasesCard({ prevention, preventionHindi, beforeDiseas
           {lines.length === 0 && <li className="text-sm text-teal-900 whitespace-pre-line">{prevention}</li>}
         </ul>
       )}
-      {preventionHindi && (
-        <p className="mt-3 text-sm text-teal-800 italic whitespace-pre-line border-t border-teal-100 pt-3">{preventionHindi}</p>
-      )}
       {voiceLang && (
         <Suspense fallback={null}>
-          <VoicePlayer text={preventionHindi || prevention} lang={voiceLang} autoDetect={false} className="mt-3" />
+          <VoicePlayer text={prevention} lang={voiceLang} autoDetect={false} className="mt-3" />
         </Suspense>
       )}
     </SectionCard>

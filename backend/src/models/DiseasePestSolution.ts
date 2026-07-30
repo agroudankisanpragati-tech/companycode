@@ -10,13 +10,33 @@ export interface MLString {
 
 // Resolve a multilingual field: returns hi if lang !== 'en' AND hi exists,
 // otherwise returns en. Falls back gracefully for old plain-string records.
+// NEVER returns [object Object], JSON syntax, or literal \n characters.
 export function pickLang(field: MLString | string | undefined, lang: string): string {
   if (!field) return '';
-  // Old record — plain string (always English)
-  if (typeof field === 'string') return field;
-  // New multilingual object
-  if (lang !== 'en' && field.hi) return field.hi;
-  return field.en || '';
+
+  const fixNl = (s: string) => s.replace(/\\r\\n/g, '\n').replace(/\\n/g, '\n');
+
+  if (typeof field === 'string') {
+    const s = field.trim();
+    if (!s) return '';
+    // Detect legacy JSON-stringified object
+    if (s.startsWith('{')) {
+      try {
+        const parsed = JSON.parse(s);
+        if (parsed && typeof parsed === 'object') {
+          const en = typeof parsed.en === 'string' ? parsed.en : '';
+          const hi = typeof parsed.hi === 'string' ? parsed.hi : '';
+          return fixNl(lang !== 'en' && hi ? hi : en);
+        }
+      } catch { /* not JSON — fall through */ }
+    }
+    return fixNl(s);
+  }
+
+  // Proper { en, hi } object — only extract string values, never coerce
+  const en = typeof field.en === 'string' ? fixNl(field.en) : '';
+  const hi = typeof field.hi === 'string' ? fixNl(field.hi) : '';
+  return lang !== 'en' && hi ? hi : en;
 }
 
 // ─── Schema interface ─────────────────────────────────────────────────────────

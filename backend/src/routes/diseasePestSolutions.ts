@@ -30,13 +30,54 @@ const imgUrl = (f: string) => `/uploads/dps/${f}`;
 const parseTags = (v: any): string[] =>
   !v ? [] : Array.isArray(v) ? v : String(v).split(',').map((s: string) => s.trim()).filter(Boolean);
 
+// ─── Multilingual field helpers ──────────────────────────────────────────────
+
 // Build a { en, hi } MLString from FormData fields named `key_en` and `key_hi`.
-// Falls back gracefully: if only one language is provided, the other is empty string.
-function mlFromBody(b: any, key: string): { en: string; hi: string } {
-  return {
-    en: (b[`${key}_en`] ?? '').trim(),
-    hi: (b[`${key}_hi`] ?? '').trim(),
-  };
+// Returns null if both values are empty — empty fields are not stored.
+function mlFromBody(b: any, key: string): { en: string; hi: string } | null {
+  const en = normalizeNewlines((b[`${key}_en`] ?? '').trim());
+  const hi = normalizeNewlines((b[`${key}_hi`] ?? '').trim());
+  // Both empty — treat as absent, do not store
+  if (!en && !hi) return null;
+  return { en, hi };
+}
+
+// Convert literal \n / \r\n escape sequences to real newlines.
+// This handles the case where a client accidentally double-escaped newlines.
+function normalizeNewlines(s: string): string {
+  return s.replace(/\\r\\n/g, '\n').replace(/\\n/g, '\n');
+}
+
+// Repair a field that was incorrectly stored as a JSON string instead of an object.
+// Returns null for absent/empty fields — empty stays empty, never stored as {}.
+function safeParseML(v: any): { en: string; hi: string } | null {
+  if (v === null || v === undefined) return null;
+  if (typeof v === 'object' && !Array.isArray(v)) {
+    const en = normalizeNewlines(String(v.en || ''));
+    const hi = normalizeNewlines(String(v.hi || ''));
+    // Both empty — treat as absent
+    if (!en && !hi) return null;
+    return { en, hi };
+  }
+  if (typeof v === 'string') {
+    const s = v.trim();
+    if (!s) return null;
+    if (s.startsWith('{')) {
+      try {
+        const parsed = JSON.parse(s);
+        if (parsed && typeof parsed === 'object') {
+          const en = normalizeNewlines(typeof parsed.en === 'string' ? parsed.en : '');
+          const hi = normalizeNewlines(typeof parsed.hi === 'string' ? parsed.hi : '');
+          if (!en && !hi) return null;
+          return { en, hi };
+        }
+      } catch { /* not JSON */ }
+    }
+    // Legacy plain string — treat as English
+    const en = normalizeNewlines(s);
+    return en ? { en, hi: '' } : null;
+  }
+  return null;
 }
 
 // The ML content fields that have separate _en / _hi inputs in the Admin form
@@ -45,6 +86,25 @@ const ML_FIELDS = [
   'urgentPrevention', 'recoveryTips', 'preventiveMeasures',
   'dos', 'donts', 'recommendedProducts', 'farmerAdvice',
 ] as const;
+
+// Repair all ML fields in a document returned from MongoDB.
+// Converts any JSON-stringified values back to proper { en, hi } objects.
+// Removes empty { en: '', hi: '' } objects — they are returned as undefined.
+// This is the read-time migration — no DB writes needed.
+function repairMLFields(doc: any): any {
+  if (!doc) return doc;
+  const out = { ...doc };
+  for (const k of ML_FIELDS) {
+    const repaired = safeParseML(out[k]);
+    // null means absent/empty — delete the key so frontend sees undefined, not {}
+    if (repaired === null) {
+      delete out[k];
+    } else {
+      out[k] = repaired;
+    }
+  }
+  return out;
+}
 
 // LIST
 router.get('/', authenticate, requireAdmin, async (req: AuthenticatedRequest, res: Response) => {
@@ -73,7 +133,7 @@ router.get('/', authenticate, requireAdmin, async (req: AuthenticatedRequest, re
     ]);
 
     res.json({
-      success: true, data,
+      success: true, data: data.map(repairMLFields),
       pagination: { total, page, limit, pages: Math.ceil(total / limit) },
       summary: { total: totalAll, totalCrops, totalPublished, totalDraft },
     });
@@ -85,7 +145,7 @@ router.get('/:id', authenticate, requireAdmin, async (req: AuthenticatedRequest,
   try {
     const record = await DiseasePestSolution.findById(req.params.id).lean();
     if (!record) return res.status(404).json({ success: false, error: 'Not found' });
-    res.json({ success: true, data: record });
+    res.json({ success: true, data: repairMLFields(record) });
   } catch (e: any) { res.status(500).json({ success: false, error: e.message }); }
 });
 
@@ -97,7 +157,19 @@ router.post('/', authenticate, requireAdmin, upload.array('referenceImages', 10)
       const images = files.map(f => imgUrl(f.filename));
       const b = req.body;
       const mlData: Record<string, { en: string; hi: string }> = {};
-      ML_FIELDS.forEach(k => { mlData[k] = mlFromBody(b, k); });
+      ML_FIELDS.forEach(k => {
+        if (b[`${k}_en`] !== undefined || b[`${k}_hi`] !== undefined) {
+          // Correct path: admin sent separate _en / _hi keys
+          const ml = mlFromBody(b, k);
+          if (ml !== null) mlData[k] = ml;
+          // If null (both empty): field is omitted — not stored in MongoDB
+        } else if (b[k] !== undefined) {
+          // Fallback: admin sent a plain value — could be a JSON string (legacy) or plain text
+          const ml = safeParseML(b[k]);
+          if (ml !== null) mlData[k] = ml;
+        }
+        // If key absent entirely: field is not stored
+      });
       const record = await DiseasePestSolution.create({
         cropName:          b.cropName?.trim(),
         recordType:        b.recordType,
@@ -111,7 +183,7 @@ router.post('/', authenticate, requireAdmin, upload.array('referenceImages', 10)
         keywords:          parseTags(b.keywords),
         status:            b.status || 'draft',
       });
-      res.status(201).json({ success: true, data: record });
+      res.status(201).json({ success: true, data: repairMLFields(record.toObject()) });
     } catch (e: any) {
       if (e.code === 11000) return res.status(409).json({ success: false, error: 'Record for this Crop + Disease/Pest already exists.' });
       res.status(500).json({ success: false, error: e.message });
@@ -130,24 +202,39 @@ router.put('/:id', authenticate, requireAdmin, upload.array('referenceImages', 1
       const newImages = files.map(f => imgUrl(f.filename));
       const b = req.body;
 
-      const update: any = {
-        referenceImages: [...(existing.referenceImages || []), ...newImages],
-      };
+      const update: any = {};
+      const unsetFields: any = {};
+
+      update.referenceImages = [...(existing.referenceImages || []), ...newImages];
       // Plain scalar fields
       const scalarFields = ['cropName','recordType','diseasePestName','aiLabel','severity','status'];
       scalarFields.forEach(f => { if (b[f] !== undefined) update[f] = b[f]; });
-      // Multilingual fields — only update if at least one language key is present
+      // Multilingual fields — support both _en/_hi keys (correct) and plain key (legacy fallback)
       ML_FIELDS.forEach(k => {
         if (b[`${k}_en`] !== undefined || b[`${k}_hi`] !== undefined) {
-          update[k] = mlFromBody(b, k);
+          const ml = mlFromBody(b, k);
+          if (ml !== null) {
+            update[k] = ml;
+          } else {
+            // Both empty — unset the field so MongoDB removes it
+            unsetFields[k] = '';
+          }
+        } else if (b[k] !== undefined) {
+          const ml = safeParseML(b[k]);
+          if (ml !== null) update[k] = ml;
+          else unsetFields[k] = '';
         }
       });
       if (b.tags)     update.tags     = parseTags(b.tags);
       if (b.keywords) update.keywords = parseTags(b.keywords);
       if (b.aliases)  update.aliases  = parseTags(b.aliases);
 
-      const updated = await DiseasePestSolution.findByIdAndUpdate(req.params.id, update, { new: true, runValidators: true });
-      res.json({ success: true, data: updated });
+      // Build the MongoDB update operation
+      const mongoUpdate: any = { $set: update };
+      if (Object.keys(unsetFields).length > 0) mongoUpdate.$unset = unsetFields;
+
+      const updated = await DiseasePestSolution.findByIdAndUpdate(req.params.id, mongoUpdate, { new: true, runValidators: true });
+      res.json({ success: true, data: repairMLFields(updated?.toObject() ?? {}) });
     } catch (e: any) { res.status(500).json({ success: false, error: e.message }); }
   }
 );
@@ -180,7 +267,7 @@ router.get('/export/json', authenticate, requireAdmin, async (req: Authenticated
     if (status)   filter.status   = status;
     const data = await DiseasePestSolution.find(filter).lean();
     res.setHeader('Content-Disposition', 'attachment; filename="disease-pest-solutions.json"');
-    res.json({ exportedAt: new Date().toISOString(), count: data.length, data });
+    res.json({ exportedAt: new Date().toISOString(), count: data.length, data: data.map(repairMLFields) });
   } catch (e: any) { res.status(500).json({ success: false, error: e.message }); }
 });
 
@@ -215,7 +302,7 @@ router.get('/lookup/:cropName/:diseasePestName', async (req, res: Response) => {
       status: 'published',
     }).lean();
     if (!record) return res.status(404).json({ success: false, error: 'Not found' });
-    res.json({ success: true, data: record });
+    res.json({ success: true, data: repairMLFields(record) });
   } catch (e: any) { res.status(500).json({ success: false, error: e.message }); }
 });
 
@@ -236,7 +323,7 @@ router.get('/lookup/by-label/:aiLabel', async (req, res: Response) => {
     let match = allPublished.find(d => d.aiLabel && normalizeLabel(d.aiLabel) === normRaw) ?? null;
     if (match) {
       log.info('[DPS lookup/by-label] hit: aiLabel', { docId: (match as any)._id?.toString() });
-      return res.json({ success: true, data: match });
+      return res.json({ success: true, data: repairMLFields(match) });
     }
 
     // 2. Normalize: strip crop prefix from each record and compare
@@ -246,7 +333,7 @@ router.get('/lookup/by-label/:aiLabel', async (req, res: Response) => {
     }) ?? null;
     if (match) {
       log.info('[DPS lookup/by-label] hit: normalized diseasePestName', { docId: (match as any)._id?.toString() });
-      return res.json({ success: true, data: match });
+      return res.json({ success: true, data: repairMLFields(match) });
     }
 
     // 3. Aliases
@@ -255,7 +342,7 @@ router.get('/lookup/by-label/:aiLabel', async (req, res: Response) => {
     ) ?? null;
     if (match) {
       log.info('[DPS lookup/by-label] hit: alias', { docId: (match as any)._id?.toString() });
-      return res.json({ success: true, data: match });
+      return res.json({ success: true, data: repairMLFields(match) });
     }
 
     log.warn('[DPS lookup/by-label] FAIL: document not found', { rawLabel, normRaw });

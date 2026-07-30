@@ -2,19 +2,17 @@
 
 import { useState } from 'react';
 import {
-  FaLeaf, FaFlask, FaShieldAlt, FaBolt, FaExclamationTriangle,
-  FaCheckCircle, FaTimesCircle, FaHeartbeat, FaLightbulb,
-  FaChevronDown, FaChevronUp, FaDatabase, FaRobot,
+  FaLightbulb, FaExclamationTriangle, FaLeaf, FaFlask,
+  FaBolt, FaHeartbeat, FaShieldAlt, FaCheckCircle, FaTimesCircle,
+  FaBoxOpen, FaUserTie, FaChevronDown, FaChevronUp, FaDatabase, FaRobot,
 } from 'react-icons/fa';
 import { useLanguage } from '@/context/LanguageContext';
-import {
-  ScanResult, pickField,
-  resolveSymptoms, resolveOrganic, resolveChemical, resolvePrevention,
-} from './types';
+import { ScanResult, pickField, resolveSymptoms, resolveOrganic, resolveChemical, resolvePrevention } from './types';
+import NearestKVKWidget from '@/components/kvk/NearestKVKWidget';
 
-// ─── Expandable Knowledge Card ────────────────────────────────────────────────
+// ─── Accordion Card ───────────────────────────────────────────────────────────
 
-interface KnowledgeCardProps {
+interface AccordionCardProps {
   icon: React.ReactNode;
   title: string;
   titleHindi: string;
@@ -25,16 +23,14 @@ interface KnowledgeCardProps {
   defaultOpen?: boolean;
 }
 
-function KnowledgeCard({
+function AccordionCard({
   icon, title, titleHindi, children,
   accentColor, borderColor, bgColor, defaultOpen = false,
-}: KnowledgeCardProps) {
+}: AccordionCardProps) {
   const [open, setOpen] = useState(defaultOpen);
 
   return (
-    <div
-      className={`rounded-2xl border ${borderColor} bg-white dark:bg-slate-800 shadow-sm overflow-hidden transition-all duration-300`}
-    >
+    <div className={`rounded-2xl border ${borderColor} bg-white dark:bg-slate-800 shadow-sm overflow-hidden`}>
       <button
         onClick={() => setOpen(o => !o)}
         className={`w-full flex items-center justify-between gap-3 px-5 py-4 ${bgColor} hover:opacity-90 transition-opacity`}
@@ -62,7 +58,7 @@ function KnowledgeCard({
   );
 }
 
-// ─── Bullet list renderer ─────────────────────────────────────────────────────
+// ─── Bullet list ──────────────────────────────────────────────────────────────
 
 function BulletList({ text, bulletClass }: { text: string; bulletClass: string }) {
   const lines = text
@@ -70,9 +66,8 @@ function BulletList({ text, bulletClass }: { text: string; bulletClass: string }
     .map(l => l.replace(/^[\d\.\-•*]+\s*/, '').trim())
     .filter(Boolean);
 
-  if (lines.length === 0) {
+  if (lines.length === 0)
     return <p className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-line">{text}</p>;
-  }
 
   return (
     <ul className="space-y-2">
@@ -86,11 +81,10 @@ function BulletList({ text, bulletClass }: { text: string; bulletClass: string }
   );
 }
 
-// ─── Do's and Don'ts ──────────────────────────────────────────────────────────
+// ─── Do's & Don'ts ────────────────────────────────────────────────────────────
 
 function DosDonts({ dos, donts }: { dos?: string; donts?: string }) {
   if (!dos && !donts) return null;
-
   const parseList = (text: string) =>
     text.split(/\n|(?<=\d\.)\s+|(?<=•)\s+/)
       .map(l => l.replace(/^[\d\.\-•*]+\s*/, '').trim())
@@ -149,7 +143,7 @@ function SourceBadge({ source }: { source?: string }) {
   );
 }
 
-// ─── Main Disease Knowledge Section ──────────────────────────────────────────
+// ─── Main Component ───────────────────────────────────────────────────────────
 
 interface Props {
   result: ScanResult;
@@ -158,25 +152,26 @@ interface Props {
 export default function DiseaseKnowledgeSection({ result }: Props) {
   const { langCode } = useLanguage();
 
-  // All text resolved using the active language code
+  // Resolve all fields with proper multilingual mapping
   const description      = pickField(result.description, langCode);
   const symptoms         = resolveSymptoms(result, langCode);
-  const organic          = resolveOrganic(result, langCode);
-  const chemical         = resolveChemical(result, langCode);
-  const prevention       = resolvePrevention(result, langCode);
+  const organicSolution  = resolveOrganic(result, langCode);
+  const chemicalSolution = resolveChemical(result, langCode);
+  const urgentPrevention = pickField(result.urgentPrevention, langCode) || '';
+  const recoveryTips     = pickField(result.recoveryTips, langCode) || '';
+  const preventiveMeasures = resolvePrevention(result, langCode);
   const dos              = pickField(result.dos, langCode);
   const donts            = pickField(result.donts, langCode);
-  const recoveryTips     = pickField(result.recoveryTips, langCode) || result.recoveryTime || result.cropCareTips || result.farmingPractices || '';
-  const urgentPrevention = pickField(result.urgentPrevention, langCode) || pickField(result.recommendedActions, langCode) || result.beforeDisease || '';
-  const farmerAdvice     = pickField(result.farmerAdvice, langCode) || result.importantNotes || '';
-  const precautions      = result.safetyInstructions || result.safetyNotes || result.precautions || '';
+  const recommendedProducts = pickField(result.recommendedProducts, langCode) || '';
+  const farmerAdvice     = pickField(result.farmerAdvice, langCode) || '';
 
-  const hasKnowledge = !!(
-    description || symptoms || organic || chemical ||
-    prevention || urgentPrevention || recoveryTips || precautions || dos || donts || farmerAdvice
+  const hasAny = !!(
+    description || symptoms || organicSolution || chemicalSolution ||
+    urgentPrevention || recoveryTips || preventiveMeasures ||
+    dos || donts || recommendedProducts || farmerAdvice
   );
 
-  if (!hasKnowledge) return null;
+  if (!hasAny) return null;
 
   return (
     <div className="space-y-3">
@@ -195,7 +190,7 @@ export default function DiseaseKnowledgeSection({ result }: Props) {
 
       {/* 1. Disease Description */}
       {description && (
-        <KnowledgeCard
+        <AccordionCard
           icon={<FaLightbulb className="text-yellow-600" size={15} />}
           title="Disease Description"
           titleHindi="रोग का विवरण"
@@ -207,27 +202,26 @@ export default function DiseaseKnowledgeSection({ result }: Props) {
           <p className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-line">
             {description}
           </p>
-        </KnowledgeCard>
+        </AccordionCard>
       )}
 
       {/* 2. Symptoms */}
       {symptoms && (
-        <KnowledgeCard
+        <AccordionCard
           icon={<FaExclamationTriangle className="text-amber-600" size={14} />}
           title="Symptoms"
           titleHindi="लक्षण"
           accentColor="bg-amber-100 dark:bg-amber-900/40"
           borderColor="border-amber-200 dark:border-amber-800"
           bgColor="bg-amber-50/60 dark:bg-amber-900/20"
-          defaultOpen={true}
         >
           <BulletList text={symptoms} bulletClass="h-2 w-2 rounded-full bg-amber-500 mt-1" />
-        </KnowledgeCard>
+        </AccordionCard>
       )}
 
       {/* 3. Organic Solution */}
-      {organic && (
-        <KnowledgeCard
+      {organicSolution && (
+        <AccordionCard
           icon={<FaLeaf className="text-green-600" size={14} />}
           title="Organic Solution"
           titleHindi="जैविक उपचार"
@@ -235,13 +229,13 @@ export default function DiseaseKnowledgeSection({ result }: Props) {
           borderColor="border-green-200 dark:border-green-800"
           bgColor="bg-green-50/60 dark:bg-green-900/20"
         >
-          <BulletList text={organic} bulletClass="h-2 w-2 rounded-full bg-green-500 mt-1" />
-        </KnowledgeCard>
+          <BulletList text={organicSolution} bulletClass="h-2 w-2 rounded-full bg-green-500 mt-1" />
+        </AccordionCard>
       )}
 
       {/* 4. Chemical Solution */}
-      {chemical && (
-        <KnowledgeCard
+      {chemicalSolution && (
+        <AccordionCard
           icon={<FaFlask className="text-blue-600" size={14} />}
           title="Chemical Solution"
           titleHindi="रासायनिक उपचार"
@@ -249,35 +243,13 @@ export default function DiseaseKnowledgeSection({ result }: Props) {
           borderColor="border-blue-200 dark:border-blue-800"
           bgColor="bg-blue-50/60 dark:bg-blue-900/20"
         >
-          <BulletList text={chemical} bulletClass="h-2 w-2 rounded-full bg-blue-500 mt-1" />
-          {(result.dosage || result.sprayTiming || result.waitingPeriod) && (
-            <div className="mt-3 grid grid-cols-1 sm:grid-cols-3 gap-2 border-t border-blue-100 dark:border-blue-800 pt-3">
-              {result.dosage && (
-                <div className="rounded-xl bg-blue-50 dark:bg-blue-950/40 border border-blue-100 dark:border-blue-800 p-3">
-                  <p className="text-[10px] font-bold text-blue-500 uppercase tracking-wide mb-1">⚗️ Dosage</p>
-                  <p className="text-xs text-blue-900 dark:text-blue-200">{result.dosage}</p>
-                </div>
-              )}
-              {result.sprayTiming && (
-                <div className="rounded-xl bg-blue-50 dark:bg-blue-950/40 border border-blue-100 dark:border-blue-800 p-3">
-                  <p className="text-[10px] font-bold text-blue-500 uppercase tracking-wide mb-1">⏰ Spray Timing</p>
-                  <p className="text-xs text-blue-900 dark:text-blue-200">{result.sprayTiming}</p>
-                </div>
-              )}
-              {result.waitingPeriod && (
-                <div className="rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-100 dark:border-rose-800 p-3">
-                  <p className="text-[10px] font-bold text-rose-500 uppercase tracking-wide mb-1">⏳ Waiting Period</p>
-                  <p className="text-xs text-rose-900 dark:text-rose-200">{result.waitingPeriod}</p>
-                </div>
-              )}
-            </div>
-          )}
-        </KnowledgeCard>
+          <BulletList text={chemicalSolution} bulletClass="h-2 w-2 rounded-full bg-blue-500 mt-1" />
+        </AccordionCard>
       )}
 
       {/* 5. Urgent Prevention */}
       {urgentPrevention && (
-        <KnowledgeCard
+        <AccordionCard
           icon={<FaBolt className="text-orange-600" size={14} />}
           title="Urgent Prevention"
           titleHindi="तत्काल रोकथाम"
@@ -286,12 +258,12 @@ export default function DiseaseKnowledgeSection({ result }: Props) {
           bgColor="bg-orange-50/60 dark:bg-orange-900/20"
         >
           <BulletList text={urgentPrevention} bulletClass="h-2 w-2 rounded-full bg-orange-500 mt-1" />
-        </KnowledgeCard>
+        </AccordionCard>
       )}
 
       {/* 6. Recovery Tips */}
       {recoveryTips && (
-        <KnowledgeCard
+        <AccordionCard
           icon={<FaHeartbeat className="text-pink-600" size={14} />}
           title="Recovery Tips"
           titleHindi="ठीक होने के उपाय"
@@ -300,40 +272,26 @@ export default function DiseaseKnowledgeSection({ result }: Props) {
           bgColor="bg-pink-50/60 dark:bg-pink-900/20"
         >
           <BulletList text={recoveryTips} bulletClass="h-2 w-2 rounded-full bg-pink-500 mt-1" />
-        </KnowledgeCard>
+        </AccordionCard>
       )}
 
-      {/* 7. Precautions */}
-      {precautions && (
-        <KnowledgeCard
+      {/* 7. Preventive Measures */}
+      {preventiveMeasures && (
+        <AccordionCard
           icon={<FaShieldAlt className="text-teal-600" size={14} />}
-          title="Precautions"
-          titleHindi="सावधानियाँ"
+          title="Preventive Measures"
+          titleHindi="रोकथाम के उपाय"
           accentColor="bg-teal-100 dark:bg-teal-900/40"
           borderColor="border-teal-200 dark:border-teal-800"
           bgColor="bg-teal-50/60 dark:bg-teal-900/20"
         >
-          <BulletList text={precautions} bulletClass="h-2 w-2 rounded-full bg-teal-500 mt-1" />
-        </KnowledgeCard>
+          <BulletList text={preventiveMeasures} bulletClass="h-2 w-2 rounded-full bg-teal-500 mt-1" />
+        </AccordionCard>
       )}
 
-      {/* 8. Prevention (General) */}
-      {prevention && (
-        <KnowledgeCard
-          icon={<FaShieldAlt className="text-indigo-600" size={14} />}
-          title="Prevention Measures"
-          titleHindi="रोकथाम के उपाय"
-          accentColor="bg-indigo-100 dark:bg-indigo-900/40"
-          borderColor="border-indigo-200 dark:border-indigo-800"
-          bgColor="bg-indigo-50/60 dark:bg-indigo-900/20"
-        >
-          <BulletList text={prevention} bulletClass="h-2 w-2 rounded-full bg-indigo-500 mt-1" />
-        </KnowledgeCard>
-      )}
-
-      {/* 9. Do's and Don'ts */}
+      {/* 8. Do's & Don'ts */}
       {(dos || donts) && (
-        <KnowledgeCard
+        <AccordionCard
           icon={<FaCheckCircle className="text-emerald-600" size={14} />}
           title="Do's & Don'ts"
           titleHindi="करें और न करें"
@@ -342,13 +300,27 @@ export default function DiseaseKnowledgeSection({ result }: Props) {
           bgColor="bg-emerald-50/60 dark:bg-emerald-900/20"
         >
           <DosDonts dos={dos} donts={donts} />
-        </KnowledgeCard>
+        </AccordionCard>
+      )}
+
+      {/* 9. Recommended Products */}
+      {recommendedProducts && (
+        <AccordionCard
+          icon={<FaBoxOpen className="text-violet-600" size={14} />}
+          title="Recommended Products"
+          titleHindi="अनुशंसित उत्पाद"
+          accentColor="bg-violet-100 dark:bg-violet-900/40"
+          borderColor="border-violet-200 dark:border-violet-800"
+          bgColor="bg-violet-50/60 dark:bg-violet-900/20"
+        >
+          <BulletList text={recommendedProducts} bulletClass="h-2 w-2 rounded-full bg-violet-500 mt-1" />
+        </AccordionCard>
       )}
 
       {/* 10. Farmer Advice */}
       {farmerAdvice && (
-        <KnowledgeCard
-          icon={<FaLightbulb className="text-yellow-500" size={14} />}
+        <AccordionCard
+          icon={<FaUserTie className="text-yellow-600" size={14} />}
           title="Farmer Advice"
           titleHindi="किसान सलाह"
           accentColor="bg-yellow-100 dark:bg-yellow-900/40"
@@ -356,8 +328,11 @@ export default function DiseaseKnowledgeSection({ result }: Props) {
           bgColor="bg-yellow-50/60 dark:bg-yellow-900/20"
         >
           <BulletList text={farmerAdvice} bulletClass="h-2 w-2 rounded-full bg-yellow-500 mt-1" />
-        </KnowledgeCard>
+        </AccordionCard>
       )}
+
+      {/* 11. Nearby KVK */}
+      <NearestKVKWidget />
     </div>
   );
 }

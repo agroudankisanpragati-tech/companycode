@@ -8,6 +8,8 @@ import { FaDatabase, FaLeaf, FaBug, FaCheckCircle, FaTimesCircle } from 'react-i
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || '/api';
 const ASSET_BASE = API_BASE.replace(/\/api$/, '');
 
+type MultiLang = { en?: string; hi?: string } | string | undefined;
+
 type DPSRecord = {
   _id: string;
   cropName: string;
@@ -16,17 +18,17 @@ type DPSRecord = {
   aiLabel?: string;
   aliases?: string[];
   severity: string;
-  description?: string;
-  symptoms?: string;
-  organicSolution?: string;
-  chemicalSolution?: string;
-  urgentPrevention?: string;
-  recoveryTips?: string;
-  preventiveMeasures?: string;
-  dos?: string;
-  donts?: string;
-  recommendedProducts?: string;
-  farmerAdvice?: string;
+  description?: MultiLang;
+  symptoms?: MultiLang;
+  organicSolution?: MultiLang;
+  chemicalSolution?: MultiLang;
+  urgentPrevention?: MultiLang;
+  recoveryTips?: MultiLang;
+  preventiveMeasures?: MultiLang;
+  dos?: MultiLang;
+  donts?: MultiLang;
+  recommendedProducts?: MultiLang;
+  farmerAdvice?: MultiLang;
   referenceImages: string[];
   tags: string[];
   keywords: string[];
@@ -35,12 +37,27 @@ type DPSRecord = {
   updatedAt?: string;
 };
 
+// Extract .en / .hi from a multilingual field, never return [object Object]
+const mlEn = (v: MultiLang): string => {
+  if (!v) return '';
+  if (typeof v === 'string') return v;
+  return v.en || '';
+};
+const mlHi = (v: MultiLang): string => {
+  if (!v) return '';
+  if (typeof v === 'string') return '';
+  return v.hi || '';
+};
+
 const EMPTY: Partial<DPSRecord> = {
   cropName: '', recordType: 'Disease', diseasePestName: '', aiLabel: '', aliases: [],
   severity: 'medium',
-  description: '', symptoms: '', organicSolution: '', chemicalSolution: '',
-  urgentPrevention: '', recoveryTips: '', preventiveMeasures: '',
-  dos: '', donts: '', recommendedProducts: '', farmerAdvice: '',
+  description: undefined, symptoms: undefined,
+  organicSolution: undefined, chemicalSolution: undefined,
+  urgentPrevention: undefined, recoveryTips: undefined,
+  preventiveMeasures: undefined, dos: undefined,
+  donts: undefined, recommendedProducts: undefined,
+  farmerAdvice: undefined,
   referenceImages: [], tags: [], keywords: [], status: 'draft',
 };
 
@@ -103,8 +120,54 @@ export default function DiseasePestKnowledgePage() {
 
   const f = (k: keyof DPSRecord, v: any) => setForm(p => ({ ...p, [k]: v }));
 
-  const openAdd = () => { setForm(EMPTY); setEditingId(null); setMsg(''); setErr(''); setShowForm(true); };
-  const openEdit = (r: DPSRecord) => { setForm(r); setEditingId(r._id); setMsg(''); setErr(''); setShowForm(true); };
+  const openAdd = () => { setForm({ ...EMPTY }); setEditingId(null); setMsg(''); setErr(''); setShowForm(true); };
+  // Normalise a multilingual field for the edit form.
+  // Returns { en, hi } for non-empty fields, undefined for empty/absent fields.
+  // Handles: proper { en, hi } object, legacy plain string, legacy JSON-stringified object.
+  const normaliseRecord = (r: DPSRecord): Partial<DPSRecord> => {
+    const fixNl = (s: string) => s.replace(/\\r\\n/g, '\n').replace(/\\n/g, '\n');
+    const ml = (v: MultiLang): { en: string; hi: string } | undefined => {
+      if (!v) return undefined;
+      if (typeof v === 'object') {
+        const en = fixNl(v.en || '');
+        const hi = fixNl(v.hi || '');
+        // Return undefined if both sides are empty — empty stays empty
+        return (en || hi) ? { en, hi } : undefined;
+      }
+      // Plain string — could be legacy plain text OR a JSON-stringified object
+      const s = v.trim();
+      if (!s) return undefined;
+      if (s.startsWith('{')) {
+        try {
+          const parsed = JSON.parse(s);
+          if (parsed && typeof parsed === 'object') {
+            const en = fixNl(typeof parsed.en === 'string' ? parsed.en : '');
+            const hi = fixNl(typeof parsed.hi === 'string' ? parsed.hi : '');
+            return (en || hi) ? { en, hi } : undefined;
+          }
+        } catch { /* not JSON — treat as plain text */ }
+      }
+      // Legacy plain English string
+      const en = fixNl(s);
+      return en ? { en, hi: '' } : undefined;
+    };
+    return {
+      ...r,
+      description:        ml(r.description),
+      symptoms:           ml(r.symptoms),
+      organicSolution:    ml(r.organicSolution),
+      chemicalSolution:   ml(r.chemicalSolution),
+      urgentPrevention:   ml(r.urgentPrevention),
+      recoveryTips:       ml(r.recoveryTips),
+      preventiveMeasures: ml(r.preventiveMeasures),
+      dos:                ml(r.dos),
+      donts:              ml(r.donts),
+      recommendedProducts:ml(r.recommendedProducts),
+      farmerAdvice:       ml(r.farmerAdvice),
+    };
+  };
+
+  const openEdit = (r: DPSRecord) => { setForm(normaliseRecord(r)); setEditingId(r._id); setMsg(''); setErr(''); setShowForm(true); };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -112,10 +175,28 @@ export default function DiseasePestKnowledgePage() {
     setSubmitting(true); setErr(''); setMsg('');
     try {
       const fd = new FormData();
+      const ML_FIELDS = ['description','symptoms','organicSolution','chemicalSolution','urgentPrevention','recoveryTips','preventiveMeasures','dos','donts','recommendedProducts','farmerAdvice'];
       Object.entries(form).forEach(([k, v]) => {
         if (v === undefined || v === null) return;
-        if (Array.isArray(v)) v.forEach(item => fd.append(k, item));
-        else fd.append(k, String(v));
+        if (Array.isArray(v)) { v.forEach(item => fd.append(k, item)); return; }
+        if (ML_FIELDS.includes(k)) {
+          // Send as separate _en / _hi keys — backend mlFromBody() reads these.
+          // NEVER use JSON.stringify — that stores a JSON string in MongoDB.
+          // Only send if at least one side has content — empty fields are omitted
+          // so the backend can treat them as absent (no { en:'', hi:'' } stored).
+          const ml = typeof v === 'object' && v !== null
+            ? v as { en?: string; hi?: string }
+            : { en: String(v), hi: '' };
+          const enVal = (ml.en ?? '').trim();
+          const hiVal = (ml.hi ?? '').trim();
+          if (enVal || hiVal) {
+            fd.append(`${k}_en`, enVal);
+            fd.append(`${k}_hi`, hiVal);
+          }
+          // If both empty: field is not appended → backend treats it as absent
+          return;
+        }
+        fd.append(k, String(v));
       });
       if (imgRef.current?.files) Array.from(imgRef.current.files).forEach(fi => fd.append('referenceImages', fi));
 
@@ -190,13 +271,34 @@ export default function DiseasePestKnowledgePage() {
   const toggleSelect = (id: string) =>
     setSelected(s => s.includes(id) ? s.filter(x => x !== id) : [...s, id]);
 
-  const ta = (k: keyof DPSRecord, label: string, rows = 3) => (
-    <label className="space-y-1.5 text-sm text-slate-300 block">
-      <span>{label}</span>
-      <textarea className="admin-input min-h-[60px] w-full resize-none" rows={rows}
-        value={(form[k] as string) || ''} onChange={e => f(k, e.target.value)} />
-    </label>
-  );
+  // Multilingual textarea: renders two sub-fields (English + Hindi).
+  // Reads only .en into the English box and only .hi into the Hindi box.
+  // Never mixes languages. Never shows JSON. Empty stays empty.
+  const taML = (k: keyof DPSRecord, label: string, rows = 3) => {
+    const val = form[k];
+    // Safely extract strings — never coerce objects to string
+    const en = (val && typeof val === 'object' && !Array.isArray(val))
+      ? ((val as any).en ?? '')
+      : (typeof val === 'string' ? val : '');
+    const hi = (val && typeof val === 'object' && !Array.isArray(val))
+      ? ((val as any).hi ?? '')
+      : '';
+    return (
+      <div className="space-y-2">
+        <p className="text-xs font-semibold text-slate-400 uppercase tracking-wide">{label}</p>
+        <label className="space-y-1 text-sm text-slate-300 block">
+          <span className="text-xs text-cyan-400">English</span>
+          <textarea className="admin-input min-h-[60px] w-full resize-none" rows={rows}
+            value={en} onChange={e => f(k, { en: e.target.value, hi })} />
+        </label>
+        <label className="space-y-1 text-sm text-slate-300 block">
+          <span className="text-xs text-amber-400">Hindi (हिंदी)</span>
+          <textarea className="admin-input min-h-[60px] w-full resize-none" rows={rows}
+            value={hi} onChange={e => f(k, { en, hi: e.target.value })} />
+        </label>
+      </div>
+    );
+  };
 
   const inp = (k: keyof DPSRecord, label: string, required = false) => (
     <label className="space-y-1.5 text-sm text-slate-300">
@@ -270,36 +372,32 @@ export default function DiseasePestKnowledgePage() {
             </div>
           </div>
 
-          {ta('description', 'Description', 3)}
+          {taML('description', 'Description', 3)}
 
-          <div className="rounded-2xl border border-white/10 bg-white/5 p-4 space-y-3">
+          <div className="rounded-2xl border border-white/10 bg-white/5 p-4 space-y-4">
             <p className="text-sm font-semibold text-amber-300">🔍 Symptoms &amp; Solutions</p>
-            {ta('symptoms', 'Symptoms')}
-            <div className="grid gap-4 md:grid-cols-2">
-              {ta('organicSolution', 'Organic Solution')}
-              {ta('chemicalSolution', 'Chemical Solution')}
-            </div>
+            {taML('symptoms', 'Symptoms')}
+            {taML('organicSolution', 'Organic Solution')}
+            {taML('chemicalSolution', 'Chemical Solution')}
           </div>
 
-          <div className="rounded-2xl border border-white/10 bg-white/5 p-4 space-y-3">
+          <div className="rounded-2xl border border-white/10 bg-white/5 p-4 space-y-4">
             <p className="text-sm font-semibold text-blue-300">🛡️ Prevention &amp; Recovery</p>
-            {ta('urgentPrevention', 'Urgent Prevention')}
-            {ta('recoveryTips', 'Recovery Tips')}
-            {ta('preventiveMeasures', 'Preventive Measures')}
+            {taML('urgentPrevention', 'Urgent Prevention')}
+            {taML('recoveryTips', 'Recovery Tips')}
+            {taML('preventiveMeasures', 'Preventive Measures')}
           </div>
 
-          <div className="rounded-2xl border border-white/10 bg-white/5 p-4 space-y-3">
+          <div className="rounded-2xl border border-white/10 bg-white/5 p-4 space-y-4">
             <p className="text-sm font-semibold text-green-300">✅ Do's &amp; Don'ts</p>
-            <div className="grid gap-4 md:grid-cols-2">
-              {ta('dos', "Do's")}
-              {ta('donts', "Don'ts")}
-            </div>
+            {taML('dos', "Do's")}
+            {taML('donts', "Don'ts")}
           </div>
 
-          <div className="rounded-2xl border border-white/10 bg-white/5 p-4 space-y-3">
+          <div className="rounded-2xl border border-white/10 bg-white/5 p-4 space-y-4">
             <p className="text-sm font-semibold text-purple-300">📦 Products &amp; Advice</p>
-            {ta('recommendedProducts', 'Recommended Products')}
-            {ta('farmerAdvice', 'Farmer Advice')}
+            {taML('recommendedProducts', 'Recommended Products')}
+            {taML('farmerAdvice', 'Farmer Advice')}
           </div>
 
           <div className="grid gap-4 md:grid-cols-2">
@@ -436,17 +534,17 @@ export default function DiseasePestKnowledgePage() {
               <button onClick={() => setViewRecord(null)} className="rounded-lg p-2 text-slate-400 hover:bg-white/10 hover:text-white">✕</button>
             </div>
             <div className="space-y-3 text-sm text-slate-300 max-h-[60vh] overflow-y-auto pr-1">
-              {viewRecord.description && <p>{viewRecord.description}</p>}
-              {viewRecord.symptoms && <div><p className="font-semibold text-amber-300 mb-1">Symptoms:</p><p className="whitespace-pre-line">{viewRecord.symptoms}</p></div>}
-              {viewRecord.organicSolution && <div><p className="font-semibold text-green-300 mb-1">Organic Solution:</p><p className="whitespace-pre-line">{viewRecord.organicSolution}</p></div>}
-              {viewRecord.chemicalSolution && <div><p className="font-semibold text-blue-300 mb-1">Chemical Solution:</p><p className="whitespace-pre-line">{viewRecord.chemicalSolution}</p></div>}
-              {viewRecord.urgentPrevention && <div><p className="font-semibold text-orange-300 mb-1">Urgent Prevention:</p><p className="whitespace-pre-line">{viewRecord.urgentPrevention}</p></div>}
-              {viewRecord.recoveryTips && <div><p className="font-semibold text-pink-300 mb-1">Recovery Tips:</p><p className="whitespace-pre-line">{viewRecord.recoveryTips}</p></div>}
-              {viewRecord.preventiveMeasures && <div><p className="font-semibold text-teal-300 mb-1">Preventive Measures:</p><p className="whitespace-pre-line">{viewRecord.preventiveMeasures}</p></div>}
-              {viewRecord.dos && <div><p className="font-semibold text-emerald-300 mb-1">Do's:</p><p className="whitespace-pre-line">{viewRecord.dos}</p></div>}
-              {viewRecord.donts && <div><p className="font-semibold text-red-300 mb-1">Don'ts:</p><p className="whitespace-pre-line">{viewRecord.donts}</p></div>}
-              {viewRecord.recommendedProducts && <div><p className="font-semibold text-violet-300 mb-1">Products:</p><p>{viewRecord.recommendedProducts}</p></div>}
-              {viewRecord.farmerAdvice && <div><p className="font-semibold text-yellow-300 mb-1">Farmer Advice:</p><p>{viewRecord.farmerAdvice}</p></div>}
+              {viewRecord.description && <p>{mlEn(viewRecord.description)}</p>}
+              {viewRecord.symptoms && <div><p className="font-semibold text-amber-300 mb-1">Symptoms:</p><p className="whitespace-pre-line">{mlEn(viewRecord.symptoms)}</p></div>}
+              {viewRecord.organicSolution && <div><p className="font-semibold text-green-300 mb-1">Organic Solution:</p><p className="whitespace-pre-line">{mlEn(viewRecord.organicSolution)}</p></div>}
+              {viewRecord.chemicalSolution && <div><p className="font-semibold text-blue-300 mb-1">Chemical Solution:</p><p className="whitespace-pre-line">{mlEn(viewRecord.chemicalSolution)}</p></div>}
+              {viewRecord.urgentPrevention && <div><p className="font-semibold text-orange-300 mb-1">Urgent Prevention:</p><p className="whitespace-pre-line">{mlEn(viewRecord.urgentPrevention)}</p></div>}
+              {viewRecord.recoveryTips && <div><p className="font-semibold text-pink-300 mb-1">Recovery Tips:</p><p className="whitespace-pre-line">{mlEn(viewRecord.recoveryTips)}</p></div>}
+              {viewRecord.preventiveMeasures && <div><p className="font-semibold text-teal-300 mb-1">Preventive Measures:</p><p className="whitespace-pre-line">{mlEn(viewRecord.preventiveMeasures)}</p></div>}
+              {viewRecord.dos && <div><p className="font-semibold text-emerald-300 mb-1">Do's:</p><p className="whitespace-pre-line">{mlEn(viewRecord.dos)}</p></div>}
+              {viewRecord.donts && <div><p className="font-semibold text-red-300 mb-1">Don'ts:</p><p className="whitespace-pre-line">{mlEn(viewRecord.donts)}</p></div>}
+              {viewRecord.recommendedProducts && <div><p className="font-semibold text-violet-300 mb-1">Products:</p><p>{mlEn(viewRecord.recommendedProducts)}</p></div>}
+              {viewRecord.farmerAdvice && <div><p className="font-semibold text-yellow-300 mb-1">Farmer Advice:</p><p>{mlEn(viewRecord.farmerAdvice)}</p></div>}
               {(viewRecord.tags?.length || 0) > 0 && <p><span className="text-slate-500">Tags:</span> {viewRecord.tags.join(', ')}</p>}
               {(viewRecord.referenceImages?.length || 0) > 0 && (
                 <div>

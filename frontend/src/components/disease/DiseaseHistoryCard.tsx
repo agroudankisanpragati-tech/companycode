@@ -1,8 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { HistoryItem } from './types';
+import { HistoryItem, pickField } from './types';
 import { SymptomsCard, OrganicCard, ChemicalCard, PreventionCard } from './InfoCards';
+import { useLanguage } from '@/context/LanguageContext';
 import AILanguageSelector from '@/components/AILanguageSelector';
 import { FaChevronDown, FaEye, FaTrash, FaCalendarAlt, FaSeedling, FaPercentage } from 'react-icons/fa';
 
@@ -26,6 +27,7 @@ export default function DiseaseHistoryCard({ item, onViewAgain, onDelete }: Prop
   const [expanded, setExpanded] = useState(false);
   const [display, setDisplay] = useState<HistoryItem>(item);
   const [deleting, setDeleting] = useState(false);
+  const { langCode } = useLanguage();
 
   const handleTranslated = (lang: string, data: Record<string, any>) => {
     setDisplay(lang === 'en' ? item : { ...item, ...data });
@@ -144,24 +146,22 @@ export default function DiseaseHistoryCard({ item, onViewAgain, onDelete }: Prop
       {/* Expanded details */}
       {expanded && (
         <div className="border-t border-gray-100 px-4 pb-4 pt-3 space-y-3 animate-fadeIn">
-          {display.description && (
-            <p className="text-sm text-slate-600 leading-relaxed">{display.description}</p>
-          )}
-          {display.symptoms && (
-            <SymptomsCard symptoms={display.symptoms} symptomsHindi={display.symptomsHindi} />
-          )}
-          {display.organicTreatment && (
-            <OrganicCard treatment={display.organicTreatment} treatmentHindi={display.organicTreatmentHindi} />
-          )}
-          {display.chemicalTreatment && (
-            <ChemicalCard treatment={display.chemicalTreatment} treatmentHindi={display.chemicalTreatmentHindi} />
-          )}
-          {!display.organicTreatment && !display.chemicalTreatment && display.treatment && (
-            <ChemicalCard treatment={display.treatment} />
-          )}
-          {display.prevention && (
-            <PreventionCard prevention={display.prevention} preventionHindi={display.preventionHindi} />
-          )}
+          {(() => {
+            const desc = pickField(display.description, langCode);
+            const symp = pickField(display.symptoms, langCode);
+            const org  = pickField(display.organicSolution ?? display.organicTreatment, langCode);
+            const chem = pickField(display.chemicalSolution ?? display.chemicalTreatment ?? display.treatment, langCode);
+            const prev = pickField(display.prevention, langCode);
+            return (
+              <>
+                {desc && <p className="text-sm text-slate-600 leading-relaxed">{desc}</p>}
+                {symp && <SymptomsCard symptoms={symp} />}
+                {org  && <OrganicCard  treatment={org} />}
+                {chem && <ChemicalCard treatment={chem} />}
+                {prev && <PreventionCard prevention={prev} />}
+              </>
+            );
+          })()}
           {item.feedback && (
             <span className={`inline-block rounded-full px-3 py-1 text-xs font-bold ${
               item.feedback === 'helpful' ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'

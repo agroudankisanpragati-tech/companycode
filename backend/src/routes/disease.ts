@@ -207,7 +207,11 @@ router.post('/scan', authenticate, upload.single('image'), async (req: Authentic
         source: 'yolo',
         engine: 'yolo',
         hasAdvisory: !!advisory,
-        data: { ...record },
+        data: {
+          ...record,
+          // Map extraFarmerAdvice → farmerAdvice so ScanResult.farmerAdvice is populated
+          farmerAdvice: (record as any).extraFarmerAdvice,
+        },
       });
     }
 
@@ -220,7 +224,11 @@ router.post('/scan', authenticate, upload.single('image'), async (req: Authentic
       source: 'yolo',
       engine: 'yolo',
       hasAdvisory: !!advisory,
-      data: saved,
+      data: {
+        ...saved.toObject(),
+        // Map extraFarmerAdvice → farmerAdvice so ScanResult.farmerAdvice is populated
+        farmerAdvice: saved.extraFarmerAdvice,
+      },
     });
 
   } catch (error: any) {

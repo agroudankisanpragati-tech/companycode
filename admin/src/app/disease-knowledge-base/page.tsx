@@ -23,6 +23,41 @@ const EMPTY: Partial<DiseaseRecord> = {
   tags: [], seoKeywords: [], languages: [],
 };
 
+// Extract a plain string from a field that may be { en, hi }, a JSON string, or a plain string.
+// Used when loading a record into the edit form so textareas always show plain text.
+const extractStr = (v: any): string => {
+  if (!v) return '';
+  if (typeof v === 'string') {
+    const s = v.trim();
+    if (!s) return '';
+    if (s.startsWith('{')) {
+      try {
+        const p = JSON.parse(s);
+        if (p && typeof p === 'object') return typeof p.en === 'string' ? p.en : '';
+      } catch { /* not JSON */ }
+    }
+    return s;
+  }
+  if (typeof v === 'object' && !Array.isArray(v)) {
+    return typeof v.en === 'string' ? v.en : '';
+  }
+  return '';
+};
+
+// Flatten a DiseaseRecord so all multilingual fields become plain English strings
+// before loading into the edit form. This prevents [object Object] in textareas.
+const flattenForForm = (r: DiseaseRecord): Partial<DiseaseRecord> => ({
+  ...r,
+  description:        extractStr(r.description)        as any,
+  symptoms:           extractStr(r.symptoms)           as any,
+  causes:             extractStr(r.causes)             as any,
+  organicSolution:    extractStr(r.organicSolution)    as any,
+  chemicalSolution:   extractStr(r.chemicalSolution)   as any,
+  prevention:         extractStr(r.prevention)         as any,
+  recommendedProducts:extractStr(r.recommendedProducts)as any,
+  governmentAdvisory: extractStr(r.governmentAdvisory) as any,
+});
+
 const sevBadge = (s: string) => {
   const m: Record<string, string> = {
     critical: 'bg-red-400/20 text-red-300', high: 'bg-orange-400/20 text-orange-300',
@@ -77,7 +112,7 @@ export default function DiseaseKnowledgeBasePage() {
 
   const openAdd = () => { setForm(EMPTY); setEditingId(null); setMessage(''); setError(''); setShowForm(true); };
   const openEdit = (r: DiseaseRecord) => {
-    setForm(r); setEditingId(r._id); setMessage(''); setError(''); setShowForm(true);
+    setForm(flattenForForm(r)); setEditingId(r._id); setMessage(''); setError(''); setShowForm(true);
     setTimeout(() => document.getElementById('disease-form')?.scrollIntoView({ behavior: 'smooth' }), 100);
   };
 
@@ -347,14 +382,14 @@ export default function DiseaseKnowledgeBasePage() {
             <div className="space-y-3 text-sm text-slate-300">
               {viewRecord.scientificName && <p><span className="text-slate-500">Scientific Name:</span> {viewRecord.scientificName}</p>}
               {viewRecord.affectedPlantPart && <p><span className="text-slate-500">Affected Part:</span> {viewRecord.affectedPlantPart}</p>}
-              <p>{viewRecord.description}</p>
-              {viewRecord.symptoms && <div><p className="font-semibold text-amber-300 mb-1">Symptoms:</p><p className="whitespace-pre-line">{viewRecord.symptoms}</p></div>}
-              {viewRecord.causes && <div><p className="font-semibold text-orange-300 mb-1">Causes:</p><p>{viewRecord.causes}</p></div>}
-              {viewRecord.organicSolution && <div><p className="font-semibold text-green-300 mb-1">Organic Solution:</p><p className="whitespace-pre-line">{viewRecord.organicSolution}</p></div>}
-              {viewRecord.chemicalSolution && <div><p className="font-semibold text-blue-300 mb-1">Chemical Solution:</p><p className="whitespace-pre-line">{viewRecord.chemicalSolution}</p></div>}
-              {viewRecord.prevention && <div><p className="font-semibold text-teal-300 mb-1">Prevention:</p><p className="whitespace-pre-line">{viewRecord.prevention}</p></div>}
-              {viewRecord.governmentAdvisory && <div><p className="font-semibold text-yellow-300 mb-1">Govt Advisory:</p><p>{viewRecord.governmentAdvisory}</p></div>}
-              {viewRecord.recommendedProducts && <p><span className="text-slate-500">Products:</span> {viewRecord.recommendedProducts}</p>}
+              <p>{extractStr(viewRecord.description)}</p>
+              {viewRecord.symptoms && <div><p className="font-semibold text-amber-300 mb-1">Symptoms:</p><p className="whitespace-pre-line">{extractStr(viewRecord.symptoms)}</p></div>}
+              {viewRecord.causes && <div><p className="font-semibold text-orange-300 mb-1">Causes:</p><p>{extractStr(viewRecord.causes)}</p></div>}
+              {viewRecord.organicSolution && <div><p className="font-semibold text-green-300 mb-1">Organic Solution:</p><p className="whitespace-pre-line">{extractStr(viewRecord.organicSolution)}</p></div>}
+              {viewRecord.chemicalSolution && <div><p className="font-semibold text-blue-300 mb-1">Chemical Solution:</p><p className="whitespace-pre-line">{extractStr(viewRecord.chemicalSolution)}</p></div>}
+              {viewRecord.prevention && <div><p className="font-semibold text-teal-300 mb-1">Prevention:</p><p className="whitespace-pre-line">{extractStr(viewRecord.prevention)}</p></div>}
+              {viewRecord.governmentAdvisory && <div><p className="font-semibold text-yellow-300 mb-1">Govt Advisory:</p><p>{extractStr(viewRecord.governmentAdvisory)}</p></div>}
+              {viewRecord.recommendedProducts && <p><span className="text-slate-500">Products:</span> {extractStr(viewRecord.recommendedProducts)}</p>}
               {(viewRecord.tags?.length || 0) > 0 && <p><span className="text-slate-500">Tags:</span> {viewRecord.tags.join(', ')}</p>}
               {(viewRecord.videoLinks?.length || 0) > 0 && (
                 <div><p className="text-xs text-slate-500 mb-1">Videos:</p>
