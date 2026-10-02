@@ -12,6 +12,7 @@ interface VoicePlayerProps {
   autoDetect?: boolean;
   label?: string;
   className?: string;
+  responseAudio?: string;
 }
 
 export default function VoicePlayer({
@@ -20,6 +21,7 @@ export default function VoicePlayer({
   autoDetect = true,
   label,
   className = '',
+  responseAudio,
 }: VoicePlayerProps) {
   const voice = useVoiceEngineContext();
   const { langCode: globalLangCode } = useLanguage();
@@ -30,12 +32,31 @@ export default function VoicePlayer({
     ? detectLangFromText(text)
     : resolveVoiceLang(globalLangCode);
 
-  // Stop on unmount
-  useEffect(() => () => { window.speechSynthesis?.cancel(); }, []);
+  // Stop browser or locally generated audio when this player's message unmounts.
+  useEffect(() => () => { voice.interrupt(); }, [voice.interrupt]);
 
   if (!voice.ttsSupported) return null;
 
   const { ttsState } = voice;
+
+  // If responseAudio is provided (from Piper TTS), play the pre-generated WAV
+  if (responseAudio) {
+    return (
+      <div
+        className={`flex items-center gap-1.5 flex-wrap ${className}`}
+        role="group"
+        aria-label={label || 'Voice playback controls'}
+      >
+        <audio
+          src={responseAudio}
+          autoPlay
+          controls
+          className="w-full"
+          aria-label={label || 'Audio playback'}
+        />
+      </div>
+    );
+  }
 
   return (
     <div
@@ -45,7 +66,7 @@ export default function VoicePlayer({
     >
       {ttsState === 'idle' && (
         <button
-          onClick={() => voice.speak(text)}
+          onClick={() => voice.speak(text, undefined, lang || globalLangCode)}
           aria-label="Play voice"
           title={label || 'Listen'}
           className="flex items-center gap-1.5 rounded-full border border-emerald-200 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-950/40 px-3 py-1.5 text-xs font-semibold text-emerald-700 dark:text-emerald-400 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 min-h-[2rem]"
@@ -53,6 +74,16 @@ export default function VoicePlayer({
           <FaVolumeUp size={11} aria-hidden="true" />
           {label || 'सुनें / Listen'}
         </button>
+      )}
+
+      {ttsState === 'loading' && (
+        <>
+          <span className="text-xs text-slate-500" role="status" aria-live="polite">Preparing voice…</span>
+          <button onClick={voice.interrupt} aria-label="Cancel voice generation" title="Cancel"
+            className="rounded-full bg-red-100 dark:bg-red-900/40 p-2 text-red-600 dark:text-red-400 hover:bg-red-200 transition min-h-[2rem] min-w-[2rem]">
+            <FaStop size={10} aria-hidden="true" />
+          </button>
+        </>
       )}
 
       {ttsState === 'playing' && (
@@ -79,7 +110,7 @@ export default function VoicePlayer({
       {ttsState === 'paused' && (
         <>
           <button onClick={voice.resume} aria-label="Resume" title="Resume"
-            className="rounded-full bg-emerald-100 dark:bg-emerald-900/40 p-2 text-emerald-700 dark:text-emerald-400 hover:bg-emerald-200 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 min-h-[2rem] min-w-[2rem]">
+            className="rounded-full bg-emerald-100 dark:bg-emerald-900/40 p-2 text-emerald-700 dark:text-emerald-700 hover:bg-emerald-200 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 min-h-[2rem] min-w-[2rem]">
             <FaPlay size={10} aria-hidden="true" />
           </button>
           <button onClick={voice.replay} aria-label="Replay from start" title="Replay from start"

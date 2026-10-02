@@ -142,7 +142,11 @@ router.post('/register/request-otp', async (req: Request, res: Response) => {
       attempts: 0,
     });
 
-    const delivery = await sendOtpEmail(email, code);
+    // In local development, show the OTP in the registration UI instead of
+    // depending on external SMTP credentials or sending test emails.
+    const delivery = process.env.NODE_ENV === 'development'
+      ? { delivered: false, devOtp: code }
+      : await sendOtpEmail(email, code);
 
     res.json({
       message: 'OTP sent successfully',

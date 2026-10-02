@@ -1,0 +1,19 @@
+backend/.env
+
+**/node_modules/
+**/.next/
+**/dist/
+**/__pycache__/
+*.pyc
+*.log
+**/logs/
+
+# Python virtual environments
+**/.venv/
+**/.venv312/
+**/venv/
+
+
+
+# Raw voice datasets
+Ai/voice_dataset/*/raw/

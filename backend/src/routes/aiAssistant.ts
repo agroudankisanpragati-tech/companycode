@@ -124,6 +124,7 @@ router.post('/chat', authenticate, chatLimiter, async (req: AuthenticatedRequest
       intent:        result.intent,
       agentsUsed:    result.agentsUsed,
       localAnswered: result.localAnswered,
+      navigationAction: result.navigationAction,
     });
 
   } catch (err: any) {

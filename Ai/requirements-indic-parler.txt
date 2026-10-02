@@ -1,0 +1,5 @@
+# Install only into the dedicated Ai/parler_tts_env environment. Its dependency
+# on descript-audiotools pins protobuf below 5, which conflicts with the Google
+# and OpenTelemetry dependencies in the shared Ai/ml environment.
+git+https://github.com/huggingface/parler-tts.git
+soundfile>=0.12.1

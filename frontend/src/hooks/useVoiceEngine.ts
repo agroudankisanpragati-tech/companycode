@@ -56,7 +56,7 @@ export interface VoiceEngineState {
 
 export interface VoiceEngineControls {
   /** Speak text — applies pronunciation correction + display rules */
-  speak: (text: string, hindiText?: string) => Promise<void>;
+  speak: (text: string, hindiText?: string, languageOverride?: string) => Promise<void>;
   /** Speak a streaming chunk (call repeatedly as chunks arrive) */
   speakChunk: (chunk: string) => void;
   /** Interrupt current speech */
@@ -68,7 +68,7 @@ export interface VoiceEngineControls {
   /** Resume TTS */
   resume: () => void;
   /** Start STT listening (single utterance) */
-  startListening: (onResult: (result: PipelineResult) => void, pageCtx?: string) => void;
+  startListening: (onResult: (result: PipelineResult) => void, pageCtx?: string, languageOverride?: string) => void;
   /** Stop STT listening */
   stopListening: () => void;
   /** Push-to-talk: start holding */
@@ -126,42 +126,43 @@ export function useVoiceEngine(pageContext?: string): VoiceEngineState & VoiceEn
   const [isHolding, setIsHolding]     = useState(false);
   const [isContinuous, setIsContinuous] = useState(false);
 
-  const lastSpokenRef   = useRef<{ text: string; hindi?: string } | null>(null);
+  const lastSpokenRef   = useRef<{ text: string; hindi?: string; language?: string } | null>(null);
   const streamBufferRef = useRef<string>('');
   const streamTimerRef  = useRef<ReturnType<typeof setTimeout> | null>(null);
   const continuousRef   = useRef(false);
 
-  const isEnglish = langCode === 'en';
-
   // ── speak ──────────────────────────────────────────────────────────────────
-  // Applies pronunciation correction, then speaks via Web Speech API.
+  // Applies pronunciation correction, then uses local TTS when enabled with
+  // browser speech synthesis as the fallback.
 
-  const speak = useCallback(async (text: string, hindiText?: string) => {
+  const speak = useCallback(async (text: string, hindiText?: string, languageOverride?: string) => {
     if (!voice.ttsSupported || !text?.trim()) return;
+    const activeLang = languageOverride || langCode;
+    const activeIsEnglish = activeLang === 'en' || activeLang.toLowerCase().startsWith('en-');
 
     // Interrupt any current speech
     voice.stop();
 
     // Apply display rule: English → speak English; other → speak Hindi/dialect
-    const textToProcess = isEnglish ? text : (hindiText || text);
+    const textToProcess = activeIsEnglish ? text : (hindiText || text);
 
     // Check offline cache first
-    const cachedTTS = offlineCache.getTTS(textToProcess, langCode);
+    const cachedTTS = offlineCache.getTTS(textToProcess, activeLang);
     if (cachedTTS) {
-      lastSpokenRef.current = { text: cachedTTS, hindi: hindiText };
-      await voice.play(cachedTTS, langCode);
+      lastSpokenRef.current = { text: cachedTTS, hindi: hindiText, language: activeLang };
+      await voice.play(cachedTTS, activeLang);
       return;
     }
 
     // Get pronunciation-corrected text from backend (with offline fallback)
-    const prepared = await prepareTTS(textToProcess, langCode, pageContext);
+    const prepared = await prepareTTS(textToProcess, activeLang, pageContext);
 
     // Cache the result for offline use
-    offlineCache.setTTS(textToProcess, langCode, prepared.ttsText);
+    offlineCache.setTTS(textToProcess, activeLang, prepared.ttsText);
 
-    lastSpokenRef.current = { text: prepared.ttsText, hindi: hindiText };
-    await voice.play(prepared.ttsText, langCode);
-  }, [voice, langCode, isEnglish, pageContext, offlineCache]);
+    lastSpokenRef.current = { text: prepared.ttsText, hindi: hindiText, language: activeLang };
+    await voice.play(prepared.ttsText, activeLang);
+  }, [voice, langCode, pageContext, offlineCache]);
 
   // ── speakChunk (streaming) ─────────────────────────────────────────────────
   // Buffer chunks and speak when a sentence boundary is detected.
@@ -194,28 +195,27 @@ export function useVoiceEngine(pageContext?: string): VoiceEngineState & VoiceEn
   }, [voice, langCode]);
 
   // ── interrupt ──────────────────────────────────────────────────────────────
-
   const interrupt = useCallback(() => {
     voice.stop();
     if (streamTimerRef.current) clearTimeout(streamTimerRef.current);
     streamBufferRef.current = '';
     setMode('idle');
-  }, [voice]);
+  }, [voice.stop]);
 
   // ── replay ─────────────────────────────────────────────────────────────────
 
   const replay = useCallback(() => {
     if (!lastSpokenRef.current) return;
-    const { text, hindi } = lastSpokenRef.current;
-    speak(text, hindi);
+    const { text, hindi, language } = lastSpokenRef.current;
+    speak(text, hindi, language);
   }, [speak]);
 
   // ── startListening ─────────────────────────────────────────────────────────
 
   const startListening = useCallback(
-    (onResult: (result: PipelineResult) => void, ctx?: string) => {
+    (onResult: (result: PipelineResult) => void, ctx?: string, languageOverride?: string) => {
       setMode('idle');
-      pipeline.startListening(onResult, ctx || pageContext);
+      pipeline.startListening(onResult, ctx || pageContext, languageOverride);
     },
     [pipeline, pageContext]
   );
@@ -285,11 +285,13 @@ export function useVoiceEngine(pageContext?: string): VoiceEngineState & VoiceEn
   return {
     // State
     ttsState: voice.ttsState,
-    sttState: voice.sttState,
-    sttError: voice.sttError,
-    interim: voice.interim,
+    // Listening is started/stopped by useSpeechPipeline's useVoiceAI instance.
+    // Expose that same instance's state so the microphone UI can reflect it.
+    sttState: pipeline.sttState,
+    sttError: pipeline.sttError,
+    interim: pipeline.interim,
     ttsSupported: voice.ttsSupported,
-    sttSupported: voice.sttSupported,
+    sttSupported: pipeline.sttSupported,
     processing: pipeline.processing,
     mode,
     isHolding,

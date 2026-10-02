@@ -55,6 +55,7 @@ export default function VoiceButton({
     if (!voice.ready || disabled) return;
 
     if (mode === 'speak' && speakText) {
+      if (voice.ttsState === 'loading') return;
       if (voice.ttsState === 'playing') {
         voice.interrupt();
       } else if (voice.ttsState === 'paused') {
@@ -159,7 +160,7 @@ export default function VoiceButton({
     <button
       type="button"
       onClick={handleClick}
-      disabled={disabled || !voice.ready}
+      disabled={disabled || !voice.ready || (mode === 'speak' && voice.ttsState === 'loading')}
       aria-label={mode === 'speak' ? 'Play voice' : 'Voice input'}
       aria-pressed={isActive}
       className={`${baseClass} ${colorClass} ${className}`}

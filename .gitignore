@@ -12,8 +12,41 @@ backend/.env
 **/.venv/
 **/.venv312/
 **/venv/
+Ai/parler_tts_env/
 
 
 
 # Raw voice datasets
 Ai/voice_dataset/*/raw/
+
+# AI Environment and Secrets
+Ai/.env
+Ai/ml/
+
+# Voice Models and Binaries
+Ai/voice_models/piper/
+Ai/voice_models/voices/
+
+# Machine Learning Weights and Models
+Ai/weights/
+Ai/*.pt
+Ai/speech_to_text/models/
+
+# Temporary and Output files
+Ai/outputs/
+Ai/*.wav
+Ai/test_out.txt
+Ai_logs.txt
+issues.txt
+outputs_screenshots/
+
+# Antigravity CLI and Worktrees
+**/.gemini/
+.kilo/
+
+*.zip
+*.png
+screenshots/
+context.txt
+proposed_idea.txt
+

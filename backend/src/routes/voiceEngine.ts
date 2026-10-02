@@ -143,6 +143,38 @@ router.post('/prepare-tts', async (req: AuthenticatedRequest, res: Response) => 
 // Server-side STT for non-browser providers (Google, Azure, Local).
 // Browser STT is handled client-side by useVoiceAI — this is for future use.
 
+// Proxies local TTS to the existing Pragati AI bridge. The browser TTS remains
+// the client-side fallback when no local model is configured or available.
+router.post('/synthesize', async (req: AuthenticatedRequest, res: Response) => {
+  try {
+    const { text, langCode = 'hi' } = req.body as { text?: string; langCode?: string };
+    if (!text?.trim()) return res.status(400).json({ error: 'text is required' });
+    if (text.length > 3000) return res.status(413).json({ error: 'text exceeds the 3000 character limit' });
+
+    const provider = getActiveTTSProvider();
+    if (provider.name !== 'local') {
+      return res.status(503).json({ error: 'Local TTS is not enabled' });
+    }
+
+    const langBcp47 = getVoiceBcp47ForCode(langCode);
+    const result = await provider.synthesize(text.trim(), langBcp47);
+    if (!result.audioData) {
+      return res.status(503).json({ error: 'The local TTS provider returned no audio' });
+    }
+
+    return res.json({
+      success: true,
+      audioBase64: result.audioData,
+      mimeType: result.mimeType || 'audio/wav',
+      provider: result.provider,
+      langBcp47,
+    });
+  } catch (err: any) {
+    console.error('[VoiceEngine] synthesize error:', err.message);
+    return res.status(503).json({ error: 'Local speech synthesis is unavailable' });
+  }
+});
+
 router.post('/transcribe', async (req: AuthenticatedRequest, res: Response) => {
   try {
     const { langCode = 'hi', dialectCode } = req.body as {

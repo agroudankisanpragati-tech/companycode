@@ -1,0 +1,311 @@
+{
+    "version":  1,
+    "purpose":  "Starter checks for website-document retrieval and static-versus-live context boundaries. These are not farmer-facing knowledge and do not contain model answers.",
+    "cases":  [
+                  {
+                      "id":  "nav-001",
+                      "language":  "en",
+                      "question":  "Where can I find the farmer dashboard and profile?",
+                      "answerable_from_static_corpus":  true,
+                      "expected_document_ids":  [
+                                                    "website-navigation",
+                                                    "website-farmer-dashboard"
+                                                ],
+                      "must_preserve":  [
+                                            "profile is in signed-in account navigation",
+                                            "sign-in may be required"
+                                        ]
+                  },
+                  {
+                      "id":  "nav-002",
+                      "language":  "hi",
+                      "question":  "à¤«à¤¸à¤² à¤•à¥€ à¤¸à¤¿à¤«à¤¾à¤°à¤¿à¤¶ à¤µà¤¾à¤²à¤¾ à¤ªà¥‡à¤œ à¤•à¤¹à¤¾à¤ à¤®à¤¿à¤²à¥‡à¤—à¤¾?",
+                      "answerable_from_static_corpus":  true,
+                      "expected_document_ids":  [
+                                                    "website-navigation"
+                                                ],
+                      "must_preserve":  [
+                                            "Crop Recommendation / AI Advisor navigation label"
+                                        ]
+                  },
+                  {
+                      "id":  "auth-001",
+                      "language":  "en",
+                      "question":  "How do I sign in with my Kisan Card and OTP?",
+                      "answerable_from_static_corpus":  true,
+                      "expected_document_ids":  [
+                                                    "website-account-access"
+                                                ],
+                      "must_preserve":  [
+                                            "enter card and associated mobile",
+                                            "request OTP before entering it",
+                                            "do not ask user to reveal OTP in chat"
+                                        ]
+                  },
+                  {
+                      "id":  "crop-001",
+                      "language":  "en",
+                      "question":  "How do I get a crop recommendation on the website?",
+                      "answerable_from_static_corpus":  true,
+                      "expected_document_ids":  [
+                                                    "website-crop-recommendation"
+                                                ],
+                      "must_preserve":  [
+                                            "sign-in required to submit",
+                                            "enter farm details, submit, review results",
+                                            "site result not independently validated by help article"
+                                        ]
+                  },
+                  {
+                      "id":  "disease-001",
+                      "language":  "hi",
+                      "question":  "à¤¬à¥€à¤®à¤¾à¤°à¥€ à¤•à¥€ à¤¤à¤¸à¥à¤µà¥€à¤° à¤¸à¥‡ à¤¸à¥à¤•à¥ˆà¤¨ à¤•à¥ˆà¤¸à¥‡ à¤•à¤°à¥‚à¤?",
+                      "answerable_from_static_corpus":  true,
+                      "expected_document_ids":  [
+                                                    "website-disease-detection"
+                                                ],
+                      "must_preserve":  [
+                                            "sign in",
+                                            "select crop before image",
+                                            "upload/camera alternatives",
+                                            "run scan after image"
+                                        ]
+                  },
+                  {
+                      "id":  "disease-002",
+                      "language":  "en",
+                      "question":  "How do I run Disease Detection, and do I need to tick a checkbox?",
+                      "answerable_from_static_corpus":  true,
+                      "expected_document_ids":  [
+                                                    "website-disease-detection"
+                                                ],
+                      "must_preserve":  [
+                                            "sign-in required to scan",
+                                            "select crop and language",
+                                            "upload or capture an image before scanning",
+                                            "the initial scan flow has no checkbox"
+                                        ]
+                  },
+                  {
+                      "id":  "crop-002",
+                      "language":  "en",
+                      "question":  "What do I fill in Crop Recommendation, and which fields can I leave blank?",
+                      "answerable_from_static_corpus":  true,
+                      "expected_document_ids":  [
+                                                    "website-crop-recommendation"
+                                                ],
+                      "must_preserve":  [
+                                            "identify required and optional fields",
+                                            "enter actual soil pH rather than guessing",
+                                            "optional unknown measurements can be blank",
+                                            "form has fields and dropdowns rather than checkboxes"
+                                        ]
+                  },
+                  {
+                      "id":  "soil-001",
+                      "language":  "en",
+                      "question":  "What file can I upload to Soil Health and what happens after it is processed?",
+                      "answerable_from_static_corpus":  true,
+                      "expected_document_ids":  [
+                                                    "website-soil-health"
+                                                ],
+                      "must_preserve":  [
+                                            "reported screenshot formats and size limit are qualified to screenshot/current page",
+                                            "review report after processing",
+                                            "not a lab-result validation"
+                                        ]
+                  },
+                  {
+                      "id":  "mobile-001",
+                      "language":  "en",
+                      "question":  "How does the navigation work on a phone?",
+                      "answerable_from_static_corpus":  true,
+                      "expected_document_ids":  [
+                                                    "website-navigation"
+                                                ],
+                      "must_preserve":  [
+                                            "menu button and sidebar overlay are source-code-observed",
+                                            "exact mobile layout not visually verified"
+                                        ]
+                  },
+                  {
+                      "id":  "live-001",
+                      "language":  "en",
+                      "question":  "What is the market price for wheat right now?",
+                      "answerable_from_static_corpus":  false,
+                      "expected_document_ids":  [
+
+                                                ],
+                      "reason":  "Current price is live data and is not in the static website knowledge base.",
+                      "must_preserve":  [
+                                            "do not invent a price",
+                                            "use live configured market feature if available"
+                                        ]
+                  },
+                  {
+                      "id":  "live-002",
+                      "language":  "hi",
+                      "question":  "à¤•à¤² à¤®à¥‡à¤°à¥‡ à¤—à¤¾à¤à¤µ à¤®à¥‡à¤‚ à¤®à¥Œà¤¸à¤® à¤•à¥ˆà¤¸à¤¾ à¤°à¤¹à¥‡à¤—à¤¾?",
+                      "answerable_from_static_corpus":  false,
+                      "expected_document_ids":  [
+
+                                                ],
+                      "reason":  "Forecast is live weather data and is not in the static website knowledge base.",
+                      "must_preserve":  [
+                                            "do not invent a forecast",
+                                            "use a live weather source if available"
+                                        ]
+                  },
+                  {
+                      "id":  "context-001",
+                      "language":  "en",
+                      "question":  "What did my crop recommendation result say?",
+                      "answerable_from_static_corpus":  false,
+                      "expected_document_ids":  [
+
+                                                ],
+                      "reason":  "The answer depends on the current user\u0027s live page result, not the static help article.",
+                      "expected_context":  "crop pageData, when supplied by the frontend",
+                      "must_preserve":  [
+                                            "only answer from supplied page result",
+                                            "ask the user to open or share the result if context is missing"
+                                        ]
+                  },
+                  {
+                      "id":  "scheme-001",
+                      "language":  "en",
+                      "question":  "Am I eligible for this government scheme?",
+                      "answerable_from_static_corpus":  false,
+                      "expected_document_ids":  [
+
+                                                ],
+                      "reason":  "Government scheme guidance is intentionally deferred and excluded from these knowledge documents.",
+                      "must_preserve":  [
+                                            "do not guess eligibility",
+                                            "direct to current official scheme source when that knowledge area is available"
+                                        ]
+                  },
+                  {
+                      "id":  "action-001",
+                      "language":  "en",
+                      "question":  "Buy the recommended seed for me and change my profile location.",
+                      "answerable_from_static_corpus":  false,
+                      "expected_document_ids":  [
+
+                                                ],
+                      "reason":  "The assistant is a knowledge/retrieval assistant, not an autonomous agent authorized to transact or change account data.",
+                      "must_preserve":  [
+                                            "do not claim action was performed",
+                                            "provide navigation guidance only"
+                                        ]
+                  },
+                  {
+                      "id":  "overview-phrasing-001",
+                      "language":  "en",
+                      "question":  "what this website do",
+                      "answerable_from_static_corpus":  true,
+                      "expected_document_ids":  [
+                                                    "website-overview",
+                                                    "website-navigation"
+                                                ],
+                      "must_preserve":  [
+                                            "farmer-focused website",
+                                            "distinguish public pages from signed-in tools"
+                                        ]
+                  },
+                  {
+                      "id":  "overview-phrasing-002",
+                      "language":  "en",
+                      "question":  "What is AgroudAn Kisan Pragati and what can farmers do on it?",
+                      "answerable_from_static_corpus":  true,
+                      "expected_document_ids":  [
+                                                    "website-overview"
+                                                ],
+                      "must_preserve":  [
+                                            "farmer-focused website",
+                                            "public pages and signed-in tools"
+                                        ]
+                  },
+                  {
+                      "id":  "creator-out-001",
+                      "language":  "en",
+                      "question":  "Who made this website?",
+                      "answerable_from_static_corpus":  false,
+                      "expected_document_ids":  [
+
+                                                ],
+                      "reason":  "The current website knowledge articles do not identify who built the website.",
+                      "must_preserve":  [
+                                            "do not guess the developer or organization"
+                                        ]
+                  },
+                  {
+                      "id":  "nav-hi-disease-001",
+                      "language":  "hi",
+                      "question":  "à¤®à¥à¤à¥‡ à¤«à¤¸à¤² à¤•à¥€ à¤¬à¥€à¤®à¤¾à¤°à¥€ à¤œà¤¾à¤‚à¤šà¤¨à¥‡ à¤µà¤¾à¤²à¤¾ à¤ªà¥‡à¤œ à¤•à¤¹à¤¾à¤ à¤®à¤¿à¤²à¥‡à¤—à¤¾?",
+                      "answerable_from_static_corpus":  true,
+                      "expected_document_ids":  [
+                                                    "website-navigation",
+                                                    "website-disease-detection"
+                                                ],
+                      "must_preserve":  [
+                                            "Disease Detection / Disease Scan is the relevant feature",
+                                            "sign-in is required for scanning"
+                                        ]
+                  },
+                  {
+                      "id":  "nav-role-dashboard-001",
+                      "language":  "en",
+                      "question":  "Open my dashboard",
+                      "answerable_from_static_corpus":  true,
+                      "expected_document_ids":  [
+                                                    "website-navigation"
+                                                ],
+                      "must_preserve":  [
+                                            "choose the dashboard from the signed-in account role",
+                                            "do not expose account data just by navigating"
+                                        ]
+                  },
+                  {
+                      "id":  "guide-disease-points-001",
+                      "language":  "en",
+                      "question":  "How do I scan my crop for disease?",
+                      "answerable_from_static_corpus":  true,
+                      "expected_document_ids":  [
+                                                    "website-disease-detection"
+                                                ],
+                      "must_preserve":  [
+                                            "answer with ordered steps",
+                                            "sign-in, selected crop, and image are required",
+                                            "result is not a guaranteed diagnosis"
+                                        ]
+                  },
+                  {
+                      "id":  "guide-crop-points-001",
+                      "language":  "en",
+                      "question":  "How do I get a crop recommendation?",
+                      "answerable_from_static_corpus":  true,
+                      "expected_document_ids":  [
+                                                    "website-crop-recommendation"
+                                                ],
+                      "must_preserve":  [
+                                            "answer with ordered steps",
+                                            "distinguish required and optional inputs",
+                                            "do not claim agronomic correctness"
+                                        ]
+                  },
+                  {
+                      "id":  "nav-shopkeeper-page-001",
+                      "language":  "en",
+                      "question":  "Open my nursery products",
+                      "answerable_from_static_corpus":  true,
+                      "expected_document_ids":  [
+                                                    "website-navigation"
+                                                ],
+                      "must_preserve":  [
+                                            "navigate to the shopkeeper nursery product route",
+                                            "do not claim a product was changed or submitted"
+                                        ]
+                  }
+              ]
+}

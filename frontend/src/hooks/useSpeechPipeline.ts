@@ -73,7 +73,7 @@ export interface SpeechPipelineControls {
    * Process any text (typed or from STT) through the full pipeline.
    * Returns englishForBackend (send to AI/DB) + displayText + voiceText.
    */
-  processText: (rawText: string, overrideContext?: string) => Promise<PipelineResult>;
+  processText: (rawText: string, overrideContext?: string, languageOverride?: string) => Promise<PipelineResult>;
 
   /**
    * Translate English backend output (AI response, DB content) for display.
@@ -86,7 +86,7 @@ export interface SpeechPipelineControls {
    * Start STT listening. Automatically runs the transcript through the pipeline.
    * onResult receives the full PipelineResult.
    */
-  startListening: (onResult: (result: PipelineResult) => void, overrideContext?: string) => void;
+  startListening: (onResult: (result: PipelineResult) => void, overrideContext?: string, languageOverride?: string) => void;
 
   /** Stop STT listening */
   stopListening: () => void;
@@ -123,10 +123,10 @@ export function useSpeechPipeline(overrideContext?: string): SpeechPipelineState
   // ── processText ─────────────────────────────────────────────────────────────
 
   const processText = useCallback(
-    async (rawText: string, ctx?: string): Promise<PipelineResult> => {
+    async (rawText: string, ctx?: string, languageOverride?: string): Promise<PipelineResult> => {
       setProcessing(true);
       try {
-        const result = await runPipeline(rawText, langCode, ctx ?? pageCtx);
+        const result = await runPipeline(rawText, languageOverride || langCode, ctx ?? pageCtx);
         setLastResult(result);
         return result;
       } finally {
@@ -148,9 +148,9 @@ export function useSpeechPipeline(overrideContext?: string): SpeechPipelineState
   // ── startListening ───────────────────────────────────────────────────────────
 
   const startListening = useCallback(
-    (onResult: (result: PipelineResult) => void, ctx?: string) => {
-      voice.startListening(langCode, async (transcript: string) => {
-        const result = await processText(transcript, ctx);
+    (onResult: (result: PipelineResult) => void, ctx?: string, languageOverride?: string) => {
+      voice.startListening(languageOverride || langCode, async (transcript: string) => {
+        const result = await processText(transcript, ctx, languageOverride);
         onResult(result);
       });
     },

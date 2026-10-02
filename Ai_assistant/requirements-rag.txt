@@ -1,0 +1,6 @@
+# Install into the project's existing Ai/ml virtual environment.
+# Keep torch/numpy pinned by Ai/requirements.txt; these packages should reuse them.
+chromadb==1.5.9
+sentence-transformers==5.7.0
+kubernetes==31.0.0
+PyYAML==6.0.1

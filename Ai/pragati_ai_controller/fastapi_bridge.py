@@ -17,6 +17,7 @@
 
 from __future__ import annotations
 
+import base64
 import asyncio
 import functools
 import hashlib
@@ -36,7 +37,7 @@ from pathlib import Path
 from typing import Any, Optional
 
 import uvicorn
-from fastapi import FastAPI, File, Form, HTTPException, UploadFile
+from fastapi import FastAPI, File, Form, HTTPException, Request, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
 from pydantic import BaseModel
@@ -47,8 +48,10 @@ from pydantic import BaseModel
 
 _BRIDGE_DIR = Path(__file__).resolve().parent   # pragati_ai_controller/
 _AI_ROOT    = _BRIDGE_DIR.parent                # Ai/
+_REPO_ROOT  = _AI_ROOT.parent
+_RAG_ROOT   = _REPO_ROOT / "Ai_assistant"
 
-for _p in (str(_AI_ROOT), str(_BRIDGE_DIR)):
+for _p in (str(_AI_ROOT), str(_BRIDGE_DIR), str(_RAG_ROOT)):
     if _p not in sys.path:
         sys.path.insert(0, _p)
 
@@ -487,6 +490,114 @@ async def diagnostics():
 
 class IntentRequest(BaseModel):
     text: str
+
+
+class WebsiteRAGRequest(BaseModel):
+    query: str
+    top_k: int = 5
+    document_id: str | None = None
+
+
+class TTSRequest(BaseModel):
+    text: str
+    lang: str = "hi"
+
+
+def _retrieve_website_rag(query: str, top_k: int, document_id: str | None = None) -> dict[str, Any]:
+    """Retrieve local website help only. Agriculture drafts stay out of chat."""
+    from rag.retriever import retrieve_chunks
+    return {"results": retrieve_chunks("website", query, top_k, document_id)}
+
+
+@app.post("/rag/website/retrieve")
+async def retrieve_website_rag(req: WebsiteRAGRequest, request: Request):
+    """Loopback-only retrieval bridge for the Node development backend."""
+    client_host = request.client.host if request.client else ""
+    if client_host not in {"127.0.0.1", "::1", "testclient"}:
+        raise HTTPException(status_code=403, detail="Local development endpoint only")
+    if not req.query.strip():
+        raise HTTPException(status_code=400, detail="query is required")
+    try:
+        return await _run_in_executor(_retrieve_website_rag, req.query.strip(), req.top_k, req.document_id)
+    except Exception as exc:
+        _log.error("website RAG retrieval failed: %s", exc, exc_info=True)
+        raise HTTPException(status_code=503, detail="Website knowledge retrieval is unavailable")
+
+
+@app.get("/tts/health")
+async def indic_parler_health():
+    """Reports whether Indic Parler-TTS is configured without loading its model."""
+    from pragati_ai_controller.indic_parler_worker import get_worker_status
+    return JSONResponse(content=get_worker_status())
+
+
+@app.post("/tts/synthesize")
+async def tts_synthesize(req: TTSRequest, request: Request):
+    """Synthesize chatbot reply audio — Piper TTS primary, Indic Parler fallback."""
+    client_host = request.client.host if request.client else ""
+    if client_host not in {"127.0.0.1", "::1", "testclient"}:
+        raise HTTPException(status_code=403, detail="Local development endpoint only")
+    text = req.text.strip()
+    if not text:
+        raise HTTPException(status_code=400, detail="text is required")
+    if len(text) > 3000:
+        raise HTTPException(status_code=413, detail="text exceeds the 3000 character limit")
+
+    # PRIMARY: Piper TTS (fast, offline, neural)
+    # piper.exe:    Ai/voice_models/piper/piper.exe
+    # voice models: Ai/voice_models/voices/<lang>/*.onnx
+    try:
+        from pragati_ai_controller.voice_generator.voice_generator import PiperTTSEngine
+        from pragati_ai_controller.config import get_config as _get_cfg
+        import base64 as _b64
+
+        _cfg = _get_cfg()
+        piper_exe  = _cfg.ai_root / "voice_models" / "piper" / "piper.exe"
+        voices_dir = _cfg.ai_root / "voice_models" / "voices"
+
+        piper = PiperTTSEngine(piper_exe=piper_exe, voices_dir=voices_dir)
+        if piper.is_available():
+            t0 = time.monotonic()
+            _log.info("Piper TTS | chars=%d lang=%s", len(text), req.lang)
+            # synthesize_to_bytes avoids the time.time() race condition
+            wav_bytes = await _run_in_executor(piper.synthesize_to_bytes, text, req.lang)
+            if wav_bytes:
+                _log.info("Piper TTS OK | %.2fs %d bytes lang=%s",
+                          time.monotonic() - t0, len(wav_bytes), req.lang)
+                return JSONResponse(content={
+                    "audioBase64": _b64.b64encode(wav_bytes).decode("ascii"),
+                    "mimeType":    "audio/wav",
+                    "provider":    "piper",
+                    "language":    req.lang,
+                })
+            _log.warning("Piper TTS returned no audio — falling through to Parler")
+        else:
+            _log.warning("Piper TTS not available (piper.exe or .onnx missing) — trying Parler")
+    except ImportError as _imp:
+        _log.warning("Piper TTS import failed (non-fatal): %s", _imp)
+    except Exception as _pe:
+        _log.warning("Piper TTS error (non-fatal): %s", _pe)
+
+    # FALLBACK: Indic Parler TTS (GPU, higher quality)
+    try:
+        from pragati_ai_controller.indic_parler_worker import synthesize
+        t0 = time.monotonic()
+        _log.info("Indic Parler synthesis started | chars=%d lang=%s", len(text), req.lang)
+        result = await _run_in_executor(synthesize, text, req.lang)
+        _log.info("Indic Parler synthesis completed | %.1fs lang=%s",
+                  time.monotonic() - t0, result["language"])
+        return JSONResponse(content={
+            "audioBase64": result["audio_base64"],
+            "mimeType":    "audio/wav",
+            "provider":    "indic-parler",
+            "language":    result["language"],
+        })
+    except RuntimeError as exc:
+        _log.warning("Indic Parler-TTS unavailable: %s", exc)
+        raise HTTPException(status_code=503, detail=str(exc))
+    except Exception as exc:
+        _log.error("Indic Parler-TTS synthesis failed: %s", exc, exc_info=True)
+        raise HTTPException(status_code=500, detail="Local speech synthesis failed")
 
 
 @app.post("/intent/predict")

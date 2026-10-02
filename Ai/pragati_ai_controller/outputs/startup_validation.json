@@ -1,58 +1,58 @@
 {
   "status": "READY",
-  "timestamp": "2026-07-15T14:40:15.101441+00:00",
-  "elapsed_ms": 7919.12,
-  "total_checks": 25,
-  "passed": 21,
-  "warnings": 4,
+  "timestamp": "2026-10-01T13:15:00.769009+00:00",
+  "elapsed_ms": 17831.65,
+  "total_checks": 27,
+  "passed": 26,
+  "warnings": 1,
   "errors": 0,
   "checks": [
     {
       "name": "python_version",
       "passed": true,
-      "message": "Python 3.13 — OK",
+      "message": "Python 3.10 — OK",
       "critical": false,
       "status": "PASS"
     },
     {
       "name": "env_file",
       "passed": true,
-      "message": "C:\\Users\\mohit\\OneDrive\\Desktop\\New folder (2)\\companycode\\Ai\\.env",
+      "message": "D:\\companycode\\Ai\\.env",
       "critical": false,
       "status": "PASS"
     },
     {
       "name": "logs_dir",
       "passed": true,
-      "message": "C:\\Users\\mohit\\OneDrive\\Desktop\\New folder (2)\\companycode\\Ai\\pragati_ai_controller\\logs",
+      "message": "D:\\companycode\\Ai\\pragati_ai_controller\\logs",
       "critical": false,
       "status": "PASS"
     },
     {
       "name": "outputs_dir",
       "passed": true,
-      "message": "C:\\Users\\mohit\\OneDrive\\Desktop\\New folder (2)\\companycode\\Ai\\pragati_ai_controller\\outputs",
+      "message": "D:\\companycode\\Ai\\pragati_ai_controller\\outputs",
       "critical": false,
       "status": "PASS"
     },
     {
       "name": "memory_dir",
       "passed": true,
-      "message": "C:\\Users\\mohit\\OneDrive\\Desktop\\New folder (2)\\companycode\\Ai\\pragati_ai_controller\\outputs\\memory",
+      "message": "D:\\companycode\\Ai\\pragati_ai_controller\\outputs\\memory",
       "critical": false,
       "status": "PASS"
     },
     {
       "name": "configs_dir",
       "passed": true,
-      "message": "C:\\Users\\mohit\\OneDrive\\Desktop\\New folder (2)\\companycode\\Ai\\pragati_ai_controller\\configs",
+      "message": "D:\\companycode\\Ai\\pragati_ai_controller\\configs",
       "critical": false,
       "status": "PASS"
     },
     {
       "name": "yolo_weights",
       "passed": true,
-      "message": "C:\\Users\\mohit\\OneDrive\\Desktop\\New folder (2)\\companycode\\Ai\\weights\\checkpoints\\best.pt",
+      "message": "D:\\companycode\\Ai\\weights\\checkpoints\\best.pt",
       "critical": false,
       "status": "PASS"
     },
@@ -71,39 +71,53 @@
       "status": "PASS"
     },
     {
+      "name": "session_store",
+      "passed": true,
+      "message": "SessionStore read/write OK",
+      "critical": false,
+      "status": "PASS"
+    },
+    {
+      "name": "context_resolver",
+      "passed": true,
+      "message": "ContextResolver OK",
+      "critical": false,
+      "status": "PASS"
+    },
+    {
       "name": "voice_model",
       "passed": true,
-      "message": "piper.exe + 1 voice model(s) found",
+      "message": "piper.exe + 4 voice model(s) found",
       "critical": false,
       "status": "PASS"
     },
     {
       "name": "stt_model",
       "passed": false,
-      "message": "No STT model in C:\\Users\\mohit\\OneDrive\\Desktop\\New folder (2)\\companycode\\Ai\\speech_to_text\\models\\faster_whisper — will auto-download on first use",
+      "message": "No STT model in D:\\companycode\\Ai\\speech_to_text\\models\\faster_whisper — will auto-download on first use",
       "critical": false,
       "status": "WARN"
     },
     {
       "name": "knowledge_base",
       "passed": true,
-      "message": "Knowledge base directory found: C:\\Users\\mohit\\OneDrive\\Desktop\\New folder (2)\\companycode\\Ai\\knowledge_base",
+      "message": "Knowledge base directory found: D:\\companycode\\Ai\\knowledge_base",
       "critical": false,
       "status": "PASS"
     },
     {
       "name": "dataset_index",
       "passed": true,
-      "message": "C:\\Users\\mohit\\OneDrive\\Desktop\\New folder (2)\\companycode\\Ai\\outputs\\dataset_index.json",
+      "message": "D:\\companycode\\Ai\\outputs\\dataset_index.json",
       "critical": false,
       "status": "PASS"
     },
     {
       "name": "mongodb",
-      "passed": false,
-      "message": "pymongo not installed",
+      "passed": true,
+      "message": "Connected: mongodb://localhost:27017/kisan-pragati",
       "critical": false,
-      "status": "WARN"
+      "status": "PASS"
     },
     {
       "name": "import_torch",
@@ -121,10 +135,10 @@
     },
     {
       "name": "import_faster_whisper",
-      "passed": false,
-      "message": "faster_whisper not installed — pip install faster_whisper",
+      "passed": true,
+      "message": "faster_whisper available",
       "critical": false,
-      "status": "WARN"
+      "status": "PASS"
     },
     {
       "name": "import_sklearn",
@@ -170,10 +184,10 @@
     },
     {
       "name": "import_pymongo",
-      "passed": false,
-      "message": "pymongo not installed — pip install pymongo",
+      "passed": true,
+      "message": "pymongo available",
       "critical": false,
-      "status": "WARN"
+      "status": "PASS"
     },
     {
       "name": "bridge_config",

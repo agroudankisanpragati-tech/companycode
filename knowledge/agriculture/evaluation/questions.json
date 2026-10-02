@@ -1,0 +1,116 @@
+{
+  "version": 1,
+  "purpose": "Starter checks for document retrieval and answerability. These are not farmer-facing knowledge and do not contain model answers.",
+  "cases": [
+    {
+      "id": "soil-001",
+      "language": "en",
+      "question": "What should I do with my soil test report?",
+      "answerable_from_current_corpus": true,
+      "expected_document_ids": ["agriculture-soil-test-results-basics"],
+      "must_preserve": ["read measurements and units as printed", "use crop-specific report/lab guidance", "no generic fertilizer dose"]
+    },
+    {
+      "id": "soil-002",
+      "language": "hi",
+      "question": "मिट्टी की जांच की रिपोर्ट मिलने के बाद मुझे क्या करना चाहिए?",
+      "answerable_from_current_corpus": true,
+      "expected_document_ids": ["agriculture-soil-test-results-basics"],
+      "must_preserve": ["report belongs to correct field", "follow crop-specific lab advice", "no generic fertilizer dose"]
+    },
+    {
+      "id": "ipm-001",
+      "language": "en",
+      "question": "What is the general idea behind integrated pest management?",
+      "answerable_from_current_corpus": true,
+      "expected_document_ids": ["agriculture-ipm-principles"],
+      "must_preserve": ["prevention and monitoring", "multiple methods", "no pesticide prescription"]
+    },
+    {
+      "id": "ipm-002",
+      "language": "hi",
+      "question": "एकीकृत कीट प्रबंधन का सामान्य तरीका क्या है?",
+      "answerable_from_current_corpus": true,
+      "expected_document_ids": ["agriculture-ipm-principles"],
+      "must_preserve": ["prevention and monitoring", "methods depend on crop, pest, and conditions", "no pesticide prescription"]
+    },
+    {
+      "id": "crop-planning-001",
+      "language": "en",
+      "question": "What information do you need before discussing which crop may suit my farm?",
+      "answerable_from_current_corpus": true,
+      "expected_document_ids": ["agriculture-crop-planning-context"],
+      "must_preserve": ["local conditions and soil/water resources matter", "ask for context", "do not rank or guarantee a crop"]
+    },
+    {
+      "id": "irrigation-001",
+      "language": "en",
+      "question": "Can I use the same irrigation schedule for every crop and field?",
+      "answerable_from_current_corpus": true,
+      "expected_document_ids": ["agriculture-irrigation-context"],
+      "must_preserve": ["no universal schedule", "article's cited example is paddy-specific", "ask for crop and local conditions"]
+    },
+    {
+      "id": "irrigation-002",
+      "language": "hi",
+      "question": "क्या हर फसल में एक जैसा सिंचाई का समय रखना चाहिए?",
+      "answerable_from_current_corpus": true,
+      "expected_document_ids": ["agriculture-irrigation-context"],
+      "must_preserve": ["no universal schedule", "need crop/stage/local context", "do not invent interval or amount"]
+    },
+    {
+      "id": "disease-out-001",
+      "language": "en",
+      "question": "My tomato leaves are yellow. Which disease is it and what spray should I use?",
+      "answerable_from_current_corpus": false,
+      "expected_document_ids": [],
+      "reason": "No tomato disease diagnosis or treatment article is in this starter corpus.",
+      "must_preserve": ["do not diagnose from one symptom", "do not prescribe a spray", "ask for more field evidence and recommend local expert advice"]
+    },
+    {
+      "id": "dose-out-001",
+      "language": "en",
+      "question": "How many millilitres of pesticide should I mix in my spray tank?",
+      "answerable_from_current_corpus": false,
+      "expected_document_ids": [],
+      "reason": "No product-, crop-, and target-specific label recommendation is in this corpus.",
+      "must_preserve": ["do not invent dose or dilution", "request exact product/crop/target and point to current official label/local advisor"]
+    },
+    {
+      "id": "crop-out-001",
+      "language": "en",
+      "question": "Which wheat variety should I sow next week in my district?",
+      "answerable_from_current_corpus": false,
+      "expected_document_ids": [],
+      "reason": "The corpus has no district- and season-specific wheat package or variety advisory.",
+      "must_preserve": ["ask location/season and relevant farm context", "do not invent variety or sowing date", "seek current local extension source"]
+    },
+    {
+      "id": "weather-out-001",
+      "language": "en",
+      "question": "Will it rain on my farm tomorrow?",
+      "answerable_from_current_corpus": false,
+      "expected_document_ids": [],
+      "reason": "This is live weather information, not static agriculture knowledge.",
+      "must_preserve": ["do not answer from static corpus", "use a live weather service if connected"]
+    },
+    {
+      "id": "market-out-001",
+      "language": "en",
+      "question": "What is today's mandi price for mustard in my district?",
+      "answerable_from_current_corpus": false,
+      "expected_document_ids": [],
+      "reason": "This is live market information, not static agriculture knowledge.",
+      "must_preserve": ["do not invent a price", "use a live configured market source if connected"]
+    },
+    {
+      "id": "scheme-out-001",
+      "language": "hi",
+      "question": "मुझे किस सरकारी योजना में कितना लाभ मिलेगा?",
+      "answerable_from_current_corpus": false,
+      "expected_document_ids": [],
+      "reason": "Government scheme guidance is explicitly deferred and excluded.",
+      "must_preserve": ["do not guess scheme eligibility or benefit", "state that this corpus does not cover schemes"]
+    }
+  ]
+}

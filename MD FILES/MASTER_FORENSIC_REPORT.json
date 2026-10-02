@@ -1,0 +1,292 @@
+{
+  "reportMetadata": {
+    "title": "Companycode Master Forensic Report",
+    "date": "2026-08-26",
+    "scope": "Read-only forensic analysis — no code modified",
+    "status": "CRITICALLY BROKEN"
+  },
+  "architecture": {
+    "frontend": {
+      "framework": "Next.js 14",
+      "port": 3000,
+      "language": "TypeScript",
+      "ui": "Tailwind CSS 3.3"
+    },
+    "backend": {
+      "framework": "Express.js 4.18",
+      "port": 4000,
+      "language": "TypeScript",
+      "database": "MongoDB (Mongoose 8.0)"
+    },
+    "admin": {
+      "framework": "Next.js",
+      "port": 3001
+    },
+    "aiServices": {
+      "yolo": {
+        "framework": "FastAPI",
+        "port": 8000,
+        "model": "YOLOv8s-cls",
+        "modelFile": "Ai/weights/yolov8s-cls.pt"
+      },
+      "pragatiAI": {
+        "framework": "FastAPI",
+        "port": 8001,
+        "purpose": "Root agent, intent, chat"
+      },
+      "voiceGuide": {
+        "framework": "FastAPI",
+        "port": 8002,
+        "purpose": "Avatar dialogues"
+      },
+      "llm": {
+        "provider": "OpenRouter",
+        "model": "openai/gpt-4o-mini",
+        "baseUrl": "https://openrouter.ai/api/v1"
+      }
+    },
+    "database": {
+      "type": "MongoDB",
+      "port": 27017,
+      "databaseName": "kisan-pragati",
+      "uri": "mongodb://localhost:27017/kisan-pragati",
+      "dataFilesPresent": true
+    }
+  },
+  "databases": [
+    {
+      "name": "MongoDB",
+      "technology": "MongoDB (WiredTiger)",
+      "connectionFile": "backend/src/config/database.ts",
+      "envVariable": "MONGODB_URI",
+      "backendService": "Express backend",
+      "databaseName": "kisan-pragati",
+      "location": "data/mongo/",
+      "dataFilesPresent": true
+    }
+  ],
+  "models": [
+    { "name": "User", "collection": "users", "purpose": "Authentication, profile base" },
+    { "name": "FarmerProfileData", "collection": "farmerprofiledata", "purpose": "Extended farmer profile" },
+    { "name": "AgroudAnKisanCard", "collection": "agroudankisancards", "purpose": "Kisan Card identity" },
+    { "name": "UserSettings", "collection": "usersettings", "purpose": "App preferences" },
+    { "name": "DiseaseRecommendation", "collection": "diseaserecommendations", "purpose": "Scan history" },
+    { "name": "DiseasePestSolution", "collection": "diseasepestsolutions", "purpose": "Knowledge base (admin-managed)" },
+    { "name": "CropKnowledgeBase", "collection": "cropknowledgebases", "purpose": "Crop recommendation cache" },
+    { "name": "FarmerCropRequest", "collection": "farmercroprequests", "purpose": "Recommendation request log" },
+    { "name": "MyCrop", "collection": "mycrops", "purpose": "Farmer's saved crops" },
+    { "name": "ActiveCrop", "collection": "activecrops", "purpose": "AI-FOS active growing crops" },
+    { "name": "CropTask", "collection": "croptasks", "purpose": "AI-FOS daily tasks" },
+    { "name": "SoilReport", "collection": "soilreports", "purpose": "Soil analysis reports" },
+    { "name": "SoilStandard", "collection": "soilstandards", "purpose": "Soil benchmark data" },
+    { "name": "SoilMoisture", "collection": "soilmoistures", "purpose": "Cached moisture data" },
+    { "name": "FarmerMarketPreference", "collection": "farmermarketpreferences", "purpose": "Mandi preferences" },
+    { "name": "MarketPriceHistory", "collection": "marketpricehistories", "purpose": "Historical mandi prices" },
+    { "name": "GovtScheme", "collection": "govtschemes", "purpose": "Government schemes" },
+    { "name": "AIConversation", "collection": "aiconversations", "purpose": "Pragati AI chat history" },
+    { "name": "FarmerMemory", "collection": "farmermemories", "purpose": "AI conversation memory" },
+    { "name": "TranslationCache", "collection": "translationcaches", "purpose": "Translation cache" },
+    { "name": "LanguageDictionary", "collection": "languagedictionaries", "purpose": "Translation dictionary" }
+  ],
+  "backendServices": [
+    { "name": "auth", "file": "backend/src/routes/auth.ts", "port": 4000 },
+    { "name": "cardLogin", "file": "backend/src/routes/cardLogin.ts", "port": 4000 },
+    { "name": "users", "file": "backend/src/routes/users.ts", "port": 4000 },
+    { "name": "admin", "file": "backend/src/routes/admin.ts", "port": 4000 },
+    { "name": "crops", "file": "backend/src/routes/crops.ts", "port": 4000 },
+    { "name": "weather", "file": "backend/src/routes/weather.ts", "port": 4000 },
+    { "name": "mandi", "file": "backend/src/routes/mandi.ts", "port": 4000 },
+    { "name": "blogs", "file": "backend/src/routes/blogs.ts", "port": 4000 },
+    { "name": "gallery", "file": "backend/src/routes/gallery.ts", "port": 4000 },
+    { "name": "schemes", "file": "backend/src/routes/schemes.ts", "port": 4000 },
+    { "name": "shops", "file": "backend/src/routes/shops.ts", "port": 4000 },
+    { "name": "rewards", "file": "backend/src/routes/rewards.ts", "port": 4000 },
+    { "name": "cropRecommendation", "file": "backend/src/routes/cropRecommendation.ts", "port": 4000 },
+    { "name": "myCrops", "file": "backend/src/routes/myCrops.ts", "port": 4000 },
+    { "name": "soil", "file": "backend/src/routes/soil.ts", "port": 4000 },
+    { "name": "soilMoisture", "file": "backend/src/routes/soilMoisture.ts", "port": 4000 },
+    { "name": "irrigation", "file": "backend/src/routes/irrigation.ts", "port": 4000 },
+    { "name": "aiFos", "file": "backend/src/routes/aiFos.ts", "port": 4000 },
+    { "name": "aiAssistant", "file": "backend/src/routes/aiAssistant.ts", "port": 4000 },
+    { "name": "settings", "file": "backend/src/routes/settings.ts", "port": 4000 },
+    { "name": "farmerProfile", "file": "backend/src/routes/farmerProfile.ts", "port": 4000 },
+    { "name": "disease", "file": "backend/src/routes/disease.ts", "port": 4000 },
+    { "name": "fertilizerCalculator", "file": "backend/src/routes/fertilizerCalculator.ts", "port": 4000 },
+    { "name": "farmerStories", "file": "backend/src/routes/farmerStories.ts", "port": 4000 },
+    { "name": "shopkeeper", "file": "backend/src/routes/shopkeeper.ts", "port": 4000 },
+    { "name": "adminShopkeeper", "file": "backend/src/routes/adminShopkeeper.ts", "port": 4000 },
+    { "name": "diseasePestSolutions", "file": "backend/src/routes/diseasePestSolutions.ts", "port": 4000 },
+    { "name": "kvk", "file": "backend/src/routes/kvk.ts", "port": 4000 },
+    { "name": "languageDictionary", "file": "backend/src/routes/languageDictionary.ts", "port": 4000 },
+    { "name": "languageEngine", "file": "backend/src/routes/languageEngine.ts", "port": 4000 },
+    { "name": "memoryEngine", "file": "backend/src/routes/memoryEngine.ts", "port": 4000 },
+    { "name": "voiceEngine", "file": "backend/src/routes/voiceEngine.ts", "port": 4000 },
+    { "name": "voiceGuide", "file": "backend/src/routes/voiceGuide.ts", "port": 4000 },
+    { "name": "pragatiAI", "file": "backend/src/routes/pragatiAI.ts", "port": 4000 },
+    { "name": "support", "file": "backend/src/routes/support.ts", "port": 4000 },
+    { "name": "career", "file": "backend/src/routes/career.ts", "port": 4000 },
+    { "name": "kisanCard", "file": "backend/src/routes/kisanCard.ts", "port": 4000 },
+    { "name": "health", "file": "backend/src/routes/health.ts", "port": 4000 }
+  ],
+  "aiServices": [
+    {
+      "name": "YOLO Inference",
+      "type": "FastAPI",
+      "port": 8000,
+      "envVariable": "YOLO_SERVICE_URL",
+      "file": "Ai/fastapi_server.py",
+      "model": "YOLOv8s-cls",
+      "modelFile": "Ai/weights/yolov8s-cls.pt",
+      "endpoints": ["/health", "/crops", "/predict"]
+    },
+    {
+      "name": "Pragati AI Bridge",
+      "type": "FastAPI",
+      "port": 8001,
+      "envVariable": "PRAGATI_AI_BRIDGE_URL",
+      "file": "Ai/pragati_ai_controller/fastapi_bridge.py",
+      "endpoints": ["/process/text", "/process/voice", "/process/image", "/health", "/status", "/intent/predict"]
+    },
+    {
+      "name": "Voice Guide Bridge",
+      "type": "FastAPI",
+      "port": 8002,
+      "envVariable": "VOICE_GUIDE_BRIDGE_URL",
+      "file": "Ai/voice_guide_ai/api_bridge.py",
+      "endpoints": ["/voice-guide/initialize", "/voice-guide/page", "/voice-guide/play", "/health"]
+    },
+    {
+      "name": "OpenAI/OpenRouter LLM",
+      "type": "External API",
+      "port": 443,
+      "envVariable": "OPENAI_API_KEY",
+      "baseUrl": "https://openrouter.ai/api/v1",
+      "model": "openai/gpt-4o-mini",
+      "purpose": "LLM fallback for general intent, soil analysis, crop recommendations"
+    }
+  ],
+  "frontendApiConsumers": [
+    { "service": "AuthContext", "endpoints": ["/api/auth/login", "/api/auth/register", "/api/auth/me", "/api/auth/register/request-otp", "/api/auth/register/verify-otp", "/api/auth/card/request-otp", "/api/auth/card/verify-otp"] },
+    { "service": "farmerProfile", "endpoints": ["/api/farmer-profile", "/api/farmer-profile/avatar", "/api/farmer-profile/farm", "/api/farmer-profile/land", "/api/farmer-profile/crop", "/api/farmer-profile/account", "/api/settings/change-password"] },
+    { "service": "weather", "endpoints": ["/api/weather", "/api/weather/search"] },
+    { "service": "mandibav", "endpoints": ["/api/mandi/prices", "/api/mandi/current", "/api/mandi/history", "/api/mandi/preference"] },
+    { "service": "soilHealth", "endpoints": ["/api/soil/upload", "/api/soil/analyze", "/api/soil/history", "/api/soil/:id", "/api/soil/crops/:id", "/api/soil/translate"] },
+    { "service": "soilMoisture", "endpoints": ["/api/soil-moisture", "/api/soil-moisture/location", "/api/soil-moisture/cache"] },
+    { "service": "cropRecommendation", "endpoints": ["/api/crop-recommendation", "/api/crop-recommendation/history", "/api/crop-recommendation/:id", "/api/crop-recommendation/translate", "/api/crop-recommendation/feedback"] },
+    { "service": "myCrops", "endpoints": ["/api/my-crops", "/api/my-crops/:id"] },
+    { "service": "pragatiAI", "endpoints": ["/api/pragati-ai/text", "/api/pragati-ai/voice", "/api/pragati-ai/image", "/api/pragati-ai/history", "/api/pragati-ai/health", "/api/pragati-ai/stats", "/api/pragati-ai/session/:id"] },
+    { "service": "voiceGuide", "endpoints": ["/api/voice-guide/initialize", "/api/voice-guide/page", "/api/voice-guide/play", "/api/voice-guide/replay", "/api/voice-guide/language", "/api/voice-guide/online", "/api/voice-guide/status", "/api/voice-guide/dialogue/:page/:type", "/api/voice-guide/translation/:lang/:page", "/api/voice-guide/avatar/config", "/api/voice-guide/health"] },
+    { "service": "speechPipeline", "endpoints": ["/api/language-engine/pipeline", "/api/language-engine/translate-output", "/api/language-engine/detect-language"] },
+    { "service": "kisanCard", "endpoints": ["/api/kisan-card/status", "/api/kisan-card", "/api/kisan-card/admin/user/:userId"] },
+    { "service": "fertilizerCalculator", "endpoints": ["/api/fertilizer-calculator/calculate", "/api/fertilizer-calculator/meta", "/api/fertilizer-calculator/soil-reports"] },
+    { "service": "aiFos", "endpoints": ["/api/ai-fos/activate", "/api/ai-fos/dashboard", "/api/ai-fos/active-crops", "/api/ai-fos/tasks/:id", "/api/ai-fos/schemes", "/api/ai-fos/translate"] }
+  ],
+  "confirmedSchemaMismatches": [
+    {
+      "feature": "Weather (location query)",
+      "backendReturns": { "success": true, "location": {...}, "data": { "current": {...}, "daily": [...], "hourly": [...] } },
+      "frontendExpects": "payload.current (for coords) vs payload.data.current (for location)",
+      "severity": "HIGH",
+      "file": "backend/src/routes/weather.ts:12-14"
+    },
+    {
+      "feature": "Mandi current prices",
+      "backendReturns": "arrivalDate",
+      "frontendExpects": "date",
+      "severity": "MEDIUM",
+      "file": "backend/src/routes/mandi.ts:252"
+    }
+  ],
+  "diseaseScanRootCause": {
+    "issue": "YOLO FastAPI service dependency",
+    "backendFile": "backend/src/services/yoloService.ts",
+    "pythonFile": "Ai/fastapi_server.py",
+    "port": 8000,
+    "errorMessages": [
+      "FastAPI AI server is not running. Please start the Python FastAPI server (port 8000) and try again.",
+      "FastAPI AI server timed out. The model may still be loading. Please try again in a moment."
+    ],
+    "rootCauses": [
+      "fastapi_server.py not running",
+      "Model weights/best.pt not loaded",
+      "Selected crop not in YOLO training data",
+      "Confidence below threshold (default 30%)"
+    ]
+  },
+  "pragatiAIRootCause": {
+    "issue": "Pragati AI Bridge dependency",
+    "backendFile": "backend/src/services/pragatiAIService.ts",
+    "pythonFile": "Ai/pragati_ai_controller/fastapi_bridge.py",
+    "port": 8001,
+    "errorMessages": [
+      "AI सेवा अस्थायी रूप से अनुपलब्ध है। कृपया पुनः प्रयास करें।"
+    ],
+    "rootCauses": [
+      "fastapi_bridge.py not running",
+      "Bridge startup failed",
+      "Controller initialization failed",
+      "Model rebuild failed"
+    ]
+  },
+  "voiceGuideRootCause": {
+    "issue": "Voice Guide Bridge dependency",
+    "backendFile": "backend/src/services/voiceGuideBridgeManager.ts",
+    "pythonFile": "Ai/voice_guide_ai/api_bridge.py",
+    "port": 8002,
+    "errorMessages": [
+      "Voice Guide unavailable",
+      "Voice Guide bridge is not running",
+      "Voice Guide bridge timeout after Xms"
+    ],
+    "rootCauses": [
+      "api_bridge.py not running",
+      "RuntimeManager startup failed",
+      "pygame/serial worker issues"
+    ]
+  },
+  "weatherRootCause": {
+    "issue": "Self-referential API URL + missing API key",
+    "backendFile": "backend/src/services/weatherService.ts",
+    "envVariable": "WEATHER_API_BASE_URL",
+    "defaultValue": "http://localhost:4000",
+    "problem": "Defaults to backend itself, causing infinite loop or HTML response",
+    "rootCauses": [
+      "WEATHER_API_BASE_URL=http://localhost:4000 (self-reference)",
+      "WEATHER_API_KEY not set",
+      "Location not found in WeatherAPI.com"
+    ]
+  },
+  "androidCompatibilityProblems": [
+    { "issue": "localhost:4000 hardcoded in .env.local", "severity": "CRITICAL", "file": "frontend/.env.local" },
+    { "issue": "CORS blocks WebView origin", "severity": "CRITICAL", "file": "backend/src/index.ts" },
+    { "issue": "Cleartext HTTP blocked on Android 9+", "severity": "HIGH", "file": "AndroidManifest.xml" },
+    { "issue": "Static export breaks /api/* routes", "severity": "HIGH", "file": "next.config.js" },
+    { "issue": "Missing Android permissions", "severity": "HIGH", "file": "AndroidManifest.xml" },
+    { "issue": "AbortSignal.timeout unsupported", "severity": "MEDIUM", "file": "frontend/src/context/VoiceGuideContext.tsx" },
+    { "issue": "localStorage unreliable in WebView", "severity": "MEDIUM", "file": "frontend/src/context/AuthContext.tsx" }
+  ],
+  "mobileCssProblems": [
+    { "issue": "Potential fixed widths", "severity": "HIGH" },
+    { "issue": "Potential fixed heights", "severity": "MEDIUM" },
+    { "issue": "Sidebar may not collapse", "severity": "HIGH" },
+    { "issue": "Tables may cause horizontal scroll", "severity": "MEDIUM" },
+    { "issue": "Touch targets may be < 44px", "severity": "MEDIUM" }
+  ],
+  "reportLocations": [
+    "00_ARCHITECTURE_MAP.md",
+    "01_DATABASE_MAP.md",
+    "02_AUTH_LOGIN_TRACE.md",
+    "03_FRONTEND_API_TRACE.md",
+    "04_DISEASE_SCAN_TRACE.md",
+    "05_PRAGATI_AI_TRACE.md",
+    "06_VOICE_GUIDE_TRACE.md",
+    "07_WEATHER_TRACE.md",
+    "08_MANDI_TRACE.md",
+    "09_AI_FEATURE_TRACE.md",
+    "10_API_SCHEMA_MISMATCH.md",
+    "11_ANDROID_COMPATIBILITY.md",
+    "12_MOBILE_LAYOUT_AUDIT.md",
+    "MASTER_FORENSIC_REPORT.md",
+    "MASTER_FORENSIC_REPORT.json"
+  ]
+}

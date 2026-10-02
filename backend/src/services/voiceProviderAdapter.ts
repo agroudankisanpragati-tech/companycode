@@ -14,8 +14,8 @@
  * If a provider is unavailable, falls back to 'browser' gracefully.
  *
  * This adapter is used by the voiceEngine route.
- * Frontend always uses Web Speech API directly (no server round-trip for TTS).
- * This adapter handles server-side STT for streaming/offline scenarios.
+ * Browser TTS remains the default. The optional local provider calls the
+ * existing AI bridge; browser speech synthesis is the frontend fallback.
  */
 
 // ─── Provider interface ───────────────────────────────────────────────────────
@@ -157,11 +157,15 @@ class LocalTTSProvider implements TTSProvider {
   async synthesize(text: string, langBcp47: string, options?: any): Promise<TTSResult> {
     if (!this.isAvailable()) throw new Error('Local TTS endpoint not configured');
     const endpoint = process.env.LOCAL_TTS_ENDPOINT!;
+    // Indic Parler's first call downloads/loads a large model, and CPU inference
+    // can take well over the usual API timeout. Keep this configurable for faster
+    // machines while allowing enough time for the first local synthesis.
+    const timeoutMs = Number(process.env.LOCAL_TTS_TIMEOUT_MS) || 300000;
     const res = await fetch(`${endpoint}/synthesize`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ text, lang: langBcp47, rate: options?.rate || 0.9 }),
-      signal: AbortSignal.timeout(30000),
+      signal: AbortSignal.timeout(timeoutMs),
     });
     if (!res.ok) throw new Error(`Local TTS error: ${res.statusText}`);
     const data = await res.json() as any;

@@ -1,0 +1,6 @@
+.venv/
+data/chroma/
+data/model-cache/
+manifests/*.json
+__pycache__/
+*.py[cod]

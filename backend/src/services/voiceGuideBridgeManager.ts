@@ -14,6 +14,7 @@
  */
 
 import { spawn, ChildProcess } from 'child_process';
+import fs from 'fs';
 import path from 'path';
 import { createLogger } from '../utils/logger';
 
@@ -30,9 +31,13 @@ const MAX_WAIT_MS       = 20_000;
 const BRIDGE_CWD = path.resolve(__dirname, '..', '..', '..', 'Ai', 'voice_guide_ai');
 const BRIDGE_SCRIPT = 'api_bridge.py';
 
-// Pick the right Python executable for the current platform.
-// On Windows "python" resolves via PATH; on Unix "python3" is preferred.
-const PYTHON_BIN = process.platform === 'win32' ? 'python' : 'python3';
+// Prefer the project's Ai/ml environment because it contains the bridge
+// dependencies. Allow an explicit override for setups using another venv.
+const VENV_PYTHON = process.platform === 'win32'
+  ? path.resolve(BRIDGE_CWD, '..', 'ml', 'Scripts', 'python.exe')
+  : path.resolve(BRIDGE_CWD, '..', 'ml', 'bin', 'python');
+const PYTHON_BIN = process.env.VOICE_GUIDE_PYTHON
+  || (fs.existsSync(VENV_PYTHON) ? VENV_PYTHON : process.platform === 'win32' ? 'python' : 'python3');
 
 let bridgeProcess: ChildProcess | null = null;
 let shutdownRegistered = false;
