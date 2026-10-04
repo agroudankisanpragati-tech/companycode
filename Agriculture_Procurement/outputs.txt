@@ -1,0 +1,442 @@
+PS C:\Users\HP> cd D:\Agriculture_Procurement
+PS D:\Agriculture_Procurement> docker compose up --build
+unable to get image 'postgres:17-alpine': failed to connect to the docker API at npipe:////./pipe/dockerDesktopLinuxEngine; check if the path is correct and if the daemon is running: open //./pipe/dockerDesktopLinuxEngine: The system cannot find the file specified.
+PS D:\Agriculture_Procurement> docker compose up --build
+[+] up 13/13
+ ✔ Image postgres:17-alpine Pulled                                                                                                                     40.3s
+#1 [internal] load local bake definitions
+#1 reading from stdin 913B done
+#1 DONE 0.0s
+
+#2 [web internal] load build definition from Dockerfile.web
+#2 transferring dockerfile: 230B 0.0s done
+#2 DONE 0.1s
+
+#3 [api internal] load build definition from Dockerfile
+#3 transferring dockerfile: 297B 0.0s done
+#3 DONE 0.1s
+
+#4 [api internal] load metadata for docker.io/library/python:3.13-slim
+#4 ...
+
+#5 [web internal] load metadata for docker.io/library/node:22-bookworm-slim
+#5 DONE 4.2s
+
+#4 [api internal] load metadata for docker.io/library/python:3.13-slim
+#4 DONE 4.2s
+
+#6 [api internal] load .dockerignore
+#6 transferring context: 2B done
+#6 DONE 0.0s
+
+#7 [web internal] load .dockerignore
+#7 transferring context: 187B 0.0s done
+#7 DONE 0.1s
+
+#8 [api internal] load build context
+#8 transferring context: 374.60kB 0.3s done
+#8 DONE 0.3s
+
+#9 [api 1/5] FROM docker.io/library/python:3.13-slim@sha256:bb2988715db2cf7ace7b53f38f3cffbef7c7046a656bee66245eb0ed386e2e81
+#9 resolve docker.io/library/python:3.13-slim@sha256:bb2988715db2cf7ace7b53f38f3cffbef7c7046a656bee66245eb0ed386e2e81 0.1s done
+#9 sha256:b14f2539d39c701eb33cb2f8c26199e904da2850a54e1bf40eb73f915bd57896 0B / 249B 0.2s
+#9 sha256:b14f2539d39c701eb33cb2f8c26199e904da2850a54e1bf40eb73f915bd57896 249B / 249B 0.3s done
+#9 sha256:7e7563f2ddb63441774cb88bb68bab20ca9a79267a9982ea921419c1a6910b8c 0B / 11.92MB 0.2s
+#9 sha256:49ae429f6151335a53305bc42db15361f1bd47811fb1660ea5b665ff08d17666 0B / 4.27MB 0.2s
+#9 sha256:6b37362b3da78869050b894b799ad4df04f1f3b52774087db0d81151570244c8 0B / 29.83MB 0.2s
+#9 ...
+
+#10 [web internal] load build context
+#10 transferring context: 1.43MB 0.7s done
+#10 DONE 0.8s
+
+#9 [api 1/5] FROM docker.io/library/python:3.13-slim@sha256:bb2988715db2cf7ace7b53f38f3cffbef7c7046a656bee66245eb0ed386e2e81
+#9 sha256:7e7563f2ddb63441774cb88bb68bab20ca9a79267a9982ea921419c1a6910b8c 1.05MB / 11.92MB 0.9s
+#9 sha256:7e7563f2ddb63441774cb88bb68bab20ca9a79267a9982ea921419c1a6910b8c 2.10MB / 11.92MB 1.1s
+#9 sha256:7e7563f2ddb63441774cb88bb68bab20ca9a79267a9982ea921419c1a6910b8c 3.15MB / 11.92MB 1.5s
+#9 sha256:7e7563f2ddb63441774cb88bb68bab20ca9a79267a9982ea921419c1a6910b8c 4.19MB / 11.92MB 1.8s
+#9 sha256:7e7563f2ddb63441774cb88bb68bab20ca9a79267a9982ea921419c1a6910b8c 5.24MB / 11.92MB 2.6s
+#9 sha256:7e7563f2ddb63441774cb88bb68bab20ca9a79267a9982ea921419c1a6910b8c 6.29MB / 11.92MB 3.0s
+#9 sha256:7e7563f2ddb63441774cb88bb68bab20ca9a79267a9982ea921419c1a6910b8c 7.34MB / 11.92MB 3.3s
+#9 sha256:7e7563f2ddb63441774cb88bb68bab20ca9a79267a9982ea921419c1a6910b8c 8.39MB / 11.92MB 3.8s
+#9 sha256:6b37362b3da78869050b894b799ad4df04f1f3b52774087db0d81151570244c8 2.10MB / 29.83MB 4.1s
+#9 sha256:7e7563f2ddb63441774cb88bb68bab20ca9a79267a9982ea921419c1a6910b8c 9.44MB / 11.92MB 4.4s
+#9 sha256:7e7563f2ddb63441774cb88bb68bab20ca9a79267a9982ea921419c1a6910b8c 10.49MB / 11.92MB 5.0s
+#9 sha256:49ae429f6151335a53305bc42db15361f1bd47811fb1660ea5b665ff08d17666 0B / 4.27MB 5.3s
+#9 sha256:7e7563f2ddb63441774cb88bb68bab20ca9a79267a9982ea921419c1a6910b8c 11.53MB / 11.92MB 5.6s
+#9 sha256:7e7563f2ddb63441774cb88bb68bab20ca9a79267a9982ea921419c1a6910b8c 11.92MB / 11.92MB 5.7s done
+#9 sha256:6b37362b3da78869050b894b799ad4df04f1f3b52774087db0d81151570244c8 4.19MB / 29.83MB 5.7s
+#9 sha256:6b37362b3da78869050b894b799ad4df04f1f3b52774087db0d81151570244c8 6.29MB / 29.83MB 6.6s
+#9 sha256:49ae429f6151335a53305bc42db15361f1bd47811fb1660ea5b665ff08d17666 1.05MB / 4.27MB 7.6s
+#9 sha256:6b37362b3da78869050b894b799ad4df04f1f3b52774087db0d81151570244c8 8.39MB / 29.83MB 7.8s
+#9 sha256:6b37362b3da78869050b894b799ad4df04f1f3b52774087db0d81151570244c8 10.49MB / 29.83MB 9.0s
+#9 ...
+
+#11 [web 1/5] FROM docker.io/library/node:22-bookworm-slim@sha256:43ac6c60b8f89723f746e8a92ce91abd5017e627ce1ddfe4238355d3a30b772c
+#11 resolve docker.io/library/node:22-bookworm-slim@sha256:43ac6c60b8f89723f746e8a92ce91abd5017e627ce1ddfe4238355d3a30b772c 0.1s done
+#11 sha256:dc40c63c08b5453854c13da6d72b3182737b2e223156b786c67779e0d6f4e8e0 446B / 446B 0.3s done
+#11 sha256:8d9d84ee31888adba85837fbf8f0e6eca99263904b2ba04d79e7d4fc1da40056 1.71MB / 1.71MB 2.3s done
+#11 sha256:61592f5b60306b96e5208206668cdf0fa62d3cda3a3baeed26efdcd1a21aaba5 6.29MB / 49.84MB 6.7s
+#11 sha256:8ab8fd6c944526e5da2ca93b1663b2ab6f4bb8d4ea7b50a90d53c9fdcc5b0b9e 3.31kB / 3.31kB 0.4s done
+#11 sha256:774043ccc8ccd0d0833a9ee0792142ab7ad93df971e59dd248fbf82db16d0150 1.05MB / 28.24MB 3.6s
+#11 ...
+
+#9 [api 1/5] FROM docker.io/library/python:3.13-slim@sha256:bb2988715db2cf7ace7b53f38f3cffbef7c7046a656bee66245eb0ed386e2e81
+#9 sha256:6b37362b3da78869050b894b799ad4df04f1f3b52774087db0d81151570244c8 12.58MB / 29.83MB 10.2s
+#9 sha256:49ae429f6151335a53305bc42db15361f1bd47811fb1660ea5b665ff08d17666 1.05MB / 4.27MB 12.7s
+#9 sha256:49ae429f6151335a53305bc42db15361f1bd47811fb1660ea5b665ff08d17666 2.10MB / 4.27MB 13.1s
+#9 sha256:6b37362b3da78869050b894b799ad4df04f1f3b52774087db0d81151570244c8 14.68MB / 29.83MB 13.3s
+#9 sha256:49ae429f6151335a53305bc42db15361f1bd47811fb1660ea5b665ff08d17666 3.15MB / 4.27MB 13.6s
+#9 sha256:49ae429f6151335a53305bc42db15361f1bd47811fb1660ea5b665ff08d17666 4.19MB / 4.27MB 14.1s
+#9 sha256:49ae429f6151335a53305bc42db15361f1bd47811fb1660ea5b665ff08d17666 4.27MB / 4.27MB 14.2s done
+#9 sha256:6b37362b3da78869050b894b799ad4df04f1f3b52774087db0d81151570244c8 16.78MB / 29.83MB 14.5s
+#9 sha256:6b37362b3da78869050b894b799ad4df04f1f3b52774087db0d81151570244c8 18.87MB / 29.83MB 15.9s
+#9 sha256:6b37362b3da78869050b894b799ad4df04f1f3b52774087db0d81151570244c8 20.97MB / 29.83MB 16.9s
+#9 sha256:6b37362b3da78869050b894b799ad4df04f1f3b52774087db0d81151570244c8 23.07MB / 29.83MB 18.3s
+#9 ...
+
+#11 [web 1/5] FROM docker.io/library/node:22-bookworm-slim@sha256:43ac6c60b8f89723f746e8a92ce91abd5017e627ce1ddfe4238355d3a30b772c
+#11 sha256:61592f5b60306b96e5208206668cdf0fa62d3cda3a3baeed26efdcd1a21aaba5 13.63MB / 49.84MB 15.7s
+#11 sha256:774043ccc8ccd0d0833a9ee0792142ab7ad93df971e59dd248fbf82db16d0150 6.29MB / 28.24MB 12.6s
+#11 sha256:774043ccc8ccd0d0833a9ee0792142ab7ad93df971e59dd248fbf82db16d0150 8.39MB / 28.24MB 14.7s
+#11 sha256:61592f5b60306b96e5208206668cdf0fa62d3cda3a3baeed26efdcd1a21aaba5 16.78MB / 49.84MB 18.0s
+#11 sha256:774043ccc8ccd0d0833a9ee0792142ab7ad93df971e59dd248fbf82db16d0150 10.49MB / 28.24MB 16.5s
+#11 sha256:61592f5b60306b96e5208206668cdf0fa62d3cda3a3baeed26efdcd1a21aaba5 19.92MB / 49.84MB 20.2s
+#11 sha256:774043ccc8ccd0d0833a9ee0792142ab7ad93df971e59dd248fbf82db16d0150 12.58MB / 28.24MB 17.7s
+#11 ...
+
+#9 [api 1/5] FROM docker.io/library/python:3.13-slim@sha256:bb2988715db2cf7ace7b53f38f3cffbef7c7046a656bee66245eb0ed386e2e81
+#9 sha256:6b37362b3da78869050b894b799ad4df04f1f3b52774087db0d81151570244c8 29.83MB / 29.83MB 22.9s done
+#9 extracting sha256:6b37362b3da78869050b894b799ad4df04f1f3b52774087db0d81151570244c8 1.1s done
+#9 DONE 24.4s
+
+#11 [web 1/5] FROM docker.io/library/node:22-bookworm-slim@sha256:43ac6c60b8f89723f746e8a92ce91abd5017e627ce1ddfe4238355d3a30b772c
+#11 ...
+
+#9 [api 1/5] FROM docker.io/library/python:3.13-slim@sha256:bb2988715db2cf7ace7b53f38f3cffbef7c7046a656bee66245eb0ed386e2e81
+#9 extracting sha256:49ae429f6151335a53305bc42db15361f1bd47811fb1660ea5b665ff08d17666 0.3s done
+#9 DONE 24.7s
+
+#11 [web 1/5] FROM docker.io/library/node:22-bookworm-slim@sha256:43ac6c60b8f89723f746e8a92ce91abd5017e627ce1ddfe4238355d3a30b772c
+#11 sha256:61592f5b60306b96e5208206668cdf0fa62d3cda3a3baeed26efdcd1a21aaba5 23.07MB / 49.84MB 21.9s
+#11 ...
+
+#9 [api 1/5] FROM docker.io/library/python:3.13-slim@sha256:bb2988715db2cf7ace7b53f38f3cffbef7c7046a656bee66245eb0ed386e2e81
+#9 extracting sha256:7e7563f2ddb63441774cb88bb68bab20ca9a79267a9982ea921419c1a6910b8c 0.7s done
+#9 extracting sha256:b14f2539d39c701eb33cb2f8c26199e904da2850a54e1bf40eb73f915bd57896 0.0s done
+#9 DONE 25.4s
+
+#11 [web 1/5] FROM docker.io/library/node:22-bookworm-slim@sha256:43ac6c60b8f89723f746e8a92ce91abd5017e627ce1ddfe4238355d3a30b772c
+#11 sha256:774043ccc8ccd0d0833a9ee0792142ab7ad93df971e59dd248fbf82db16d0150 14.68MB / 28.24MB 18.9s
+#11 ...
+
+#12 [api 2/5] WORKDIR /app
+#12 DONE 0.5s
+
+#13 [api 3/5] COPY requirements.txt ./
+#13 DONE 0.0s
+
+#11 [web 1/5] FROM docker.io/library/node:22-bookworm-slim@sha256:43ac6c60b8f89723f746e8a92ce91abd5017e627ce1ddfe4238355d3a30b772c
+#11 sha256:774043ccc8ccd0d0833a9ee0792142ab7ad93df971e59dd248fbf82db16d0150 16.78MB / 28.24MB 20.0s
+#11 sha256:61592f5b60306b96e5208206668cdf0fa62d3cda3a3baeed26efdcd1a21aaba5 26.21MB / 49.84MB 23.5s
+#11 sha256:774043ccc8ccd0d0833a9ee0792142ab7ad93df971e59dd248fbf82db16d0150 18.87MB / 28.24MB 20.9s
+#11 sha256:774043ccc8ccd0d0833a9ee0792142ab7ad93df971e59dd248fbf82db16d0150 20.97MB / 28.24MB 22.1s
+#11 sha256:61592f5b60306b96e5208206668cdf0fa62d3cda3a3baeed26efdcd1a21aaba5 29.36MB / 49.84MB 25.3s
+#11 sha256:774043ccc8ccd0d0833a9ee0792142ab7ad93df971e59dd248fbf82db16d0150 23.07MB / 28.24MB 23.0s
+#11 sha256:61592f5b60306b96e5208206668cdf0fa62d3cda3a3baeed26efdcd1a21aaba5 32.51MB / 49.84MB 27.2s
+#11 sha256:774043ccc8ccd0d0833a9ee0792142ab7ad93df971e59dd248fbf82db16d0150 25.17MB / 28.24MB 24.2s
+#11 sha256:774043ccc8ccd0d0833a9ee0792142ab7ad93df971e59dd248fbf82db16d0150 27.26MB / 28.24MB 25.4s
+#11 sha256:774043ccc8ccd0d0833a9ee0792142ab7ad93df971e59dd248fbf82db16d0150 28.24MB / 28.24MB 25.7s done
+#11 extracting sha256:774043ccc8ccd0d0833a9ee0792142ab7ad93df971e59dd248fbf82db16d0150
+#11 sha256:61592f5b60306b96e5208206668cdf0fa62d3cda3a3baeed26efdcd1a21aaba5 35.65MB / 49.84MB 29.1s
+#11 extracting sha256:774043ccc8ccd0d0833a9ee0792142ab7ad93df971e59dd248fbf82db16d0150 1.3s done
+#11 extracting sha256:8ab8fd6c944526e5da2ca93b1663b2ab6f4bb8d4ea7b50a90d53c9fdcc5b0b9e 0.0s done
+#11 sha256:61592f5b60306b96e5208206668cdf0fa62d3cda3a3baeed26efdcd1a21aaba5 38.80MB / 49.84MB 30.6s
+#11 sha256:61592f5b60306b96e5208206668cdf0fa62d3cda3a3baeed26efdcd1a21aaba5 41.94MB / 49.84MB 31.7s
+#11 sha256:61592f5b60306b96e5208206668cdf0fa62d3cda3a3baeed26efdcd1a21aaba5 45.09MB / 49.84MB 32.4s
+#11 ...
+
+#14 [api 4/5] RUN python -m pip install --no-cache-dir -r requirements.txt
+#14 3.297 Collecting Django<5.3,>=5.2 (from -r requirements.txt (line 1))
+#14 3.473   Downloading django-5.2.17-py3-none-any.whl.metadata (4.1 kB)
+#14 3.750 Collecting djangorestframework<3.17,>=3.16 (from -r requirements.txt (line 2))
+#14 3.764   Downloading djangorestframework-3.16.1-py3-none-any.whl.metadata (11 kB)
+#14 4.066 Collecting djangorestframework-simplejwt<5.6,>=5.5 (from -r requirements.txt (line 3))
+#14 4.077   Downloading djangorestframework_simplejwt-5.5.1-py3-none-any.whl.metadata (4.6 kB)
+#14 4.338 Collecting django-cors-headers<5.0,>=4.7 (from -r requirements.txt (line 4))
+#14 4.352   Downloading django_cors_headers-4.9.0-py3-none-any.whl.metadata (16 kB)
+#14 4.404 Collecting psycopg<4.0,>=3.2 (from psycopg[binary]<4.0,>=3.2->-r requirements.txt (line 5))
+#14 4.415   Downloading psycopg-3.3.6-py3-none-any.whl.metadata (4.4 kB)
+#14 4.483 Collecting python-dotenv<2.0,>=1.0 (from -r requirements.txt (line 6))
+#14 4.502   Downloading python_dotenv-1.2.4-py3-none-any.whl.metadata (29 kB)
+#14 6.749 Collecting reportlab<5.0,>=4.2 (from -r requirements.txt (line 7))
+#14 6.767   Downloading reportlab-4.5.1-py3-none-any.whl.metadata (1.7 kB)
+#14 7.025 Collecting asgiref>=3.8.1 (from Django<5.3,>=5.2->-r requirements.txt (line 1))
+#14 7.037   Downloading asgiref-3.12.1-py3-none-any.whl.metadata (9.4 kB)
+#14 7.294 Collecting sqlparse>=0.3.1 (from Django<5.3,>=5.2->-r requirements.txt (line 1))
+#14 7.304   Downloading sqlparse-0.6.0-py3-none-any.whl.metadata (6.0 kB)
+#14 7.358 Collecting pyjwt>=1.7.1 (from djangorestframework-simplejwt<5.6,>=5.5->-r requirements.txt (line 3))
+#14 7.371   Downloading pyjwt-2.15.1-py3-none-any.whl.metadata (3.5 kB)
+#14 7.759 Collecting pillow>=9.0.0 (from reportlab<5.0,>=4.2->-r requirements.txt (line 7))
+#14 7.775   Downloading pillow-12.3.0-cp313-cp313-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (9.1 kB)
+#14 7.976 Collecting charset-normalizer (from reportlab<5.0,>=4.2->-r requirements.txt (line 7))
+#14 8.004   Downloading charset_normalizer-3.5.2-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (46 kB)
+#14 8.370 Collecting psycopg-binary==3.3.6 (from psycopg[binary]<4.0,>=3.2->-r requirements.txt (line 5))
+#14 8.729   Downloading psycopg_binary-3.3.6-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (2.7 kB)
+#14 8.761 Downloading django-5.2.17-py3-none-any.whl (8.3 MB)
+#14 ...
+
+#11 [web 1/5] FROM docker.io/library/node:22-bookworm-slim@sha256:43ac6c60b8f89723f746e8a92ce91abd5017e627ce1ddfe4238355d3a30b772c
+#11 sha256:61592f5b60306b96e5208206668cdf0fa62d3cda3a3baeed26efdcd1a21aaba5 48.23MB / 49.84MB 33.1s
+#11 sha256:61592f5b60306b96e5208206668cdf0fa62d3cda3a3baeed26efdcd1a21aaba5 49.84MB / 49.84MB 33.7s done
+#11 extracting sha256:61592f5b60306b96e5208206668cdf0fa62d3cda3a3baeed26efdcd1a21aaba5
+#11 extracting sha256:61592f5b60306b96e5208206668cdf0fa62d3cda3a3baeed26efdcd1a21aaba5 1.6s done
+#11 DONE 38.4s
+
+#14 [api 4/5] RUN python -m pip install --no-cache-dir -r requirements.txt
+#14 ...
+
+#11 [web 1/5] FROM docker.io/library/node:22-bookworm-slim@sha256:43ac6c60b8f89723f746e8a92ce91abd5017e627ce1ddfe4238355d3a30b772c
+#11 extracting sha256:8d9d84ee31888adba85837fbf8f0e6eca99263904b2ba04d79e7d4fc1da40056 0.1s done
+#11 extracting sha256:dc40c63c08b5453854c13da6d72b3182737b2e223156b786c67779e0d6f4e8e0 0.0s done
+#11 DONE 38.5s
+
+#15 [web 2/5] WORKDIR /app
+#15 DONE 0.3s
+
+#14 [api 4/5] RUN python -m pip install --no-cache-dir -r requirements.txt
+#14 ...
+
+#16 [web 3/5] COPY package.json package-lock.json ./
+#16 DONE 0.0s
+
+#17 [web 4/5] RUN npm ci
+#17 ...
+
+#14 [api 4/5] RUN python -m pip install --no-cache-dir -r requirements.txt
+#14 13.13    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 8.3/8.3 MB 2.8 MB/s  0:00:04
+#14 13.14 Downloading djangorestframework-3.16.1-py3-none-any.whl (1.1 MB)
+#14 13.35    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.1/1.1 MB 5.2 MB/s  0:00:00
+#14 13.36 Downloading djangorestframework_simplejwt-5.5.1-py3-none-any.whl (107 kB)
+#14 13.41 Downloading django_cors_headers-4.9.0-py3-none-any.whl (12 kB)
+#14 13.42 Downloading psycopg-3.3.6-py3-none-any.whl (215 kB)
+#14 13.51 Downloading python_dotenv-1.2.4-py3-none-any.whl (23 kB)
+#14 13.52 Downloading reportlab-4.5.1-py3-none-any.whl (2.0 MB)
+#14 14.09    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.0/2.0 MB 3.5 MB/s  0:00:00
+#14 14.39 Downloading psycopg_binary-3.3.6-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (5.2 MB)
+#14 ...
+
+#17 [web 4/5] RUN npm ci
+#17 22.00 npm warn deprecated @esbuild-kit/esm-loader@2.6.5: Merged into tsx: https://tsx.is
+#17 22.46 npm warn deprecated @esbuild-kit/core-utils@3.3.2: Merged into tsx: https://tsx.is
+#17 ...
+
+#14 [api 4/5] RUN python -m pip install --no-cache-dir -r requirements.txt
+#14 52.81    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 5.2/5.2 MB 89.4 kB/s  0:00:38
+#14 52.84 Downloading asgiref-3.12.1-py3-none-any.whl (25 kB)
+#14 59.87 Downloading pillow-12.3.0-cp313-cp313-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (6.9 MB)
+#14 78.12    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 6.9/6.9 MB 375.6 kB/s  0:00:18
+#14 78.13 Downloading pyjwt-2.15.1-py3-none-any.whl (33 kB)
+#14 78.14 Downloading sqlparse-0.6.0-py3-none-any.whl (50 kB)
+#14 78.16 Downloading charset_normalizer-3.5.2-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (254 kB)
+#14 78.41 Installing collected packages: sqlparse, python-dotenv, pyjwt, psycopg-binary, psycopg, pillow, charset-normalizer, asgiref, reportlab, Django, djangorestframework, django-cors-headers, djangorestframework-simplejwt
+#14 82.61
+#14 82.61 Successfully installed Django-5.2.17 asgiref-3.12.1 charset-normalizer-3.5.2 django-cors-headers-4.9.0 djangorestframework-3.16.1 djangorestframework-simplejwt-5.5.1 pillow-12.3.0 psycopg-3.3.6 psycopg-binary-3.3.6 pyjwt-2.15.1 python-dotenv-1.2.4 reportlab-4.5.1 sqlparse-0.6.0
+#14 82.61 WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
+#14 DONE 83.1s
+
+#17 [web 4/5] RUN npm ci
+#17 ...
+
+#18 [api 5/5] COPY . .
+#18 DONE 0.2s
+
+#17 [web 4/5] RUN npm ci
+#17 ...
+
+#19 [api] exporting to image
+#19 exporting layers
+#19 exporting layers 2.9s done
+#19 exporting manifest sha256:b56a5f1fca292efabeaacca9b058c141aaf269666350f819eaabc789e98431c5 0.0s done
+#19 exporting config sha256:20a5437d5db1a74d54bb450cb2d6c1920d8c96a2bd002cb490c2edd4b192f42b 0.0s done
+#19 exporting attestation manifest sha256:1e159cc82c6992fb67c75ced52d5c1891cc42fa5cb9036563bc82199e95322bb 0.0s done
+#19 exporting manifest list sha256:fbaa682552f060ac7caddba6159a7ad03c0cc1c2b6ca52ddb35935d4c9f2995a 0.0s done
+#19 naming to docker.io/library/dapp-api:latest done
+#19 unpacking to docker.io/library/dapp-api:latest
+#19 unpacking to docker.io/library/dapp-api:latest 3.0s done
+#19 DONE 6.0s
+
+#20 [api] resolving provenance for metadata file
+#20 DONE 0.0s
+
+#17 [web 4/5] RUN npm ci
+#17 80.48
+#17 80.48 added 677 packages, and audited 678 packages in 1m
+#17 80.48
+#17 80.48 170 packages are looking for funding
+#17 80.48   run `npm fund` for details
+#17 80.73
+#17 80.73 24 vulnerabilities (1 low, 6 moderate, 16 high, 1 critical)
+#17 80.73
+#17 80.73 To address issues that do not require attention, run:
+#17 80.73   npm audit fix
+#17 80.73
+#17 80.73 To address all issues (including breaking changes), run:
+#17 80.73   npm audit fix --force
+#17 80.73
+#17 80.73 Run `npm audit` for details.
+#17 80.73 npm notice
+#17 80.73 npm notice New major version of npm available! 10.9.9 -> 12.2.0
+#17 80.73 npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+#17 80.73 npm notice To update run: npm install -g npm@12.2.0
+#17 80.73 npm notice
+#17 DONE 81.1s
+
+#21 [web 5/5] COPY . .
+#21 DONE 0.7s
+
+#22 [web] exporting to image
+#22 exporting layers
+#22 exporting layers 29.2s done
+#22 exporting manifest sha256:98672890ad0ed37cfe26904f809caaf52aa54ebd9381321e6e395b073bbd4ed2 0.0s done
+#22 exporting config sha256:7c5e762fb61b3d554ffb2b167811f9db64d9bfe387f66227be05d81ee00c9f04 0.0s done
+#22 exporting attestation manifest sha256:d6684ee945fe25287ad1d3cdbc8fba7709b17a9be5da2df4f310eb350a4838fe 0.0s done
+#22 exporting manifest list sha256:0147553dccd9645b4a1b5fe348296f5bca0678bca7ad7021b7dda84bb305aec7 0.0s done
+#22 naming to docker.io/library/dapp-web:latest done
+#22 unpacking to docker.io/library/dapp-web:latest
+#22 unpacking to docker.io/library/dapp-web:latest 12.9s done
+#22 DONE 42.2s
+
+[+] up 21/21solving provenance for metadata file
+ ✔ Image postgres:17-alpine       Pulled                                                                                                               40.3s
+ ✔ Image dapp-api                 Built                                                                                                               168.4s
+ ✔ Image dapp-web                 Built                                                                                                               168.4s
+ ✔ Network dapp_default           Created                                                                                                               0.0s
+ ✔ Volume dapp_dapp_postgres_data Created                                                                                                               0.0s
+ ✔ Volume dapp_dapp_node_modules  Created                                                                                                               0.0s
+ ✔ Container dapp-database-1      Created                                                                                                               0.6s
+ ✔ Container dapp-api-1           Created                                                                                                               0.1s
+ ✔ Container dapp-web-1           Created                                                                                                              10.7s
+Attaching to api-1, database-1, web-1
+Container dapp-database-1 Waiting
+database-1  | The files belonging to this database system will be owned by user "postgres".
+database-1  | This user must also own the server process.
+database-1  |
+database-1  | The database cluster will be initialized with locale "en_US.utf8".
+database-1  | The default database encoding has accordingly been set to "UTF8".
+database-1  | The default text search configuration will be set to "english".
+database-1  |
+database-1  | Data page checksums are disabled.
+database-1  |
+database-1  | fixing permissions on existing directory /var/lib/postgresql/data ... ok
+database-1  | creating subdirectories ... ok
+database-1  | selecting dynamic shared memory implementation ... posix
+database-1  | selecting default "max_connections" ... 100
+database-1  | selecting default "shared_buffers" ... 128MB
+database-1  | selecting default time zone ... UTC
+database-1  | creating configuration files ... ok
+database-1  | running bootstrap script ... ok
+database-1  | sh: locale: not found
+database-1  | 2026-10-02 14:52:34.005 UTC [35] WARNING:  no usable system locales were found
+database-1  | performing post-bootstrap initialization ... ok
+database-1  | syncing data to disk ... ok
+database-1  |
+database-1  |
+database-1  | Success. You can now start the database server using:
+database-1  |
+database-1  |     pg_ctl -D /var/lib/postgresql/data -l logfile start
+database-1  |
+database-1  | initdb: warning: enabling "trust" authentication for local connections
+database-1  | initdb: hint: You can change this by editing pg_hba.conf or using the option -A, or --auth-local and --auth-host, the next time you run initdb.
+database-1  | waiting for server to start....2026-10-02 14:52:34.925 UTC [41] LOG:  starting PostgreSQL 17.11 on x86_64-pc-linux-musl, compiled by gcc (Alpine 15.2.0) 15.2.0, 64-bit
+database-1  | 2026-10-02 14:52:34.928 UTC [41] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+database-1  | 2026-10-02 14:52:34.938 UTC [44] LOG:  database system was shut down at 2026-10-02 14:52:34 UTC
+database-1  | 2026-10-02 14:52:34.948 UTC [41] LOG:  database system is ready to accept connections
+database-1  |  done
+database-1  | server started
+database-1  | CREATE DATABASE
+database-1  |
+database-1  |
+database-1  | /usr/local/bin/docker-entrypoint.sh: ignoring /docker-entrypoint-initdb.d/*
+database-1  |
+database-1  | waiting for server to shut down....2026-10-02 14:52:35.123 UTC [41] LOG:  received fast shutdown request
+database-1  | 2026-10-02 14:52:35.128 UTC [41] LOG:  aborting any active transactions
+database-1  | 2026-10-02 14:52:35.131 UTC [41] LOG:  background worker "logical replication launcher" (PID 47) exited with exit code 1
+database-1  | 2026-10-02 14:52:35.132 UTC [42] LOG:  shutting down
+database-1  | 2026-10-02 14:52:35.134 UTC [42] LOG:  checkpoint starting: shutdown immediate
+database-1  | 2026-10-02 14:52:35.247 UTC [42] LOG:  checkpoint complete: wrote 926 buffers (5.7%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.037 s, sync=0.068 s, total=0.116 s; sync files=301, longest=0.003 s, average=0.001 s; distance=4266 kB, estimate=4266 kB; lsn=0/191E818, redo lsn=0/191E818
+database-1  | 2026-10-02 14:52:35.259 UTC [41] LOG:  database system is shut down
+database-1  |  done
+database-1  | server stopped
+database-1  |
+database-1  | PostgreSQL init process complete; ready for start up.
+database-1  |
+database-1  | 2026-10-02 14:52:35.362 UTC [1] LOG:  starting PostgreSQL 17.11 on x86_64-pc-linux-musl, compiled by gcc (Alpine 15.2.0) 15.2.0, 64-bit
+database-1  | 2026-10-02 14:52:35.362 UTC [1] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+database-1  | 2026-10-02 14:52:35.362 UTC [1] LOG:  listening on IPv6 address "::", port 5432
+database-1  | 2026-10-02 14:52:35.368 UTC [1] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+database-1  | 2026-10-02 14:52:35.376 UTC [57] LOG:  database system was shut down at 2026-10-02 14:52:35 UTC
+database-1  | 2026-10-02 14:52:35.385 UTC [1] LOG:  database system is ready to accept connections
+Container dapp-database-1 Healthy
+web-1       |
+web-1       | > dapp-frontend@0.5.0 dev
+web-1       | > WRANGLER_LOG_PATH=.wrangler/wrangler.log vite --host 0.0.0.0 --port 3000
+web-1       |
+api-1       | Operations to perform:
+api-1       |   Apply all migrations: accounts, admin, auth, contenttypes, procurement, sessions, token_blacklist
+api-1       | Running migrations:
+api-1       |   Applying contenttypes.0001_initial... OK
+api-1       |   Applying contenttypes.0002_remove_content_type_name... OK
+api-1       |   Applying auth.0001_initial... OK
+api-1       |   Applying auth.0002_alter_permission_name_max_length... OK
+api-1       |   Applying auth.0003_alter_user_email_max_length... OK
+api-1       |   Applying auth.0004_alter_user_username_opts... OK
+api-1       |   Applying auth.0005_alter_user_last_login_null... OK
+api-1       |   Applying auth.0006_require_contenttypes_0002... OK
+api-1       |   Applying auth.0007_alter_validators_add_error_messages... OK
+api-1       |   Applying auth.0008_alter_user_username_max_length... OK
+api-1       |   Applying auth.0009_alter_user_last_name_max_length... OK
+api-1       |   Applying auth.0010_alter_group_name_max_length... OK
+api-1       |   Applying auth.0011_update_proxy_permissions... OK
+api-1       |   Applying auth.0012_alter_user_first_name_max_length... OK
+api-1       |   Applying accounts.0001_initial... OK
+api-1       |   Applying accounts.0002_farmerprofile... OK
+api-1       |   Applying accounts.0003_align_django_auth_fields... OK
+api-1       |   Applying admin.0001_initial... OK
+api-1       |   Applying admin.0002_logentry_remove_auto_add... OK
+api-1       |   Applying admin.0003_logentry_add_action_flag_choices... OK
+api-1       |   Applying procurement.0001_initial... OK
+api-1       |   Applying procurement.0002_capacityreservation_procurementrequest_and_more... OK
+api-1       |   Applying procurement.0003_acceptancedecision_arrivalcheckin_procurementreceipt_and_more... OK
+api-1       |   Applying procurement.0004_grievance_paymentrecord_paymentreceipt_paymentevent_and_more... OK
+api-1       |   Applying sessions.0001_initial... OK
+api-1       |   Applying token_blacklist.0001_initial... OK
+api-1       |   Applying token_blacklist.0002_outstandingtoken_jti_hex... OK
+api-1       |   Applying token_blacklist.0003_auto_20171017_2007... OK
+api-1       |   Applying token_blacklist.0004_auto_20171017_2013... OK
+api-1       |   Applying token_blacklist.0005_remove_outstandingtoken_jti... OK
+api-1       |   Applying token_blacklist.0006_auto_20171017_2113... OK
+api-1       |   Applying token_blacklist.0007_auto_20171017_2214... OK
+api-1       |   Applying token_blacklist.0008_migrate_to_bigautofield... OK
+api-1       |   Applying token_blacklist.0010_fix_migrate_to_bigautofield... OK
+api-1       |   Applying token_blacklist.0011_linearizes_history... OK
+api-1       |   Applying token_blacklist.0012_alter_outstandingtoken_user... OK
+api-1       |   Applying token_blacklist.0013_alter_blacklistedtoken_options_and_more... OK
+api-1       | Watching for file changes with StatReloader
+api-1       | Performing system checks...
+api-1       |
+api-1       | System check identified no issues (0 silenced).
+web-1       |
+web-1       |   VITE v8.0.13  ready in 7031 ms
+web-1       |
+web-1       |   ➜  Local:   http://localhost:3000/
+web-1       |   ➜  Network: http://172.18.0.4:3000/
+api-1       | October 02, 2026 - 20:22:46
+api-1       | Django version 5.2.17, using settings 'config.settings'
+api-1       | Starting development server at http://0.0.0.0:8000/
+api-1       | Quit the server with CONTROL-C.
+api-1       |
+api-1       | WARNING: This is a development server. Do not use it in a production setting. Use a production WSGI or ASGI server instead.
+api-1       | For more information on production servers see: https://docs.djangoproject.com/en/5.2/howto/deployment/
+PS D:\Agriculture_Procurement> exit
+
