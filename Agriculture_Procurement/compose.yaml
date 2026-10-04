@@ -1,0 +1,63 @@
+name: dapp
+
+services:
+  database:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: dapp
+      POSTGRES_USER: dapp_user
+      POSTGRES_PASSWORD: dapp_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - dapp_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U dapp_user -d dapp"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build:
+      context: ./backend
+    environment:
+      DJANGO_SECRET_KEY: local-compose-development-key-change-before-production
+      DJANGO_DEBUG: "true"
+      DJANGO_ALLOWED_HOSTS: localhost,127.0.0.1,api
+      CORS_ALLOWED_ORIGINS: http://localhost:3000
+      CSRF_TRUSTED_ORIGINS: http://localhost:3000
+      POSTGRES_DB: dapp
+      POSTGRES_USER: dapp_user
+      POSTGRES_PASSWORD: dapp_password
+      POSTGRES_HOST: database
+      POSTGRES_PORT: "5432"
+      JWT_COOKIE_SECURE: "false"
+    command: >-
+      sh -c "python manage.py migrate &&
+      python manage.py runserver 0.0.0.0:8000"
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+    depends_on:
+      database:
+        condition: service_healthy
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.web
+    environment:
+      NEXT_PUBLIC_API_BASE_URL: http://localhost:8000/api/v1
+    command: npm run dev -- --host 0.0.0.0 --port 3000
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+      - dapp_node_modules:/app/node_modules
+    depends_on:
+      - api
+
+volumes:
+  dapp_postgres_data:
+  dapp_node_modules:
